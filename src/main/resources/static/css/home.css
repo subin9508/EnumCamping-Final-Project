@@ -1,12 +1,14 @@
 @charset "UTF-8";
 
+/* Rounded content with shadow */
 .rounded-content {
     border-radius: 20px;
     padding: 10px;
-    
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Added margin for spacing */
 }
 
+/* Contact form styling */
 .contact form {
     display: flex;
     flex-direction: column;
@@ -14,7 +16,8 @@
 }
 
 .contact input, .contact textarea {
-    width: 80%;
+    width: 100%; /* Use Bootstrap grid for responsive width */
+    max-width: 600px; /* Max width for larger screens */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
@@ -30,6 +33,7 @@
     cursor: pointer;
 }
 
+/* Background section with overlay */
 .with-background {
     background-image: url('../images/main/sun.jpg');
     background-size: cover;
@@ -59,12 +63,13 @@
     text-align: center;
     color: black;
     font-size: 1.3rem;
-    
+    padding: 20px; /* Added padding for spacing */
 }
 
-.section-content{
+.section-content {
     font-family: "Noto Sans KR", sans-serif;
 }
+
 .content h2 {
     margin-bottom: 20px;
 }
@@ -72,4 +77,17 @@
 .content p {
     text-align: left;
     line-height: 1.8;
+}
+
+/* Bootstrap utility classes for responsive design */
+@media (min-width: 576px) {
+    .contact input, .contact textarea {
+        width: 90%;
+    }
+}
+
+@media (min-width: 768px) {
+    .contact input, .contact textarea {
+        width: 80%;
+    }
 }

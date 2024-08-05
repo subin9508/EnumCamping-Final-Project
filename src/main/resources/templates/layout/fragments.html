@@ -11,10 +11,10 @@
                 crossorigin="anonymous">
         </th:block>
     </head>
-<body>
+    <body>
 
-<!-- 상단 메뉴바 -->
-     <th:block th:fragment="header">
+    <!-- 상단 메뉴바 -->
+    <th:block th:fragment="header">
         <head>
             <!-- font -->
             <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,72 +26,71 @@
             <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
             <link rel="icon" href="static/images/main/favi.png" type="image/png">
         </head>
-
-        <header class="text-white text-center">
-            <nav class="navbar navbar-expand-md" id="top">
-                <div class="col-2 navbar-nav d-flex justify-content-center">
-                    <a href="/semiproject/">
+    
+        <header class="bg-white">
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center">
+                    <!-- Logo -->
+                    <a class="navbar-brand" href="/semiproject/">
                         <img alt="logo" th:src="@{/images/main/logo_horizontal.png}" style="height: 60px; width: 200px;">
                     </a>
-                </div>
-
-                <div class="col-1 d-flex justify-content-center">
-                    <div id="weather-info">
-                        <p style="margin: 0; font-weight: bold;">
-                            현재 날씨: <span id="sky"></span>
-                        </p>
-                        <p style="margin: 0; font-weight: bold;">
-                            <span id="rain"></span>기온: <span id="temp"></span>°C
-                        </p>
-                    </div>
-                </div>
-
-                <nav class="col-6 navbar navbar-expand-md main">
-                    <div class="col-12 container-fluid">
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="col-12 collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav mx-auto" id="mainMenu">
-                                <li class="nav-item">
-                                    <a class="nav-link menu" th:href="@{/intro/introduce}" style="font-weight: bold;">캠핑장 소개</a>
-                                    <ul class="subMenu">
-                                        <li><a class="nav-link" th:href="@{/intro/introduce}">캠핑장 소개</a></li>
-                                        <li><a class="nav-link" th:href="@{/intro/facilityLayout}">시설배치도</a></li>
-                                        <li><a class="nav-link" th:href="@{/intro/facilities}">편의시설</a></li>
-                                        <li><a class="nav-link" th:href="@{/intro/travel}">주변 볼거리</a></li>
-                                        <li><a class="nav-link" th:href="@{/intro/map}">캠핑장 위치</a></li>
-                                    </ul>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link menu" th:href="@{/info/infoTime}" style="font-weight: bold;">이용안내</a>
-                                    <ul class="subMenu">
-                                        <li><a class="nav-link" th:href="@{/info/infoTime}">이용시간 및 요금</a></li>
-                                        <li><a class="nav-link" th:href="@{/info/infoRefound}">환불규정</a></li>
-                                        <li><a class="nav-link" th:href="@{/info/infoBooking}">예약방법</a></li>
-                                        <li><a class="nav-link" th:href="@{/info/infoRules}">이용준수사항</a></li>
-                                        <li><a class="nav-link" th:href="@{/info/infoSale}">판매 물품 목록</a></li>
-                                        <li><a class="nav-link" th:href="@{/info/infoRental}">대여 물품 목록</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item"><a class="nav-link menu" th:href="@{/reservation/calendar}" style="font-weight: bold;">예약</a></li>
-                                <li class="nav-item">
-                                    <a class="nav-link menu" th:href="@{/community/notice/list}" style="font-weight: bold;">커뮤니티</a>
-                                    <ul class="subMenu">
-                                        <li><a class="nav-link" th:href="@{/community/notice/list}">공지사항</a></li>
-                                        <li><a class="nav-link" th:href="@{/community/qna/list}">Q&A</a></li>
-                                        <li><a class="nav-link" hidden th:href="@{/community}">FAQ</a></li>
-                                        <li><a class="nav-link" hidden th:href="@{/community}">이용후기</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
+                    <!-- Weather Info -->
+                    <div class="ms-3 text-center d-none d-md-block">
+                        <div id="weather-info">
+                            <p style="margin: 0; font-weight: bold;">
+                                현재 날씨: <span id="sky"></span>
+                            </p>
+                            <p style="margin: 0; font-weight: bold;">
+                                <span id="rain"></span> 기온: <span id="temp"></span>°C
+                            </p>
                         </div>
                     </div>
-                </nav>
+                </div>
 
-                <div class="col-3 d-flex justify-content-center">
-                    <ul class="navbar-nav">
+                <!-- Toggler/collapsibe Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navbar links -->
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav navbar-links d-flex justify-content-center">
+                        <li class="nav-item mx-5">
+                            <a class="nav-link menu" th:href="@{/intro/introduce}" style="font-weight: bold;">캠핑장 소개</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/intro/introduce}">캠핑장 소개</a></li>
+                                <li><a class="dropdown-item" th:href="@{/intro/facilityLayout}">시설배치도</a></li>
+                                <li><a class="dropdown-item" th:href="@{/intro/facilities}">편의시설</a></li>
+                                <li><a class="dropdown-item" th:href="@{/intro/travel}">주변 볼거리</a></li>
+                                <li><a class="dropdown-item" th:href="@{/intro/map}">캠핑장 위치</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mx-5">
+                            <a class="nav-link menu" th:href="@{/info/infoTime}" style="font-weight: bold;">이용안내</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/info/infoTime}">이용시간 및 요금</a></li>
+                                <li><a class="dropdown-item" th:href="@{/info/infoRefound}">환불규정</a></li>
+                                <li><a class="dropdown-item" th:href="@{/info/infoBooking}">예약방법</a></li>
+                                <li><a class="dropdown-item" th:href="@{/info/infoRules}">이용준수사항</a></li>
+                                <li><a class="dropdown-item" th:href="@{/info/infoSale}">판매 물품 목록</a></li>
+                                <li><a class="dropdown-item" th:href="@{/info/infoRental}">대여 물품 목록</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mx-5">
+                            <a class="nav-link menu" th:href="@{/reservation/calendar}" style="font-weight: bold;">예약</a>
+                        </li>
+                        <li class="nav-item mx-5">
+                            <a class="nav-link menu" th:href="@{/community/notice/list}" style="font-weight: bold;">커뮤니티</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/community/notice/list}">공지사항</a></li>
+                                <li><a class="dropdown-item" th:href="@{/community/qna/list}">Q&A</a></li>
+                                <li><a class="dropdown-item" hidden th:href="@{/community}">FAQ</a></li>
+                                <li><a class="dropdown-item" hidden th:href="@{/community}">이용후기</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                     <ul class="navbar-nav navbar-user ms-auto">
                         <li class="nav-item" th:if="${signedInUser != null}">
                             <a class="nav-link" th:href="@{/user/myPage(userId=${signedInUser})}" style="font-weight: bold;">마이페이지</a>
                         </li>
@@ -101,15 +100,16 @@
                             </a>
                         </li>
                         <li class="nav-item" th:if="${signedInUser == null}">
-                            <a class="nav-link" href="#" th:onclick="'confirmLogin(@{/user/signin})'"> 로그인 </a>
+                            <a class="nav-link" href="#" th:onclick="'confirmLogin(@{/user/signin})'">로그인</a>
                         </li>
                         <li class="nav-item" th:if="${signedInUser == null}">
                             <a class="nav-link" th:href="@{/user/signup}">회원가입</a>
                         </li>
                     </ul>
                 </div>
-            </nav>
-
+            </div>
+        </nav>
+    
             <script th:inline="javascript">
                 function confirmLogout(signOutPage) {
                     if (confirm("정말 로그아웃 하시겠습니까?")) {
@@ -132,7 +132,13 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
                 crossorigin="anonymous"></script>
-        </th:block>
+    </th:block>
+    
+    <!-- 날씨 JS -->
+    <th:block th:fragment="weatherJS">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script th:src="@{/js/weather.js}"></script>
+    </th:block>
    
 </body>
 </html>
