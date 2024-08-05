@@ -3,14 +3,11 @@ package com.itwill.finalproject.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.dto.PaymentsDto;
-
-import java.util.List;
 
 
 public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
@@ -28,10 +25,10 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
 	// 결제 정보 업데이트
 	// Payments save(Payments payment);
 	
-	// 예약 상태 업데이트
-	@Modifying
-	@Query("UPDATE Payments p SET p.resState = :resState WHERE p.resId = :resId")
-	int updateReservationState(@Param("resId") Integer resId, @Param("resState") Integer resState);
+//	// 예약 상태 업데이트
+//	@Modifying
+//	@Query("UPDATE Payments p SET p.resState = :resStatus WHERE p.resId = :resId")
+//	int updateReservationStatus(@Param("resId") Integer resId, @Param("resStatus") Integer resStatus);
 	
 	// imp_uid로 결제 정보를 조회하여 결제에 연결된 예약 ID 반환
 	@Query("SELECT p.resId FROM Payments p WHERE p.impUid = :impUid")
