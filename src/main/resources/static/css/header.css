@@ -1,0 +1,116 @@
+/* styles.css */
+
+header {
+    /*background-color:white ;  로고 배경색상  #001522*/
+    padding:0 20; /* 상하 여백 추가 */
+}
+
+header a {
+    font-size: 2.5rem; /* 제목 크기 */
+    color: black; /* 헤더 텍스트 색상 */
+    text-decoration: none; /* 링크 밑줄 제거 */
+}
+
+#top {
+    height: 100px;
+    color:black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+#top .nav-link {
+    /*color:black;*/
+    font-size: 1.2rem;
+    margin-right: 30px;
+}
+
+#top .nav-link:last-child {
+    /*color:black;*/
+    font-size: 1.2rem;
+    margin-right: 0px;
+}
+
+#top .nav-link:hover {
+    /*color: red;*/
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    transition: color 0.3s, font-weight 0.3s; /* 트랜지션 추가 */
+}
+
+.main {
+    height: 50px; /* 네비게이션 바의 높이 */
+    padding: 20px 0;
+}
+.main .nav-link {
+    font-size: 1.2rem; /* 네비게이션 바 링크의 폰트 크기 */
+    padding: 10px 20px; /* 네비게이션 바 링크의 패딩 */
+    width: 200px; /* 고정된 넓이 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    display: block; /* 블록 레벨 요소로 변경 */
+}
+
+
+
+.navbar-nav .subMenu {
+    display: none; /* 서브 메뉴 초기에는 숨김 */
+    position: absolute;
+    background-color:white; /* 서브 메뉴 배경색 */
+    box-shadow: 0 8px 16px rgba(0,0,0,.1); /* 그림자 효과 */
+    z-index: 1000;
+    list-style-type: none; /* 서브 메뉴 불릿 제거 */
+    padding-left: 0; /* 서브 메뉴 패딩 제거 */
+}
+
+.navbar-nav .nav-item:hover .subMenu { /* nav-item을 빼면 음.. 전체 보이기가 되긴 하는데,,*/
+    display: block; /* 부모 요소에 호버 시 서브 메뉴 표시 */
+   color : #8bac6f;
+}
+
+.navbar-nav .nav-link:hover {  
+   /* color : red;  메인메뉴들도 빨간색으로*/
+    font-weight: bold;
+     color : #8bac6f;
+}
+
+
+.navbar-nav .subMenu li {
+    width: 200px; /* 서브 메뉴 너비 */
+}
+
+.navbar-nav .subMenu a {
+    color: #333; /* 서브 메뉴 링크 색상 */
+    padding: 10px; /* 서브 메뉴 링크 안 여백 */
+    display: block; /* 링크를 블록 요소로 표시 */
+    text-decoration: none; /* 링크 밑줄 제거 */
+}
+
+.navbar-nav .subMenu a:hover {
+    /*background-color: #e6e6fa; 링크 호버 시 배경색 변경 */
+    /*color:red; 링크 호버 시 텍스트 색상 변경 */
+}
+.noto-sans-kr {
+  font-family: "Noto Sans KR", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.body{
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+nav{
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+aside{
+    font-family:"Noto Sans KR", sans-serif;
+}
+
+main{
+    font-family:"Noto Sans KR", sans-serif;
+}
