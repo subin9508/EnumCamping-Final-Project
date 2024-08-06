@@ -14,6 +14,7 @@
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
     
+        <!-- 갤러리 섹션 -->
         <section id="gallery" class="gallery">
             <div class="container-fluid">
                 <div id="carouselExampleIndicators"
@@ -76,10 +77,10 @@
                 </div>
             </div>
         </section>
-
-        <!-- 캠핑장 간단소개 -->
+    
+        <!-- 캠핑장 간단소개 섹션 -->
         <section class="content py-5">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-12 mb-3">
                         <h2 class="notice-h fw-bold text-start">소 개</h2>
@@ -105,10 +106,10 @@
                 </div>
             </div>
         </section>
-
-        <!-- 공지사항 -->
+    
+        <!-- 공지사항 섹션 -->
         <section id="notice" class="section-content py-5">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-5 mb-3">
                         <h2 class="notice-h fw-bold text-success">공지사항</h2>
@@ -139,14 +140,14 @@
                 </div>
             </div>
         </section>
-		
-		<!-- 푸터 -->
-		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
         <!-- 부트 스트랩 JS -->
         <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     
         <!-- Weather JS -->
         <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
     
-    </body>
+</body>
 </html>
