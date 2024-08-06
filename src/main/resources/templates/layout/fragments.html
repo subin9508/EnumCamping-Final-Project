@@ -35,7 +35,7 @@
                     <a class="navbar-brand" href="/semiproject/">
                         <img alt="logo" th:src="@{/images/main/logo_horizontal.png}" style="height: 60px; width: 200px;">
                     </a>
-                    <!-- Weather Info -->
+                    <!-- 날씨 정보 -->
                     <div class="ms-3 text-center d-none d-md-block">
                         <div id="weather-info">
                             <p style="margin: 0; font-weight: bold;">
@@ -53,7 +53,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Navbar links -->
+                <!-- Navbar 링크 -->
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav navbar-links d-flex justify-content-center">
                         <li class="nav-item mx-5">
@@ -126,7 +126,6 @@
         </header>
     </th:block>
     
-    
     <!-- 부트 스트랩 JS -->
     <th:block th:fragment="bootstrapJS">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
@@ -139,6 +138,43 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script th:src="@{/js/weather.js}"></script>
     </th:block>
-   
+    
+    <!-- 푸터 -->
+    <th:block th:fragment="footer">
+        <footer>
+            <div class="footer-container">
+                <div class="column image-container ms-5" style="flex: 0.3;">
+                    <a><img alt="logo" th:src="@{/images/main/logo.png}"></a>
+                </div>
+                <div class="column">
+                    <ul>
+                        <li><a href="adminPage.html">관리자 페이지</a></li>
+                        <li>마이페이지</li>
+                        <li>로그아웃</li>
+                        <li><a href="enrollment.html">캠핑장 등록</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <ul>
+                        <li>캠핑장 소개</li>
+                        <li>이용 안내</li>
+                        <li>예약</li>
+                        <li>커뮤니티</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <ul>
+                        <li>주소</li>
+                        <li>문의전화</li>
+                        <li>이메일</li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+            crossorigin="anonymous"></script>
+    </th:block>
+
 </body>
 </html>
