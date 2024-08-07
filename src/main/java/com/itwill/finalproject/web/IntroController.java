@@ -17,5 +17,12 @@ public class IntroController {
 		return "/intro/map";
 	
 	}
+	
+	@GetMapping("/facilities")
+	public String facilities() {
+		log.debug("map()");
+		return "/intro/facilities";
+	
+	}
 
 }

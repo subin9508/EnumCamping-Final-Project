@@ -1,0 +1,132 @@
+@charset "UTF-8";
+
+.img:hover {
+    opacity: 0.5; /*  이미지 클릭 시 밝기 조절 */
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0; top: 0;
+    height: 100%; width: 100%;
+    overflow: auto; /* 스크롤 허용 auto */
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* 모달창 이미지 */
+.modal_content {
+    margin: auto;
+    display: block;
+    width: 50%; height: auto;
+    border-radius: 10px;
+    animation-name: zoom;
+    animation-duration: 0.8s;
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+.modal-content img {
+    width: 100%;
+    height: auto;
+}
+
+
+/* 닫기 버튼 꾸미기 */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover, .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.heading-3 {
+  width: 100px;
+  height: 29px;
+  position: absolute;
+  left: 50px;
+  top: 100px;
+}
+.div {
+  color: #000000;
+  text-align: left;
+  font-family: "NotoSansKr-DemiLight", sans-serif;
+  font-size: 30px;
+  letter-spacing: -0.8px;
+  font-weight: 400;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 200px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.horizontal-divider {
+  background: #ebebeb;
+  width: 950px;
+  height: 1px;
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%);
+  top: 40%;
+}
+
+.horizontal-divider2 {
+  background: #111111;
+  width: 200px;
+  height: 1px;
+  position: absolute;
+  left: 30%;
+  transform: translateX(-50%);
+  top: 40%;
+}
+
+.facilities-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* 줄 바꿈을 위해 추가 */
+    margin-top: 20px;
+}
+
+.facilities-card {
+    width: 30%;
+    height: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.img-container {
+    width: 100%;
+    height: 0;
+    padding-bottom: 66%; /* 4:3 비율을 유지하기 위한 설정 */
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: contain; /* 이미지를 컨테이너에 맞추고 비율 유지 */
+}
