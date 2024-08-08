@@ -4,7 +4,6 @@
 body, ul, li {
     margin: 0;
     padding: 0;
-
 }
 
 a {
@@ -19,6 +18,15 @@ a {
     max-width: 200px;
     margin-top: 50px;
     padding: 20px; /* 패딩 추가 */
+    position: fixed;
+    top: 10%;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0; /* Height of navbar */
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Scrollable contents if viewport is shorter than content. */
 }
 
 .sidebar-header {

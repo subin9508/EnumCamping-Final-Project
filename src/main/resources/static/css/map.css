@@ -6,13 +6,13 @@
 
 .slider-container {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
 }
 
 .slider {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1300px;
     position: relative;
     display: flex;
     flex-direction: column;
