@@ -57,13 +57,13 @@
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav navbar-links d-flex justify-content-center">
                         <li class="nav-item mx-5">
-                            <a class="nav-link menu" th:href="@{/intro/introduce}" style="font-weight: bold;">캠핑장 소개</a>
+                            <a class="nav-link menu" th:href="@{/introduce/enumIntro}" style="font-weight: bold;">캠핑장 소개</a>
                             <ul class="subMenu">
-                                <li><a class="nav-link"  aria-current="page" th:href="@{/intro/introduce}">캠핑장 소개</a></li>
-                                <li><a class="nav-link" aria-current="page" th:href="@{/intro/facilityLayout}">시설배치도</a></li>
-                                <li><a class=nav-link aria-current="page" th:href="@{/intro/facilities}">편의시설</a></li>
-                                <li><a class="nav-link" aria-current="page" th:href="@{/intro/travel}">주변 볼거리</a></li>
-                                <li><a class="nav-link" aria-current="page" th:href="@{/intro/map}">캠핑장 위치</a></li>
+                                <li><a class="nav-link"  aria-current="page" th:href="@{/introduce/enumIntro}">캠핑장 소개</a></li>
+                                <li><a class="nav-link" aria-current="page" th:href="@{/introduce/facilityLayout}">시설배치도</a></li>
+                                <li><a class=nav-link aria-current="page" th:href="@{/introduce/facilities}">편의시설</a></li>
+                                <li><a class="nav-link" aria-current="page" th:href="@{/introduce/travel}">주변 볼거리</a></li>
+                                <li><a class="nav-link" aria-current="page" th:href="@{/introduce/map}">캠핑장 위치</a></li>
                             </ul>
                         </li>
                         <li class="nav-item mx-5">
@@ -139,6 +139,7 @@
         <script th:src="@{/js/weather.js}"></script>
     </th:block>
     
+    
     <!-- 푸터 -->
     <th:block th:fragment="footer">
         <footer class="footer bottom">
@@ -183,7 +184,7 @@
             </div>
             <ul class="sidebar-menu list-unstyled">
                 <li class="sidebar-item">
-                    <a th:href="@{/introduce}" class="sidebar-link">캠핑장 소개</a>           
+                    <a th:href="@{/enumIntro}" class="sidebar-link">캠핑장 소개</a>           
                 </li>
                 <li class="sidebar-item">
                     <a th:href="@{/facilityLayout}" class="sidebar-link">시설배치도</a>
