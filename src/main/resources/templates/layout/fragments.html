@@ -175,32 +175,27 @@
             </div>
         </footer>
     </th:block>
-    
-    <!-- intro 사이드바 -->
-    <th:block th:fragment="intro-sidebar">
-        <aside class="sidebar d-none d-md-block col-md-3">
-            <div class="sidebar-header">
-                <h3 id="title">소개</h3>
-            </div>
-            <ul class="sidebar-menu list-unstyled">
-                <li class="sidebar-item">
-                    <a th:href="@{/enumIntro}" class="sidebar-link">캠핑장 소개</a>           
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/facilityLayout}" class="sidebar-link">시설배치도</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/facilities}" class="sidebar-link">편의시설</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/travel}" class="sidebar-link">주변 볼거리</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/map}" class="sidebar-link">캠핑장 위치</a>
-                </li>
-            </ul>
-        </aside>
-    </th:block>
+
+	<!-- intro 사이드바 -->
+	<th:block th:fragment="intro-sidebar">
+		<aside class="sidebar d-none d-md-block col-md-3">
+			<div class="sidebar-header">
+				<h3 id="title">소개</h3>
+			</div>
+			<ul class="sidebar-menu list-unstyled">
+				<li class="sidebar-item"><a th:href="@{/enumIntro}"
+					class="sidebar-link">캠핑장 소개</a></li>
+				<li class="sidebar-item"><a th:href="@{/facilityLayout}"
+					class="sidebar-link">시설배치도</a></li>
+				<li class="sidebar-item"><a th:href="@{/facilities}"
+					class="sidebar-link">편의시설</a></li>
+				<li class="sidebar-item"><a th:href="@{/travel}"
+					class="sidebar-link">주변 볼거리</a></li>
+				<li class="sidebar-item"><a th:href="@{/map}"
+					class="sidebar-link">캠핑장 위치</a></li>
+			</ul>
+		</aside>
+	</th:block>
 
 </body>
 </html>
