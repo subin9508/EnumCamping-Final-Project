@@ -61,7 +61,7 @@
                             <ul class="subMenu">
                                 <li><a class="nav-link"  aria-current="page" th:href="@{/introduce/enumIntro}">캠핑장 소개</a></li>
                                 <li><a class="nav-link" aria-current="page" th:href="@{/introduce/facilityLayout}">시설배치도</a></li>
-                                <li><a class=nav-link aria-current="page" th:href="@{/introduce/facilities}">편의시설</a></li>
+                                <li><a class="nav-link" aria-current="page" th:href="@{/introduce/facilities}">편의시설</a></li>
                                 <li><a class="nav-link" aria-current="page" th:href="@{/introduce/travel}">주변 볼거리</a></li>
                                 <li><a class="nav-link" aria-current="page" th:href="@{/introduce/map}">캠핑장 위치</a></li>
                             </ul>
@@ -137,6 +137,16 @@
     <th:block th:fragment="weatherJS">
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script th:src="@{/js/weather.js}"></script>
+    </th:block>
+    
+    <!-- facilites JS -->
+    <th:block th:fragment="facilitesJS">
+        <script th:src="@{/js/facilites.js}"></script>
+    </th:block>
+    
+    <!-- infoRental JS -->
+    <th:block th:fragment="infoRentalJS">
+        <script th:src="@{/js/infoRental.js}"></script>
     </th:block>
     
     
