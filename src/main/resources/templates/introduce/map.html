@@ -13,6 +13,7 @@
     <body>
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
     
         <main class="main-content" style="margin-left: 300px; margin-top: 50px;">
                 <div class="content-1">
@@ -115,6 +116,6 @@
         <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     
         <!-- Weather JS -->
-        <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
     </body>
 </html>
