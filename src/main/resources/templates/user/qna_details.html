@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/mypage_qna_details.css}">
+
+<style>
+.btn-register {
+	border-color: #7C9C63;
+	color: #7C9C63;
+}
+
+.btn-register:hover {
+	border-color: #7C9C63;
+	background-color: #7C9C63;
+	color: white;
+}
+</style>
+</head>
+<body>
+	<div class="qna-wrapper">
+		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<div class="footer-main-content qna-content">
+			<th:block th:replace="/layout/fragments :: mypage-sidebar"></th:block>
+
+			<div class="container-fluid">
+				<main>
+					<div class="qna-details-container">
+						<h2>상세문의내역</h2>
+						<form>
+							<div class="mt-2">
+								<label for="qnaPostId" class="form-label">번호</label> <input
+									id="qnaPostId" class="form-control" type="text"
+									th:value="${qnaDetails.qnaPostId}" readonly />
+							</div>
+							<div class="mt-2">
+								<label for="qnaTitle" class="form-label">제목</label> <input
+									id="qnaTitle" class="form-control" type="text"
+									th:value="${qnaDetails.qnaTitle}" readonly />
+							</div>
+							<div class="mt-2">
+								<label for="qnaContent" class="form-label">내용</label>
+								<textarea id="qnaContent" class="form-control" rows="5"
+									th:text="${qnaDetails.qnaContent}" readonly></textarea>
+							</div>
+							<div class="mt-2">
+								<label for="qnaUserId" class="form-label">작성자</label> <input
+									id="qnaUserId" class="form-control" type="text"
+									th:value="${qnaDetails.qnaUserId}" readonly />
+							</div>
+							<input type="hidden" id="qnaCreatedTime"
+								th:value="${qnaDetails.qnaCreatedTime}" readonly /> <input
+								type="hidden" id="qnaModifiedTime"
+								th:value="${qnaDetails.qnaModifiedTime}" readonly /> <input
+								type="hidden" id="userRole" th:value="${userRole}">
+						</form>
+						<div class="card-footer">
+							<a class="btn btn-outline-primary"
+								th:href="@{/user/qna_list(userId=${user.userId})}">목록보기</a>
+
+							<th:block th:if="${signedInUser == qnaDetails.qnaUserId}">
+								<a class="btn btn-outline-primary"
+									th:href="@{/user/qna_modify(qnaPostId=${qnaDetails.qnaPostId}, userId=${user.userId})}">수정하기</a>
+							</th:block>
+						</div>
+
+						<!-- 답변 목록 -->
+						<div id="answersContainer">
+							<div th:each="answer : ${answers}">
+								<div class="answer">
+									<p th:text="${answer.content}"></p>
+									<small th:text="'작성자: ' + ${answer.userId}"></small><br> <small
+										th:text="'작성시간: ' + ${answer.createdTime}"></small>
+								</div>
+							</div>
+						</div>
+
+						<!-- 답변 등록 폼 (관리자 전용) -->
+						<th:block th:if="${userRole == 0}">
+							<div class="mt-2 row">
+								<div class="col-10">
+									<textarea class="form-control" rows="1" id="answerContent"
+										placeholder="답변 내용"></textarea>
+								</div>
+								<div class="col-2">
+									<button class="btn btn-register" id="btnRegisterAnswer">등록하기</button>
+								</div>
+							</div>
+						</th:block>
+					</div>
+				</main>
+			</div>
+		</div>
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+	</div>
+
+	<!-- 부트 스트랩 JS -->
+        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+        
+        <!-- Weather JS -->
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<script>
+		const signedInUser = /*[[${signedInUser}]]*/'';
+	</script>
+
+	<script th:src="@{/js/qnaanswers.js}"></script>
+	<script th:src="@{/js/comments.js}"></script>
+	<script th:src="@{/js/weather.js}"></script>
+</body>
+</html>

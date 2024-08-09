@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>아이디 찾기 결과</title>
+<link th:href="@{/css/header.css}" rel="stylesheet" />
+<link th:href="@{/css/footer.css}" rel="stylesheet" />
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<style>
+.container {
+	background: #fff;
+	padding: 2rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.btn-custom {
+	margin-top: 1rem;
+}
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<div class="footer-main-content">
+			<div class="card mt-5 text-center"
+				style="width: 30rem; margin: auto; border-radius: 0; border-color: black;">
+				<h2 class="card-header"
+					style="text-align: center; border: none; background-color: white; border-color: black;">
+					아이디 찾기 결과</h2>
+				<div class="card-body mt-3">
+					<p>
+						회원님의 아이디는 <strong th:text="${userId}">아이디</strong> 입니다.
+					</p>
+				</div>
+				<div class="mb-3">
+					<a th:href="@{/user/findpassword}" class="btn btn-outline-info">비밀번호
+						찾기</a> <a th:href="@{/user/signin}" class="btn btn-outline-success">로그인</a>
+				</div>
+			</div>
+		</div>
+
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+	</div>
+
+	<!-- 부트 스트랩 JS -->
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+</body>
+</html>
