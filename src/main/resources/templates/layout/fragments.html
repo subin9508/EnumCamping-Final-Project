@@ -124,8 +124,8 @@
 								style="font-weight: bold;"> <span th:text="${signedInUser}"></span>
 									로그아웃
 							</a></li>
-							<li class="nav-item" th:if="${signedInUser == null}"><a
-								class="nav-link" href="#"
+							<li class="nav-item" th:if="${signedInUser eq null}"><a
+								class="nav-link" th:href="@{/user/signin}"
 								th:onclick="'confirmLogin(@{/user/signin})'">로그인</a></li>
 							<li class="nav-item" th:if="${signedInUser == null}"><a
 								class="nav-link" th:href="@{/user/signup}">회원가입</a></li>
@@ -165,11 +165,6 @@
 		<script th:src="@{/js/weather.js}"></script>
 	</th:block>
 	
-	<!-- infoRental JS -->
-	<th:block th:fragment="infoRentalJS">
-		<script th:src="@{/js/infoRental.js}"></script>
-	</th:block>
-
 
 	<!-- 푸터 -->
 	<th:block th:fragment="footer">
