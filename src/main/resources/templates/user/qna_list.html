@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/mypage_qna_list.css}">
+</head>
+<body>
+	<div class="wrapper">
+		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<div class="footer-main-content">
+			<th:block th:replace="fragments/mypage-sidebar :: sidebar"></th:block>
+			<div class="container-fluid">
+				<main>
+					<div class="card">
+						<h2 class="qna-title">문의내역</h2>
+						<div class="card-body">
+							<table class="table table-hover">
+								<colgroup>
+									<col style="width: 25%;">
+									<col style="width: 25%;">
+									<col style="width: 25%;">
+									<col style="width: 25%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th>문의 번호</th>
+										<th>제목</th>
+										<th>수정시간</th>
+										<th>답변 상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="q : ${qnalist}"
+										th:onclick="|location.href='@{/user/qna_details(qnaPostId=${q.qnaPostId}, userId=${user.userId})}'|"
+										style="cursor: pointer;">
+										<td th:text="${q.qnaPostId}"></td>
+										<td th:text="${q.qnaTitle}"></td>
+										<td th:text="${q.qnaModifiedTime}"></td>
+										<td><span th:if="${q.qnaState == 0}" style="color: red;">답변대기</span>
+											<span th:if="${q.qnaState == 1}" style="color: blue;">답변완료</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+		<th:block th:replace="~{/layout/fragments :: footer"></th:block>
+	</div>
+
+	<!-- 부트 스트랩 JS -->
+        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+        
+        <!-- Weather JS -->
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+</body>
+</html>
+f
