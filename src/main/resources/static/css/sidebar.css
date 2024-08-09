@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+/* 노멀라이즈 시작 */
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;   /* list앞에 기호 제거*/
+}
+
+ul {
+    text-align: center;
+}
+
+a {
+    color: black; 
+    text-decoration: none; /* 밑줄 제거 */
+}
+/* 노멀라이즈 끝 */
+
+/* 사이트의 높이를 5000px로 만듬 */
+aside {
+
+    height: auto;
+    width: 100px;
+    background-color: ligth-gray;
+}
+
+.sidebar {
+            float: left; /* 왼쪽으로 배치 */
+            width: 200px; /* 사이드바 너비 설정 */
+            margin-right: 20px;
+            margin-top: 50px;
+            /* 다른 스타일링 추가 가능 */
+        }
+        
+.sidebar-menu {
+        padding: 0px; /* 리스트 패딩 제거 */
+    }
+
+.sidebar-menu li {
+    margin-bottom: 30px; /* 각 리스트 아이템 사이에 10px의 아래 마진 추가 */
+    }
+    
+.sidebar-menu li:hover {
+    font-weight: bold;
+}
+    
+li#firstmenu {
+    margin-top: 30px;
+}

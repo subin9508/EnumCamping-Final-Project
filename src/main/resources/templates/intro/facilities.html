@@ -5,13 +5,17 @@
         
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/sidebar.css}">
         <link rel="stylesheet" th:href="@{/css/facilities.css}">
         <!-- Bootstrap CSS -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
         
     </head>
 <body>
+<div class="wrapper">
 	<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+	<div class="footer-main-content">
+	<th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
 	<main class="main-content"
                 style="margin-left: 300px; margin-top: 50px;">
     <div class="content-1">
@@ -25,21 +29,21 @@
             
             <div class="facilities-card">
                 <h5>개수대</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                     <img alt="sink" th:src="@{/images/intro/intro2_sink.jpg}" class="img"
                         height="400px" width="500px" id="sinkImage" />
                 </div>
             </div>
             <div class="facilities-card">
                 <h5>샤워실</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                     <img alt="shower" th:src="@{/images/intro/intro2_shower.jpg}" class="img"
                         height="400px" width="500px" id="showerImage" />
                 </div>
             </div>
             <div class="facilities-card">
                 <h5>화장실</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                     <img alt="toilet" th:src="@{/images/intro/intro2_toilet.jpg}" class="img"
                         height="400px" width="500px" id="toiletImage" />
                 </div>
@@ -52,7 +56,7 @@
         <div class="facilities-section">
             <div class="facilities-card">
                 <h5>바베큐장</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                     <img alt="barbecue" th:src="@{/images/intro/barbecue.gif}"
                         class="img" height="400px" width="500px"
                         id="barbecueImage" />
@@ -61,14 +65,14 @@
             </div>
             <div class="facilities-card">
                 <h5>캠프파이어존</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                     <img alt="campfire" th:src="@{/images/intro/campfire.gif}" class="img"
                         height="400px" width="500px" id="campFireImage" />
                 </div>
             </div>
             <div class="facilities-card">
                 <h5>매점</h5>
-                <div class="img-container">
+                <div class="fc-img-container">
                 <img alt="store" th:src="@{/images/intro/intro2_store.png}" class="img"
                     height="400px" width="500px" id="storeImage" />
                 </div>
@@ -124,9 +128,11 @@
         </div>
     </div>
     </main>
-</div>
-	<!-- 푸터 -->
+    </div>
+    <!-- 푸터 -->
 	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+</div>
+	
 
 	<!-- 부트 스트랩 JS -->
 	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>

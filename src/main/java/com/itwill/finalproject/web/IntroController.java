@@ -20,8 +20,15 @@ public class IntroController {
 	
 	@GetMapping("/facilities")
 	public String facilities() {
-		log.debug("map()");
+		log.debug("facilities()");
 		return "/intro/facilities";
+	
+	}
+	
+	@GetMapping("/travel")
+	public String travel() {
+		log.debug("travel()");
+		return "/intro/travel";
 	
 	}
 
