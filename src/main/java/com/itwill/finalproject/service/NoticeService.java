@@ -1,7 +1,11 @@
 package com.itwill.finalproject.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.itwill.finalproject.domain.Notice;
+import com.itwill.finalproject.dto.NoticeListDto;
 import com.itwill.finalproject.repository.NoticeRepository;
 
 import lombok.AllArgsConstructor;
@@ -13,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeService {
 	
 	private NoticeRepository notRepo;
-	/*
+	
 	public List<NoticeListDto> selectAllNotice(){
-		List<Notice> list = dao.selectAllNotice();
+		List<Notice> list = notRepo.findAll();
 		log.debug("list={}",list);
 		return list.stream().map(NoticeListDto::fromEntity).toList();
 	}
-	
+	/*
 	public Notice selectNoticeById(int id){
 		log.debug("selectNoticeById");
 		Notice notice = dao.selectNoticeById(id);
