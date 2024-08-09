@@ -16,10 +16,12 @@
 	<div class="wrapper">
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <div class="footer-main-content not-content">
         <!--  사이드바 -->
         <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
             
-        <main class="main-content col-md-9 ms-sm-auto col-lg-10 px-md-4" style="margin: 7% auto">
+        <main class="main-content col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content-1 text-left mt-5"> 
           		<br>
                 <h1>
@@ -152,10 +154,9 @@
         </div>
                         
             </main>
-		
+        </div>
 		<!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
-        
         </div>
         
         <!-- 부트 스트랩 JS -->
