@@ -1,6 +1,8 @@
 package com.itwill.finalproject.service;
 
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,7 +137,8 @@ public class UserService {
     }
     
     public boolean checkDeactivationPeriod(String userId) {
-        return userRepo.checkDeactivationPeriod(userId) == 0; // 1이면 비활성화 기간 종료(로그인가능), 0이면 기간 중(아직 비활성화)
+    	
+    	return userRepo.checkDeactivationPeriod(userId) == 0; // 1이면 비활성화 기간 종료(로그인가능), 0이면 기간 중(아직 비활성화)
     }
     
     
