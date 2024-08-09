@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+
+<title>Enum Camping</title>
+<link th:href="@{/css/header.css}" rel="stylesheet" />
+<link th:href="@{/css/footer.css}" rel="stylesheet" />
+<style>
+.container {
+	background: #fff;
+	padding: 2rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.btn-custom {
+	margin-top: 1rem;
+}
+
+.main-content {
+	margin-left: 300px;
+	margin-top: 50px;
+}
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<!-- Header Fragment -->
+		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+		<div class="footer-main-content">
+			<!-- Sidebar Fragment -->
+			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+
+			<div class="content">
+				<main class="main-content">
+					<div class="slider">
+						<div class="content-1">
+							<br>
+							<h1>
+								<strong th:text="${session.signedInUser} + '님!'"></strong>
+							</h1>
+							<h1>
+								<strong>탈퇴하면 enum 캠핑장과의 추억이</strong>
+							</h1>
+							<h1>
+								<strong>모두 사라져요.</strong>
+							</h1>
+						</div>
+						<div class="info-text">
+							<br>
+							<h3>삭제되는 정보</h3>
+							<h5>· 계정 및 프로필 정보</h5>
+							<h5>· 예약 정보</h5>
+							<br> <br>
+							<h3>유지되는 정보</h3>
+							<h5>· 작성한 글 및 사진</h5>
+							<br>
+							<hr />
+							<br>
+							<h3>탈퇴 진행 시</h3>
+							<h3>삭제된 정보는 복구가 불가합니다.</h3>
+							<h5>상기 내용을 모두 확인하셨다면 회원 탈퇴 버튼을 눌러주세요.</h5>
+							<br>
+							<button type="button" class="btn btn-danger"
+								data-bs-toggle="modal" data-bs-target="#deleteAccount">회원
+								탈퇴</button>
+						</div>
+						<br> <br>
+
+						<!-- 회원 탈퇴 모달 -->
+						<div class="modal fade" id="deleteAccount" tabindex="-1"
+							aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="deleteAccountModalLabel">회원
+											탈퇴</h5>
+										<button type="button" class="btn-close"
+											data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<p class="text-danger">경고: 회원 탈퇴 시 60일 동안 재가입이 불가능합니다.</p>
+										<form id="deactivateForm">
+											<!-- hidden input 필드로 사용자 ID 전달 -->
+											<input type="hidden" id="id" name="id"
+												th:value="${loginUserId}" />
+											<div class="mb-3">
+												<label for="password" class="form-label">비밀번호</label> <input
+													type="password" class="form-control" id="password"
+													name="password" required />
+											</div>
+											<div class="mb-3">
+												<label for="confirmPassword" class="form-label">비밀번호
+													확인</label> <input type="password" class="form-control"
+													id="confirmPassword" name="confirmPassword" required />
+											</div>
+										</form>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-bs-dismiss="modal">취소</button>
+										<button type="button" id="deactivateButton"
+											class="btn btn-danger">탈퇴</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<!-- Footer Fragment -->
+		<!-- 푸터 -->
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+
+	</div>
+	<!-- 부트 스트랩 JS -->
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<script th:src="@{/js/deactivateUser.js}"></script>
+</body>
+</html>

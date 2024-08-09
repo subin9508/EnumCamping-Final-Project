@@ -1,5 +1,8 @@
-ocument.addEventListener('DOMContentLoaded', () => {
+/**
+ * 날씨를. 구해보자!
+ */
 
+document.addEventListener('DOMContentLoaded', () => {
     // 전역 변수 선언
     let time;
     let date;

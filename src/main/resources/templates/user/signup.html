@@ -4,12 +4,13 @@
         <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
                 
         <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
     </head>
     <body>
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
     
-        <main style="margin: 5% auto; width: 100%; max-width: 700px;">
+        <main style="margin: 5% auto; width: 100%; height: 62%; max-width: 700px;">
             <div class="container">
                 <div class="card my-4">
                     <div class="card-body">
@@ -124,13 +125,15 @@
             </div>
         </main>
 
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 
 
-    <!-- 부트 스트랩 JS -->
+        <!-- 부트 스트랩 JS -->
         <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
         
         <!-- Weather JS -->
-        <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
     </body>
     
 </html>

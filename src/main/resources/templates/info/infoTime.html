@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/map.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.info-section {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px 0;
+    padding: 20px 0px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 25%;
+    text-align: start;
+    margin-right: 0%; /* 요소 간의 간격을 줄이기 위해 추가 */
+}
+
+.info-item img {
+    margin-bottom: 10px;
+}
+
+.info-text {
+    text-align: center;
+}
+
+.info-text h3, .info-text h5 {
+    margin: 0;
+}
+</style>
+    
+</head>
+<body>
+    <div class="wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content not-content">
+            <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
+                            <main class="main-content"
+                    style="margin-left: 300px; margin-top: 50px;">
+                    <div class="slider">
+                        <div class="content-1">
+                            <br>
+                            <h1>
+                                <strong>[이용시간]</strong>
+                            </h1>
+                            <br>
+                        </div>
+                        <div class="info-section">
+                            <div class="info-item">
+                                <div style="margin-left: 95px;">
+                                    <img alt="체크인" th:src="${/images/info/checkin.png}" />
+                                </div><br>
+                                <div class="info-text">
+                                    <h3 style="text-indent: 10px;">
+                                        <strong> 입장</strong>
+                                    </h3><br>
+                                    <h5 style="text-indent: 10px;">오후
+                                        14:00 부터 21:00 까지</h5>
+                                </div>
+                            </div>
+                            <br> <br>
+                            <div class="info-item">
+                                <div style="margin-left: 43px;">
+                                    <img alt="체크아웃" src="${/images/info/checkout.png}" />
+                                </div><br>
+                                <div class="info-text">
+                                    <h3 style="text-indent: 10px;">
+                                        <strong> 퇴장</strong>
+                                    </h3><br>
+                                    <h5 style="text-indent: 10px;">오전
+                                        11:00 까지</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <br> <br> <br>
+                        <h1>
+                            <strong>[이용요금]</strong>
+                        </h1>
+                        <br>
+                        <table class="table table-striped table-hover"
+                            style="width: 40%">
+                            <thead style="font-size: 20px">
+                                <tr>
+                                    <th style="width: 30%">비성수기 /
+                                        평일</th>
+                                    <td>40,000</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 30%">비성수기 /
+                                        주말</th>
+                                    <td>45,000</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 30%">성수기 / 평일</th>
+                                    <td>50,000</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 30%">성수기 / 주말</th>
+                                    <td>55,000</td>
+                                </tr>
+                            </thead>
+                        </table>
+                        <p>- 성수기: 7월~8월 / 주말: 금,토,일</p>
+                        <p>- 1박 요금입니다. 일일요금은 텐트1개, 차량1대, 1인 기준입니다.</p>
+                        <br> <br>
+                    </div>
+                </main>
+
+        </div>
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+    
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>

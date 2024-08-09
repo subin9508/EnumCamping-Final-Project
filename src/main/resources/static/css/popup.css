@@ -1,0 +1,74 @@
+@charset "UTF-8";
+
+.layerpopup {
+	display: flex;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.popup {
+	background: white;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	width: 30%;
+	min-width: 300px;
+	margin: 0 10px;
+	padding: 5px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.popup.hidden {
+	display: none;
+}
+
+#close {
+	font-size: 16px;
+	font-weight: 600;
+	color: black;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: underline;
+}
+
+#popup1 {
+	position: absolute;
+	top: 50%;
+	left: 25%;
+	transform: translate(-50%, -50%);
+}
+
+#popup2 {
+	position: absolute;
+	top: 50%;
+	left: 65%;
+	transform: translate(-50%, -50%);
+}
+
+.pop_check_button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #000;
+	color: #fff;
+	padding: 10px;
+}
+
+.pop_check_button div {
+	display: flex;
+	align-items: center;
+}
+
+.pop_check_button a {
+	margin-left: 20px;
+	color: #fff;
+	text-decoration: none;
+}

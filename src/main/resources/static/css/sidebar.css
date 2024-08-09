@@ -4,47 +4,54 @@
 body, ul, li {
     margin: 0;
     padding: 0;
-    list-style: none;   /* list앞에 기호 제거*/
-}
-
-ul {
-    text-align: center;
 }
 
 a {
-    color: black; 
-    text-decoration: none; /* 밑줄 제거 */
+    color: black;
+    text-decoration: none;
 }
 /* 노멀라이즈 끝 */
 
-/* 사이트의 높이를 5000px로 만듬 */
-aside {
-
-    height: auto;
-    width: 100px;
-    background-color: ligth-gray;
+/* 사이드바 스타일링 */
+.sidebar {
+    width: 100%;
+    max-width: 200px;
+    margin-top: 50px;
+    padding: 20px; /* 패딩 추가 */
+    position: fixed;
+    top: 10%;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0; /* Height of navbar */
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Scrollable contents if viewport is shorter than content. */
 }
 
-.sidebar {
-            float: left; /* 왼쪽으로 배치 */
-            width: 200px; /* 사이드바 너비 설정 */
-            margin-right: 20px;
-            margin-top: 50px;
-            /* 다른 스타일링 추가 가능 */
-        }
-        
+.sidebar-header {
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 0; /* 패딩 추가 */
+    margin-bottom: 20px; /* 아래 마진 추가 */
+}
+
 .sidebar-menu {
-        padding: 0px; /* 리스트 패딩 제거 */
-    }
+    padding: 0;
+    margin: 0;
+}
 
 .sidebar-menu li {
-    margin-bottom: 30px; /* 각 리스트 아이템 사이에 10px의 아래 마진 추가 */
-    }
-    
+    margin-bottom: 30px;
+}
+
 .sidebar-menu li:hover {
     font-weight: bold;
 }
-    
-li#firstmenu {
-    margin-top: 30px;
+
+.sidebar-item a {
+    display: block;
+    padding: 10px;
+    text-align: center;
 }
+
