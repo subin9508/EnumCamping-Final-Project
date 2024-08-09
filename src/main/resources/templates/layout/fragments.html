@@ -32,7 +32,7 @@
             <div class="container-fluid">
                 <div class="d-flex align-items-center">
                     <!-- Logo -->
-                    <a class="navbar-brand" href="/semiproject/">
+                    <a class="navbar-brand" href="/">
                         <img alt="logo" th:src="@{/images/main/logo_horizontal.png}" style="height: 60px; width: 200px;">
                     </a>
                     <!-- 날씨 정보 -->
@@ -185,32 +185,105 @@
             </div>
         </footer>
     </th:block>
+
+<!-- -----------------------------사이드바-----------------------------------------------------------------------  -->
+	<!-- intro 사이드바 -->
+	<th:block th:fragment="intro-sidebar">
+		<aside class="sidebar d-none d-md-block col-md-3">
+			<div class="sidebar-header">
+				<h3 id="title">소개</h3>
+			</div>
+			<ul class="sidebar-menu">
+				<li class="sidebar-item"><a th:href="@{/introduce/enumIntro}"
+					class="sidebar-link">캠핑장 소개</a></li>
+				<li class="sidebar-item"><a th:href="@{/introduce/facilityLayout}"
+					class="sidebar-link">시설배치도</a></li>
+				<li class="sidebar-item"><a th:href="@{/introduce/facilities}"
+					class="sidebar-link">편의시설</a></li>
+				<li class="sidebar-item"><a th:href="@{/introduce/travel}"
+					class="sidebar-link">주변 볼거리</a></li>
+				<li class="sidebar-item"><a th:href="@{/introduce/map}"
+					class="sidebar-link">캠핑장 위치</a></li>
+			</ul>
+		</aside>
+	</th:block>
     
-    <!-- intro 사이드바 -->
-    <th:block th:fragment="intro-sidebar">
+    <!-- info 사이드바 -->
+    <th:block th:fragment="info-sidebar">
         <aside class="sidebar d-none d-md-block col-md-3">
-            <div class="sidebar-header">
-                <h3 id="title">소개</h3>
-            </div>
-            <ul class="sidebar-menu list-unstyled">
-                <li class="sidebar-item">
-                    <a th:href="@{/enumIntro}" class="sidebar-link">캠핑장 소개</a>           
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/facilityLayout}" class="sidebar-link">시설배치도</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/facilities}" class="sidebar-link">편의시설</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/travel}" class="sidebar-link">주변 볼거리</a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/map}" class="sidebar-link">캠핑장 위치</a>
-                </li>
+        <div class="sidebar-header">
+            <h3 id="title">이용안내</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a th:href="@{/infoTime}">이용시간 및 요금</a>
+            </li>
+            <li class="sidebar-item">
+                <a th:href="@{/infoRefound}">환불규정</a>
+            </li>
+            <li class="sidebar-item">
+                <a th:href="@{/infoBooking}">예약방법</a>
+            </li>
+            <li class="sidebar-item">
+                <a th:href="@{/infoRules}">이용준수사항</a>
+            </li>
+            <li class="sidebar-item">
+                <a th:href="@{/infoSale}">판매물품목록</a>
+            </li>
+            <li class="sidebar-item">
+                <a th:href="@{/infoRental}">대여물품목록</a>
+            </li>
             </ul>
         </aside>
     </th:block>
+    
+    <!-- 마이페이지 사이드바 -->
+	<th:block th:fragment="mypage-sidebar">
+	    <aside class="sidebar d-none d-md-block col-md-3">
+	        <div class="sidebar-header">
+	            <h3 id="title">마이페이지</h3>
+	        </div>
+	        <ul class="sidebar-menu">
+	            <li class="sidebar-item">
+	                <a th:href="@{/user/myPage(userId=${user.userId})}">내 정보</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a th:href="@{/user/reservation_list(userId=${user.userId})}">예약내역</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a th:href="@{/user/qna_list(userId=${user.userId})}">문의내역</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a href="#" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">회원탈퇴</a>
+	            </li>
+	        </ul>
+	    </aside>
+	</th:block>
+
+	<!--  커뮤니티 사이드 바 -->
+	<th:block th:fragment="community-sidebar">
+		<aside class="sidebar d-none d-md-block col-md-3">
+		    <div class="sidebar-header">
+		    	<h3 id="title">커뮤니티</h3>
+		    </div>
+		    <ul class="sidebar-menu">
+		        <li class="sidebar-item">
+		            <a th:href="@{../notice/list}">공지사항</a>           
+		        </li>
+		        <li>
+		            <a th:href="@{../qna/list}">Q&A</a>
+		        </li>
+		        <li class="sidebar-item">
+		           <a th:href="" hidden >FAQ</a> 
+		        </li>
+		        <li class="sidebar-item">
+		            <a th:href="" hidden >이용후기</a>
+		        </li>
+		    </ul>
+		</aside>
+	</th:block>
+	
+	<!-- ---------------------------------------------------------------------------------------------------- -->
 
 </body>
 </html>
