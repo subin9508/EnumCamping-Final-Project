@@ -124,8 +124,8 @@
 								style="font-weight: bold;"> <span th:text="${signedInUser}"></span>
 									로그아웃
 							</a></li>
-							<li class="nav-item" th:if="${signedInUser == null}"><a
-								class="nav-link" href="#"
+							<li class="nav-item" th:if="${signedInUser eq null}"><a
+								class="nav-link" th:href="@{/user/signin}"
 								th:onclick="'confirmLogin(@{/user/signin})'">로그인</a></li>
 							<li class="nav-item" th:if="${signedInUser == null}"><a
 								class="nav-link" th:href="@{/user/signup}">회원가입</a></li>

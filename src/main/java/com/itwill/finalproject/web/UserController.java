@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -57,40 +58,35 @@ public class UserController {
 	@GetMapping("/signin")
 	public void signin(HttpSession session) {
 		session.invalidate(); // 세션 초기화
-		log.debug("signin()");
+		log.info("signin()");
 	}
 
 	@PostMapping("/signin")
     public String signIn(UserSignInDto dto, 
             @RequestParam(name = "target", defaultValue = "") String target,
             HttpSession session) throws IOException {
-        log.debug("POST signIn({})", dto);
+        log.info("POST signIn({})", dto);
         
         // 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
-        User user = userService.read(dto);
+        Optional<User> optionalUser = userService.read(dto);
         
         // 로그인 실패한 경우
-        if (user == null) {
+        if (!optionalUser.isPresent()) {
             // 아이디와 비밀번호가 일치하는 사용자 없는 경우
+        	
             return "redirect:/user/signin?result=f&target="
                     + URLEncoder.encode(target, "UTF-8");
         }
-
-//        // 비활성화된 사용자 확인
-//        log.debug("Checking if user is active...");
-//        if (!userService.checkUserIsActive(dto.getUserId())) {
-//            // 사용자가 비활성 상태인 경우
-//        	 log.debug("User is inactive");
-//            return "redirect:/user/signin?result=inactive";
-//        }
+        
+        User user = optionalUser.get();
 
         // 비활성화된 사용자 확인
-        log.debug("Checking if user is active...");
+        log.info("Checking if user is active...");
         boolean isActive = userService.checkUserIsActive(dto.getUserId());
-        log.debug("User active status: {}", isActive);
+        log.info("User active status: {}", isActive);
         if (!isActive) {
             // 사용자가 비활성 상태인 경우
-            log.debug("User is inactive");
+            log.info("User is inactive");
             return "redirect:/user/signin?result=inactive";
         }
         
@@ -98,20 +94,23 @@ public class UserController {
         // 비활성화 기간 확인
         if (!userService.checkDeactivationPeriod(dto.getUserId())) {
             // 비활성화 기간이 남아있는 경우
-        	 log.debug("User is still in deactivation period");
+        	 log.info("User is still in deactivation period");
             return "redirect:/user/signin?result=deactivated";
         }
         
-        // 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
+        // 로그인 성공 시 세션에 로그인 사용자 아이디를 저장  		 		
         session.setAttribute("signedInUser", user.getUserId());
         // 세션에 유저 role을 저장
+        log.info("getUserId={}",user.getUserId());
         session.setAttribute("userRole", user.getUserRole());
 
         session.setAttribute("loginUserId", user.getUserKey());
-        log.debug("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
+       
+        log.info("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
         
         // 로그인 성공 후 이동할 타겟 페이지
         String targetPage = (target.equals("")) ? "/" : target;
+        
         return "redirect:" + targetPage;
     
 	
@@ -135,12 +134,12 @@ public class UserController {
 
 	@GetMapping("/signup") // GET 방식의 /user/signup 요청을 처리하는 컨트롤러 메서드
 	public void signUp() {
-		log.debug("GET signUp()");
+		log.info("GET signUp()");
 	}
 
 	@PostMapping("/signup") // POST 방식의 /user/signup 요청을 처리하는 컨트롤러 메서드
 	public String signUp(UserCreateDto dto) { 
-		log.debug("POST signUp({})", dto);
+		log.info("POST signUp({})", dto);
 
 		userService.create(dto);
 
@@ -151,7 +150,7 @@ public class UserController {
 	@GetMapping("/checkid")
 	@ResponseBody // 메서드 리턴 값이 클라이언트로 전달되는 데이터.
 	public ResponseEntity<String> checkId(@RequestParam(name = "userId") String userId) {
-		log.debug("checkId(user_id={})", userId);
+		log.info("checkId(user_id={})", userId);
 
 		boolean result = userService.checkUserid(userId);
 		if (result) {
@@ -165,7 +164,7 @@ public class UserController {
 	@GetMapping("/checkemail")
 	@ResponseBody // 메서드 리턴 값이 클라이언트로 전달되는 데이터.
 	public ResponseEntity<String> email(@RequestParam(name = "userEmail") String userEmail) {
-		log.debug("checkEmail(userEmail={})", userEmail);
+		log.info("checkEmail(userEmail={})", userEmail);
 
 		boolean result = userService.checkEmail(userEmail);
 		if (result) {
@@ -204,7 +203,7 @@ public class UserController {
 	    dto.setUserPassword(password);
 
 	    // 비밀번호 확인
-	    User verifiedUser = userService.read(dto);
+	    User verifiedUser = userService.read(dto).orElseThrow();
 	    if (verifiedUser != null) {
 	        // 비밀번호가 일치하면 사용자 정보 수정 페이지로 리다이렉트
 	        return "redirect:/user/user_update";
@@ -260,14 +259,14 @@ public class UserController {
     public String deactivateAccount(Model model, HttpSession session) {
         // 세션에서 사용자 ID 가져오기
          Integer userKey = (Integer) session.getAttribute("loginUserId");
-         log.debug("세션에서 가져온 userKey: {}", userKey);
+         log.info("세션에서 가져온 userKey: {}", userKey);
         if (userKey == null) {
             return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
         }
         
         // 사용자 정보 가져오기
         User user = userService.updateProfileImage(userKey, null);
-        log.debug("가져온 사용자 정보: {}", user);
+        log.info("가져온 사용자 정보: {}", user);
         model.addAttribute("user", user);
         
         return "user/deactivateUser";
@@ -277,14 +276,14 @@ public class UserController {
     @PostMapping("/deactivateUser")
     @ResponseBody
     public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, HttpSession session, HttpServletResponse response) {
-        log.debug("Received deactivation request for userKey: {}", dto.getUserKey());
-        log.debug("Password received: {}", dto.getUserPassword());
+        log.info("Received deactivation request for userKey: {}", dto.getUserKey());
+        log.info("Password received: {}", dto.getUserPassword());
     	
     	// 요청 바디에서 id와 password를 추출
         Integer userKey = (Integer) dto.getUserKey(); 
         String userPassword = (String) dto.getUserPassword();
     	
-        log.debug("Before calling service - userKey: {}, password: {}", userKey, userPassword);
+        log.info("Before calling service - userKey: {}, password: {}", userKey, userPassword);
         
         // 회원 탈퇴 서비스 호출
     	boolean result = userService.deactivateAccount(userKey, userPassword);
@@ -299,10 +298,10 @@ public class UserController {
             cookie.setPath("/");
             response.addCookie(cookie);
             
-            log.debug("Account deactivated successfully.");
+            log.info("Account deactivated successfully.");
             return ResponseEntity.ok().body("/semiproject");
         } else {
-        	log.debug("비밀번호가 일치하지 않습니다.");
+        	log.info("비밀번호가 일치하지 않습니다.");
             return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
         }
     }
