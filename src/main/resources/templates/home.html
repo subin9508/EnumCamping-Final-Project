@@ -6,6 +6,7 @@
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/popup.css}">
         
         <!-- Bootstrap CSS -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +14,9 @@
     <body>
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <!--  팝업창 -->
+       <th:block th:replace="~{/layout/fragments :: popup}"></th:block>
     
         <!-- 갤러리 섹션 -->
         <section id="gallery" class="gallery">
@@ -149,7 +153,8 @@
         <!-- Weather JS -->
         <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
         
-       
-    
+        <!-- 팝업 JS -->
+    <script th:src="@{/js/popup.js}"></script>
+        
 </body>
 </html>
