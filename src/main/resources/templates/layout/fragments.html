@@ -32,7 +32,7 @@
             <div class="container-fluid">
                 <div class="d-flex align-items-center">
                     <!-- Logo -->
-                    <a class="navbar-brand" href="/semiproject/">
+                    <a class="navbar-brand" href="/">
                         <img alt="logo" th:src="@{/images/main/logo_horizontal.png}" style="height: 60px; width: 200px;">
                     </a>
                     <!-- 날씨 정보 -->
@@ -176,13 +176,14 @@
         </footer>
     </th:block>
 
+<!-- -----------------------------사이드바-----------------------------------------------------------------------  -->
 	<!-- intro 사이드바 -->
 	<th:block th:fragment="intro-sidebar">
 		<aside class="sidebar d-none d-md-block col-md-3">
 			<div class="sidebar-header">
 				<h3 id="title">소개</h3>
 			</div>
-			<ul class="sidebar-menu list-unstyled">
+			<ul class="sidebar-menu">
 				<li class="sidebar-item"><a th:href="@{/introduce/enumIntro}"
 					class="sidebar-link">캠핑장 소개</a></li>
 				<li class="sidebar-item"><a th:href="@{/introduce/facilityLayout}"
@@ -203,7 +204,7 @@
         <div class="sidebar-header">
             <h3 id="title">이용안내</h3>
         </div>
-        <ul class="sidebar-menu list-unstyled">
+        <ul class="sidebar-menu">
             <li class="sidebar-item">
                 <a th:href="@{/infoTime}">이용시간 및 요금</a>
             </li>
@@ -225,6 +226,54 @@
             </ul>
         </aside>
     </th:block>
+    
+    <!-- 마이페이지 사이드바 -->
+	<th:block th:fragment="mypage-sidebar">
+	    <aside class="sidebar d-none d-md-block col-md-3">
+	        <div class="sidebar-header">
+	            <h3 id="title">마이페이지</h3>
+	        </div>
+	        <ul class="sidebar-menu">
+	            <li class="sidebar-item">
+	                <a th:href="@{/user/myPage(userId=${user.userId})}">내 정보</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a th:href="@{/user/reservation_list(userId=${user.userId})}">예약내역</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a th:href="@{/user/qna_list(userId=${user.userId})}">문의내역</a>
+	            </li>
+	            <li  class="sidebar-item">
+	                <a href="#" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">회원탈퇴</a>
+	            </li>
+	        </ul>
+	    </aside>
+	</th:block>
+
+	<!--  커뮤니티 사이드 바 -->
+	<th:block th:fragment="community-sidebar">
+		<aside class="sidebar d-none d-md-block col-md-3">
+		    <div class="sidebar-header">
+		    	<h3 id="title">커뮤니티</h3>
+		    </div>
+		    <ul class="sidebar-menu">
+		        <li class="sidebar-item">
+		            <a th:href="@{../notice/list}">공지사항</a>           
+		        </li>
+		        <li>
+		            <a th:href="@{../qna/list}">Q&A</a>
+		        </li>
+		        <li class="sidebar-item">
+		           <a th:href="" hidden >FAQ</a> 
+		        </li>
+		        <li class="sidebar-item">
+		            <a th:href="" hidden >이용후기</a>
+		        </li>
+		    </ul>
+		</aside>
+	</th:block>
+	
+	<!-- ---------------------------------------------------------------------------------------------------- -->
 
 </body>
 </html>
