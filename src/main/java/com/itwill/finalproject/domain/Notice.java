@@ -42,4 +42,17 @@ public class Notice {
 	private LocalDateTime modifiedTime;
 	
 	private Integer notCertify;
+	
+	
+	//title& content는 update 기능이 되어야함. //-> 그래서 메서드 만듬
+	//update 기능(제목, 내용 수정 기능) 에서 사용할 공개 메서드
+	public Notice update(String title, String content, LocalDateTime modifiedTime) {
+		this.title = title;
+		this.content = content;
+		this.modifiedTime = modifiedTime;
+		
+		return this;//-> 자기자신 리턴.(필드 초기화해서 리턴함)
+	}
+	
+	
 }

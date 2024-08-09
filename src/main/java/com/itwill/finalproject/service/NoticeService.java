@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.itwill.finalproject.domain.Notice;
+import com.itwill.finalproject.dto.NoticeCreateDto;
 import com.itwill.finalproject.dto.NoticeListDto;
+import com.itwill.finalproject.dto.NoticeSearchDto;
+import com.itwill.finalproject.dto.NoticeUpdateDto;
 import com.itwill.finalproject.repository.NoticeRepository;
 
 import lombok.AllArgsConstructor;
@@ -23,37 +26,37 @@ public class NoticeService {
 		log.debug("list={}",list);
 		return list.stream().map(NoticeListDto::fromEntity).toList();
 	}
-	/*
+	
 	public Notice selectNoticeById(int id){
 		log.debug("selectNoticeById");
-		Notice notice = dao.selectNoticeById(id);
+		Notice notice = notRepo.findById(id).orElseThrow();
 		log.debug("notice={}",notice);
 		return notice;
 	}
 	
-	public int insertNotice(NoticeCreateDto dto) {
+	public Notice insertNotice(NoticeCreateDto dto) {
 		log.debug("insertNotice");
-		int result = dao.insertNotice(dto.toEntity());
+		Notice result = notRepo.save(dto.toEntity());
 		
 		return result;
 	};
 	
-	public int deleteNotice(int id) {
+	public void deleteNotice(int id) {
 		log.debug("deleteNotice, id={}",id);
-		int result = dao.deleteNotice(id);
-		return result;
+		notRepo.deleteById(id);
 	}
 	
 	public int updateNotice(NoticeUpdateDto dto) {
 		log.debug("updateNotice, {}",dto);
-		int result = dao.updateNotice(dto.toEntity());
-		return result;
+		Notice notice = notRepo.findById(dto.getId()).orElseThrow();
+		notice.update(dto.getTitle(), dto.getContent(), dto.getModifiedTime());
+		return 0;
 	}
-
+/*
 	public List<NoticeListDto> search(NoticeSearchDto dto) {
 		log.debug("search()");
 		
-		List<Notice> list =  dao.search(dto);
+		List<Notice> list =  dao.search(dto); //sql문장 만들어야함
 		
 		return list.stream().map(NoticeListDto::fromEntity).toList();
 	}

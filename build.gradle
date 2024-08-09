@@ -46,6 +46,24 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
     // --------------------
+    
+    
+    // Querydsl 관련 빌드 옵션 -----
+    def querydslDir = "$buildDir/generated/querydsl"
+    
+    sourceSets {
+        main.java.srcDirs += [ querydslDir ]
+    }
+    
+    tasks.withType(JavaCompile) {
+        options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+    }
+    
+    clean.doLast {
+        file(querydslDir).deleteDir()
+    }
+    // -----------------------------
+    
 }
 
 tasks.named('test') {
