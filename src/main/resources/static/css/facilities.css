@@ -5,6 +5,7 @@
 }
 
 /* 모달 스타일 */
+/*
 .modal {
     display: none;
     position: fixed;
@@ -13,10 +14,11 @@
     left: 0; top: 0;
     height: 100%; width: 100%;
     overflow: auto; /* 스크롤 허용 auto */
-    background-color: rgba(0, 0, 0, 0.8);
+/*    background-color: rgba(0, 0, 0, 0.8);
 }
-
+*/
 /* 모달창 이미지 */
+/*
 .modal_content {
     margin: auto;
     display: block;
@@ -35,7 +37,7 @@
     width: 100%;
     height: auto;
 }
-
+*/
 
 /* 닫기 버튼 꾸미기 */
 .close {
@@ -113,7 +115,7 @@
     margin-bottom: 20px;
 }
 
-.img-container {
+.fc-img-container {
     width: 100%;
     height: 0;
     padding-bottom: 66%; /* 4:3 비율을 유지하기 위한 설정 */
@@ -122,7 +124,8 @@
     border-radius: 5px;
 }
 
-.img-container img {
+.fc-img-container img {
+>>>>>>> refs/heads/develop
     width: 100%;
     height: 100%;
     position: absolute;

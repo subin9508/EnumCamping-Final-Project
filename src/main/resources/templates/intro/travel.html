@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+        
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/travel.css}">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+	<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+	<div class="footer-main-content">
+	<th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
+	<div class="content">
+		<main class="main-content"
+			style="margin-left: 300px; margin-top: 50px;">
+			<div class="content-1">
+				<br>
+				<h1>
+					<strong>[주변 볼거리]</strong>
+				</h1>
+			</div>
+			<br />
+			<div class="container">
+				<div class="travel-section">
+					<div class="travel-card">
+						<div class="responsive-image">
+							<a
+								href="https://map.naver.com/p/search/%EC%88%98%ED%83%80%EC%82%AC%EA%B3%84%EA%B3%A1?c=15.00,0,0,0,dh"
+								target="_blank"> 
+								<img alt="valley" th:src="@{/images/intro/intro2_valley.jpg}" width="600"
+								height="400" />
+							</a>
+						</div>
+						<div class="mt-2">
+							<h5>
+								<strong>수타사 계곡</strong>
+							</h5>
+						</div>
+						<div style="display: flex; align-items: center;">
+							<a
+								href="https://map.naver.com/p/search/%EC%88%98%ED%83%80%EC%82%AC%EA%B3%84%EA%B3%A1?c=15.00,0,0,0,dh"
+								target="_blank"> 
+								<img th:src="@{/images/intro/intro2_locationicon.png}"
+								width="20" height="20" style="margin-right: 5px;" class="img" />
+							</a>
+							<h6 style="margin: 0;">걸어서 1분거리, 50m</h6>
+						</div>
+					</div>
+					<div class="travel-card">
+						<div class="responsive-image">
+							<a href="https://map.naver.com/p/search/%EC%88%98%ED%83%80%EC%82%AC/place/1629327313?placePath=?entry=pll&from=nx&fromNxList=true&searchType=place&c=15.00,0,0,0,dh"
+								target="_blank"> 
+								<img alt="trail" th:src="@{/images/intro/intro2_temple.jpg}" width="600" height="400" />
+							</a>
+						</div>
+						<div class="mt-2">
+							<h5>
+								<strong>수타사</strong>
+							</h5>
+						</div>
+						<div style="display: flex; align-items: center;">
+							<a
+								href="https://map.naver.com/p/search/%EC%88%98%ED%83%80%EC%82%AC/place/16222041?placePath=?entry=pll&from=nx&fromNxList=true&searchType=place&c=15.00,0,0,0,dh"
+								target="_blank"> 
+								<img th:src="@{/images/intro/intro2_locationicon.png}"
+								width="20" height="20" style="margin-right: 5px;" class="img" />
+							</a>
+							<h6 style="margin: 0;">걸어서 3분거리, 226m</h6>
+						</div>
+					</div>
+				</div>
+				<div class="travel-section">
+					<div class="travel-card">
+						<div class="responsive-image">
+							<a href="https://map.naver.com/p/search/%ED%99%8D%EC%B2%9C%ED%95%9C%EC%9A%B0%EC%88%98%EB%9D%BC/place/1241815713?c=15.00,0,0,0,dh&isCorrectAnswer=true"
+								target="_blank">
+								<img alt="beef" th:src="@{/images/intro/intro2_beef.jpg}" width="600" height="400" />
+							</a>
+						</div>
+						<div class="mt-2">
+							<h5>
+								<strong>홍천한우수라</strong>
+							</h5>
+						</div>
+						<div style="display: flex; align-items: center;">
+							<a
+								href="https://map.naver.com/p/search/%ED%99%8D%EC%B2%9C%ED%95%9C%EC%9A%B0%EC%88%98%EB%9D%BC/place/1241815713?c=15.00,0,0,0,dh&isCorrectAnswer=true"
+								target="_blank"> 
+								<img th:src="@{/images/intro/intro2_locationicon.png}"
+								width="20" height="20" style="margin-right: 5px;" class="img" />
+							</a>
+							<h6 style="margin: 0;">차로 6분거리, 3.6km</h6>
+
+						</div>
+					</div>
+					<div class="travel-card">
+						<div class="responsive-image">
+							<a
+								href="https://map.naver.com/p/search/%ED%99%8D%EC%B2%9C%EA%B0%95%EB%A7%89%EA%B5%AD%EC%88%98?c=15.00,0,0,0,dh"
+								target="_blank"> 
+								<img alt="noodle" th:src="@{/images/intro/intro2_noodle.jpg}" width="600"
+								height="400" />
+							</a>
+						</div>
+						<div class="mt-2">
+							<h5>
+								<strong>홍천강막국수</strong>
+							</h5>
+						</div>
+						<div style="display: flex; align-items: center;">
+							<a
+								href="https://map.naver.com/p/search/%ED%99%8D%EC%B2%9C%EA%B0%95%EB%A7%89%EA%B5%AD%EC%88%98?c=15.00,0,0,0,dh"
+								target="_blank">
+								<img th:src="@{/images/intro/intro2_locationicon.png}"
+								width="20" height="20" style="margin-right: 5px;" class="img" />
+							</a>
+							<h6 style="margin: 0;">차로 10분거리, 5.5km</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	</div>
+	<!-- 푸터 -->
+	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+</div>
+	
+
+	<!-- 부트 스트랩 JS -->
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	<!-- Weather JS -->
+	<th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+</body>
+</html>
