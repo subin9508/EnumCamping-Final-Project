@@ -1,0 +1,145 @@
+@charset "UTF-8";
+
+/* 네비게이션 스타일 설정 */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* 컨테이너 스타일 설정 */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh; /* Viewport height */
+    box-sizing: border-box;
+}
+
+/* 제목 스타일 설정 */
+.fheading-3 {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* 정보 섹션 스타일 설정 */
+.info-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1; /* Flex-grow to fill the remaining space */
+}
+
+.bold {
+    font-weight: bold;
+}
+
+/* 시설 이미지 스타일 설정 */
+.facility-image {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 0;
+    width: 45%;
+    margin-right: 10px;
+}
+
+.h2 {
+    margin-right: 10px;
+}
+
+/* 박스 스타일 설정 */
+.box {
+    border: none;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+
+/* 박스 내부 콘텐츠 스타일 설정 */
+.left-content, .right-content {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.left-content h2, .right-content h2 {
+    margin-bottom: 10px;
+}
+
+.left-content ul, .right-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.left-content ul li, .right-content ul li {
+    margin-bottom: 10px;
+}
+
+.item2, .item4 {
+    margin-top: 30px;
+}
+
+
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+    .info-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .facility-image, .box {
+        width: 80%;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .facility-image, .box {
+        width: 100%;
+    }
+
+    .facility-image {
+        margin-bottom: 20px;
+    }
+
+    .box {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .info-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .facility-image, .box {
+        width: 100%;
+    }
+
+    .facility-image {
+        margin-bottom: 20px;
+    }
+
+    .box {
+        padding: 10px;
+    }
+}
