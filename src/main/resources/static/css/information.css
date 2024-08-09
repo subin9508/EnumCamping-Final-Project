@@ -1,5 +1,21 @@
 @charset "UTF-8";
 
+/* 큰 화면에 적용될 스타일 */
+.table {
+    width: 80%;
+    font-size: 18px; /* 큰 화면에서의 기본 글씨 크기 */
+}
+
+.table th {
+    font-size: 18px; /* 큰 화면에서의 헤더 글씨 크기 */
+}
+
+.table td {
+    font-size: 18px; /* 큰 화면에서의 데이터 셀 글씨 크기 */
+}
+
+
+
 /*반응형 테이블*/
 @media only screen and (max-width: 800px) {
     
@@ -13,6 +29,10 @@
 		display: block; 
 	}
  
+ 	#custom-responsive-table table {
+ 		font-size: 18px;
+ 	}
+ 	
 	/* Hide table headers (but not display: none;, for accessibility) */
 	#custom-responsive-table thead tr { 
 		position: absolute;
@@ -50,6 +70,7 @@
 		white-space: nowrap;
 		text-align:center;
 		font-weight: bold;
+		
 	}
  
 	/*
