@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+/* 큰 화면에 적용될 스타일 */
+.table {
+    width: 80%;
+    font-size: 18px; /* 큰 화면에서의 기본 글씨 크기 */
+}
+
+.table th {
+    font-size: 18px; /* 큰 화면에서의 헤더 글씨 크기 */
+}
+
+.table td {
+    font-size: 18px; /* 큰 화면에서의 데이터 셀 글씨 크기 */
+}
+
+
+
+/*반응형 테이블*/
+@media only screen and (max-width: 800px) {
+    
+    /* Force table to not be like tables anymore */
+	#custom-responsive-table table, 
+	#custom-responsive-table thead, 
+	#custom-responsive-table tbody, 
+	#custom-responsive-table th, 
+	#custom-responsive-table td, 
+	#custom-responsive-table tr { 
+		display: block; 
+	}
+ 
+ 	#custom-responsive-table table {
+ 		font-size: 18px;
+ 	}
+ 	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#custom-responsive-table thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+		
+	}
+ 
+	#custom-responsive-table tr { 	
+		border: none;
+	}
+ 
+ 	#custom-responsive-table th { 	
+		font-weight: bold;
+	}
+ 
+	#custom-responsive-table td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 70%; /*컬럼위치조정*/
+		white-space: nowrap; /* 한줄로 표시 */
+		text-align:center;
+	}
+ 
+	#custom-responsive-table td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:center;
+		font-weight: bold;
+		
+	}
+ 
+	/*
+	Label the data
+	*/
+	#custom-responsive-table td:before { content: attr(data-title); }
+}

@@ -1,8 +1,8 @@
 /**
- * /info/infoRental.html에 포함.
+ * /intro/facilites.html에 포함.
  */ 
 
-// 각 이미지와 모달 창 요소를 가져옴
+// 각 이미지와 모달 창 요소를 가져옵니다.
     var barbecueImg = document.getElementById('barbecueImage');
     var showerImg = document.getElementById('showerImage');
     var toiletImg = document.getElementById('toiletImage');
@@ -21,7 +21,7 @@
     var modalImg4 = document.getElementById('modalImage4');
     var modalImg5 = document.getElementById('modalImage5');
 
-    // 각 이미지를 클릭했을 때 모달 창을 보여주는 기능을 추가
+    // 각 이미지를 클릭했을 때 모달 창을 보여주는 기능을 추가합니다.
     barbecueImg.onclick = function() {
         modal1.style.display = "block";
         modalImg1.src = this.src;
@@ -43,7 +43,7 @@
         modalImg5.src = this.src;
     }
 
-    // 각 모달 창의 닫기 버튼을 설정
+    // 각 모달 창의 닫기 버튼을 설정합니다.
     var closeBtns = document.getElementsByClassName('close');
     for (var i = 0; i < closeBtns.length; i++) {
         closeBtns[i].onclick = function() {
@@ -51,7 +51,7 @@
         }
     }
 
-    // 모달 창 외부를 클릭하면 모달이 닫히도록 설정
+    // 모달 창 외부를 클릭하면 모달이 닫히도록 설정합니다.
     window.onclick = function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = "none";
