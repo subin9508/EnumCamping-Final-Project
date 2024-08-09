@@ -5,6 +5,7 @@
         
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/sidebar.css}">
         <link rel="stylesheet" th:href="@{/css/facilities.css}">
         <!-- Bootstrap CSS -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
@@ -12,6 +13,7 @@
 	<body>
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <!--  사이드바 -->
         <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
             
         <main class="main-content" style="margin-left: 300px; margin-top: 50px;">
