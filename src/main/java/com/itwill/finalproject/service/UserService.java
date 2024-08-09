@@ -2,6 +2,7 @@ package com.itwill.finalproject.service;
 
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,14 +48,13 @@ public class UserService {
 	}
 
 	// 로그인 서비스
-	public User read(UserSignInDto dto) {
+	public Optional<User> read(UserSignInDto dto) {
 		log.debug("read(dto={})", dto);
 
 		// 리포지토리 메서드를 호출해서, 아이디와 비밀번호가 일치하는 사용자가 있는 지 검색
-		User user = userRepo.findByUserIdAndUserPassword(dto.getUserId(), dto.getUserPassword()).orElseThrow();
-		log.debug("로그인 사용자 = {}", user);
+		return userRepo.findByUserIdAndUserPassword(dto.getUserId(), dto.getUserPassword());
 
-		return user;
+		
 	}
 
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
@@ -70,10 +70,6 @@ public class UserService {
 
 		return userRepo.findByUserId(userId).orElse(null);
 	}
-
-
-
-	
 
 
     //비밀번호를 찾아 리턴하는 메서드
@@ -138,7 +134,8 @@ public class UserService {
     
     public boolean checkDeactivationPeriod(String userId) {
     	
-    	return userRepo.checkDeactivationPeriod(userId) == 0; // 1이면 비활성화 기간 종료(로그인가능), 0이면 기간 중(아직 비활성화)
+    	 int count = userRepo.checkDeactivationPeriod(userId);
+         return count > 0; // 1 이상이면 활성화, 0이면 비활성화 // 1이면 비활성화 기간 종료(로그인가능), 0이면 기간 중(아직 비활성화)
     }
     
     
