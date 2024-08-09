@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- CSS 파일 링크 -->
+<link rel="stylesheet" th:href="@{/css/user_update.css}" />
+<link rel="stylesheet" th:href="@{/css/header.css}" />
+<link rel="stylesheet" th:href="@{/css/footer.css}" />
+<link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<style>
+.btn-outline-success {
+	border: 1px solid green;
+	background-color: white;
+	color: green;
+	padding: 0.375rem 0.75rem; /* 기본 패딩 */
+	font-size: 1rem; /* 글자 크기 */
+	border-radius: 0.25rem; /* 테두리 둥글게 */
+	cursor: pointer; /* 마우스 커서 포인터로 변경 */
+	text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+.btn-outline-success:hover {
+	background-color: green; /* 마우스 오버 시 배경색 초록색 */
+	color: white; /* 마우스 오버 시 글자색 흰색 */
+}
+
+.btn-link-custom {
+	text-decoration: none; /* 링크의 기본 밑줄 제거 */
+	color: green; /* 링크 글자 색 초록색 */
+}
+
+.btn-link-custom:hover {
+	color: white; /* 링크 마우스 오버 시 색상 변경 */
+}
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="container-fluid no-padding">
+			<!-- 헤더 포함 -->
+			<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		</div>
+
+		<main class="container-fluid no-padding content">
+			<div class="row">
+				<div class="col-md-3 mypage-sidebar">
+					<!-- 사이드바 포함 -->
+					<th:block th:replace="fragments/mypage-sidebar :: mypage-sidebar"></th:block>
+				</div>
+				<div class="col-md-9 main-content">
+					<div class="card card-reservation mt-2">
+						<div class="card-reservation-header">내 정보 수정</div>
+						<div class="card-reservation-body text-center">
+							<form id="updateForm" method="post"
+								th:action="@{/user/user_update}" enctype="multipart/form-data">
+
+								<div class="mb-3 row">
+									<label for="userName" class="col-sm-2 col-form-label">이름</label>
+									<div class="col-sm-10">
+										<input id="userName" type="text"
+											class="form-control readonly-input" name="userName"
+											th:value="${user.userName}" readonly>
+									</div>
+								</div>
+								<div class="mb-3 row">
+									<label for="userId" class="col-sm-2 col-form-label">아이디</label>
+									<div class="col-sm-10">
+										<input id="userId" type="text"
+											class="form-control readonly-input" name="userId"
+											th:value="${user.userId}" readonly>
+									</div>
+								</div>
+								<div class="mb-3 row">
+									<label for="userPassword" class="col-sm-2 col-form-label">PW</label>
+									<div class="col-sm-10">
+										<th:block th:if="${not #lists.isEmpty(message)}">
+											<div class="alert alert-success" th:text="${message}"></div>
+										</th:block>
+										<th:block th:if="${not #lists.isEmpty(error)}">
+											<div class="alert alert-danger" th:text="${error}"></div>
+										</th:block>
+										<input id="userPassword" type="password" class="form-control"
+											name="userPassword" th:value="${user.userPassword}">
+									</div>
+								</div>
+								<!-- 비밀번호 확인 필드 추가 -->
+								<div class="mb-3 row">
+									<label for="userPasswordConfirm"
+										class="col-sm-2 col-form-label">PW 확인</label>
+									<div class="col-sm-10">
+										<input id="userPasswordConfirm" type="password"
+											class="form-control" name="userPasswordConfirm">
+									</div>
+								</div>
+								<div class="mb-3 row">
+									<label for="userEmail" class="col-sm-2 col-form-label">이메일</label>
+									<div class="col-sm-10">
+										<input id="userEmail" type="text"
+											class="form-control readonly-input" name="userEmail"
+											th:value="${user.userEmail}" readonly>
+									</div>
+								</div>
+								<div class="mb-3 row">
+									<label for="userPhone" class="col-sm-2 col-form-label">전화번호</label>
+									<div class="col-sm-10">
+										<input id="userPhone" type="text" class="form-control"
+											name="userPhone" th:value="${user.userPhone}">
+									</div>
+								</div>
+								<button type="submit" class="btn btn-outline-success">수정
+									완료</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<!-- 푸터 포함 -->
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+	</div>
+
+	<!-- 부트 스트랩 JS -->
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+
+	<script type="text/javascript"
+		src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+	<script th:inline="javascript">
+		var contextPath = [[${pageContext.request.contextPath}]];
+    </script>
+
+	<script th:src="@{/js/user_update.js}"></script>
+
+
+</body>
+</html>
