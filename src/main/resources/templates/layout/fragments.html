@@ -298,16 +298,25 @@
 	<!--  커뮤니티 사이드 바 -->
 	<th:block th:fragment="community-sidebar">
 		<aside class="sidebar d-none d-md-block col-md-3">
-			<div class="sidebar-header">
-				<h3 id="title">커뮤니티</h3>
-			</div>
-			<ul class="sidebar-menu">
-				<li class="sidebar-item"><a th:href="@{../notice/list}">공지사항</a>
-				</li>
-				<li><a th:href="@{../qna/list}">Q&A</a></li>
-				<li class="sidebar-item"><a th:href="" hidden>FAQ</a></li>
-				<li class="sidebar-item"><a th:href="" hidden>이용후기</a></li>
-			</ul>
+
+		    <div class="sidebar-header">
+		    	<h3 id="title">커뮤니티</h3>
+		    </div>
+		    <ul class="sidebar-menu">
+		        <li class="sidebar-item">
+		            <a th:href="@{../notice/list}">공지사항</a>           
+		        </li>
+		        <li>
+		            <a th:href="@{../qna/list}">Q&A</a>
+		        </li>
+		        <li class="sidebar-item">
+		           <a th:href="@{../faq}" class="hidden"  >FAQ</a> 
+		        </li>
+		        <li class="sidebar-item">
+		            <a th:href="@{../review}" class="hidden"  >이용후기</a>
+		        </li>
+		    </ul>
+
 		</aside>
 	</th:block>
 
