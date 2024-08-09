@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/map.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    rel="stylesheet">
+</head>
+<body>
+
+
+    <div class="modify-wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content not-content">
+            <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+
+            <main>
+                <div class="not-modify-container">
+                    <h2 class="not-title">공지 수정</h2>
+
+                    <form id="modifyForm">
+                        <div class="mb-3">
+                            <label for="id" class="form-label">번호</label>
+                            <input id="id" class="form-control"
+                                type="text" name="notPostId"
+                                value="${notice.notPostId}" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">제목</label>
+                            <input id="title" class="form-control"
+                                type="text" name="notTitle"
+                                value="${notice.notTitle}" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">내용</label>
+                            <textarea id="content" class="form-control"
+                                name="notContent" rows="5">${notice.notContent}</textarea>
+                        </div>
+                    </form>
+
+                    <div class="card-footer">
+                        <button id="btnUpdate"
+                            class="btn btn-outline-primary">업데이트</button>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>
