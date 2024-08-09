@@ -16,6 +16,8 @@
 	<div class="wrapper">
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <div class="footer-main-content not-content">
         <!--  사이드바 -->
         <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
             
@@ -80,7 +82,6 @@
             </div>
         </div>
     </div>
-    <br>
 
    
     <!-- Modal Structure -->
@@ -153,10 +154,9 @@
         </div>
                         
             </main>
-		
+        </div>
 		<!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
-        
         </div>
         
         <!-- 부트 스트랩 JS -->
