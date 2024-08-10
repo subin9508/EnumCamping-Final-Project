@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    rel="stylesheet">
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content">
+            <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+            <main>
+                <div class="mt-10 card">
+                    <div class="card-header"
+                        style="background-color: white;">
+                        <h2 th:text="${notice.notTitle}"></h2>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mt-2">
+                                <label for="notPostId"
+                                    class="form-label">번호</label> <input
+                                    id="notPostId" class="form-control"
+                                    type="text" name="notPostId"
+                                    th:value="${notice.notPostId}"
+                                    readonly />
+                            </div>
+                            <div class="mt-2">
+                                <label for="content" class="form-label">내용</label>
+                                <textarea id="content"
+                                    class="form-control" rows="5"
+                                    th:text="${notice.notContent}"
+                                    readonly></textarea>
+                            </div>
+                            <div class="mt-2">
+                                <label for="createdTime"
+                                    class="form-label">작성 시간</label> <input
+                                    id="createdTime"
+                                    class="form-control" type="text"
+                                    th:value="${notice.notCreatedTime}"
+                                    readonly />
+                            </div>
+                            <div class="mt-2">
+                                <label for="modifiedTime"
+                                    class="form-label">최종 수정 시간</label>
+                                <input id="modifiedTime"
+                                    class="form-control" type="text"
+                                    th:value="${notice.notModifiedTime}"
+                                    readonly />
+                            </div>
+                            <a class="btn btn-outline-primary"
+                                style="align-items: right"
+                                th:href="@{/community/notice/list}">목록보기</a>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- signedUser 체크 -->
+                <div class="card-footer" th:if="${userRole == 0}">
+                    <button id="btnDelete" type="button"
+                        class="btn btn-outline-danger">삭제하기</button>
+                    <a class="btn btn-outline-primary"
+                        th:href="@{/community/notice/modify(id=${notice.notPostId})}">수정하기</a>
+                </div>
+            </main>
+
+        </div>
+
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>

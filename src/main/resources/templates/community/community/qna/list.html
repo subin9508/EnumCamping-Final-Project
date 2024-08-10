@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    rel="stylesheet">
+</head>
+<body>
+    <div class=" wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content not-content">
+            <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+            <main>
+                <div class="mt-10 card">
+                    <div class="card-header"
+                        style="background-color: white;">
+                        <h1 class="card-title align-center mt-2">QnA</h1>
+                        <form th:action="@{/community/notice/search}"
+                            action="${noticeSearchPage }">
+                            <div class="row">
+                                <div class="col-2">
+                                    <select class="form-control"
+                                        name="category">
+                                        <option value="t">제목</option>
+                                        <option value="c">내용</option>
+                                        <option value="tc">제목+내용</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <input class="form-control"
+                                        type="text" name="keyword"
+                                        placeholder="검색어 입력" required />
+                                </div>
+                                <div class="col-2">
+                                    <input type="submit"
+                                        class="form-control btn btn-outline-primary"
+                                        value="검색" />
+                                </div>
+                                <div class="col-2">
+                                    <button type="button"
+                                        class="form-control btn btn-outline-primary"
+                                        th:onclick="|location.href='@{/semiproject/community/notice/list}'|">전체
+                                        목록</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th>번호</th>
+                                    <th>제목</th>
+                                    <th>수정시간</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="n : ${notices}"
+                                    th:onclick="|location.href='@{/community/notice/details(id=${n.id})}'|"
+                                    style="cursor: pointer; text-align: center;">
+                                    <td class="col-2" th:text="${n.id}"></td>
+                                    <td class="col-7"
+                                        th:text="${n.title}"></td>
+                                    <td class="col-3"
+                                        th:text="${n.modifiedTime}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div
+                        class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <button type="button"
+                            onclick="location.href ='create'"
+                            class="btn btn-outline-primary"
+                            th:if="${userRole == 0}">글 작성</button>
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+    
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>
