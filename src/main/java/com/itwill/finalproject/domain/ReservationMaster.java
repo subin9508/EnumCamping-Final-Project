@@ -50,4 +50,5 @@ public class ReservationMaster {
 	
 	@OneToMany(mappedBy = "reservationMaster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationDetail> reservationDetails;
+	
 }
