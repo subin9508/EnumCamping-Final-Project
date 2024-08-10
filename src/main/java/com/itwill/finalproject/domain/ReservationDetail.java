@@ -1,5 +1,7 @@
 package com.itwill.finalproject.domain;
 
+import com.itwill.finalproject.repository.ItemsRepository;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,4 +43,10 @@ public class ReservationDetail {
 	private String itemName; // 아이템 이름
 	
 	private String itemImg; // 아이템 사진
+	
+	// 헬퍼 메서드 추가
+		public void setItemById(Integer itemId, ItemsRepository itemsRepository) {
+			this.item = itemsRepository.findById(itemId)
+			             .orElseThrow();
+		}
 }

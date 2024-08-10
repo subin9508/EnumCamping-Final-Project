@@ -27,4 +27,9 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
             + "and rm.resCheckIn = :resCheckIn")
 	List<ReservationMaster> selectByItemIdAndResCheckIn(@Param("itemId") int itemId, @Param("resCheckIn") LocalDate resCheckIn);
 	
+	// userId에 해당하는 reservation_master
+	@Query("select rm from ReservationMaster rm "
+			+ "where rm.user.userId = :userId "
+			+ "and rm.resState = 0")
+	ReservationMaster selectMasterByUserId(String userId);
 }

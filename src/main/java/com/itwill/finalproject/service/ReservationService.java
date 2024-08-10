@@ -53,7 +53,9 @@ public class ReservationService {
     public void makeReservation(ReservationMaster reservationMaster, List<ReservationDetail> reservationDetails) {
         try {
             // reservation_master 테이블에 데이터 삽입
+        	log.debug("Attempting to save ReservationMaster: {}", reservationMaster);
             reservationMasterRepo.save(reservationMaster);
+            log.debug("Successfully saved ReservationMaster with ID: {}", reservationMaster.getResId());
             
             // 자동 생성된 res_id 가져오기 (reservationMaster 엔티티에 resId가 자동으로 설정됨)
             int resId = reservationMaster.getResId();
@@ -61,16 +63,28 @@ public class ReservationService {
 
             // reservation_detail 테이블에 여러 데이터 삽입
             for (ReservationDetail detail : reservationDetails) {
+            	log.debug("Processing ReservationDetail: {}", detail);
                 detail.setReservationMaster(reservationMaster); // 예약 마스터 설정
                 if(detail.getItemQuantity() == null) {
                     detail.setItemQuantity(0); // 기본값 설정
                 }
                 reservationDetailRepo.save(detail); // 예약 디테일 저장
+                log.debug("Successfully saved ReservationDetail with ID: {}", detail.getRdId());
             }
         } catch (Exception e) {
             log.error("Reservation failed", e);
             throw new RuntimeException("Reservation failed", e);
         }
+    }
+	
+	// userId에 해당하는 예약 상세 정보
+    public List<ReservationDetail> getReservationDetailsByUserId(String userId) {
+        return reservationDetailRepo.selectDetailsByUserId(userId);
+    }
+    
+    // userId에 해당하는 예약 마스터 정보
+    public ReservationMaster getReservationMasterByUserId(String userId) {
+    	return reservationMasterRepo.selectMasterByUserId(userId);
     }
 
 }

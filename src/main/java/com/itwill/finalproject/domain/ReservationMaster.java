@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.itwill.finalproject.repository.UserRepository;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,9 +48,14 @@ public class ReservationMaster {
 	
 	private Integer resTotalPrice;
 	
-	private Integer resState;
+	@Builder.Default
+	private Integer resState = 0;  // JPA 엔티티에 기본값 설정
 	
 	@OneToMany(mappedBy = "reservationMaster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationDetail> reservationDetails;
+	
+	public void setUserById(String userId, UserRepository user) {
+		this.user = user.findByUserId(userId).orElseThrow();
+	}
 	
 }

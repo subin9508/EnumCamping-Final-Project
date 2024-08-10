@@ -1,9 +1,20 @@
 package com.itwill.finalproject.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.itwill.finalproject.domain.ReservationDetail;
+import com.itwill.finalproject.domain.ReservationMaster;
 
 public interface ReservationDetailRepository extends JpaRepository<ReservationDetail, Integer>{
-
+	// userId에 해당하는 reservation_detail
+	// 특정 사용자 ID(userId)에 해당하는 예약 상세 정보를 조회
+	@Query("select rd.reservationMaster.resId, rd.item.itemId, rd.itemQuantity, rd.itemAmount, i.itemName, i.itemImg "
+			+ "from ReservationDetail rd "
+			+ "join Items i on rd.item.itemId = i.itemId "
+			+ "where rd.reservationMaster.resId = (select rm.resId from ReservationMaster rm where rm.user.userId = :userId and rm.resState = 0) "
+			+ "order BY rd.item.itemId asc")
+	List<ReservationDetail> selectDetailsByUserId(String userId);
 }
