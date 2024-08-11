@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.itwill.finalproject.domain.QnA;
 
-public interface QnARepository extends JpaRepository<QnA, Long>, PostQuerydsl {
+public interface QnARepository extends JpaRepository<QnA, Long>, QnAQuerydsl {
     // JPA Query Method
     // 제목에 포함된 문자열 대소문자 구분없이 검색하기:
     Page<QnA> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
@@ -23,9 +23,9 @@ public interface QnARepository extends JpaRepository<QnA, Long>, PostQuerydsl {
     // 제목 또는 내용에 포함된 문자열 대소문자 구분없이 검색하기:
     // findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(args)
     // findByTitleContainingOrContentContainingAllIgnoreCase(args)
-    @Query("select p from Post p "
-            + "where upper(p.title) like upper('%' || :keyword || '%') "
-            + "or upper(p.content) like upper('%' || :keyword || '%') ")
+    @Query("select q from QnA q "
+            + "where upper(q.title) like upper('%' || :keyword || '%') "
+            + "or upper(q.content) like upper('%' || :keyword || '%') ")
     Page<QnA> findByTitleOrContent(@Param("keyword") String keyword, Pageable pageable);
     
 }

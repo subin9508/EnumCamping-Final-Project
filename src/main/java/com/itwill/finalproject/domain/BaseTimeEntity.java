@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.EqualsAndHashCode;
@@ -21,10 +22,13 @@ import lombok.ToString;
 @EntityListeners(AuditingEntityListener.class)
 //-> 엔터티 (최초) 생성시간, (최종) 수정시간 등을 자동으로 DB에 저장하기 위해서.
 public class BaseTimeEntity {
-    
+	
     @CreatedDate // 엔터티 (최초) 생성시간을 저장하는 필드.
+    @Column(name = "QNA_CREATED_TIME")
     private LocalDateTime createdTime;
     
+    
     @LastModifiedDate // 엔터티 (최종) 수정시간을 저장하는 필드.
+    @Column(name = "QNA_MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 }

@@ -1,7 +1,5 @@
 package com.itwill.finalproject.dto;
 
-import com.itwill.finalproject.domain.QnA;
-
 import lombok.Data;
 
 @Data

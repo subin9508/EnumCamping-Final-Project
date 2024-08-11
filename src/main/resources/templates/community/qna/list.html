@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    rel="stylesheet">
+    
+    <style>
+.status-waiting {
+	color: red !important;
+}
+
+.status-completed {
+	color: blue !important;
+}
+
+.secret-icon {
+	width: 16px;
+	height: 16px;
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+ul.pagination {
+	display: flex;
+	justify-content: center;
+	list-style-type: none; /* 순서 없는 리스트 스타일 제거 */
+	padding: 0;
+}
+.pagination .page-link {
+            color: #000000; /* 기본 글자색 검정 */
+            
+        }
+
+.pagination .page-link:hover {
+	background-color: #7C9C63; /* 호버 시 배경색 초록 */
+	color: #fff; /* 호버 시 글자색 흰색 */
+}
+
+.pagination .page-item.active .page-link {
+	background-color: #7C9C63; /* 활성화된 페이지 배경색 초록 */
+	border-color: #7C9C63; /* 활성화된 페이지 테두리 색상 초록 */
+	color: #fff; /* 활성화된 페이지 글자색 흰색 */
+}
+
+.btnSearch {
+    border-radius: 5px;
+    border-color: #7C9C63;
+    background-color: #white;
+    color: #7C9C63;
+}
+
+.btnSearch:hover {
+    background-color: #708b58; /* hover 상태에서 약간 밝은 색상으로 변경 */
+    border-color: #708b58;
+    color: white;
+}
+
+.btnList {
+    border-radius: 5px;
+    border-color: #7C9C63;
+    background-color: #white;
+    color: #7C9C63;
+}
+
+.btnList:hover {
+    background-color: #708b58; /* hover 상태에서 약간 밝은 색상으로 변경 */
+    border-color: #708b58;
+    color: white;
+}
+
+.btnCreate {
+    border-radius: 5px;
+    border-color: #7C9C63;
+    background-color: #white;
+    color: #7C9C63;
+}
+
+.btnCreate:hover {
+    background-color: #708b58; /* hover 상태에서 약간 밝은 색상으로 변경 */
+    border-color: #708b58;
+    color: white;
+}
+</style>
+    
+</head>
+<body>
+    <div class=" wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content">
+            <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+            <main>
+                <div class="mt-10 card">
+                    <div class="card-header"
+                        style="background-color: white;">
+                        <h1 class="card-title align-center mt-2">QnA</h1>
+                        <form th:action="@{/community/qna/search}"
+                            action="${qnaSearchPage}">
+                            <div class="row">
+                                <div class="col-2">
+                                    <select class="form-control" name="category">
+                                        <option value="t">제목</option>
+                                        <option value="c">내용</option>
+                                        <option value="tc">제목+내용</option>
+                                        <option value="a">작성자</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <input class="form-control"
+                                        type="text" name="keyword"
+                                        placeholder="검색어 입력" required />
+                                </div>
+                                <div class="col-2">
+                                    <input type="submit"
+                                        class="form-control btn btn-outline-primary"
+                                        value="검색" />
+                                </div>
+                                <div class="col-2">
+                                    <button type="button"
+                                        class="form-control btn btn-outline-primary"
+                                        th:onclick="|location.href='@{/finalproject/community/qna/list}'|">전체
+                                        목록</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="card-body">
+                    <!-- 알림 메시지 표시 -->
+                    <div th:if="${message}" class="alert alert-warning" role="alert" th:text="${message}"></div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th>번호</th>
+                                    <th>제목</th>
+                                    <th>작성자</th>
+                                    <th>수정시간</th>
+                                    <th>답변상태</th>
+                                    <th>조회수</th>
+                                </tr>
+                            </thead>
+							<tbody>
+                                    <tr th:each="qna : ${qnas}" style="cursor:pointer; text-align: center;"
+                                        th:onclick="|location.href='@{/community/qna/details(id=${qna.id})}'|">
+                                        <td class="col-1" th:text="${qna.id}"></td>
+                                        <td class="col-3">
+                                            <a th:href="@{/community/qna/details(id=${qna.id})}">
+                                                <span th:text="${qna.title}"></span>
+                                                <img th:if="${qna.qnaLock == 1}" th:src="@{/images/community/secret.png}" class="secret-icon" alt="비밀글">
+                                            </a>
+                                        </td>
+                                        <td class="col-2" th:text="${qna.author}"></td>
+                                        <td class="col-2" th:text="${qna.modifiedTime}"></td>
+                                        <td th:classappend="${qna.qnaState == 0 ? 'status-waiting' : 'status-completed'} + 'col-2'">
+                                            <span th:text="${qna.qnaState == 0 ? '답변 대기' : '답변 완료'}"></span>
+                                        </td>
+                                        <td class="col-1" th:text="${qna.qnaViewCnt}"></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(qnas)}">
+                                        <td colspan="6" style="text-align: center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                        
+                         <a style="text-align: left">총 게시글 수: <span th:text="${totalCount}"></span> 개</a>
+                            <div class="text-end">
+                                <a class="btn btnCreate" th:href="@{/community/qna/create}" style="text-align: right">글작성</a>
+                            </div>
+                            <div>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage - 1}&category=${category}&keyword=${keyword}|}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                            th:classappend="${currentPage == i} ? 'active'">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${i}&category=${category}&keyword=${keyword}|}" th:text="${i + 1}"></a>
+                                        </li>
+                                        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage + 1}&category=${category}&keyword=${keyword}|}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        
+                        
+                    </div>
+
+                    <div
+                        class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <button type="button"
+                            onclick="location.href ='create'"
+                            class="btn btn-outline-primary"
+                            th:if="${userRole == 0}">글 작성</button>
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+    
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>

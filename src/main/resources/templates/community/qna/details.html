@@ -21,23 +21,23 @@
                 <div class="mt-10 card">
                     <div class="card-header"
                         style="background-color: white;">
-                        <h2 th:text="${notice.notTitle}"></h2>
+                        <h2 th:text="${qna.title}"></h2>
                     </div>
                     <div class="card-body">
                         <form>
                             <div class="mt-2">
-                                <label for="notPostId"
+                                <label for="id"
                                     class="form-label">번호</label> <input
-                                    id="notPostId" class="form-control"
-                                    type="text" name="notPostId"
-                                    th:value="${notice.notPostId}"
+                                    id="id" class="form-control"
+                                    type="text" name="id"
+                                    th:value="${qna.id}"
                                     readonly />
                             </div>
                             <div class="mt-2">
                                 <label for="content" class="form-label">내용</label>
                                 <textarea id="content"
                                     class="form-control" rows="5"
-                                    th:text="${notice.notContent}"
+                                    th:text="${qna.content}"
                                     readonly></textarea>
                             </div>
                             <div class="mt-2">
@@ -45,7 +45,7 @@
                                     class="form-label">작성 시간</label> <input
                                     id="createdTime"
                                     class="form-control" type="text"
-                                    th:value="${notice.notCreatedTime}"
+                                    th:value="${qna.createdTime}"
                                     readonly />
                             </div>
                             <div class="mt-2">
@@ -53,12 +53,12 @@
                                     class="form-label">최종 수정 시간</label>
                                 <input id="modifiedTime"
                                     class="form-control" type="text"
-                                    th:value="${notice.notModifiedTime}"
+                                    th:value="${qna.modifiedTime}"
                                     readonly />
                             </div>
                             <a class="btn btn-outline-primary"
                                 style="align-items: right"
-                                th:href="@{/community/notice/list}">목록보기</a>
+                                th:href="@{/community/qna/list}">목록보기</a>
                         </form>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                     <button id="btnDelete" type="button"
                         class="btn btn-outline-danger">삭제하기</button>
                     <a class="btn btn-outline-primary"
-                        th:href="@{/community/notice/modify(id=${notice.notPostId})}">수정하기</a>
+                        th:href="@{/community/qna/modify(id=${qna.id})}">수정하기</a>
                 </div>
             </main>
 

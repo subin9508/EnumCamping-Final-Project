@@ -13,18 +13,24 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE) @Builder
-public class QnAListItemdto {
+public class QnAListItemDto {
 	private Long id;
 	private String title;
 	private String author;
 	private LocalDateTime modifiedTime;
+	private Integer qnaLock;
+	private Integer qnaState;
+	private Integer qnaViewCnt;
 	
-	public static QnAListItemdto fromEntity(QnA entity) {
-		return QnAListItemdto.builder()
+	public static QnAListItemDto fromEntity(QnA entity) {
+		return QnAListItemDto.builder()
 				.id(entity.getId())
 				.title(entity.getTitle())
 				.author(entity.getAuthor())
 				.modifiedTime(entity.getModifiedTime())
+				.qnaLock(entity.getQna_lock())
+				.qnaState(entity.getQna_state())
+				.qnaViewCnt(entity.getView_cnt())
 				.build();
 	}
 }
