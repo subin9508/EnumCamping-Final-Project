@@ -53,7 +53,7 @@ public class QnA extends BaseTimeEntity {
     // update 기능(제목/내용 수정)에서 사용할 공개 메서드
     public QnA update(String title, String content) {
         this.title = title;
-        this.content = content;
+        this.content = content; 
         
         return this;
     }
