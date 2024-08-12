@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+.custom-form {
+    width: 100%; /* 폼의 너비를 70%로 설정 */
+    margin: auto; /* 가운데 정렬 */
+}
+
+.form-container {
+    margin-bottom: 50px; /* 폼 사이 간격을 설정 */
+}
+
+.table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px;
+}
+
+.card {
+    width: 100%;
+}
+
+.no-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.btn-payment {
+    border-radius: 5px;
+    border-color: #7C9C63;
+    background-color: #7C9C63;
+    color: white;
+    padding: 10px 24px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.btn-payment:hover {
+    background-color: #708b58;
+    color: white;
+}
+
+.btn-payment:disabled {
+    background-color: #a5bd95; /* hover 상태에서 약간 밝은 색상으로 변경 */
+    border-color: #a5bd95;
+    color: white;
+}

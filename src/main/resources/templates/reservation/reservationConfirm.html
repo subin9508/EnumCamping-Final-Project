@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+                
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+</head>
+
+<body>
+<div class="wrapper">
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <div class="footer-main-content">
+        
+            <main style="width: 70%; margin-left: auto; margin-right: auto; margin-bottom: 5%; margin-top: 5%">
+                <div class="mt-2 card">
+                    <div class="card-header">
+                        <h2>예약내역</h2>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="d-flex">
+                                <div class="mt-2 flex-fill me-2">
+                                    <label for="resCheckIn" class="form-label">체크인 날짜</label>
+                                    <input id="resCheckIn" class="form-control" type="text"
+                                            readonly /><!-- th:value="${resMaster.resCheckIn}" -->
+                                </div>
+                                <div class="mt-2 flex-fill ms-2">
+                                    <label for="resCheckOut" class="form-label">체크아웃 날짜</label>
+                                    <input id="resCheckOut" class="form-control" type="text"
+                                           readonly /> <!-- th:value="${resMaster.resCheckOut}"  -->
+                                </div>
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="resCreatedTime" class="form-label">예약 일시</label>
+                                <input id="resCreatedTime" class="form-control" type="text"
+                                        readonly /> <!-- th:value="${resMaster.resCreatedTime}" -->
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="resArea" class="form-label">예약 구역</label>
+                                <input readonly class="form-control" type="text" name="resArea"
+                                       />
+                                                 <!-- th:value="${#lists.contains(#list.range(1, 4), item.itemId) ? '캠핑존 A-1' : 
+                                                 #lists.contains(#list.range(5, 8), item.itemId) ? '캠핑존 A-2' : 
+                                                 #lists.contains(#list.range(9, 12), item.itemId) ? '캠핑존 B-1' : 
+                                                 #lists.contains(#list.range(13, 16), item.itemId) ? '캠핑존 B-2' : 
+                                                 #lists.contains(#list.range(17, 20), item.itemId) ? '캠핑존 C' : ''}"  -->
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="resItems" class="form-label">구매/대여 물품</label>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">물품 이름</th>
+                                        <th scope="col">물품 수량</th>
+                                        <th scope="col">물품 가격</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item : ${resDetail}" th:if="${item.itemId > 20}">
+                                        <td ></td><!-- th:text="${item.itemName}" -->
+                                        <td ></td><!-- th:text="${item.itemQuantity}" -->
+                                        <td ></td><!-- th:text="${item.itemAmount}" -->
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="requirement" class="form-label">요청사항</label>
+                                <textarea id="requirement" class="form-control" rows="5" readonly
+                                          ></textarea>
+                                          <!-- th:text="${#strings.isEmpty(resMaster.requirement) ? '요청없음' : resMaster.requirement}" -->
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="resTotalPrice" class="form-label">총 가격</label>
+                                <input id="resTotalPrice" class="form-control" type="text"
+                                        readonly />
+                                       <!-- th:value="${resMaster.resTotalPrice}" -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="container-fluid d-flex justify-content-center">
+                    <div class="text-center mt-5">
+                        <h2>결제가 완료되었습니다</h2>
+                        <p>이용해 주셔서 감사합니다.</p>
+                        <a th:href="@{/user/reservation_list}" class="btn btn-primary mt-3">예약 상세내역으로 가기</a>
+                        <a th:href="@{/}" class="btn btn-primary mt-3">홈으로 가기</a>
+                    </div>
+                </div>
+            </main>
+
+            <!-- 푸터 -->
+    		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        </div>
+    </div>
+
+    <!-- 부트 스트랩 JS -->
+  <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <!-- Weather JS -->
+  <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+  
+   
+
+</body>
+</html>
