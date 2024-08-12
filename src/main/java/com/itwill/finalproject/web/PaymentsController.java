@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.itwill.finalproject.dto.ReservationDetailListDto;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.exception.ControllerException;
 import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.domain.ReservationMaster;
@@ -127,7 +127,7 @@ public class PaymentsController {
     @GetMapping("/reservation/succeeded/{resId}")
     public String paymentSucceeded(@PathVariable("resId") Integer resId, Integer rdId, Model model, HttpSession session) {
         Optional<ReservationMaster> resMaster = userService.readReservationMasterDetails(resId);
-        List<ReservationDetailListDto> resDetail = userService.readReservationDetails(rdId);
+        List<ReservationDetailDto> resDetail = userService.readReservationDetails(rdId);
 
         String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가

@@ -1,6 +1,5 @@
 package com.itwill.finalproject.domain;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -43,7 +42,7 @@ public class User {
 	private String userPhone; //핸드폰
 	
 	@Column(nullable = false)
-	private String userRole; //일반유저인지 관리자인지
+	private Integer userRole; //일반유저인지 관리자인지
 	
 	private Integer userState; // 유저 상태 (탈퇴인지 아닌지)
 	
