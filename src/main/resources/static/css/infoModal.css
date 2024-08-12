@@ -1,0 +1,83 @@
+@charset "UTF-8";
+.facilities-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.facilities-card {
+    width: 30%;
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.facilities-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.modal-dialog {
+    max-width: 500px; /* 모달 창의 너비를 500px로 고정 */
+}
+
+.modal-content {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* 패딩 제거 */
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: calc(100% - 60px); /* 하단 텍스트 공간을 확보하기 위해 이미지 높이 조정 */
+    object-fit: contain; /* 이미지를 비율에 맞게 조정 */
+}
+
+.carousel-inner {
+    width: 100%;
+    height: auto;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    width: 100%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center; /* 제목을 중앙으로 정렬 */
+    align-items: center;
+    position: relative;
+}
+
+.modal-title {
+    flex-grow: 1; /* 제목이 가운데 정렬되도록 플렉스 공간 차지 */
+    text-align: center; /* 텍스트를 중앙 정렬 */
+}
+
+.btn-close {
+    position: absolute;
+    right: 15px; /* 닫기 버튼을 오른쪽 끝에 위치 */
+    top: 15px;
+    z-index: 1050; /* 버튼이 항상 위에 표시되도록 z-index 설정 */
+}
+
+@media only screen and (max-width: 768px) {
+    .facilities-card {
+        width: 100%;
+    }
+}
