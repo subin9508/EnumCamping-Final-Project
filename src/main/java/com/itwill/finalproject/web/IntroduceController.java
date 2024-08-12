@@ -35,14 +35,14 @@ public class IntroduceController {
 	@GetMapping("/facilities")
 	public String facilities() {
 		log.debug("facilities()");
-		return "/intro/facilities";
+		return "/introduce/facilities";
 	
 	}
 	
 	@GetMapping("/travel")
 	public String travel() {
 		log.debug("travel()");
-		return "/intro/travel";
+		return "/introduce/travel";
 	
 	}
 
