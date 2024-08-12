@@ -39,13 +39,13 @@ public class ReservationMaster {
 	
 	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_KEY")
-	private User user;
+	@JoinColumn(name = "USER_KEY", referencedColumnName = "userKey")
+	private User user; // userKey
 	
 	private String requirement;
 	
-	@CreatedDate
-	private String resCreatedTime;
+	private LocalDateTime resCreatedTime;
+
 	
 	@LastModifiedDate
 	private LocalDateTime resModifiedTime;
