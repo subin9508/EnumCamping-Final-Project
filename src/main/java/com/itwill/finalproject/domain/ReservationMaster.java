@@ -4,10 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.itwill.finalproject.repository.UserRepository;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +31,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class ReservationMaster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +44,10 @@ public class ReservationMaster {
 	
 	private String requirement;
 	
+	@CreatedDate
 	private String resCreatedTime;
 	
+	@LastModifiedDate
 	private LocalDateTime resModifiedTime;
 	
 	private LocalDate resCheckIn;

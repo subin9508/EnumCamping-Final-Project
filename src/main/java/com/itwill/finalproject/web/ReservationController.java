@@ -21,6 +21,7 @@ import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ReservationService;
@@ -88,9 +89,10 @@ public class ReservationController {
 		public String showOrderPage(HttpSession session, Model model) {
 		    String userId = (String) session.getAttribute("signedInUser");
 		    User user = userSvc.read(userId);
+		    Integer userKey = user.getUserKey();
 		    
-		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserId(userId);
-		    List<ReservationDetail> reservationDetails = reservationSvc.getReservationDetailsByUserId(userId);
+		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserId(userKey);
+		    List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
 		    model.addAttribute("user", user);
 		    model.addAttribute("reservationMaster", reservationMaster);
@@ -100,20 +102,36 @@ public class ReservationController {
 		}
 		
 		@PostMapping("/order")
-		public String getReservationList
-		(@RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+		public String getReservationList(
+		        @RequestBody Map<String, Object> requestData, 
+		        HttpSession session, 
+		        Model model) {
+
 		    log.debug("reservationList(requestData={})", requestData);
-		        
+		    
 		    // 세션에서 사용자 정보 가져오기
 		    String userId = (String) session.getAttribute("signedInUser");
 		    log.debug("userId={}", userId);
 		    User user = userSvc.read(userId);
 		    model.addAttribute("user", user);
 		    
-//		    reservationService.deleteReservationDetail(userId);
-//		    reservationService.deleteReservationMaster(userId);
-
+		    // User 객체에서 userKey 가져오기
+		    Integer userKey = user.getUserKey();
+		    log.debug("userKey={}", userKey);
+		    model.addAttribute("userKey", userKey);
+		    
+		    // 기존 예약 상세 정보와 마스터 정보 삭제
+		    try {
+		        log.debug("Attempting to delete reservation master for userId: {}", userId);
+		        reservationSvc.deleteReservationMaster(userKey);
+		        log.info("Successfully deleted reservation master for userId: {}", userId);
+		    } catch (Exception e) {
+		        log.error("Failed to delete reservation master for userId: {}", userId, e);
+		        return "/reservation/order";
+		    }
+		    
 		    // requestData에서 reservationMaster와 reservationDetail 추출
+		 // requestData에서 reservationMaster와 reservationDetail 추출
 		    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
 		    List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData.get("reservationDetail");
 
@@ -133,43 +151,44 @@ public class ReservationController {
 		    reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
 		    reservationMaster.setRequirement((String)reservationMasterMap.get("requirement"));
 		    
-		    // ReservationDetail 객체 생성 및 설정
-		    
-		    List<ReservationDetail> reservationDetails = new ArrayList<>();
+		    // ReservationDetailDto 객체 리스트 생성 및 설정
+		    List<ReservationDetailDto> reservationDetails = new ArrayList<>();
 
 		    for (Map<String, Object> detailMap : reservationDetailList) {
-		        Object itemIdObj = detailMap.get("itemId");
-		        Object itemAmountObj = detailMap.get("itemAmount");
-		        Object itemQuantityObj = detailMap.get("itemQuantity");
+		        Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString()) : null;
+		        Integer itemQuantity = (detailMap.get("itemQuantity") != null) ? Integer.parseInt(detailMap.get("itemQuantity").toString()) : null;
+		        Integer itemAmount = (detailMap.get("itemAmount") != null) ? Integer.parseInt(detailMap.get("itemAmount").toString()) : null;
 
-		        log.debug("itemIdObj={}, itemAmountObj={}", itemIdObj, itemAmountObj);
+		        log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
 
-		        if (itemIdObj == null || itemAmountObj == null) {
-		            log.error("itemId or itemAmount is null");
+		        if (itemId == null || itemAmount == null || itemQuantity == null) {
+		            log.error("itemId, itemAmount, or itemQuantity is null");
 		            return "/reservation/order";
 		        }
 
-		        ReservationDetail reservationDetail = new ReservationDetail();
-		     // ItemsRepository에서 itemId로 Items 객체를 찾고 설정
-		        Integer itemId = Integer.parseInt(itemIdObj.toString());
-		        reservationDetail.setItemById(itemId, itemsRepo);
-		        reservationDetail.setItemQuantity(Integer.parseInt(itemQuantityObj.toString()));
-		        reservationDetail.setItemAmount(Integer.parseInt(itemAmountObj.toString()));
+		        ReservationDetailDto reservationDetail = new ReservationDetailDto();
+		        reservationDetail.setItemId(itemId);
+		        reservationDetail.setItemQuantity(itemQuantity);
+		        reservationDetail.setItemAmount(itemAmount);
 		        reservationDetails.add(reservationDetail);
 		    }
 		    
+		    // 서비스 레이어를 통해 예약 생성
+		    log.debug("Before calling makeReservation method");
 		    reservationSvc.makeReservation(reservationMaster, reservationDetails);
-
+		    log.debug("After calling makeReservation method");
+		    
 		    // 예약정보 가져오기
-		    reservationMaster = reservationSvc.getReservationMasterByUserId(userId);
-		 	 		
-		 	// 예약 상세정보 가져오기
-		 	 reservationDetails = reservationSvc.getReservationDetailsByUserId(userId);
-		 	 	
-		 	 model.addAttribute("reservationMaster", reservationMaster);
-		 	 model.addAttribute("reservationDetails", reservationDetails);
+		    reservationMaster = reservationSvc.getReservationMasterByUserId(userKey);
+		    // 예약 상세정보 가져오기
+		    List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+		    
+		    // 모델에 데이터 추가
+		    model.addAttribute("reservationMaster", reservationMaster);
+		    model.addAttribute("reservationDetails", updatedReservationDetails);
 		    
 		    return "/reservation/order";
 		}
+
 
 }

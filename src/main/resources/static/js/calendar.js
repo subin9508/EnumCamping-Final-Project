@@ -6,7 +6,7 @@ var selectedArea= null;
 var selectedNight = null;
 // 전역 변수 추가
 var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
- 
+
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
