@@ -164,12 +164,18 @@
 
   <!-- Weather JS -->
   <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+  
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+	<!-- payment JS -->
+	<script th:src="@{/js/payments.js}"></script>
+
+
  <script>
 					// 페이지 로딩 시 초기 버튼 상태 설정
 					document.addEventListener('DOMContentLoaded', function() {
