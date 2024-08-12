@@ -93,6 +93,7 @@ public class QnAService {
         
         Pageable pageable = PageRequest.of(dto.getP(), 5, sort);
         Page<QnA> result = null;
+        
         switch (dto.getCategory()) {
         case "t":
             result = qnaRepo.findByTitleContainingIgnoreCase(dto.getKeyword(), pageable);

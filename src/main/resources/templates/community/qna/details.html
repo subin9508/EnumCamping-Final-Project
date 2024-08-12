@@ -91,15 +91,16 @@
                                     class="form-label">작성 시간</label> <input
                                     id="createdTime"
                                     class="form-control" type="text"
-                                    th:value="${qna.createdTime}"
+                                    th:value="${#temporals.format(qna.createdTime, 'yyyy-MM-dd HH:mm:ss')}"
                                     readonly />
+                                    
                             </div>
                             <div class="mt-2">
                                 <label for="modifiedTime"
                                     class="form-label">최종 수정 시간</label>
                                 <input id="modifiedTime"
                                     class="form-control" type="text"
-                                    th:value="${qna.modifiedTime}"
+                                    th:value="${#temporals.format(qna.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"
                                     readonly />
                             </div>
                             

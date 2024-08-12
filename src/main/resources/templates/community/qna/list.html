@@ -138,7 +138,7 @@ ul.pagination {
                                 <div class="col-2">
                                     <button type="button"
                                         class="form-control btn btnList"
-                                        th:onclick="|location.href='@{/finalproject/community/qna/list}'|">전체
+                                        th:onclick="|location.href='@{/community/qna/list}'|">전체
                                         목록</button>
                                 </div>
                             </div>
@@ -170,7 +170,7 @@ ul.pagination {
                                             </a>
                                         </td>
                                         <td class="col-2" th:text="${qna.author}"></td>
-                                        <td class="col-2" th:text="${qna.modifiedTime}"></td>
+                                        <td class="col-2" th:text="${#temporals.format(qna.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                         <td th:classappend="${qna.qnaState == 0 ? 'status-waiting' : 'status-completed'} + 'col-2'">
                                             <span th:text="${qna.qnaState == 0 ? '답변 대기' : '답변 완료'}"></span>
                                         </td>
@@ -187,17 +187,19 @@ ul.pagination {
                                 <a class="btn btnCreate" th:href="@{/community/qna/create}" style="text-align: right">글작성</a>
                             </div>
                             <div>
-                                <nav aria-label="Page navigation example">
+                                <nav aria-label="Page navigation example" th:if="${totalPages != null and totalPages > 0}">
                                     <ul class="pagination">
                                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage != null && currentPage > 0 ? currentPage - 1 : 0}&category=${category}&keyword=${keyword}|}" 
+                                            <a class="page-link" 
+                                            	th:href="@{|${baseUrl}?p=${currentPage != null && currentPage > 0 ? currentPage - 1 : 0}&category=${category}&keyword=${keyword}|}" 
                                             	aria-label="Previous">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </li>
                                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                             th:classappend="${currentPage != null && currentPage == i} ? 'active'">
-                                            <a class="page-link" th:href="@{|${baseUrl}?p=${i}&category=${category}&keyword=${keyword}|}" th:text="${i + 1}"></a>
+                                            <a class="page-link" 
+                                            	th:href="@{|${baseUrl}?p=${i}&category=${category}&keyword=${keyword}|}" th:text="${i + 1}"></a>
                                         </li>
                                         <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
                                             <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage != null && currentPage + 1 < totalPages ? currentPage + 1 : currentPage}&category=${category}&keyword=${keyword}|}" aria-label="Next">

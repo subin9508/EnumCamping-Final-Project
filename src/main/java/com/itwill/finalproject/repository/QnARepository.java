@@ -23,9 +23,9 @@ public interface QnARepository extends JpaRepository<QnA, Long>, QnAQuerydsl {
     // 제목 또는 내용에 포함된 문자열 대소문자 구분없이 검색하기:
     // findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(args)
     // findByTitleContainingOrContentContainingAllIgnoreCase(args)
-    @Query("select q from QnA q "
-            + "where upper(q.title) like upper('%' || :keyword || '%') "
-            + "or upper(q.content) like upper('%' || :keyword || '%') ")
+    @Query("select p from QnA p "
+            + "where upper(p.title) like upper('%' || :keyword || '%') "
+            + "or upper(p.content) like upper('%' || :keyword || '%') ")
     Page<QnA> findByTitleOrContent(@Param("keyword") String keyword, Pageable pageable);
     
 }

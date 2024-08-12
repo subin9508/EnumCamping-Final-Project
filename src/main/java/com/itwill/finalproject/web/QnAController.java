@@ -113,7 +113,19 @@ public class QnAController {
         log.info("search(dto={})", dto);
         
         Page<QnAListItemDto> result = qnaSvc.search(dto, Sort.by("id").descending());
-        model.addAttribute("page", result);
+        
+        // 일관된 모델 속성 이름 사용
+        model.addAttribute("pager", result);  // "page"를 "pager"로 변경
+        model.addAttribute("qnas", result.getContent());  // 페이지 콘텐츠를 별도로 전달
+        model.addAttribute("totalCount", result.getTotalElements());
+        
+        // 현재 페이지 번호, 총 페이지 수를 모델에 추가
+        model.addAttribute("currentPage", result.getNumber()); // 현재 페이지 번호 (0부터 시작)
+        model.addAttribute("totalPages", result.getTotalPages()); // 총 페이지 수
+        
+        // 검색 조건을 유지하기 위해 category와 keyword를 모델에 추가
+        model.addAttribute("category", dto.getCategory());
+        model.addAttribute("keyword", dto.getKeyword());
         
         // pagination fragment에서 사용할 현재 요청 주소 정보
         model.addAttribute("baseUrl", "/community/qna/search");
