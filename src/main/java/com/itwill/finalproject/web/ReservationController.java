@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.domain.Items;
@@ -188,6 +189,19 @@ public class ReservationController {
 		    model.addAttribute("reservationDetails", updatedReservationDetails);
 		    
 		    return "/reservation/order";
+		}
+		
+		@GetMapping("/reservationConfirm")
+		public String reservationConfirm(@RequestParam(name = "resId") int resId, Model model) {
+			log.debug("reservationConfirm()");
+			
+			ReservationMaster resMaster = userSvc.readReservationMasterDetails(resId).orElseThrow();
+			List<ReservationDetailDto> resDetail = userSvc.readReservationDetails(resId);
+
+			model.addAttribute("resMaster", resMaster);
+			model.addAttribute("resDetail", resDetail);
+
+			return "reservation/reservationConfirm";
 		}
 
 
