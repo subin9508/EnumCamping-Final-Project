@@ -53,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	
 
 	@GetMapping("/signin")
 	public void signin(HttpSession session) {
@@ -62,74 +61,70 @@ public class UserController {
 	}
 
 	@PostMapping("/signin")
-    public String signIn(UserSignInDto dto, 
-            @RequestParam(name = "target", defaultValue = "") String target,
-            HttpSession session) throws IOException {
-        log.info("POST signIn({})", dto);
-        
-        // 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
-        Optional<User> optionalUser = userService.read(dto);
-        
-        // 로그인 실패한 경우
-        if (!optionalUser.isPresent()) {
-            // 아이디와 비밀번호가 일치하는 사용자 없는 경우
-        	
-            return "redirect:/user/signin?result=f&target="
-                    + URLEncoder.encode(target, "UTF-8");
-        }
-        
-        User user = optionalUser.get();
+	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
+			HttpSession session) throws IOException {
+		log.info("POST signIn({})", dto);
 
-        // 비활성화된 사용자 확인
-        log.info("Checking if user is active...");
-        boolean isActive = userService.checkUserIsActive(dto.getUserId());
-        log.info("User active status: {}", isActive);
-        if (!isActive) {
-            // 사용자가 비활성 상태인 경우
-            log.info("User is inactive");
-            return "redirect:/user/signin?result=inactive";
-        }
-        
-        
-        // 비활성화 기간 확인
-        if (!userService.checkDeactivationPeriod(dto.getUserId())) {
-            // 비활성화 기간이 남아있는 경우
-        	 log.info("User is still in deactivation period");
-            return "redirect:/user/signin?result=deactivated";
-        }
-        
-        // 로그인 성공 시 세션에 로그인 사용자 아이디를 저장  		 		
-        session.setAttribute("signedInUser", user.getUserId());
-        // 세션에 유저 role을 저장
-        log.info("getUserId={}",user.getUserId());
-        session.setAttribute("userRole", user.getUserRole());
+		// 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
+		Optional<User> optionalUser = userService.read(dto);
 
-        session.setAttribute("loginUserId", user.getUserKey());
-       
-        log.info("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
-        
-        // 로그인 성공 후 이동할 타겟 페이지
-        String targetPage = (target.equals("")) ? "/" : target;
-        
-        return "redirect:" + targetPage;
-    
-	
+		// 로그인 실패한 경우
+		if (!optionalUser.isPresent()) {
+			// 아이디와 비밀번호가 일치하는 사용자 없는 경우
+
+			return "redirect:/user/signin?result=f&target=" + URLEncoder.encode(target, "UTF-8");
+		}
+
+		User user = optionalUser.get();
+
+		// 비활성화된 사용자 확인
+		log.info("Checking if user is active...");
+		boolean isActive = userService.checkUserIsActive(dto.getUserId());
+		log.info("User active status: {}", isActive);
+		if (!isActive) {
+			// 사용자가 비활성 상태인 경우
+			log.info("User is inactive");
+			return "redirect:/user/signin?result=inactive";
+		}
+
+		// 비활성화 기간 확인
+		if (!userService.checkDeactivationPeriod(dto.getUserId())) {
+			// 비활성화 기간이 남아있는 경우
+			log.info("User is still in deactivation period");
+			return "redirect:/user/signin?result=deactivated";
+		}
+
+		// 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
+		session.setAttribute("signedInUser", user.getUserId());
+		// 세션에 유저 role을 저장
+		log.info("getUserId={}", user.getUserId());
+		session.setAttribute("userRole", user.getUserRole());
+
+		session.setAttribute("loginUserId", user.getUserKey());
+
+		log.info("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
+
+		// 로그인 성공 후 이동할 타겟 페이지
+		String targetPage = (target.equals("")) ? "/" : target;
+
+		return "redirect:" + targetPage;
+
 	}
 
 	@GetMapping("/signout")
 	public String signout(HttpServletRequest request, HttpServletResponse response) {
-	    HttpSession session = request.getSession(false);
-	    if (session != null) {
-	        session.invalidate();
-	    }
-	    Cookie[] cookies = request.getCookies();
-	    if (cookies != null) {
-	        for (Cookie cookie : cookies) {
-	            cookie.setMaxAge(0);
-	            response.addCookie(cookie);
-	        }
-	    }
-	    return "redirect:/";
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+		}
+		return "redirect:/";
 	}
 
 	@GetMapping("/signup") // GET 방식의 /user/signup 요청을 처리하는 컨트롤러 메서드
@@ -138,7 +133,7 @@ public class UserController {
 	}
 
 	@PostMapping("/signup") // POST 방식의 /user/signup 요청을 처리하는 컨트롤러 메서드
-	public String signUp(UserCreateDto dto) { 
+	public String signUp(UserCreateDto dto) {
 		log.info("POST signUp({})", dto);
 
 		userService.create(dto);
@@ -177,44 +172,43 @@ public class UserController {
 	// 비밀번호 확인 폼을 보여주는 메서드
 	@GetMapping("/password_check")
 	public String showPasswordCheckForm() {
-	    return "user/password_check";
+		return "user/password_check";
 	}
 
 	// 비밀번호 확인 처리 메서드
 	@PostMapping("/password_check")
 	public String passwordCheck(@RequestParam("password") String password, HttpSession session, Model model) {
-	    // 세션에서 사용자 ID 가져옴
-	    String userId = (String) session.getAttribute("signedInUser");
-	    if (userId == null) {
-	        return "redirect:/user/signin";
-	    }
+		// 세션에서 사용자 ID 가져옴
+		String userId = (String) session.getAttribute("signedInUser");
+		if (userId == null) {
+			return "redirect:/user/signin";
+		}
 
-	    // 사용자 정보 조회
-	    User user = userService.read(userId);
-	    if (user == null) {
-	        return "redirect:/user/signin";
-	    }
+		// 사용자 정보 조회
+		User user = userService.read(userId);
+		if (user == null) {
+			return "redirect:/user/signin";
+		}
 
-	    // 비밀번호 확인을 위한 DTO 생성
-	    
-	    UserSignInDto dto = new UserSignInDto();
-	    		
-	    dto.setUserId(user.getUserId());
-	    dto.setUserPassword(password);
+		// 비밀번호 확인을 위한 DTO 생성
 
-	    // 비밀번호 확인
-	    User verifiedUser = userService.read(dto).orElseThrow();
-	    if (verifiedUser != null) {
-	        // 비밀번호가 일치하면 사용자 정보 수정 페이지로 리다이렉트
-	        return "redirect:/user/user_update";
-	    } else {
-	        // 비밀번호가 일치하지 않으면 에러 메시지와 함께 비밀번호 확인 페이지로 돌아감
-	        model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
-	        return "user/password_check";
-	    }
+		UserSignInDto dto = new UserSignInDto();
+
+		dto.setUserId(user.getUserId());
+		dto.setUserPassword(password);
+
+		// 비밀번호 확인
+		User verifiedUser = userService.read(dto).orElseThrow();
+		if (verifiedUser != null) {
+			// 비밀번호가 일치하면 사용자 정보 수정 페이지로 리다이렉트
+			return "redirect:/user/user_update";
+		} else {
+			// 비밀번호가 일치하지 않으면 에러 메시지와 함께 비밀번호 확인 페이지로 돌아감
+			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+			return "user/password_check";
+		}
 	}
 
-	
 	@GetMapping("/findid")
 	public String findIdForm() {
 		return "user/findid"; // 아이디 찾기 입력 폼으로 이동
@@ -253,57 +247,57 @@ public class UserController {
 		}
 	}
 
-	
-    // 회원 탈퇴 페이지 조회
-    @GetMapping("/deactivateUser")
-    public String deactivateAccount(Model model, HttpSession session) {
-        // 세션에서 사용자 ID 가져오기
-         Integer userKey = (Integer) session.getAttribute("loginUserId");
-         log.info("세션에서 가져온 userKey: {}", userKey);
-        if (userKey == null) {
-            return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
-        }
-        
-        // 사용자 정보 가져오기
-        User user = userService.updateProfileImage(userKey, null);
-        log.info("가져온 사용자 정보: {}", user);
-        model.addAttribute("user", user);
-        
-        return "user/deactivateUser";
-    }
-    
-    // 회원 탈퇴 처리
-    @PostMapping("/deactivateUser")
-    @ResponseBody
-    public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, HttpSession session, HttpServletResponse response) {
-        log.info("Received deactivation request for userKey: {}", dto.getUserKey());
-        log.info("Password received: {}", dto.getUserPassword());
-    	
-    	// 요청 바디에서 id와 password를 추출
-        Integer userKey = (Integer) dto.getUserKey(); 
-        String userPassword = (String) dto.getUserPassword();
-    	
-        log.info("Before calling service - userKey: {}, password: {}", userKey, userPassword);
-        
-        // 회원 탈퇴 서비스 호출
-    	boolean result = userService.deactivateAccount(userKey, userPassword);
-        
-        if (result) {
-            // 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
-            session.invalidate();
-            
-            // 쿠키 삭제
-            Cookie cookie = new Cookie("user", null);
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            
-            log.info("Account deactivated successfully.");
-            return ResponseEntity.ok().body("/semiproject");
-        } else {
-        	log.info("비밀번호가 일치하지 않습니다.");
-            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-        }
-    }
-    
+	// 회원 탈퇴 페이지 조회
+	@GetMapping("/deactivateUser")
+	public String deactivateAccount(Model model, HttpSession session) {
+		// 세션에서 사용자 ID 가져오기
+		Integer userKey = (Integer) session.getAttribute("loginUserId");
+		log.info("세션에서 가져온 userKey: {}", userKey);
+		if (userKey == null) {
+			return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
+		}
+
+		// 사용자 정보 가져오기
+		User user = userService.updateProfileImage(userKey, null);
+		log.info("가져온 사용자 정보: {}", user);
+		model.addAttribute("user", user);
+
+		return "user/deactivateUser";
+	}
+
+	// 회원 탈퇴 처리
+	@PostMapping("/deactivateUser")
+	@ResponseBody
+	public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, HttpSession session,
+			HttpServletResponse response) {
+		log.info("Received deactivation request for userKey: {}", dto.getUserKey());
+		log.info("Password received: {}", dto.getUserPassword());
+
+		// 요청 바디에서 id와 password를 추출
+		Integer userKey = (Integer) dto.getUserKey();
+		String userPassword = (String) dto.getUserPassword();
+
+		log.info("Before calling service - userKey: {}, password: {}", userKey, userPassword);
+
+		// 회원 탈퇴 서비스 호출
+		boolean result = userService.deactivateAccount(userKey, userPassword);
+
+		if (result) {
+			// 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
+			session.invalidate();
+
+			// 쿠키 삭제
+			Cookie cookie = new Cookie("user", null);
+			cookie.setMaxAge(0);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+
+			log.info("Account deactivated successfully.");
+			return ResponseEntity.ok().body("/semiproject");
+		} else {
+			log.info("비밀번호가 일치하지 않습니다.");
+			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+		}
+	}
+
 }
