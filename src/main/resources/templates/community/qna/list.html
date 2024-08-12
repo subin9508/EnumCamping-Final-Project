@@ -119,10 +119,10 @@ ul.pagination {
                             <div class="row">
                                 <div class="col-2">
                                     <select class="form-control" name="category">
-                                        <option value="qt">제목</option>
-                                        <option value="qc">내용</option>
-                                        <option value="qtqc">제목+내용</option>
-                                        <option value="qu">작성자</option>
+                                        <option value="t">제목</option>
+                                        <option value="c">내용</option>
+                                        <option value="tc">제목+내용</option>
+                                        <option value="a">작성자</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
@@ -190,16 +190,17 @@ ul.pagination {
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination">
                                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage - 1}&category=${category}&keyword=${keyword}|}" aria-label="Previous">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage != null && currentPage > 0 ? currentPage - 1 : 0}&category=${category}&keyword=${keyword}|}" 
+                                            	aria-label="Previous">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </li>
                                         <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                                            th:classappend="${currentPage == i} ? 'active'">
+                                            th:classappend="${currentPage != null && currentPage == i} ? 'active'">
                                             <a class="page-link" th:href="@{|${baseUrl}?p=${i}&category=${category}&keyword=${keyword}|}" th:text="${i + 1}"></a>
                                         </li>
                                         <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage + 1}&category=${category}&keyword=${keyword}|}" aria-label="Next">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage != null && currentPage + 1 < totalPages ? currentPage + 1 : currentPage}&category=${category}&keyword=${keyword}|}" aria-label="Next">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
                                         </li>
