@@ -1,16 +1,19 @@
 package com.itwill.finalproject.service;
 
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ReservationDetailListDto;
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
+import com.itwill.finalproject.repository.ReservationDetailRepository;
+import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
     private final UserRepository userRepo;
-
+    private final ReservationMasterRepository reservationMasterRepo;
+    private final ReservationDetailRepository reservationDetailRepo;
 
 	// 아이디 중복 체크: true - 중복되지 않은 아이디(사용 가능한 아이디), false - 중복된 아이디.
     
@@ -149,6 +153,26 @@ public class UserService {
         // 업데이트된 사용자 정보 반환
         return userRepo.findByUserKey(userKey).orElse(null);
     }
+    
+    public Optional<ReservationMaster> readReservationList(Integer userKey) {
+        Optional<ReservationMaster> list = reservationMasterRepo.findById(userKey);
+        log.debug("Reservation list for user {}: {}", userKey, list);
+        return list;
+    }
 
-	
+    public Optional<ReservationMaster> readReservationMasterDetails(Integer resId) {
+        log.debug("Finding reservation master details for resId: {}", resId);
+        Optional<ReservationMaster> resMaster = reservationMasterRepo.findById(resId);
+        log.debug("Found ReservationMaster: {}", resMaster);
+        return resMaster;
+    }
+
+    public List<ReservationDetailListDto> readReservationDetails(Integer rdId) {
+        log.debug("Finding reservation details for resvationMaster: {}", rdId);
+        List<ReservationDetailListDto> resDetails = reservationDetailRepo.findByRdId(rdId);
+        log.debug("Found ReservationDetails: {}", resDetails);
+        return resDetails;
+    }
+    
+    
 }

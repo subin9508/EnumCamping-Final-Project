@@ -40,7 +40,7 @@
 				<div class="container-fluid">
 					<div class="d-flex align-items-center">
 						<!-- Logo -->
-						<a class="navbar-brand" href="/"> <img alt="logo"
+						<a class="navbar-brand" href="/enumcamping"> <img alt="logo"
 							th:src="@{/images/main/logo_horizontal.png}"
 							style="height: 60px; width: 200px;">
 						</a>
@@ -114,22 +114,24 @@
 								</ul></li>
 						</ul>
 						<ul class="navbar-nav navbar-user ms-auto">
-							<li class="nav-item" th:if="${signedInUser != null}"><a
-								class="nav-link"
-								th:href="@{/user/myPage(userId=${signedInUser})}"
-								style="font-weight: bold;">마이페이지</a></li>
-							<li class="nav-item" th:if="${signedInUser != null}"><a
-								class="nav-link" href="#"
-								th:onclick="'confirmLogout(@{/user/signout})'"
-								style="font-weight: bold;"> <span th:text="${signedInUser}"></span>
-									로그아웃
-							</a></li>
-							<li class="nav-item" th:if="${signedInUser eq null}"><a
-								class="nav-link" th:href="@{/user/signin}"
-								th:onclick="'confirmLogin(@{/user/signin})'">로그인</a></li>
-							<li class="nav-item" th:if="${signedInUser == null}"><a
-								class="nav-link" th:href="@{/user/signup}">회원가입</a></li>
+							<li class="nav-item" th:if="${session.signedInUser != null}">
+								<a class="nav-link"
+								th:href="@{/user/myPage(userId=${session.signedInUser})}"
+								style="font-weight: bold;">마이페이지</a>
+							</li>
+							<li class="nav-item" th:if="${session.signedInUser != null}">
+								<a class="nav-link" th:href="@{/user/signout}"
+								style="font-weight: bold;"> 로그아웃 </a>
+							</li>
+							<li class="nav-item" th:if="${session.signedInUser == null}">
+								<a class="nav-link" th:href="@{/user/signin}"
+								th:onclick="'confirmLogin(@{/user/signin})'">로그인</a>
+							</li>
+							<li class="nav-item" th:if="${session.signedInUser == null}">
+								<a class="nav-link" th:href="@{/user/signup}">회원가입</a>
+							</li>
 						</ul>
+
 					</div>
 				</div>
 			</nav>
@@ -164,7 +166,14 @@
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 		<script th:src="@{/js/weather.js}"></script>
 	</th:block>
-	
+
+
+	<!-- infoRental JS -->
+	<th:block th:fragment="infoRentalJS">
+		<script th:src="@{/js/infoRental.js}"></script>
+	</th:block>
+
+
 
 	<!-- 푸터 -->
 	<th:block th:fragment="footer">
@@ -234,8 +243,8 @@
 				<h3 id="title">이용안내</h3>
 			</div>
 			<ul class="sidebar-menu">
-				<li class="sidebar-item"><a th:href="@{/info/infoTime}">이용시간 및
-						요금</a></li>
+				<li class="sidebar-item"><a th:href="@{/info/infoTime}">이용시간
+						및 요금</a></li>
 				<li class="sidebar-item"><a th:href="@{/info/infoRefound}">환불규정</a>
 				</li>
 				<li class="sidebar-item"><a th:href="@{/info/infoBooking}">예약방법</a>
