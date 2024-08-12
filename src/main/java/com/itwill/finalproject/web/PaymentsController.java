@@ -135,6 +135,6 @@ public class PaymentsController {
         model.addAttribute("resDetail", resDetail);
         model.addAttribute("userId", userId); // 모델에 userId 추가
 
-        return "reservation/succeeded"; // succeeded.jsp 파일을 가리킴
+        return "reservation/succeeded"; // succeeded.html 파일을 가리킴
     }
 }
