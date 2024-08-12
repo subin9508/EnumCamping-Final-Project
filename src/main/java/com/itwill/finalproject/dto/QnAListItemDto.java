@@ -30,7 +30,7 @@ public class QnAListItemDto {
 				.modifiedTime(entity.getModifiedTime())
 				.qnaLock(entity.getQna_lock())
 				.qnaState(entity.getQna_state())
-				.qnaViewCnt(entity.getView_cnt())
+				.qnaViewCnt(entity.getQna_view_cnt())
 				.build();
 	}
 }

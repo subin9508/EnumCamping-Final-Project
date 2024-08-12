@@ -15,11 +15,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE) @Builder
 @Getter
+@Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -43,8 +45,7 @@ public class QnA extends BaseTimeEntity {
 	@Column(name = "QNA_USER_ID")
 	private String author;
 	
-	@Column(name = "QNA_VIEW_CNT")
-	private Integer view_cnt;
+	private Integer qna_view_cnt;
 		
 	private Integer qna_state;
 	

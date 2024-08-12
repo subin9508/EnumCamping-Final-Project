@@ -61,6 +61,9 @@ public class QnAService {
 		QnA entity = qnaRepo.findById(id).orElseThrow();
 		log.info("entity = {}", entity);
 		
+		entity.setQna_view_cnt(entity.getQna_view_cnt() + 1); // 조회수 증가
+        qnaRepo.save(entity); // 변경사항 저장
+		
 		return entity;
 	}
 
