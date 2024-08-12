@@ -6,7 +6,7 @@ var selectedArea= null;
 var selectedNight = null;
 // 전역 변수 추가
 var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
- 
+
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
@@ -459,13 +459,14 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         return date.toISOString().split('T')[0];
     }
     
-var selectedItems = [];
+	var selectedItems = [];
 
     function updateQuantity(itemId, itemPrice) {
         var quantity = document.getElementById('quantity-' + itemId).value;
+        console.log('quantity= ', quantity);
         var totalPrice = quantity * itemPrice;
-
-        document.getElementById('total-' + itemId).textContent = totalPrice + '원';
+		
+        // document.getElementById('total-' + itemId).textContent = totalPrice + '원';
 
         var selectedItem = {
             itemId: itemId,
