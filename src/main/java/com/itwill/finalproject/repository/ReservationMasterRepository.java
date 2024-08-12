@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.itwill.finalproject.domain.ReservationMaster;
+import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ReservationListDto;
 
 public interface ReservationMasterRepository extends JpaRepository<ReservationMaster, Integer> {
 	
@@ -27,4 +29,5 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
             + "and rm.resCheckIn = :resCheckIn")
 	List<ReservationMaster> selectByItemIdAndResCheckIn(@Param("itemId") int itemId, @Param("resCheckIn") LocalDate resCheckIn);
 	
+
 }
