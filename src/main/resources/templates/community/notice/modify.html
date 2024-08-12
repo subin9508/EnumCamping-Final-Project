@@ -29,18 +29,19 @@
                             <label for="id" class="form-label">번호</label>
                             <input id="id" class="form-control"
                                 type="text" name="id"
-                                value="${notice.id}" readonly />
+                               th:value="${notice.id}" readonly />
                         </div>
                         <div class="mb-3">
                             <label for="title" class="form-label">제목</label>
                             <input id="title" class="form-control"
                                 type="text" name="title"
-                                value="${notice.title}" />
+                                th:value="${notice.title}"/>
                         </div>
                         <div class="mb-3">
                             <label for="content" class="form-label">내용</label>
                             <textarea id="content" class="form-control"
-                                name="content" rows="5">${notice.content}</textarea>
+                                th:text="${notice.content}"
+                                name="content" rows="5"></textarea>
                         </div>
                     </form>
 

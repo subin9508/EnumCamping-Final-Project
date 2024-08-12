@@ -27,8 +27,8 @@
                     <div class="card-body">
                         <form>
                             <div class="mt-2">
-                                <label for="id"
-                                    class="form-label">번호</label> <input
+                                <label for="id" class="form-label">번호</label>
+                                <input
                                     id="id" class="form-control"
                                     type="text" name="id"
                                     th:value="${notice.id}"
@@ -46,7 +46,7 @@
                                     class="form-label">작성 시간</label> <input
                                     id="createdTime"
                                     class="form-control" type="text"
-                                    th:value="${notice.createdTime}"
+                                    th:value= "${#temporals.format(notice.createdTime,'yyyy-MM-dd HH:mm:ss')}"
                                     readonly />
                             </div>
                             <div class="mt-2">
@@ -54,7 +54,7 @@
                                     class="form-label">최종 수정 시간</label>
                                 <input id="modifiedTime"
                                     class="form-control" type="text"
-                                    th:value="${notice.modifiedTime}"
+                                    th:value= "${#temporals.format(notice.modifiedTime,'yyyy-MM-dd HH:mm:ss')}"
                                     readonly />
                             </div>
                             <a class="mt-2 btn btn-outline-primary"
@@ -64,12 +64,13 @@
                     </div>
                 </div>
 
-                <!-- signedUser 체크 - 일단 안함 
-                <div class="card-footer" th:if="${userRole == 0}"> -->
+                <!-- signedUser 체크 - 일단 안함 th:if="${userRole == 0}"-->
+                <div class="mt-2 card-footer" >
                     <button id="btnDelete" type="button"
                         class="btn btn-outline-danger">삭제하기</button>
                     <a class="btn btn-outline-primary"
                         th:href="@{/community/notice/modify(id=${notice.id})}">수정하기</a>
+                </div>
             </main>
 
         </div>
@@ -77,6 +78,8 @@
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
+    
+    <script th:src="@{/js/notice_delete.js}"></script>
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 

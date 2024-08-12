@@ -22,43 +22,46 @@ public class NoticeService {
 	private NoticeRepository notRepo;
 	
 	public List<NoticeListDto> selectAllNotice(){
-		List<Notice> list = notRepo.findAll();
-		log.debug("list={}",list);
+		List<Notice> list = notRepo.findAllByOrderByIdDesc();
+		log.info("list={}",list);
 		return list.stream().map(NoticeListDto::fromEntity).toList();
 	}
 	
 	public Notice selectNoticeById(int id){
-		log.debug("selectNoticeById");
+		log.info("selectNoticeById");
 		Notice notice = notRepo.findById(id).orElseThrow();
-		log.debug("notice={}",notice);
+		log.info("notice={}",notice);
 		return notice;
 	}
 	
 	public Notice insertNotice(NoticeCreateDto dto) {
-		log.debug("insertNotice");
+		log.info("insertNotice");
 		Notice result = notRepo.save(dto.toEntity());
 		
 		return result;
 	};
 	
 	public void deleteNotice(int id) {
-		log.debug("deleteNotice, id={}",id);
+		log.info("deleteNotice, id={}",id);
 		notRepo.deleteById(id);
 	}
 	
 	public int updateNotice(NoticeUpdateDto dto) {
-		log.debug("updateNotice, {}",dto);
+		log.info("updateNotice, {}",dto);
 		Notice notice = notRepo.findById(dto.getId()).orElseThrow();
-		notice.update(dto.getTitle(), dto.getContent(), dto.getModifiedTime());
+		
+		log.info("update 예정 Notice {}",notice);
+		notice.update(dto.getTitle(), dto.getContent());
+		log.info("update 후 Notice {}",notice);
 		return 0;
 	}
-/*
+
 	public List<NoticeListDto> search(NoticeSearchDto dto) {
-		log.debug("search()");
+		log.info("search(dto={})",dto);
 		
-		List<Notice> list =  dao.search(dto); //sql문장 만들어야함
+		List<Notice> list =  notRepo.searchByCategory(dto);
 		
 		return list.stream().map(NoticeListDto::fromEntity).toList();
 	}
-	*/
+	
 }

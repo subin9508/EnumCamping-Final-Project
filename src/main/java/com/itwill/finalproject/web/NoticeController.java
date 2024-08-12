@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.finalproject.domain.Notice;
+import com.itwill.finalproject.dto.NoticeCreateDto;
 import com.itwill.finalproject.dto.NoticeListDto;
+import com.itwill.finalproject.dto.NoticeSearchDto;
+import com.itwill.finalproject.dto.NoticeUpdateDto;
 import com.itwill.finalproject.service.NoticeService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,12 +46,13 @@ public class NoticeController {
 		log.info("model에 추가 {}",notice);
 		//return "community/notice/details";
 	}
-	/*
+	
 	//공지사항 작성 - jsp에서 admin계정 체크함
 	@GetMapping("/create")
 	public void noticeCreate(Notice notice) {
 		log.info("GET: create");
 	}
+	
 	
 	//공지사항 작성 제출
 	@PostMapping("/create")
@@ -65,11 +69,11 @@ public class NoticeController {
 	
 	//공지사항 삭제
 	@GetMapping("/delete")
-	public String noticedelete(@RequestParam(name = "notPostId") int notPostId) {
+	public String noticedelete(@RequestParam(name = "id") int id) {
 		log.info("GET: delete");
 		
 		//postId로 공지사항 삭제
-		noticeService.deleteNotice(notPostId);
+		noticeService.deleteNotice(id);
 		return "redirect:list";
 	}
 	
@@ -100,7 +104,7 @@ public class NoticeController {
     	
     	return "/community/notice/list";
     }
-	*/
+	
 	
 
 }    

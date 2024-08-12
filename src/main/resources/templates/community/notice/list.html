@@ -46,7 +46,7 @@
                                 <div class="col-2">
                                     <button type="button"
                                         class="form-control btn btn-outline-primary"
-                                        th:onclick="|location.href='@{/semiproject/community/notice/list}'|">전체
+                                        th:onclick="|location.href='@{/community/notice/list}'|">전체
                                         목록</button>
                                 </div>
                             </div>
@@ -69,19 +69,16 @@
                                     <td class="col-2" th:text="${n.id}"></td>
                                     <td class="col-7"
                                         th:text="${n.title}"></td>
-                                    <td class="col-3"
-                                        th:text="${n.modifiedTime}"></td>
+                                    <td class="col-3" th:text="*{#temporals.format(n.modifiedTime,'yyyy-MM-dd HH:mm:ss')}"></td> 
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <div
-                        class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                        <button type="button"
-                            onclick="location.href ='create'"
-                            class="btn btn-outline-primary"
-                            th:if="${userRole == 0}">공지사항 작성</button>
+                    
+                    <!-- th:if="${userRole == 0}" -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                        <button type="button" onclick="location.href ='create'"
+                            class="btn btn-outline-primary" >공지사항 작성</button>
                     </div>
 
                 </div>
