@@ -31,5 +31,20 @@ public class IntroduceController {
 		
 		return "/introduce/facilityLayout";
 	}
+		
+	@GetMapping("/facilities")
+	public String facilities() {
+		log.debug("facilities()");
+		return "/introduce/facilities";
+	
+	}
+	
+	@GetMapping("/travel")
+	public String travel() {
+		log.debug("travel()");
+		return "/introduce/travel";
+	
+	}
+
 
 }

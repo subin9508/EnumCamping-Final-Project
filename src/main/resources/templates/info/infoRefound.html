@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+        
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+        <link rel="stylesheet" th:href="@{/css/information.css}">
+        <!-- Bootstrap CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+	</head>
+	<body>
+		<div class="wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <div class="footer-main-content not-content">
+        <!--  사이드바 -->
+        <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
+            
+        <main class="main-content col-md-9 ms-sm-auto col-lg-10 px-md-4" >
+            <div class="content-1 text-left mt-5"> 
+          		<br>
+                <h1>
+                	<strong>[환불규정]</strong>
+                </h1>
+            </div>
+            
+            <section class="info-section mt-4">
+                    <div class="slider-container">
+                        <div class="slider">
+
+						<div class="info-text">
+							<br>
+							<h5>- 올바른 예약 문화를 위하여 저희 캠핑장에서는 예약 취소시 환불 기준을 아래와 같이 운영하고 있으니
+								확인하시고 예약해 주시기 바랍니다.</h5>
+							<br>
+							<h5>- 보호자 동반 없는 미성년자 예약 발견시, 환불 없이 예약취소됩니다.</h5>
+							<br>
+							<h5>- 예약일 변경시 발생하는 수수료는 취소 수수료와 동일하게 적용되오니 예약시 신중히 생각하시고 결정해
+								주시기 바랍니다.</h5>
+							<br>
+							<h5>- 양도 및 양수 불가합니다.</h5>
+							<br>
+							<h5>- 천재지변으로 인한 환불은 당일 기준 호우 경보/태풍 경보 발효시 100% 환불</h5>
+							<h5>(※당일 기상청에 발표한 홍천군 지역 기상특보 발효시 오전 8시 기준 적용. 메스컴 발표 모든 예보는 적용 불가.)</h5>
+							<br>
+							<h5>- 질병으로 인한 환불은 당일 기준 입실 예정자의 법정 전염병에 의한 자가 격리 전염병 확진,수술,입원으로 인한 취소시 100% 환불</h5>
+							<h5>(※단, 병원 진단서 및 입원 확인서 증빙 필수. 처방전 및 약품, 약국 구매 영수증 인정 불가)</h5>
+							<h5>(※상기 명시된 사유 이외에 모든 질병은 취소 및 연기 사유 해당 불가)</h5>
+							
+						</div>
+					<br> <br /> <br>
+					<div id="custom-responsive-table">
+					<table class="table">
+						<thead class="bg-light">
+							<tr>
+								<th>이용 당일</th>
+								<th>이용 1일전</th>
+								<th>이용 2일전</th>
+								<th>이용 3일전</th>
+								<th>이용 4일전</th>
+								<th>이용 5일전</th>
+								<th>이용 6일전</th>
+								<th>이용 7일전</th>
+								<th>이용 8일전</th>
+								<th>이용 9일전</th>
+								<th>이용 10일전</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td data-title="이용 당일">0% 환불</td>
+								<td data-title="이용 1일전">0% 환불</td>
+								<td data-title="이용 2일전">0% 환불</td>
+								<td data-title="이용 3일전">50% 환불</td>
+								<td data-title="이용 4일전">60% 환불</td>
+								<td data-title="이용 5일전">70% 환불</td>
+								<td data-title="이용 6일전">80% 환불</td>
+								<td data-title="이용 7일전">90% 환불</td>
+								<td data-title="이용 8일전">100% 환불</td>
+								<td data-title="이용 9일전">100% 환불</td>
+								<td data-title="이용 10일전">/</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+					<br /> <br /> <br /> <br /> <br />
+
+					</div>
+                   </div>
+
+                </section>
+                        
+            </main>
+		</div>
+		<!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        
+        </div>
+        
+        <!-- 부트 스트랩 JS -->
+        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    
+        <!-- Weather JS -->
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>

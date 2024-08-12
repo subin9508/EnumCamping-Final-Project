@@ -13,27 +13,25 @@ html, body {
     min-height: 100vh;
 }
 
-.main-content {
+.content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.heading-3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+main {
+    flex: 1;
 }
 
-.div {
-    color: #8BAF6F;
-    text-align: left;
-    font-size: 18px;
-    letter-spacing: -0.8px;
-    font-weight: 400;
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
     position: relative;
+    bottom: 0;
+    width: 100%;
+    clear: both;
 }
 
 .facility-section {
@@ -50,7 +48,7 @@ html, body {
     justify-content: center;
     width: 100%;
     max-width: 1200px;
-    overflow: hidden; /* Ensure the slider doesn't overflow */
+    overflow: hidden;
 }
 
 .slider {

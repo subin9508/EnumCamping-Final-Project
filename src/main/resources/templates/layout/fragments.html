@@ -40,7 +40,7 @@
 				<div class="container-fluid">
 					<div class="d-flex align-items-center">
 						<!-- Logo -->
-						<a class="navbar-brand" href="/"> <img alt="logo"
+						<a class="navbar-brand" href="/enumcamping"> <img alt="logo"
 							th:src="@{/images/main/logo_horizontal.png}"
 							style="height: 60px; width: 200px;">
 						</a>
@@ -124,8 +124,8 @@
 								style="font-weight: bold;"> <span th:text="${signedInUser}"></span>
 									로그아웃
 							</a></li>
-							<li class="nav-item" th:if="${signedInUser == null}"><a
-								class="nav-link" href="#"
+							<li class="nav-item" th:if="${signedInUser eq null}"><a
+								class="nav-link" th:href="@{/user/signin}"
 								th:onclick="'confirmLogin(@{/user/signin})'">로그인</a></li>
 							<li class="nav-item" th:if="${signedInUser == null}"><a
 								class="nav-link" th:href="@{/user/signup}">회원가입</a></li>
@@ -164,7 +164,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 		<script th:src="@{/js/weather.js}"></script>
 	</th:block>
-
+	
 
 	<!-- 푸터 -->
 	<th:block th:fragment="footer">
@@ -234,16 +234,16 @@
 				<h3 id="title">이용안내</h3>
 			</div>
 			<ul class="sidebar-menu">
-				<li class="sidebar-item"><a th:href="@{/infoTime}">이용시간 및
+				<li class="sidebar-item"><a th:href="@{/info/infoTime}">이용시간 및
 						요금</a></li>
-				<li class="sidebar-item"><a th:href="@{/infoRefound}">환불규정</a>
+				<li class="sidebar-item"><a th:href="@{/info/infoRefound}">환불규정</a>
 				</li>
-				<li class="sidebar-item"><a th:href="@{/infoBooking}">예약방법</a>
+				<li class="sidebar-item"><a th:href="@{/info/infoBooking}">예약방법</a>
 				</li>
-				<li class="sidebar-item"><a th:href="@{/infoRules}">이용준수사항</a>
+				<li class="sidebar-item"><a th:href="@{/info/infoRules}">이용준수사항</a>
 				</li>
-				<li class="sidebar-item"><a th:href="@{/infoSale}">판매물품목록</a></li>
-				<li class="sidebar-item"><a th:href="@{/infoRental}">대여물품목록</a>
+				<li class="sidebar-item"><a th:href="@{/info/infoSale}">판매물품목록</a></li>
+				<li class="sidebar-item"><a th:href="@{/info/infoRental}">대여물품목록</a>
 				</li>
 			</ul>
 		</aside>
@@ -357,8 +357,6 @@
 			</div>
 		</div>
 	</th:block>
-
-
 
 </body>
 </html>

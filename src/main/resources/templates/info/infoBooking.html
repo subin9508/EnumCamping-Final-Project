@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+        
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+        <!-- Bootstrap CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+	<body>
+		<div class="wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        
+        <div class="footer-main-content not-content">
+        <!--  사이드바 -->
+        <th:block th:replace="~{/layout/fragments :: info-sidebar}"></th:block>
+            
+        <main class="main-content col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="content-1 text-left mt-5"> 
+          		<br>
+                <h1>
+                	<strong>[예약방법]</strong>
+                </h1>
+            </div>
+            
+            <section class="info-section mt-4">
+                    <div class="slider-container">
+                        <div class="slider">
+                        
+						<div class="term">
+							<br> <br>
+							<h5>1. 매월 1일 기준으로 2개월 후 까지의 예약이 활성됩니다</h5>
+							<br />
+							<h5>2. 원하는 날짜 선택</h5>
+							<br />
+							<h5>3. 원하는 구역 및 물품 선택</h5>
+							<br />
+							<h5>4. 예약 신청</h5>
+							<br />
+							<h5>5. 예약 조회 및 확인</h5>
+							<br />
+							<h5>6. 모든 시설 이용객은 관리사무실에서 체크인 후 입장 가능합니다</h5>
+							<br />
+							<h5>7. 양도, 양수, 교환, 매매행위 금지합니다</h5>
+							<br />
+							<h5>8. 예약자와 시설이용자는 동일인이여야 합니다</h5>
+							<br> <br> <br> <br> <br> <br>
+						</div>
+
+                        </div>
+                   </div>
+
+                </section>
+                        
+            </main>
+		
+		</div>
+		<!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        
+        </div>
+        
+        <!-- 부트 스트랩 JS -->
+        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    
+        <!-- Weather JS -->
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>
