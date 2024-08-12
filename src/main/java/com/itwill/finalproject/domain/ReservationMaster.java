@@ -39,7 +39,7 @@ public class ReservationMaster {
 	
 	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID")
+	@JoinColumn(name = "USER_KEY")
 	private User user;
 	
 	private String requirement;

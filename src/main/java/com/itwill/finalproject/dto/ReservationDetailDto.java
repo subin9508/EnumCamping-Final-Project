@@ -9,14 +9,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReservationDetailDto {
 	
-	 private Integer resId;
+	private Integer resId;
 	 private Integer itemId;
 	 private Integer itemQuantity;
 	 private Integer itemAmount;
-	 
-	 public ReservationDetailDto(Integer itemId, Integer itemQuantity, Integer itemAmount) {
-		    this.itemId = itemId;
-		    this.itemQuantity = itemQuantity;
-		    this.itemAmount = itemAmount;
-		}
+	 private String itemName;
+	 private String itemImg;
+
+	 public ReservationDetailDto(Integer resId, Integer itemId, Integer itemQuantity, Integer itemAmount, String itemName, String itemImg) {
+		 this.resId = resId;
+		 this.itemId = itemId;
+		 this.itemQuantity = itemQuantity;
+		 this.itemAmount = itemAmount;
+		 this.itemName = itemName;
+		 this.itemImg = itemImg;
+	 }
 }

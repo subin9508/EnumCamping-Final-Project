@@ -14,7 +14,7 @@ import com.itwill.finalproject.dto.ReservationDetailDto;
 public interface ReservationDetailRepository extends JpaRepository<ReservationDetail, Integer>{
 	// userId에 해당하는 reservation_detail
 	// 특정 사용자 ID(userId)에 해당하는 예약 상세 정보를 조회
-	@Query("select rd.reservationMaster.resId, rd.item.itemId, rd.itemQuantity, rd.itemAmount, i.itemName, i.itemImg "
+	@Query("select new com.itwill.finalproject.dto.ReservationDetailDto(rd.reservationMaster.resId, rd.item.itemId, rd.itemQuantity, rd.itemAmount, i.itemName, i.itemImg) "
 			+ "from ReservationDetail rd "
 			+ "join Items i on rd.item.itemId = i.itemId "
 			+ "where rd.reservationMaster.resId = (select rm.resId from ReservationMaster rm where rm.user.userKey = :userKey and rm.resState = 0) "
@@ -25,7 +25,7 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
     // 특정 사용자 ID(userId)에 해당하는 예약 상태가 0인 예약 상세 정보를 삭제
 	@Modifying
 	@Query(value = "DELETE FROM reservation_detail rd WHERE rd.res_id IN " +
-	               "(SELECT rm.res_id FROM reservation_master rm WHERE rm.user_key = :userKey AND rm.res_state = 0)", 
+	               "(SELECT rm.res_id FROM reservation_master rm WHERE rm.userKey= :userKey AND rm.resState = 0)", 
 	       nativeQuery = true)
 	int deleteByResId(@Param("userKey") Integer userKey);
 }
