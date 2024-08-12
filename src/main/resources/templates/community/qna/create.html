@@ -5,10 +5,52 @@
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/footer.css}">
 <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/mypage_qna_list.css}">
 <!-- Bootstrap CSS -->
 <link
     href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
     rel="stylesheet">
+
+
+<style>
+/* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column; /* 작은 화면에서는 세로로 배치 */
+            }
+
+            .sidebar {
+                width: 100%; /* 사이드바가 전체 너비를 차지 */
+                max-width: 100%;
+                margin-bottom: 20px; /* 메인 콘텐츠와 간격을 유지 */
+                margin-right: 20px; 
+            }
+
+            .main-content {
+                margin-left: 0; /* 작은 화면에서는 여백 제거 */
+                width: 100%; /* 메인 콘텐츠가 전체 너비를 차지 */
+            }
+
+            .qna-list-container {
+                margin-top: 20px; /* 작은 화면에서 여백 추가 */
+            }
+            
+            .search-form {
+                flex-direction: column; /* 검색 폼을 세로로 배치 */
+            }
+
+            .search-form .form-control {
+                margin-bottom: 10px; /* 요소 사이에 여백 추가 */
+                width: 100%;
+            }
+
+            .search-form .btnSearch, .search-form .btnList {
+                width: 100%; /* 버튼 너비를 100%로 설정 */ 
+            }
+        }
+  
+</style>
+    
 </head>
 <body>
 
@@ -16,10 +58,12 @@
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
-        <div class="footer-main-content">
+        <div class="footer-main-content qna-content">
+        
             <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
-            <main>
-                <div class="mt-2 card" style="margin-left: 10px">
+            
+            <main class="col-md-9 ms-sm-auto col-lg-11 px-md-3">
+                <div class="mt-2 card" style="width: 85%">
                     <div class="card-header">
                         <h2>새 글 작성</h2>
                     </div>
@@ -50,7 +94,7 @@
 							<div class="d-none">
                             <label class="form-label" for="author">작성자</label>
                             <input type="text" class="form-control" id="author"
-                                name="author" th:value="${#authentication.userName}" readonly />
+                                name="author" th:value="${#authentication.author}" readonly />
                         	</div>
 							
 							<div class="mt-2">

@@ -1,15 +1,14 @@
  @charset "UTF-8";
  
     .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+            display: flex;
+        }
 
-    .container-fluid {
-        flex: 1;
-        padding: 20px;
-    }
+
+        .main-content {
+            flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
+            margin-left: 20px; /* 사이드바와의 간격 */
+        }
 
     .card {
         margin: 2rem auto;
@@ -17,8 +16,8 @@
         background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        margin-right: 326px;
-        margin-left: 148px;
+        width: 100%
+
     }
 
     .qna-title {
@@ -49,6 +48,4 @@
         text-decoration: none;
     }
 
-    .footer-main-content {
-        display: flex;
-    }
+ 

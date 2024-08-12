@@ -61,23 +61,22 @@ ul.pagination {
     color: white;
 }
 
-            /* 반응형 스타일 */
+/* 반응형 스타일 */
         @media (max-width: 768px) {
             .wrapper {
-                flex-direction: column;
-            }
-
-            .main-content {
-                margin-left: 0; /* 작은 화면에서는 여백을 제거 */
-                padding: 10px;
+                flex-direction: column; /* 작은 화면에서는 세로로 배치 */
             }
 
             .sidebar {
-                width: 100%; /* 작은 화면에서는 사이드바를 전체 너비로 설정 */
+                width: 100%; /* 사이드바가 전체 너비를 차지 */
                 max-width: 100%;
-                position: relative; /* 사이드바를 고정하지 않고 위아래로 배치 */
-                top: 0;
-                left: 0;
+                margin-bottom: 20px; /* 메인 콘텐츠와 간격을 유지 */
+                margin-right: 20px; 
+            }
+
+            .main-content {
+                margin-left: 0; /* 작은 화면에서는 여백 제거 */
+                width: 100%; /* 메인 콘텐츠가 전체 너비를 차지 */
             }
 
             .qna-list-container {
@@ -94,9 +93,10 @@ ul.pagination {
             }
 
             .search-form .btnSearch, .search-form .btnList {
-                width: 100%; /* 버튼 너비를 100%로 설정 */
+                width: 100%; /* 버튼 너비를 100%로 설정 */ 
             }
         }
+  
 </style>
     
 </head>
@@ -109,9 +109,8 @@ ul.pagination {
         	
             <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
             
-            <div class="container-fluid main-content" style="flex:1; padding: 20px;">
-            <main>
-                <div class="qna-list-container mt-10 card" >
+            <main class="col-md-9 ms-sm-auto col-lg-11 px-md-3">
+                <div class="qna-list-container mt-10 card" style="width: 85%" >
                     <div class="card-header" style="background-color: white;">
                         <h1 class="qna-title align-center mt-2"style="color:#7C9C63; border-bottom: 2px solid #7C9C63;">QnA</h1>
                         
@@ -225,7 +224,6 @@ ul.pagination {
 
             </main>
             </div>
-        </div>
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
