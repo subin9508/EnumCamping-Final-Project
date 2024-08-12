@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.itwill.finalproject.domain.ReservationMaster;
+import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ReservationListDto;
 
 public interface ReservationMasterRepository extends JpaRepository<ReservationMaster, Integer> {
 	
@@ -39,4 +41,5 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	@Query("DELETE FROM ReservationMaster rm "
 			+ "where rm.user.userKey = :userKey and rm.resState = 0")
 	int deleteByUserId(@Param("userKey") Integer userKey);
+
 }
