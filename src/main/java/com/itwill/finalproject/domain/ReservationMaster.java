@@ -32,7 +32,7 @@ public class ReservationMaster {
 	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID")
-	private User user;
+	private User user; // userId
 	
 	private String requirement;
 	
