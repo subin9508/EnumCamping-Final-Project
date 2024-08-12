@@ -1,6 +1,7 @@
 package com.itwill.finalproject.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
@@ -19,7 +20,7 @@ public class ReservationListDto {
 	private Integer resId;
 	private LocalDate resCheckIn;
 	private Integer resState;
-	private String resCreatedTime;	
+	private LocalDateTime resCreatedTime;	
 	private Integer itemId;
 	
 	public ReservationListDto fromEntity(ReservationMaster reservationMaster, ReservationDetail detail) {

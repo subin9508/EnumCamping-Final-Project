@@ -31,12 +31,12 @@ public class ReservationMaster {
 	
 	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID")
-	private User user; // userId
+	@JoinColumn(name = "USER_KEY", referencedColumnName = "userKey")
+	private User user; // userKey
 	
 	private String requirement;
 	
-	private String resCreatedTime;
+	private LocalDateTime resCreatedTime;
 	
 	private LocalDateTime resModifiedTime;
 	

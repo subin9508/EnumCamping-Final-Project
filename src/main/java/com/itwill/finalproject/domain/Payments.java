@@ -26,7 +26,7 @@ public class Payments {
     @Column(name = "res_id")
     private Integer resId;
 
-    @Column(name = "res_total_price")
+    @Column(name = "amount")
     private Integer resTotalPrice;
 
     @Column(name = "pay_date")

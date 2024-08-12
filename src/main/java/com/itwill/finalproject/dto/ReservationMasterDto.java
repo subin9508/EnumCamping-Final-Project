@@ -16,7 +16,7 @@ public class ReservationMasterDto {
     private String userId; // 사용자 ID
     private String requirement; // 요청 사항
 
-    private String resCreatedTime; // 예약 최초 시간
+    private LocalDateTime resCreatedTime; // 예약 최초 시간
     private LocalDateTime resModifiedTime; // 예약 수정 시간
 
     private LocalDate resCheckIn; // 체크인 날짜
