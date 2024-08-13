@@ -63,3 +63,19 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Querydsl 관련 빌드 옵션 ----- build path를 자동으로 추가
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+// -----------------------------

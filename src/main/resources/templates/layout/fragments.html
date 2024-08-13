@@ -116,7 +116,7 @@
 						<ul class="navbar-nav navbar-user ms-auto">
 							<li class="nav-item" th:if="${session.signedInUser != null}">
 								<a class="nav-link"
-								th:href="@{/user/myPage(userId=${session.signedInUser})}"
+								th:href="@{/mypage/myInfo(userId=${session.signedInUser})}"
 								style="font-weight: bold;">마이페이지</a>
 							</li>
 							<li class="nav-item" th:if="${session.signedInUser != null}">
@@ -268,12 +268,12 @@
 			</div>
 			<ul class="sidebar-menu">
 				<li class="sidebar-item"><a
-					th:href="@{/user/myPage(userId=${user.userId})}">내 정보</a></li>
+					th:href="@{/mypage/myInfo(userId=${session.signedInUser})}">내 정보</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/user/reservation_list(userId=${user.userId})}">예약내역</a>
+					th:href="@{/mypage/reservation_list(userId=${session.signedInUser})}">예약내역</a>
 				</li>
 				<li class="sidebar-item"><a
-					th:href="@{/user/qna_list(userId=${user.userId})}">문의내역</a></li>
+					th:href="@{/mypage/qna_list(userId=${session.signedInUser})}">문의내역</a></li>
 				<li class="sidebar-item"><a href="#" data-bs-toggle="modal"
 					data-bs-target="#deleteAccountModal">회원탈퇴</a></li>
 			</ul>
