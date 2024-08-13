@@ -82,7 +82,7 @@ public class PaymentsService {
         dto.setBuyerEmail(payment.getBuyerEmail());
 
         try {
-            Payments savedPayment = paymentsRepo.save(dto);
+            Payments savedPayment = paymentsRepo.save(dto.toEntity());
             return savedPayment != null ? "SUCCESS" : "FAIL:01";
         } catch (Exception e) {
             log.error("Error saving payment", e);

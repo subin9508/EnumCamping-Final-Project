@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/order.css}">
+
+</head>
+<body>
+<div class="wrapper">
+  <!-- 상단 메뉴바 -->
+  <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+  <div class="footer-main-content">
+
+    <main style="width: 70%; margin: 5% auto;">
+      <div class="container">
+        <div class="container-fluid d-flex justify-content-center">
+          <h1>예약 및 주문</h1>
+        </div>
+        <br><br>
+
+        <div class="form-container">
+          <form class="custom-form">
+            <table class="table">
+              <tr>
+                <td colspan="7"
+                    style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">
+                  예약자 정보
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="text-align: center;">
+                  <label for="userName" style="font-size: 18px;">이름</label >
+                </td>
+                <td colspan="5" style="font-size: 18px;" th:text="${user.userName}"></td>
+              </tr>
+              <tr>
+                <td colspan="2" style="text-align: center;">
+                  <label for="userEmail" style="font-size: 18px;" class="text-left">이메일</label>
+                </td>
+                <td colspan="5" style="font-size: 18px;" th:text="${user.userEmail}"></td> 
+              </tr>
+              <tr>
+                <td colspan="2" style="text-align: center;">
+                  <label for="userPhone" style="font-size: 18px;" class="text-left">휴대폰 번호</label >
+                </td>
+                <td colspan="5" style="font-size: 18px;" th:text="${user.userPhone}"></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+
+        <table class="table">
+	        <thead>
+	            <tr>
+	                <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">선택 구역</th>
+	                <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">가격</th>
+	            </tr>
+	        </thead>
+	        <tbody id="areaOrder">
+	            <tr th:each="item : ${reservationDetails}"
+	                th:if="${item.itemId <= 20}">
+	                <td style="font-size: 18px;"
+	                    th:text="${'캠핑존 ' +
+	                        (item.itemId >= 1 && item.itemId <= 4 ? 'A-1' :
+	                        item.itemId >= 5 && item.itemId <= 8 ? 'A-2' :
+	                        item.itemId >= 9 && item.itemId <= 12 ? 'B-1' :
+	                        item.itemId >= 13 && item.itemId <= 16 ? 'B-2' :
+	                        item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
+	                </td>
+	                <td style="font-size: 18px;"
+	                    th:text="${item.itemAmount + '원'}">
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+        <br><br>
+
+        <table class="table">
+          <thead>
+          <tr>
+            <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품 이름</th>
+            <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품 사진</th>
+            <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">수량</th>
+            <th style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">총가격</th>
+          </tr>
+          </thead>
+          <tbody id="orderDetails">
+          <tr th:each="rs : ${reservationDetails}" th:if="${rs.itemId > 20}">
+            <td th:text="${rs.itemName}"></td>
+            <td class="img-container" style="width: 20%;">
+              <img th:src="@{${rs.itemImg}}" th:alt="${rs.itemName}" class="img" style="height: 150px; width: 150px;" />
+            </td>
+            <td th:text="${rs.itemQuantity}"></td>
+            <td th:text="${rs.itemAmount} + '원'"></td>
+          </tr>
+          <tr th:if="${!reservationDetails.?[itemId > 20].isEmpty()}" >
+            <td colspan="4" style="text-align: center; font-size: 18px;">
+              선택하신 구매/대여물품이 없습니다.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="mt-2">
+          <label for="requirement" class="form-label" style="font-size: 18px;">요청사항</label>
+          <textarea id="requirement" class="form-control" rows="5" style="font-size: 18px;" readonly>
+                            <th:block th:text="${reservationMaster.requirement ?: '요청없음'}"></th:block>
+                        </textarea>
+        </div>
+        <br><br>
+      </div>
+
+      <div class="container">
+        <div class="form-container">
+          <form class="custom-form">
+            <div class="container-fluid d-flex no-padding justify-content-center">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">개인 정보 수집 동의</h5>
+                  <p class="card-text">저희 사이트는 귀하의 개인 정보를 수집합니다. 수집된 정보는 사용자 식별, 서비스 제공 등의 목적으로 사용됩니다. 자세한 정보는 개인 정보 보호 정책을 참조하시기 바랍니다.</p>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="agreeCollect">
+                    <label class="form-check-label" for="agreeCollect">개인 정보 수집에 동의합니다.</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="container-fluid d-flex no-padding justify-content-center mt-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">개인 정보 제공 동의</h5>
+                  <p class="card-text">귀하의 개인 정보는 서비스 제공을 목적으로 일부 외부 제휴사에게 제공될 수 있습니다. 자세한 정보는 개인 정보 보호 정책을 참조하시기 바랍니다.</p>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="agreeProvide">
+                    <label class="form-check-label" for="agreeProvide">개인 정보 제공에 동의합니다.</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="container-fluid d-flex justify-content-center mt-3">
+        <h3>총 결제 금액: <span id="totalAmount">0</span></h3>
+      </div>
+      <br>
+      <div class="container-fluid d-flex justify-content-center mt-3">
+        <input type="hidden" name="resId" id="resId" th:value="${reservationMaster.resId}" />
+        <button id="btnPayment" class="btn btn-payment" disabled>결제하기</button>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+  </div>
+
+  <!-- 부트 스트랩 JS -->
+  <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+  <!-- Weather JS -->
+  <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+  
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+	<!-- payment JS -->
+	<script th:src="@{/js/payments.js}"></script>
+
+
+ <script>
+					// 페이지 로딩 시 초기 버튼 상태 설정
+					document.addEventListener('DOMContentLoaded', function() {
+						checkAgreements(); // 초기 버튼 상태 설정을 위해 함수 호출
+					});
+
+					// 체크 박스 상태 변경 시 호출될 함수
+					function checkAgreements() {
+						const agreeCollect = document
+								.getElementById('agreeCollect').checked;
+						const agreeProvide = document
+								.getElementById('agreeProvide').checked;
+
+						// 모든 체크 박스가 선택되었을 때 버튼 활성화
+						if (agreeCollect && agreeProvide) {
+							document.getElementById('btnPayment')
+									.removeAttribute('disabled');
+						} else {
+							document.getElementById('btnPayment').setAttribute(
+									'disabled', 'disabled');
+						}
+					}
+
+					// 체크 박스 상태 변화 감지
+					document.getElementById('agreeCollect').addEventListener(
+							'change', checkAgreements);
+					document.getElementById('agreeProvide').addEventListener(
+							'change', checkAgreements);
+
+					// 페이지 로딩 시 주문 상세 항목들의 총 금액 계산하여 표시
+					document.addEventListener('DOMContentLoaded', function() {
+						calculateTotalAmount(); // 초기화시 총 금액 계산 함수 호출
+					});
+
+					// 총 결제 금액 계산 함수
+					function calculateTotalAmount() {
+						let totalAmount = 0;
+
+						// 각 주문 상세 항목의 금액을 모두 합산
+						const itemAmountElements = document
+								.querySelectorAll('#orderDetails td:nth-child(4)');
+						//const areaPrice = document.querySelector('input#resAreaPrice');
+						const areaPrice = document
+								.querySelectorAll('#areaOrder td:nth-child(2)');
+						console.log(areaPrice);
+						itemAmountElements.forEach(function(element) {
+							totalAmount += parseInt(element.textContent
+									.replace('원', ''), 10);
+						});
+
+						areaPrice.forEach(function(element) {
+							totalAmount += parseInt(element.textContent
+									.replace('원', ''), 10);
+						});
+
+						// 총 결제 금액을 화면에 반영
+						const totalAmountElement = document
+								.getElementById('totalAmount');
+						totalAmountElement.textContent = totalAmount + '원';
+					}
+				</script>
+
+</body>
+</html>

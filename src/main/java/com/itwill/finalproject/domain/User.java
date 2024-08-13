@@ -58,6 +58,7 @@ public class User implements UserDetails {
 	private String userEmail; // 이메일
 
 	@Column(nullable = false, unique = true)
+
 	private String userPhone; // 핸드폰
 
 //	@Builder.Default// Builder 패턴에서도 null이 아닌 HashSet<> 객체로 초기화될 수 있도록.
@@ -67,6 +68,7 @@ public class User implements UserDetails {
 	/*
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
 	 */
+
 
 	private Integer userState; // 유저 상태 (탈퇴인지 아닌지)
 

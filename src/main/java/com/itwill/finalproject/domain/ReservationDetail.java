@@ -1,5 +1,8 @@
 package com.itwill.finalproject.domain;
 
+import com.itwill.finalproject.repository.ItemsRepository;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +28,7 @@ public class ReservationDetail {
 	private Integer rdId;
 	
 	@ToString.Exclude
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "RES_ID")
 	private ReservationMaster reservationMaster; // 예약 아이디
 	
@@ -38,7 +41,9 @@ public class ReservationDetail {
 	
 	private Integer itemAmount; // 아이템 가격(단가 * 수량)
 	
-	private String itemName; // 아이템 이름
-	
-	private String itemImg; // 아이템 사진
+	// 헬퍼 메서드 추가
+		public void setItemById(Integer itemId, ItemsRepository itemsRepository) {
+			this.item = itemsRepository.findById(itemId)
+			             .orElseThrow();
+		}
 }

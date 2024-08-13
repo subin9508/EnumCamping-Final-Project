@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+
 import com.itwill.finalproject.domain.UserRole;
 import com.itwill.finalproject.dto.ReservationDetailListDto;
+
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
@@ -230,10 +232,12 @@ public class UserService implements UserDetailsService {
         return resMaster;
     }
 
+
     public List<ReservationDetailListDto> readReservationDetails(Integer rdId) {
         log.info("Finding reservation details for resvationMaster: {}", rdId);
         List<ReservationDetailListDto> resDetails = reservationDetailRepo.findByRdId(rdId);
         log.info("Found ReservationDetails: {}", resDetails);
+
         return resDetails;
     }
     

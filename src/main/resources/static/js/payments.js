@@ -77,7 +77,7 @@ async function handlePaymentResponse(rsp, resId) {
                 // resId 로깅
  
                 console.log("이동할 예약 ID:", resId);
-                window.location.href = `/finalproject/reservation/succeeded/${resId}`; // 결제 성공 페이지로 이동
+                window.location.href = `/enumcamping/reservation/succeeded/${resId}`; // 결제 성공 페이지로 이동
             } else {
                 throw new Error("서버 검증 실패" + (result.fail_reason || "알 수 없는 오류"));
             }
@@ -98,7 +98,7 @@ async function handlePaymentResponse(rsp, resId) {
 			//서버에 결제 정보 조회 요청
             const response = await $.ajax({
                 type: "GET",
-                url: "/finalproject/reservation/paymentInfo/" + resId,
+                url: "/enumcamping/reservation/paymentInfo/" + resId,
                 dataType: 'json'
             });
             return response;
@@ -113,7 +113,7 @@ async function handlePaymentResponse(rsp, resId) {
         try {
             const response = await $.ajax({ //서버에 요청
                 type: "POST",
-                url: "/finalproject/reservation/verifyIamport/" + imp_uid + "?resId=" + resId,
+                url: "/enumcamping/reservation/verifyIamport/" + imp_uid + "?resId=" + resId,
                 dataType: 'json'
             });arguments
             //서버 응답 로깅

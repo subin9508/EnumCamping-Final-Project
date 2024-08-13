@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,5 +30,16 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
             + "and rm.resCheckIn = :resCheckIn")
 	List<ReservationMaster> selectByItemIdAndResCheckIn(@Param("itemId") int itemId, @Param("resCheckIn") LocalDate resCheckIn);
 	
+	// userId에 해당하는 reservation_master
+	@Query("select rm from ReservationMaster rm "
+			+ "where rm.user.userKey = :userKey "
+			+ "and rm.resState = 0")
+	ReservationMaster selectMasterByUserId(@Param("userKey") Integer userKey);
+	
+	// order 페이지 넘어가기전 이전 내역 삭제
+	@Modifying
+	@Query("DELETE FROM ReservationMaster rm "
+			+ "where rm.user.userKey = :userKey and rm.resState = 0")
+	int deleteByUserId(@Param("userKey") Integer userKey);
 
 }
