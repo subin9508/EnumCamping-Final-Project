@@ -75,6 +75,7 @@ public class User implements UserDetails {
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
 
+
 	private String profileImage; // 프로필 사진
 
 	// 편의 메서드
