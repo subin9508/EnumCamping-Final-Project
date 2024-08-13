@@ -49,5 +49,5 @@ public class User {
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
 	
-	private String profileImage; // 프로필 사진
+	
 }

@@ -169,46 +169,6 @@ public class UserController {
 		}
 	}
 
-	// 비밀번호 확인 폼을 보여주는 메서드
-	@GetMapping("/password_check")
-	public String showPasswordCheckForm() {
-		return "user/password_check";
-	}
-
-	// 비밀번호 확인 처리 메서드
-	@PostMapping("/password_check")
-	public String passwordCheck(@RequestParam("password") String password, HttpSession session, Model model) {
-		// 세션에서 사용자 ID 가져옴
-		String userId = (String) session.getAttribute("signedInUser");
-		if (userId == null) {
-			return "redirect:/user/signin";
-		}
-
-		// 사용자 정보 조회
-		User user = userService.read(userId);
-		if (user == null) {
-			return "redirect:/user/signin";
-		}
-
-		// 비밀번호 확인을 위한 DTO 생성
-
-		UserSignInDto dto = new UserSignInDto();
-
-		dto.setUserId(user.getUserId());
-		dto.setUserPassword(password);
-
-		// 비밀번호 확인
-		User verifiedUser = userService.read(dto).orElseThrow();
-		if (verifiedUser != null) {
-			// 비밀번호가 일치하면 사용자 정보 수정 페이지로 리다이렉트
-			return "redirect:/user/user_update";
-		} else {
-			// 비밀번호가 일치하지 않으면 에러 메시지와 함께 비밀번호 확인 페이지로 돌아감
-			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
-			return "user/password_check";
-		}
-	}
-
 	@GetMapping("/findid")
 	public String findIdForm() {
 		return "user/findid"; // 아이디 찾기 입력 폼으로 이동
@@ -257,13 +217,21 @@ public class UserController {
 			return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
 		}
 
-		// 사용자 정보 가져오기
-		User user = userService.updateProfileImage(userKey, null);
-		log.info("가져온 사용자 정보: {}", user);
-		model.addAttribute("user", user);
+	      // 사용자 정보 가져오기
+        Optional<User> userOptional = userService.findByUserKey(userKey);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            log.debug("가져온 사용자 정보: {}", user);
+            model.addAttribute("user", user);
+        } else {
+            // 사용자 정보가 없는 경우에 대한 처리
+            log.warn("사용자 정보를 찾을 수 없습니다. userKey: {}", userKey);
+            return "redirect:/error"; // 예시: 에러 페이지로 리다이렉트
+        }
 
-		return "user/deactivateUser";
-	}
+        return "user/deactivateUser";
+    }
+
 
 	// 회원 탈퇴 처리
 	@PostMapping("/deactivateUser")

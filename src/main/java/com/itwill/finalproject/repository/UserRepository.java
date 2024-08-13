@@ -57,10 +57,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = "SELECT COUNT(*) FROM users WHERE user_id = :userId AND (deactiveuntil IS NULL OR deactiveuntil <= CURRENT_DATE)", nativeQuery = true)
 	int checkDeactivationPeriod(@Param("userId") String userId);
 
-	// 프로필 이미지 수정
-	@Modifying
-	@Transactional
-	@Query("UPDATE User u SET u.profileImage = :profileImage WHERE u.userKey = :userKey")
-	void updateProfileImage(@Param("profileImage") String profileImage, @Param("userKey") Integer userKey);
+	
 
 }

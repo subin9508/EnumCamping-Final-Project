@@ -143,16 +143,12 @@ public class UserService {
     }
     
     
-    @Transactional
-    public User updateProfileImage(Integer userKey, String profileImage) {
-        log.debug("Updating profile image for userKey: {} with profileImage: {}", userKey, profileImage);
-
-        // 프로필 이미지 업데이트
-        userRepo.updateProfileImage(profileImage, userKey);
-
-        // 업데이트된 사용자 정보 반환
-        return userRepo.findByUserKey(userKey).orElse(null);
+    
+    // 유저 키로 사용자 조회
+    public Optional<User> findByUserKey(Integer userKey) {
+    	return userRepo.findByUserKey(userKey);
     }
+    
     
     public Optional<ReservationMaster> readReservationList(Integer userKey) {
         Optional<ReservationMaster> list = reservationMasterRepo.findById(userKey);
@@ -173,6 +169,9 @@ public class UserService {
         log.debug("Found ReservationDetails: {}", resDetails);
         return resDetails;
     }
+    
+    
+    
     
     
 }
