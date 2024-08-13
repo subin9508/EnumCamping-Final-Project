@@ -12,7 +12,4 @@ public interface NoticeQuerydsl {
 	//제목/내용/제목+내용 검색
 	List<Notice> searchByCategory(NoticeSearchDto dto);
 	
-	//공지사항 수정
-	int update(NoticeUpdateDto dto);
-
 }

@@ -51,31 +51,4 @@ public class NoticeQuerydslImpl extends QuerydslRepositorySupport implements Not
 		return query.fetch();
 	}
 
-	@Override
-	public int update(NoticeUpdateDto dto) {
-		log.info("update(dto={})",dto);
-		// JPQL UPDATE 쿼리
-		String jpql = "UPDATE Notice n SET n.title = :title, n.content = :content WHERE n.id = :id";
-
-		// Query 객체 생성
-		Query query = getEntityManager().createQuery(jpql);
-
-		// 파라미터 설정
-		query.setParameter("title", dto.getTitle());
-		query.setParameter("content", dto.getContent());
-		query.setParameter("id", dto.getId());
-
-		// 쿼리 실행
-		int rowsUpdated = query.executeUpdate();
-		return rowsUpdated;
-//		QNotice notice = QNotice.notice;
-//		JPAUpdateClause	update = new JPAUpdateClause(getEntityManager(), notice);
-//		update.set(notice.title, dto.getTitle()).where(notice.id.eq(dto.getId())).execute();
-//		return null;
-	}
-	
-	
-	
-	
-
 }
