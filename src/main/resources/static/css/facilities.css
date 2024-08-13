@@ -100,17 +100,21 @@
 }
 
 .facilities-section {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap; /* 줄 바꿈을 위해 추가 */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     margin-top: 20px;
+    gap: 20px;
 }
 
 .facilities-card {
-	margin-bottom: 20px;
+   
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
     border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .fc-img-container {
@@ -131,57 +135,17 @@
 }
 
 /* 반응형 */
-@media ( max-width : 576px) {
-	.facilities-card {
-		min-height: auto;
-	}
-	.fc-img-container img {
-		height: auto;
-	}
-}
-
-@media ( max-width : 1200px) {
-	.intro-sidebar {
-		display: none !important;
-	}
-	.main-content {
-		margin-left: 0 !important;/* 사이드바가 화면에서 제거되거나 접혔을 때의 레이아웃 보정 */
-		width: 100%;
-		padding: 0 15px;
-	}
-	
-	.row {
-		display: flex;
-		flex-wrap: wrap;
-	}
-	.facilities-card {
-		min-height: auto; /* 작은 화면에서는 카드 높이를 자동으로 설정 */
-	}
-	.row>[class*='col-'] {
-		margin-bottom: 20px; /* 카드들 사이의 간격 추가 */
-	}
-
-	/* 한 줄에 두 개의 이미지가 들어오도록 조정 */
-	.col-lg-4, .col-md-6 {
-		flex: 0 0 50%; /* 각각의 컬럼이 50%의 너비를 차지하도록 */
-		max-width: 50%;
-		padding: 0 10px;
-	}
-	.fc-img-container img {
-		width: 100%;
-		height: auto; /* 이미지가 너무 작아지지 않도록 비율 유지 */
-		object-fit: cover; /* 이미지가 영역에 맞도록 크기를 조정 */
-	}
-}
-
-@media ( max-width : 768px) {
-
-	/* 더 작은 화면에서는 각 카드가 전체 너비를 차지하도록 */
-	.col-lg-4, .col-md-6, .col-sm-12 {
-		flex: 0 0 100%;
-		max-width: 100%;
-	}
-	.facilities-card {
-		margin-bottom: 30px; /* 카드들 사이의 간격을 조금 더 크게 설정 */
-	}
+/* 작은 화면에 맞춘 스타일 조정 */
+@media (max-width: 768px) {
+    .facilities-section {
+        grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나의 카드만 표시 */
+    }
+    .facilities-card {
+        min-width: 100%; /* 작은 화면에서 카드가 화면을 가득 채우도록 설정 */
+    }
+    .main-content {
+        margin-left: 0 !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
+        width: 100%;
+        padding: 0 15px;
+    }
 }
