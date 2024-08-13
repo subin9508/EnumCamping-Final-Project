@@ -30,7 +30,7 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
 	int deleteByResId(@Param("userKey") Integer userKey);
 
 	 // ResId에 해당하는 물품 리스트 조회
-    List<ReservationDetailDto> findByRdId(Integer rdId);
+    List<ReservationDetailDto> findByRdId(Integer Id);
     
 //    // userId에 해당하는 예약 상세 정보 조회
 //    List<ReservationListDto> findByUserId(String userId);

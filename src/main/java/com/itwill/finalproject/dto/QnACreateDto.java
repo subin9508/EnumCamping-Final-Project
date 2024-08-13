@@ -8,13 +8,13 @@ import lombok.Data;
 public class QnACreateDto {
 	private String title;
 	private String content;
-	private String author;
+	private String qnaUserId;
 	
 	public QnA toEntity() {
 		return QnA.builder()
 				.title(title)
 				.content(content)
-				.author(author)
+				.qnaUserId(qnaUserId)
 				.build();
 	}
 }

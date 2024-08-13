@@ -90,12 +90,12 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     }
     
     @Override
-    public List<QnA> searchByAuthorAndTitle(String author, String title) {
-        log.info("searchByAuthorAndTitle(author={}, title={})", author, title);
+    public List<QnA> searchByQnaUserIdAndTitle(String qnaUserId, String title) {
+        log.info("searchByAuthorAndTitle(qnaUserId={}, title={})", qnaUserId, title);
         
         QQnA qna = QQnA.qna;
         JPQLQuery<QnA> query = from(qna)
-                .where(qna.author.eq(author)
+                .where(qna.qnaUserId.eq(qnaUserId)
                         .and(qna.title.containsIgnoreCase(title)))
                 .orderBy(qna.id.desc());
         
@@ -125,7 +125,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
                 .or(qna.content.containsIgnoreCase(keyword));
             break;
         case "a":
-            builder.and(qna.author.containsIgnoreCase(keyword));
+            builder.and(qna.qnaUserId.containsIgnoreCase(keyword));
             break;
         }
         query.where(builder).orderBy(qna.id.desc());

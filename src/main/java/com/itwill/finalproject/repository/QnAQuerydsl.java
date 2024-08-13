@@ -26,7 +26,7 @@ public interface QnAQuerydsl {
     List<QnA> searchByModifiedTime(LocalDateTime from, LocalDateTime to);
     
     // 작성자와 제목으로 검색: where author = ? and lower(title) like ?
-    List<QnA> searchByAuthorAndTitle(String author, String title);
+    List<QnA> searchByQnaUserIdAndTitle(String qnaUserId, String title);
     
     // 제목/내용/제목+내용/작성자 검색
     List<QnA> searchByCategory(QnASearchRequestDto dto);

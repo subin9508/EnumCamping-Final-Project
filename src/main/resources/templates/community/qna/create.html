@@ -92,11 +92,12 @@
 							</div>
 							
 							<div class="d-none">
-                            <label class="form-label" for="author">작성자</label>
-                            <input type="text" class="form-control" id="author"
-                                name="author" th:value="${#authentication.author}" readonly />
+                            <label class="form-label" for="qnaUserId">작성자</label>
+                            <input type="text" class="form-control" id="qnaUserId"
+                                name="qnaUserId" readonly />
                         	</div>
-							
+								<!-- name="author" th:value="${#authentication.author}" readonly /> -->
+								
 							<div class="mt-2">
                                 <input
                                     class="form-control btn btn-outline-success"

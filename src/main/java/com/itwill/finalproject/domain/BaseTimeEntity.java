@@ -24,11 +24,9 @@ import lombok.ToString;
 public class BaseTimeEntity {
 	
     @CreatedDate // 엔터티 (최초) 생성시간을 저장하는 필드.
-    @Column(name = "QNA_CREATED_TIME")
     private LocalDateTime createdTime;
     
     
     @LastModifiedDate // 엔터티 (최종) 수정시간을 저장하는 필드.
-    @Column(name = "QNA_MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 }

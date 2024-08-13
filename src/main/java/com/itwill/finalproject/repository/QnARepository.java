@@ -17,7 +17,7 @@ public interface QnARepository extends JpaRepository<QnA, Long>, QnAQuerydsl {
     Page<QnA> findByContentContainingIgnoreCase(String keyword, Pageable pageable);
     
     // 작성자에 포함된 문자열 대소문자 구분없이 검색하기:
-    Page<QnA> findByAuthorContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<QnA> findByQnaUserIdContainingIgnoreCase(String keyword, Pageable pageable);
     
     // JPQL(Java Persistence Query Language): 객체지향 쿼리 언어.
     // 제목 또는 내용에 포함된 문자열 대소문자 구분없이 검색하기:

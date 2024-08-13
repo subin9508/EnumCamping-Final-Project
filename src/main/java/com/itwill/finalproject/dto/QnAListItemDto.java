@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class QnAListItemDto {
 	private Long id;
 	private String title;
-	private String author;
+	private String qnaUserId;
 	private LocalDateTime modifiedTime;
 	private Integer qnaLock;
 	private Integer qnaState;
@@ -26,11 +26,11 @@ public class QnAListItemDto {
 		return QnAListItemDto.builder()
 				.id(entity.getId())
 				.title(entity.getTitle())
-				.author(entity.getAuthor())
+				.qnaUserId(entity.getQnaUserId())
 				.modifiedTime(entity.getModifiedTime())
-				.qnaLock(entity.getQna_lock())
-				.qnaState(entity.getQna_state())
-				.qnaViewCnt(entity.getQna_view_cnt())
+				.qnaLock(entity.getQnaLock())
+				.qnaState(entity.getQnaState())
+				.qnaViewCnt(entity.getQnaViewCnt())
 				.build();
 	}
 }

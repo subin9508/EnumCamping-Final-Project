@@ -99,7 +99,7 @@ public class ReservationController {
 		    model.addAttribute("reservationMaster", reservationMaster);
 		    model.addAttribute("reservationDetails", reservationDetails);
 
-		    return "reservation/order";
+		    return "/reservation/order";
 		}
 		
 		@PostMapping("/order")

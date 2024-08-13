@@ -43,13 +43,16 @@ public class QnA extends BaseTimeEntity {
 	
 	@Basic(optional = false) // not null
 	@Column(name = "QNA_USER_ID")
-	private String author;
+	private String qnaUserId;
 	
-	private Integer qna_view_cnt;
-		
-	private Integer qna_state;
+	@Column(name = "QNA_VIEW_CNT")
+	private Integer qnaViewCnt;
 	
-	private Integer qna_lock;
+	@Column(name = "QNA_STATE")
+	private Integer qnaState;
+	
+	@Column(name = "QNA_LOCK")
+	private Integer qnaLock;
 	
     // update 기능(제목/내용 수정)에서 사용할 공개 메서드
     public QnA update(String title, String content) {

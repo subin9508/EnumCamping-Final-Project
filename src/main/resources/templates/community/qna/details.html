@@ -120,14 +120,17 @@
                 </div>
 
 						<!-- 로그인 사용자 아이디와 작성자 아이디가 같은 경우에만 수정하기 버튼을 보여줌 -->
-						<th:block
+<!-- 						<th:block
 							th:if="${signedInUser != null and signedInUser == qna.author}">
 							<a class="btn btn-outline-primary" style="float: right"
 								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
-						</th:block>
+						</th:block> -->
+								<a class="btn btn-outline-primary" style="float: right"
+								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
+
 
 						<!-- 답변 목록 -->
-                    <div id="answersContainer" style="font-size: 1.2em;">
+<!--                     <div id="answersContainer" style="font-size: 1.2em;">
                         <th:block th:each="answer : ${answers}">
                             <div class="answer">
                                 <p th:text="${answer.content}"></p>
@@ -135,17 +138,32 @@
                                 <small>작성시간: <span th:text="${answer.createdTime}"></span></small>
                             </div>
                         </th:block>
+                    </div> -->
+                    <div id="answersContainer" style="font-size: 1.2em;">
+                            <div class="answer">
+                                <p th:text="${qna.content}"></p>
+                                <small>작성자: <span th:text="${qna.author}"></span></small><br>
+                                <small>작성시간: <span th:text="${qna.createdTime}"></span></small>
+                            </div>
                     </div>
+                    
 
                     <!-- 답변 등록 폼 -->
-                    <th:block th:if="${userRole == 0}">
+<!--                     <th:block th:if="${userRole == 0}">
                         <div class="mt-2 d-flex align-items-center">
                             <div class="flex-grow-1 me-3">
                                 <textarea class="form-control flex-grow-1" rows="2" id="answerContent" placeholder="답변을 작성해주세요" style="font-size:1.1em;"></textarea>
                             </div>
                             <button class="btn btn-register" style="font-size:1.5em;" id="btnRegisterAnswer">답변 등록</button>
                         </div>
-                    </th:block>              
+                    </th:block>   -->  
+                    
+                        <div class="mt-2 d-flex align-items-center">
+                            <div class="flex-grow-1 me-3">
+                                <textarea class="form-control flex-grow-1" rows="2" id="answerContent" placeholder="답변을 작성해주세요" style="font-size:1.1em;"></textarea>
+                            </div>
+                            <button class="btn btn-register" style="font-size:1.5em;" id="btnRegisterAnswer">답변 등록</button>
+                        </div>
                 
                 </div>
             </main>

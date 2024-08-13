@@ -54,6 +54,7 @@ public class QnAService {
 		return entity.getId();
 	}
 	
+	
 	@Transactional
 	public QnA readById(Long id) {
 		log.info("readById(id={}", id);
@@ -61,7 +62,7 @@ public class QnAService {
 		QnA entity = qnaRepo.findById(id).orElseThrow();
 		log.info("entity = {}", entity);
 		
-		entity.setQna_view_cnt(entity.getQna_view_cnt() + 1); // 조회수 증가
+		entity.setQnaViewCnt(entity.getQnaViewCnt() + 1); // 조회수 증가
         qnaRepo.save(entity); // 변경사항 저장
 		
 		return entity;
@@ -108,7 +109,7 @@ public class QnAService {
             result = qnaRepo.findByTitleOrContent(dto.getKeyword(), pageable);
             break;
         case "a":
-            result = qnaRepo.findByAuthorContainingIgnoreCase(dto.getKeyword(), pageable);
+            result = qnaRepo.findByQnaUserIdContainingIgnoreCase(dto.getKeyword(), pageable);
             break;
         }
         log.info("totalPages = {}", result.getTotalPages());
