@@ -37,12 +37,12 @@
 
 		<header class="bg-white">
 			<nav class="navbar navbar-expand-md navbar-light">
-				<div class="container-fluid">
+				<div class="container-fluid ">
 					<div class="d-flex align-items-center">
 						<!-- Logo -->
 						<a class="navbar-brand" href="/enumcamping"> <img alt="logo"
 							th:src="@{/images/main/logo_horizontal.png}"
-							style="height: 60px; width: 200px;">
+							id="logo-img">
 						</a>
 						<!-- 날씨 정보 -->
 						<div class="ms-3 text-center d-none d-md-block">
@@ -66,7 +66,7 @@
 					<!-- Navbar 링크 -->
 					<div class="collapse navbar-collapse" id="navbarContent">
 						<ul class="navbar-nav navbar-links d-flex justify-content-center">
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/introduce/enumIntro}" style="font-weight: bold;">캠핑장
 									소개</a>
 								<ul class="subMenu">
@@ -81,7 +81,7 @@
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/introduce/map}">캠핑장 위치</a></li>
 								</ul></li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/info/infoTime}" style="font-weight: bold;">이용안내</a>
 								<ul class="subMenu">
 									<li><a class="nav-link" aria-current="page"
@@ -97,10 +97,10 @@
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/info/infoRental}">대여 물품 목록</a></li>
 								</ul></li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/reservation/calendar}" style="font-weight: bold;">예약</a>
 							</li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/community/notice/list}" style="font-weight: bold;">커뮤니티</a>
 								<ul class="subMenu">
 									<li><a class="nav-link" aria-current="page"

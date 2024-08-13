@@ -2,12 +2,14 @@
 
 header {
     padding: 0 20px; /* 상하 여백 추가 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 header a {
     font-size: 2.5rem; /* 제목 크기 */
     color: black; /* 헤더 텍스트 색상 */
     text-decoration: none; /* 링크 밑줄 제거 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 #top {
@@ -17,6 +19,7 @@ header a {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 #top .nav-link {
@@ -93,9 +96,20 @@ header a {
     font-style: normal;
 }
 
+.nav-item-main {
+	margin-left: 2rem;
+}
+
 body, nav, aside, main {
     font-family: "Noto Sans KR", sans-serif;
 }
+
+#logo-img {
+	height: 60px; 
+    width: 200px; 
+}
+
+/* 반응형 */
 
 @media ( min-width : 768px) {
     .navbar-links {
@@ -110,10 +124,45 @@ body, nav, aside, main {
     }
 }
 
-/* 작은 화면에서는 각 ul이 100% 너비를 가지도록 설정 */
-@media ( max-width : 767px) {
-    .navbar-links, .navbar-user {
-        flex: 1 1 100%;
-        justify-content: center; /* 또는 원하는 정렬 방법 */
+@media (max-width: 1200px) {
+    #top .nav-link {
+        margin-right: 20px; /* 중간 화면 크기에서 마진 줄이기 */
     }
+
+}
+
+@media (max-width: 992px) {
+    #top .nav-link {
+        margin-right: 15px; /* 작은 화면에서 마진 더 줄이기 */
+    }
+    
+    .menu {
+    	font-size: 0.8rem;
+    }
+    
+    .nav-item a {
+    	font-size: 0.8rem;
+    }
+    
+    p {
+    	font-size: 0.8rem;
+    }
+    
+    #logo-img {
+    	height: 30px;
+    	width: 100px;
+    }
+
+}
+
+@media (max-width: 768px) {
+    #top .nav-link {
+        margin-right: 10px; /* 아주 작은 화면에서 마진 최소화 */
+        font-size: 1.1rem; /* 폰트 크기 약간 줄이기 */
+    }
+    
+    #logo-img {
+		height: 60px; 
+    	width: 200px; 
+	}
 }
