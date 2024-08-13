@@ -25,6 +25,7 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     
     // 결제 정보 업데이트 (JpaRepository의 save 메소드 사용)
     Payments save(Payments payments);
+    
     // 예약 상태 업데이트
     @Modifying
     @Query("UPDATE ReservationMaster r SET r.resState = :resState WHERE r.resId = :resId")

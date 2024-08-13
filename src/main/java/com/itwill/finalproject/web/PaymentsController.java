@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.dto.ReservationDetailDto;
+import com.itwill.finalproject.dto.ReservationListDto;
 import com.itwill.finalproject.exception.ControllerException;
 import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.domain.ReservationMaster;
+import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.service.PaymentsService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
@@ -137,4 +139,115 @@ public class PaymentsController {
 
         return "reservation/succeeded"; // succeeded.html 파일을 가리킴
     }
+    
+    
+    // ------------------------ 결제 취소 -----------------------
+    
+	/**
+	 * resId를 통해 payId를 조회하는 메서드(결제취소시 사용)
+	 * @param resId
+	 * @return 에러 메세지 반환
+	 */
+    @GetMapping("/getPayId/{resId}")
+    public ResponseEntity<?> getPayId(@PathVariable("resId") Integer resId) {
+        try {
+            Integer payId = paymentsService.getPayIdByResId(resId); // 결제 ID를 조회
+            return ResponseEntity.ok(payId); // 조회된 결제 ID를 반환
+        } catch (ServiceException e) {
+            log.error("Error retrieving payment ID for resId: {}", resId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 예외 발생 시 에러 메시지를 반환
+        }
+    }
+	
+	
+	/**
+	 * 결제 취소 요청을 처리하는 메서드
+	 * @param payId 결제 키로 결제를 식별
+	 * @return ResponseEntity 객체로 HTTP 응답 상태와 메세지를 반환.
+	 */
+    @PostMapping("/cancel/{payId}")
+    public ResponseEntity<String> cancelPayment(@PathVariable Integer payId) {
+        try {
+            String result = paymentsService.cancelPayment(payId);
+            if ("Payment cancellation successful".equals(result)) {
+                // 결제 취소가 성공했을 때 예약 상태를 업데이트
+                Integer resId = paymentsService.getResIdByPayId(payId);
+                if (resId != null) {
+                    paymentsService.updateReservationState(resId, 2); // 2는 취소 상태
+                    log.info("Reservation state updated to cancelled for resId: {}", resId);
+                    return ResponseEntity.ok(result);
+                } else {
+                    log.warn("Could not find reservation for payId: {}", payId);
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reservation not found for the given payment ID.");
+                }
+            } else {
+                // 결과 메시지에 따라 적절한 HTTP 상태 코드를 반환
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+            }
+        } catch (ServiceException e) {
+            log.error("Error during payment cancellation for payId: {}", payId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cancellation failed: " + e.getMessage());
+        }
+    }
+
+    
+    //------------------- 내 예약 목록 조회 ----------------------
+    /**
+     * 예약 목록을 조회하는 메서드
+     *
+     * @param userId 사용자 ID
+     * @param model  모델 객체
+     * @param session 세션 객체
+     * @return 뷰 이름 반환
+     */
+//    @GetMapping("/reservation_list")
+//    public String reservationList(@RequestParam(name = "userId", required = false) String userId, Model model, HttpSession session) {
+//        if (userId == null) {
+//            userId = (String) session.getAttribute("signedInUser");
+//            if (userId == null) {
+//                return "redirect:/user/signin";
+//            }
+//        }
+//
+//        log.debug("reservation_list(userId={})", userId);
+//
+//        User user = userService.read(userId);
+//        session.setAttribute("user", user); // 사용자 정보를 세션에 저장
+//
+//        List<ReservationListDto> list = userService.readReservationList(user.getUserId());
+//        log.debug("list=({})", list);
+//        model.addAttribute("reservations", list);
+//        model.addAttribute("user", user); // 모델에 사용자 정보 추가
+//
+//        return "/user/reservation_list"; // 반환할 뷰의 이름
+//    }
+	
+	// pg 사에서 결제 취소했을 경우, 웹훅 사용
+//	@PostMapping("/webhooks/payment/cancellation")
+//	public ResponseEntity<String> handlePaymentCancellation(@RequestBody Map<String, Object> payload) {
+//	    // 페이로드 검증 로직 (필요한 경우)
+//	    // 결제 취소 로직 실행
+//	    try {
+//	        String impUid = (String) payload.get("imp_uid"); // 예: 아임포트에서 전달받은 UID
+//	        log.info("Processing payment cancellation for impUid: {}", impUid);
+//	        
+//	        Integer resId = paymentService.getResIdByImpUid(impUid); // imp_uid를 사용하여 resId 조회
+//	        log.info("Found reservation ID: {}", resId);
+//	        
+//	        if (resId != null) {
+//	            paymentService.updateReservationState(resId, 2); // 상태를 '예약 취소'로 변경
+//	            log.info("Reservation status updated to canceled for resId: {}", resId);
+//	            return ResponseEntity.ok("Reservation status updated to canceled");
+//	        } else {
+//	        	log.warn("No reservation found for impUid: {}", impUid);
+//	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found");
+//	        }
+//	    } catch (Exception e) {
+//	        log.error("Error processing payment cancellation webhook", e);
+//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating reservation status");
+//	    }
+//	}
+    
+    
+    
 }

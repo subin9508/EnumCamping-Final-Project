@@ -15,7 +15,8 @@ import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 
 import com.itwill.finalproject.domain.UserRole;
-import com.itwill.finalproject.dto.ReservationDetailListDto;
+import com.itwill.finalproject.dto.ReservationDetailDto;
+
 
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
@@ -233,9 +234,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<ReservationDetailListDto> readReservationDetails(Integer rdId) {
+    public List<ReservationDetailDto> readReservationDetails(Integer rdId) {
         log.info("Finding reservation details for resvationMaster: {}", rdId);
-        List<ReservationDetailListDto> resDetails = reservationDetailRepo.findByRdId(rdId);
+        List<ReservationDetailDto> resDetails = reservationDetailRepo.findByRdId(rdId);
         log.info("Found ReservationDetails: {}", resDetails);
 
         return resDetails;

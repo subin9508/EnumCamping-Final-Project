@@ -28,7 +28,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public QnA searchById(Long id) {
         log.info("searchById(id={})", id);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna); // select p from Post p
         query.where(qna.id.eq(id)); // query + where id = ?
         QnA entity = query.fetchOne();
@@ -40,7 +40,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByTitle(String keyword) {
         log.info("searchByTitle(keyword={})", keyword);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna); // select
         query.where(qna.title.containsIgnoreCase(keyword)); // where
         query.orderBy(qna.id.desc()); // order by
@@ -54,7 +54,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByContent(String keyword) {
         log.info("searchByContent(keyword={})", keyword);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna)
                 .where(qna.content.containsIgnoreCase(keyword))
                 .orderBy(qna.id.desc());
@@ -66,7 +66,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByTitleOrContent(String keyword) {
         log.info("searchByTitleOrContent(keyword={})", keyword);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna);
         query.where(
         		qna.title.containsIgnoreCase(keyword)
@@ -81,7 +81,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByModifiedTime(LocalDateTime from, LocalDateTime to) {
         log.info("searchByModifiedTime(from={}, to={})", from, to);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna)
                 .where(qna.modifiedTime.between(from, to))
                 .orderBy(qna.modifiedTime.desc());
@@ -93,7 +93,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByQnaUserIdAndTitle(String qnaUserId, String title) {
         log.info("searchByAuthorAndTitle(qnaUserId={}, title={})", qnaUserId, title);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna)
                 .where(qna.qnaUserId.eq(qnaUserId)
                         .and(qna.title.containsIgnoreCase(title)))
@@ -108,7 +108,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
         String category = dto.getCategory();
         String keyword = dto.getKeyword();
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna);
         
         // BooleanBuilder: where() 메서드의 아규먼트인 BooleanExpression 객체를 생성할 수 있는 객체
@@ -137,7 +137,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
     public List<QnA> searchByKeywords(String[] keywords) {
         log.info("searchByKeywords(keywords={})", Arrays.asList(keywords));
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna);
         BooleanBuilder builder = new BooleanBuilder();
         for (String k : keywords) {
@@ -154,7 +154,7 @@ public class QnAQuerydslImpl extends QuerydslRepositorySupport implements QnAQue
         log.info("searchByKeywords(keyword={}, Pageable={})",
                 Arrays.asList(keywords), pageable);
         
-        QQnA qna = QQnA.qna;
+        QQnA qna = QQnA.qnA;
         JPQLQuery<QnA> query = from(qna);
         BooleanBuilder builder = new BooleanBuilder();
         for (String k : keywords) {
