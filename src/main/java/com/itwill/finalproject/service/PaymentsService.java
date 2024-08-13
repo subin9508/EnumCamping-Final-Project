@@ -54,7 +54,7 @@ public class PaymentsService {
             paymentInfo.put("name", "예약 번호 " + reservation.getResId());
             paymentInfo.put("amount", reservation.getResTotalPrice());
             paymentInfo.put("email", user.getUserEmail());
-            paymentInfo.put("buyerName", user.getUserName());
+            paymentInfo.put("buyerName", user.getUsername()); //이거 아마 유저아이디로 나올거임
             paymentInfo.put("phoneNumber", user.getUserPhone());
             paymentInfo.put("resState", reservation.getResState());
 
