@@ -4,6 +4,10 @@ package com.itwill.finalproject.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserService {
-
+public class UserService implements UserDetailsService {
+	
+	 private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepo;
     private final ReservationMasterRepository reservationMasterRepo;
     private final ReservationDetailRepository reservationDetailRepo;
@@ -60,6 +65,23 @@ public class UserService {
 
 		
 	}
+	
+	//security 적용
+	 @Override
+	 public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+	        // DB 테이블(members)에 username이 일치하는 사용자가 있으면 UserDetails 타입의
+	        // 객체를 리턴하고, 그렇지 않으면 UsernameNotFoundException을 던짐.
+	        
+	        log.info("loadUserByUsername(username={})", userId);
+	        
+	        Optional<User> entity = userRepo.findByUserId(userId);
+	        if (entity.isPresent()) {
+	            return entity.get();
+	        } else {
+	            throw new UsernameNotFoundException(userId + ": 일치하는 사용자 정보 없음.");
+	        }
+	    }
+	 
 
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
 	public boolean checkEmail(String userEmail) {
@@ -174,5 +196,6 @@ public class UserService {
         return resDetails;
     }
     
+   
     
 }
