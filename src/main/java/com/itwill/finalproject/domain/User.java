@@ -1,7 +1,7 @@
 package com.itwill.finalproject.domain;
 
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -20,6 +21,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -58,11 +60,10 @@ public class User implements UserDetails {
 	@Column(nullable = false, unique = true)
 	private String userPhone; // 핸드폰
 
-	@Builder.Default// Builder 패턴에서도 null이 아닌 HashSet<> 객체로 초기화될 수 있도록.
+//	@Builder.Default// Builder 패턴에서도 null이 아닌 HashSet<> 객체로 초기화될 수 있도록.
 	@ToString.Exclude // toString() 메서드에서 제외.
-	@ElementCollection(fetch = FetchType.LAZY) // 연관 테이블(member_roles) 사용.
-	@Enumerated(EnumType.STRING) // DB 테이블에 저장될 때 상수(enum) 이름(문자열)을 사용.
-	private Set<UserRole> userRole = new HashSet<>();
+//	@Enumerated(EnumType.STRING) // DB 테이블에 저장될 때 상수(enum) 이름(문자열)을 사용.
+	private Integer userRole;
 	/*
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
 	 */
@@ -75,33 +76,52 @@ public class User implements UserDetails {
 	private String profileImage; // 프로필 사진
 
 	// 편의 메서드
-	// 유저의 권한을 부여하는 메서드.
-	public User addRole(UserRole role) {
-		userRole.add(role);
-		return this;
+//	// 유저의 권한을 부여하는 메서드.
+//	public User addRole(UserRole role) {
+//		Role.add(role);
+//		return this;
+//	}
+//
+//	// 유저의 권한을 한 개 삭제하는 메서드
+//	public User removeRole(UserRole role) {
+//		Role.remove(role);
+//		return this;
+//	}
+//
+//	// 유저의 권한을 삭제하는 메서드
+//	public User clearRoles() {
+//		Role.clear(); // Set<>이 가지고 있는 모든 원소를 지움.
+//		return this;
+//	}
+
+	// 사용자 권한을 문자열로 변환
+	private String getRoleString(Integer role) {
+		switch (role) {
+		case 0:
+			return "USER";
+		case 1:
+			return "ADMIN";
+		default:
+			return "ROLE_UNKNOWN";
+		}
 	}
 
-	// 유저의 권한을 한 개 삭제하는 메서드
-	public User removeRole(UserRole role) {
-		userRole.remove(role);
-		return this;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// 권한 숫자를 문자열로 변환 후 권한 객체 생성
+		return List.of(new SimpleGrantedAuthority(getRoleString(this.userRole)));
 	}
 
-	// 유저의 권한을 삭제하는 메서드
-	public User clearRoles() {
-		userRole.clear(); // Set<>이 가지고 있는 모든 원소를 지움.
-		return this;
-	}
-	
-	 @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-        
-	        List<SimpleGrantedAuthority> authorities = userRole.stream()
-	                .map((r) -> new SimpleGrantedAuthority(r.getAuthority()))
-	                .toList();
-	        
-	        return authorities;
-	    }
+//	 @Override
+//	    public Collection<? extends GrantedAuthority> getAuthorities() {
+//	        List<String> roleAuthorities = UserRole.getAllAuthorities();
+//
+//	        List<SimpleGrantedAuthority> authorities = roleAuthorities.stream()
+//	                .map((r) -> new SimpleGrantedAuthority(r))
+//	                .toList();
+//	        
+//	        return authorities;
+//	    }
 
 	@Override
 	public String getPassword() {
@@ -111,11 +131,8 @@ public class User implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		
+
 		return userId;
 	}
 
-	
-
-	
 }

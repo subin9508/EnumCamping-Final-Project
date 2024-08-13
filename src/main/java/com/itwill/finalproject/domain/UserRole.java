@@ -1,5 +1,9 @@
 package com.itwill.finalproject.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum UserRole {
     USER("USER"),
     ADMIN("ADMIN");
@@ -23,5 +27,9 @@ public enum UserRole {
         }
         throw new IllegalArgumentException("Unknown role Authority: " + value);
     }
-    
+    public static List<String> getAllAuthorities() {
+        return Arrays.stream(UserRole.values())
+                     .map(UserRole::getAuthority)
+                     .collect(Collectors.toList());
+    }
 }
