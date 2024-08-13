@@ -43,7 +43,7 @@ public class NoticeController {
 		Notice notice = noticeService.selectNoticeById(id);
 		
 		model.addAttribute("notice", notice); 
-		log.info("model에 추가 {}",notice);
+		log.info("상세보기 - {}",notice);
 		//return "community/notice/details";
 	}
 	
@@ -89,8 +89,7 @@ public class NoticeController {
 		log.info("POST: update");
 		log.info("{}",dto);
 		noticeService.updateNotice(dto);
-	
-		return "redirect:list";
+		return "redirect:/community/notice/details?id="+dto.getId();
 	}
 	
 	//검색 기능. dto이용

@@ -11,6 +11,7 @@ import com.itwill.finalproject.dto.NoticeSearchDto;
 import com.itwill.finalproject.dto.NoticeUpdateDto;
 import com.itwill.finalproject.repository.NoticeRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,14 +47,12 @@ public class NoticeService {
 		notRepo.deleteById(id);
 	}
 	
-	public int updateNotice(NoticeUpdateDto dto) {
+	@Transactional
+	public Notice updateNotice(NoticeUpdateDto dto) {
 		log.info("updateNotice, {}",dto);
-		Notice notice = notRepo.findById(dto.getId()).orElseThrow();
-		
-		log.info("update 예정 Notice {}",notice);
+		Notice notice  = notRepo.findById(dto.getId()).orElseThrow();
 		notice.update(dto.getTitle(), dto.getContent());
-		log.info("update 후 Notice {}",notice);
-		return 0;
+		return notice;
 	}
 
 	public List<NoticeListDto> search(NoticeSearchDto dto) {

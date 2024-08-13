@@ -49,7 +49,6 @@ public class Notice  {
 	@Column(name = "not_modified_time")
 	private LocalDateTime modifiedTime;
 	
-	private Integer notCertify;
 	
 	
 	//title& content는 update 기능이 되어야함. //-> 그래서 메서드 만듬
