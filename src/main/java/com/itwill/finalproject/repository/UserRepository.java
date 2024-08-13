@@ -23,11 +23,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 아이디 찾기
 	@Query("SELECT u.userId FROM User u WHERE u.userName = :userName AND u.userEmail = :userEmail")
-	Optional<String> findIdByNameAndEmail(@Param("userName") String userName, @Param("userEmail") String userEmail);
+	Optional<User> findIdByNameAndEmail(@Param("userName") String userName, @Param("userEmail") String userEmail);
 
 	// 비밀번호 찾기
 	@Query("SELECT u.userPassword FROM User u WHERE u.userName = :userName AND u.userEmail = :userEmail AND u.userId = :userId")
-	Optional<String> findPasswordByNameAndEmailAndId(@Param("userName") String userName,
+	Optional<User> findPasswordByNameAndEmailAndId(@Param("userName") String userName,
 			@Param("userEmail") String userEmail, @Param("userId") String userId);
 
 	// 사용자 ID로 사용자 정보 조회

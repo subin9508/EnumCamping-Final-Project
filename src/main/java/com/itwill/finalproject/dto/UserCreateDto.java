@@ -1,5 +1,7 @@
 package com.itwill.finalproject.dto;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.itwill.finalproject.domain.User;
 
 import lombok.Data;
@@ -12,11 +14,13 @@ public class UserCreateDto {
 	private String userName; // 사용자 이름
 	private String userPhone; // 사용자 전화번호
 	private String userEmail; // 사용자 이메일
+	private Integer userRole = 0; // 유저롤
+	
 
 	// UserCreateDto 객체를 User 엔티티 객체로 변환
-	public User toEntity() {
-		return User.builder().userId(userId).userPassword(userPassword).userName(userName).userPhone(userPhone)
-				.userEmail(userEmail).build();
+	public User toEntity(PasswordEncoder encoder) {
+		return User.builder().userId(userId).userPassword(encoder.encode(userPassword)).userName(userName).userPhone(userPhone)
+				.userEmail(userEmail).userRole(userRole).build();
 	}
 
 }
