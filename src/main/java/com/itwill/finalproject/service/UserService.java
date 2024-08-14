@@ -15,8 +15,7 @@ import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 
 import com.itwill.finalproject.domain.UserRole;
-import com.itwill.finalproject.dto.ReservationDetailListDto;
-
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
@@ -133,9 +132,13 @@ public class UserService implements UserDetailsService {
 	
 
 	public User read(String userId) {
-		log.info("read(id={})", userId);
+	    log.info("read(id={})", userId);
 
-		return userRepo.findByUserId(userId).orElse(null);
+	    // Optional<User>를 반환
+	    Optional<User> userOptional = userRepo.findByUserId(userId);
+
+	    // Optional에서 값을 안전하게 추출
+	    return userOptional.orElse(null); // 값이 존재하면 User 반환, 아니면 null 반환
 	}
 
 
@@ -198,6 +201,7 @@ public class UserService implements UserDetailsService {
 	}
     
     public boolean checkUserIsActive(String userId) {
+    		log.info("userRepo.checkUserIsActive(userId) ={}",userRepo.checkUserIsActive(userId));
         return userRepo.checkUserIsActive(userId) == 1; // 1이면 활성(로그인가능), 0이면 비활성(탈퇴 & 계정 정지)
     }
     
@@ -229,9 +233,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<ReservationDetailListDto> readReservationDetails(Integer rdId) {
+    public List<ReservationDetailDto> readReservationDetails(Integer rdId) {
         log.info("Finding reservation details for resvationMaster: {}", rdId);
-        List<ReservationDetailListDto> resDetails = reservationDetailRepo.findByRdId(rdId);
+        List<ReservationDetailDto> resDetails = reservationDetailRepo.findByRdId(rdId);
         log.info("Found ReservationDetails: {}", resDetails);
 
         return resDetails;

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 //import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 //import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,13 +13,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
 //-> 스프링 컨테이너에서 생성하고 관리하는 설정 컴포넌트.
 //-> 스프링 컨테이너에서 필요한 곳에 의존성 주입을 해줌.
 @EnableMethodSecurity
 //-> 컨트롤러 메서드에서 인증(로그인), 권한 설정을 하기 위해서.
-public class SecurityConfig {
+public class SecurityConfig  {
+
+	
 
 	// Spring Security 5 버전부터 비밀번호는 반드시 암호화를 해야만 함.
 	// 만약 비밀번호를 암호화하지 않으면, HTTP 403(access denied, 접근 거부) 또는
@@ -56,11 +60,10 @@ public class SecurityConfig {
 	// - 인증 설정(로그인 없이 접근 가능한 페이지 vs 로그인해야만 접근 가능한 페이지)
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// 시큐리티 관련 설정들을 구성.
-
-		// CSRF(Cross Site Request Forgery) 기능을 비활성화:
-		// CSRF 기능을 활성화한 경우에는,
-		// Ajax POST/PUT/DELETE 요청에서 csrf 토큰을 서버로 전송하지 않으면 HTTP 403 에러가 발생함.
+	
+		
+		
+		
 		http.csrf((csrf) -> csrf.disable());
 
 		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
@@ -77,19 +80,18 @@ public class SecurityConfig {
 		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
 
 		http.authorizeHttpRequests((auth) ->
-		// 모든 요청 주소에 대해서 (role에 상관없이) 아이디/비밀번호 인증을 하는 경우:
-		// auth.anyRequest().authenticated()
-
-		// 모든 요청 주소에 대해서 "USER" 권한을 가진 아이디/비밀번호 인증을 하는 경우:
-		// auth.anyRequest().hasRole("USER")
-		
-		// 로그인이 필요한 페이지와 그렇지 않은 페이지를 구분해서 설정 구성:
-		auth.requestMatchers("/post/create", "/post/details", 
-				"/post/modify", "/post/delete", "/post/update",
-				"/api/comment/**", "/reservation/calendar")
-		.hasAuthority("USER").anyRequest().permitAll());
-
+	        auth
+	            .requestMatchers("/reservation/**", "/user/deactivateUser",
+	                    "/user/myPage", "/user/qna_modify", "/user/update")
+	            .hasAuthority("USER")
+	            .anyRequest()
+	            .permitAll()
+	        );
+	      
+	        
+		 
 		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
 	}
 
+	
 }

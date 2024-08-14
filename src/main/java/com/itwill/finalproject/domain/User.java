@@ -1,31 +1,21 @@
 package com.itwill.finalproject.domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,12 +59,11 @@ public class User implements UserDetails {
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
 	 */
 
-
+	@Column(columnDefinition = "INT DEFAULT 1")
 	private Integer userState; // 유저 상태 (탈퇴인지 아닌지)
 
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
-
 
 	private String profileImage; // 프로필 사진
 
@@ -98,12 +87,12 @@ public class User implements UserDetails {
 //	}
 
 	// 사용자 권한을 문자열로 변환
-	private String getRoleString(Integer role) {
+	public String getRoleString(Integer role) {
 		switch (role) {
 		case 0:
-			return "USER";
-		case 1:
 			return "ADMIN";
+		case 1:
+			return "USER";
 		default:
 			return "ROLE_UNKNOWN";
 		}
