@@ -35,8 +35,7 @@ public class UserService implements UserDetailsService {
 	
 	private final PasswordEncoder passwordEncoder; 
     private final UserRepository userRepo;
-    private final ReservationMasterRepository reservationMasterRepo;
-    private final ReservationDetailRepository reservationDetailRepo;
+
 
 	// 아이디 중복 체크: true - 중복되지 않은 아이디(사용 가능한 아이디), false - 중복된 아이디.
     
@@ -217,33 +216,6 @@ public class UserService implements UserDetailsService {
     public Optional<User> findByUserKey(Integer userKey) {
     	return userRepo.findByUserKey(userKey);
     }
-    
-    
-    public Optional<ReservationMaster> readReservationList(Integer userKey) {
-        Optional<ReservationMaster> list = reservationMasterRepo.findById(userKey);
-        log.info("Reservation list for user {}: {}", userKey, list);
-        return list;
-    }
-
-    public Optional<ReservationMaster> readReservationMasterDetails(Integer resId) {
-        log.info("Finding reservation master details for resId: {}", resId);
-        Optional<ReservationMaster> resMaster = reservationMasterRepo.findById(resId);
-        log.info("Found ReservationMaster: {}", resMaster);
-        return resMaster;
-    }
-
-
-    public List<ReservationDetailDto> readReservationDetails(Integer resId) {
-        log.info("Finding reservation details for resvationMaster: {}", resId);
-        List<ReservationDetailDto> resDetails = reservationDetailRepo.findDetailsByResId(resId);
-        log.info("Found ReservationDetails: {}", resDetails);
-
-        return resDetails;
-    }
-    
-   
-    
-    
     
     
 }

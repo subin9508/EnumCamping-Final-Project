@@ -97,8 +97,8 @@ public class ReservationService {
     }
     
     // userId에 해당하는 예약 마스터 정보
-    public ReservationMaster getReservationMasterByUserId(Integer userKey) {
-    	return reservationMasterRepo.selectMasterByUserId(userKey);
+    public ReservationMaster getReservationMasterByUserKey(Integer userKey) {
+    	return reservationMasterRepo.selectMasterByUserKey(userKey);
     }
     
  // userId에 해당하는 예약 마스터 정보 삭제

@@ -96,7 +96,7 @@ public class ReservationController {
 		    User user = userSvc.read(userId);
 		    Integer userKey = user.getUserKey();
 		    log.info("user={}",user);
-		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserId(userKey);
+		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
 		    List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
 		    model.addAttribute("user", user);
@@ -190,7 +190,7 @@ public class ReservationController {
 		    log.debug("After calling makeReservation method");
 		    
 		    // 예약정보 가져오기
-		    reservationMaster = reservationSvc.getReservationMasterByUserId(userKey);
+		    reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
 		    // 예약 상세정보 가져오기
 		    List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 		    
