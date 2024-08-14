@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.service.MyPageService;
+import com.itwill.finalproject.service.QnAService;
+import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MyPageController {
     
     private final MyPageService myPageService;
+    private final UserService userService;
+    private final QnAService qnaService;
     
     private String getUserIdFromSession(HttpSession session) {
         Object userIdObj = session.getAttribute("signedInUser");
@@ -152,17 +160,47 @@ public class MyPageController {
     
     // 특정 사용자의 QnA 목록 조회    
     @GetMapping("/qna_list")
-	public void qnaList(@RequestParam(name="userId") String userId, Model model, HttpSession session) {
+	public void qnaList(@RequestParam(name = "p", defaultValue = "0" ) int pageNo, @RequestParam(name="userId") String userId, Model model, HttpSession session) {
 		log.debug("qna_list(userId={})", userId);
 		
-//		// 사용자 정보를 조회하여 세선에 저장
-////		User user = userService.read(userId);
-//		session.setAttribute("user", user);
-//		
-//		// 해당 사용자의 QnA 목록 조회
-//		 List<QnA> list = qnaService.selectByUserId(userId);
-//		 log.debug("list=({})", list);
-//	     model.addAttribute("qnalist", list);
-//	     model.addAttribute("user", user); // 모델에 사용자 정보 추가
+		// 사용자 정보를 조회하여 세선에 저장
+		User user = userService.read(userId);
+		session.setAttribute("user", user);
+		
+		// 해당 사용자의 QnA 목록 조회
+		 Page<QnAListItemDto> page = qnaService.readByUserId(userId, pageNo, Sort.by("id").descending());
+		 log.debug("page=({})", page);
+	     model.addAttribute("pager", page);
+	     model.addAttribute("user", user); // 모델에 사용자 정보 추가
+	     model.addAttribute("qnas", page.getContent());
+	     model.addAttribute("totalCount", page.getTotalElements());
+	     
+	     // 현재 페이지 번호, 총 페이지 수를 모델에 추가
+		 model.addAttribute("currentPage", page.getNumber()); // 현재 페이지 번호 (0부터 시작)
+		 model.addAttribute("totalPages", page.getTotalPages()); // 총 페이지 수
+	     
+	    // pagination fragment에서 사용할 현재 요청 주소 정보
+	    model.addAttribute("baseUrl", "/mypage/qna_list");
 	}
+    
+    @GetMapping({ "/qna_details", "/qna_modify" })
+    public void details(@RequestParam(name = "id") Long id, Model model) {
+        log.info("details(id={})", id);
+        
+        QnA entity = qnaService.readById(id);
+        model.addAttribute("qna", entity);
+        
+        //-> view 이름은, 요청 주소가 "details"인 경우에는 details.html
+        // 요청 주소가 "modify"인 경우에는 modify.html
+    }
+    
+//    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") Long id) {
+        log.info("delete(id={})", id);
+        
+        qnaService.delete(id);
+        
+        return "redirect:/mypage/qna_list";
+    }
 }

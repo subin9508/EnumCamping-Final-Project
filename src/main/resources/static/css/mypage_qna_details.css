@@ -1,0 +1,105 @@
+@charset "UTF-8";
+
+.qna-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-fluid {
+    flex: 1;
+    padding: 20px;
+}
+
+.qna-details-container {
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-right: 326px;
+    margin-left: 148px;
+}
+
+.qna-details-container h2 {
+    color: #7C9C63;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #7C9C63;
+    padding-bottom: 0.5rem;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.form-control {
+    margin-bottom: 1rem;
+}
+
+.form-control:read-only {
+    background-color: #fff;
+}
+
+#qnaContent {
+    min-height: 150px;
+}
+
+.card-footer {
+    background-color: transparent;
+    border-top: none;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+}
+
+.btn {
+    margin-left: 0.5rem;
+}
+
+.btn-list {
+    color: #6B8B56;
+    border-color: #6B8B56;
+}
+
+.btn-list:hover {
+    color: white;
+    background-color: #6B8B56;
+}
+
+.answer {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.qna-answers-container,
+.qna-comment-container {
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.qna-answers-container h2,
+.qna-comment-container h2 {
+    color: #7C9C63;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #7C9C63;
+    padding-bottom: 0.5rem;
+}
+
+#answersContainer .answer {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+}
+
+.qna-content {
+        display: flex;
+    }
