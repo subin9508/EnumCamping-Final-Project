@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,10 +127,12 @@ public class PaymentsController {
     }
     
     @GetMapping("/reservation/succeeded/{resId}")
-    public String paymentSucceeded(@PathVariable("resId") Integer resId, Integer rdId, Model model, HttpSession session) {
+    public String paymentSucceeded(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
+    	
+    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
         Optional<ReservationMaster> resMaster = userService.readReservationMasterDetails(resId);
         List<ReservationDetailDto> resDetail = userService.readReservationDetails(rdId);
-
+        
         String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
         model.addAttribute("resMaster", resMaster);
