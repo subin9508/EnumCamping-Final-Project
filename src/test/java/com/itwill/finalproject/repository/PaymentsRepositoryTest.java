@@ -38,7 +38,7 @@ public class PaymentsRepositoryTest {
 	    User user = User.builder()
 	    		.userId("subin")
 	    		.userEmail("test@test.com")
-	    		.userId("testUser")
+	    		.name("testUser")
 	    		.userPassword("test1234")
 	    		.userPhone("010-1234-1234")
 	    		.userRole(1)

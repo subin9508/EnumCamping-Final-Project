@@ -27,7 +27,7 @@ public class UserRepositoryTest {
 	                .userId("admin123")
 	                .userPassword(passwordEncoder.encode("qwer1234"))
 	                .userEmail("admin@itw44ill.com")
-	                .userId("동준")
+	                .name("동준")
 	                .userRole(0)
 	                .userPhone("010-5044-5296")
 	                .userState(0)
