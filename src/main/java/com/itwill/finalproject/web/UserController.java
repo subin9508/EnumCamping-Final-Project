@@ -17,6 +17,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -178,7 +180,9 @@ public class UserController {
 	@PostMapping("/password_check")
 	public String passwordCheck(@RequestParam("password") String password, HttpSession session, Model model) {
 		// 세션에서 사용자 ID 가져옴
-		String userId = (String) session.getAttribute("signedInUser");
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	     String userId = authentication.getName();
+//		String userId = (String) session.getAttribute("signedInUser");
 		if (userId == null) {
 			return "redirect:/user/signin";
 		}
@@ -250,53 +254,66 @@ public class UserController {
 	@GetMapping("/deactivateUser")
 	public String deactivateAccount(Model model, HttpSession session) {
 		// 세션에서 사용자 ID 가져오기
-		Integer userKey = (Integer) session.getAttribute("loginUserId");
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	    String userId = authentication.getName();
+	    User user = userService.read(userId);
+	    Integer userKey = user.getUserKey();
+//		Integer userKey = (Integer) session.getAttribute("loginUserId");
 		log.info("세션에서 가져온 userKey: {}", userKey);
 		if (userKey == null) {
 			return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
 		}
 
 		// 사용자 정보 가져오기
-		User user = userService.updateProfileImage(userKey, null);
-		log.info("가져온 사용자 정보: {}", user);
-		model.addAttribute("user", user);
+		User userInfo = userService.updateProfileImage(userKey, null);
+		log.info("가져온 사용자 정보: {}", userInfo);
+		model.addAttribute("user", userInfo);
 
 		return "user/deactivateUser";
 	}
 
-	// 회원 탈퇴 처리
 	@PostMapping("/deactivateUser")
 	@ResponseBody
 	public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, HttpSession session,
-			HttpServletResponse response) {
-		log.info("Received deactivation request for userKey: {}", dto.getUserKey());
-		log.info("Password received: {}", dto.getUserPassword());
+	        HttpServletResponse response) {
+	    log.info("Received deactivation request.");
 
-		// 요청 바디에서 id와 password를 추출
-		Integer userKey = (Integer) dto.getUserKey();
-		String userPassword = (String) dto.getUserPassword();
+	    // 현재 로그인된 사용자 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName(); // 현재 로그인된 사용자 ID
 
-		log.info("Before calling service - userKey: {}, password: {}", userKey, userPassword);
+	    // 사용자 ID를 통해 사용자 정보를 조회
+	    User user = userService.read(userId); // userService에서 사용자 정보를 조회하는 메서드
+	    
+	    if (user == null) {
+	        log.error("User not found for ID: {}", userId);
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
 
-		// 회원 탈퇴 서비스 호출
-		boolean result = userService.deactivateAccount(userKey, userPassword);
+	    Integer userKey = user.getUserKey(); // 현재 사용자의 userKey
+	    String userPassword = dto.getUserPassword(); // 요청 바디에서 받은 비밀번호
 
-		if (result) {
-			// 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
-			session.invalidate();
+	    log.info("userKey: {}, password: {}", userKey, userPassword);
 
-			// 쿠키 삭제
-			Cookie cookie = new Cookie("user", null);
-			cookie.setMaxAge(0);
-			cookie.setPath("/");
-			response.addCookie(cookie);
+	    // 회원 탈퇴 서비스 호출
+	    boolean result = userService.deactivateAccount(userKey, userPassword);
 
-			log.info("Account deactivated successfully.");
-			return ResponseEntity.ok().body("/semiproject");
-		} else {
-			log.info("비밀번호가 일치하지 않습니다.");
-			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-		}
+	    if (result) {
+	        // 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
+	        session.invalidate();
+
+	        // 쿠키 삭제
+	        Cookie cookie = new Cookie("user", null);
+	        cookie.setMaxAge(0);
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+
+	        log.info("Account deactivated successfully.");
+	        return ResponseEntity.ok().body("/semiproject");
+	    } else {
+	        log.info("비밀번호가 일치하지 않습니다.");
+	        return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+	    }
 	}
-
 }

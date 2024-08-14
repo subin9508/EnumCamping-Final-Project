@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -128,8 +130,11 @@ public class PaymentsController {
     public String paymentSucceeded(@PathVariable("resId") Integer resId, Integer rdId, Model model, HttpSession session) {
         Optional<ReservationMaster> resMaster = userService.readReservationMasterDetails(resId);
         List<ReservationDetailDto> resDetail = userService.readReservationDetails(rdId);
-
-        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+   		  
+        String userId = authentication.getName();
+        
+//        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
         model.addAttribute("resMaster", resMaster);
         model.addAttribute("resDetail", resDetail);
