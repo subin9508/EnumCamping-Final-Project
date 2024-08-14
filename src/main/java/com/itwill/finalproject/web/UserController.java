@@ -220,17 +220,20 @@ public class UserController {
 	@PostMapping("/findid")
 	public String findId(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			Model model) {
-		String userId = userService.findIdByNameAndEmail(name, email);
+		Optional<User> user = userService.findIdByNameAndEmail(name, email);
+		String userId = user.map(User::getUserId).orElse(null);
 		if (userId != null) {
 
 			model.addAttribute("userId", userId);
 			return "user/displayid"; // 아이디 찾기 성공 화면으로 이동
 		} else {
-
+			
 			model.addAttribute("message", "등록되지 않은 이름 또는 이메일입니다.");
 			return "user/findid"; // 아이디 찾기 입력 폼으로 다시 이동
 		}
 	}
+	
+	
 
 	@GetMapping("/findpassword")
 	public String findPasswordForm(Model model) {
@@ -240,7 +243,8 @@ public class UserController {
 	@PostMapping("/findpassword")
 	public String findPassword(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			@RequestParam("user_id") String id, Model model) {
-		String userPassword = userService.findPasswordByNameAndEmailAndId(name, email, id);
+		Optional<User> user = userService.findPasswordByNameAndEmailAndId(name, email, id);
+		String userPassword = user.map(User::getUserPassword).orElse(null);
 		if (userPassword != null) {
 			model.addAttribute("userPassword", userPassword);
 			return "user/displaypassword"; // 비밀번호 찾기 성공 화면으로 이동

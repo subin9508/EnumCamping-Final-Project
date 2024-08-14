@@ -158,18 +158,18 @@ public class UserService implements UserDetailsService {
 
 	
 	//이름,아이디,이메일을 검색해 비밀번호를 찾는 메서드
-	public String findPasswordByNameAndEmailAndId(String name, String email, String id) {
+	public Optional<User> findPasswordByNameAndEmailAndId(String name, String email, String id) {
 		log.info("findPasswordByNameAndEmailAndId({}{}{})", name, email, id);
-		Optional<User> user = userRepo.findPasswordByNameAndEmailAndId(name, email, id);
-		return user.map(User::getUserPassword).orElse(null);
+		Optional<User> userPassword = userRepo.findByUserNameAndUserEmailAndUserId(name, email, id);
+		return userPassword;
 	}
 	
 	//이름,이메일을 검색해 아이디를 찾는 메서드
-	public String findIdByNameAndEmail(String name, String email) {
-	    // 데이터베이스에서 사용자 아이디 찾기 로직
-		Optional<User> user = userRepo.findIdByNameAndEmail(name, email);
+	public Optional<User> findIdByNameAndEmail(String name, String email) {
+	    // 데이터베이스에서 사용자 아이디 찾기 로직	
+		Optional<User> userId = userRepo.findByUserNameAndUserEmail(name, email);
 		log.info("findIdByNameAndEmail({}{})", name, email);
-		return user.map(User::getUserId).orElse(null);
+		return userId;
 	    
 	}
 
