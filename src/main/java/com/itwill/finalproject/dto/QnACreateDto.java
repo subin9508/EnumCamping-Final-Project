@@ -9,12 +9,15 @@ public class QnACreateDto {
 	private String title;
 	private String content;
 	private String qnaUserId;
+	private Integer qnaLock = 0; 
 	
 	public QnA toEntity() {
 		return QnA.builder()
 				.title(title)
 				.content(content)
 				.qnaUserId(qnaUserId)
+				.qnaViewCnt(0) // 글 작성 시 조회수를 0으로 초기화
+				.qnaLock(qnaLock)
 				.build();
 	}
 }

@@ -34,6 +34,7 @@ public class QnAService {
         
         // 영속성(persistence/repository) 계층의 메서드를 호출해서 엔터티들의 리스트를 가져옴.
         Page<QnA> list = qnaRepo.findAll(pageable);
+        list.forEach(qna -> log.info("QnA ID: {}, Title: {}, UserId: {}, ViewCnt: {}", qna.getId(), qna.getTitle(), qna.getQnaUserId(), qna.getQnaViewCnt()));
         log.info("page.totalPages = {}", list.getTotalPages()); // 전체 페이지 개수
         log.info("page.number = {}", list.getNumber()); // 현재 페이지 번호
         log.info("page.hasPrevious = {}", list.hasPrevious()); // 이전 페이지가 있는 지 여부
@@ -48,8 +49,19 @@ public class QnAService {
 	public Long create(QnACreateDto dto) {
 		log.info("create(dto={})", dto);
 		
-		QnA entity = qnaRepo.save(dto.toEntity());
-		log.info("entity = {}", entity);
+		if (dto.getQnaUserId() == null || dto.getQnaUserId().isEmpty()) {
+	        log.warn("User ID is null or empty, setting default value");
+	        dto.setQnaUserId("defaultUserId"); // 기본 값 설정, 또는 적절한 에러 처리
+	    }
+		
+//		QnA entity = qnaRepo.save(dto.toEntity());
+//		log.info("entity = {}", entity);
+		
+	    QnA entity = dto.toEntity();
+	    log.info("Converted to entity: {}", entity);
+
+	    qnaRepo.save(entity);
+	    log.info("Saved QnA: {}", entity);
 		
 		return entity.getId();
 	}
@@ -62,7 +74,7 @@ public class QnAService {
 		QnA entity = qnaRepo.findById(id).orElseThrow();
 		log.info("entity = {}", entity);
 		
-		entity.setQnaViewCnt(entity.getQnaViewCnt() + 1); // 조회수 증가
+		entity.incrementViewCount(); // 조회수 증가
         qnaRepo.save(entity); // 변경사항 저장
 		
 		return entity;
@@ -84,6 +96,9 @@ public class QnAService {
         
         // DB에서 검색한 엔터티 객체의 필드들을 업데이트(수정)
         entity.update(dto.getTitle(), dto.getContent());
+        
+        
+        qnaRepo.save(entity); // 변경사항을 저장해야 modifiedTime이 갱신
         
         // @Transactional 애너테이션을 사용한 경우, 
         // DB에서 검색한 entity 객체가 변경되면 update 쿼리가 자동으로 실행.

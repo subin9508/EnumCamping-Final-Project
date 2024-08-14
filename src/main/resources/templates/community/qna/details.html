@@ -105,7 +105,7 @@
                             </div>
                             
                                 <!-- 비밀글 체크박스, 관리자 또는 작성자인 경우에만 표시 -->
-                                <th:block th:if="${userRole == 0 || signedInUser == qna.author}">
+                                <th:block th:if="${userRole == 0 || signedInUser == qna.qnaUserId}">
                                     <div class="mt-2 form-check">
                                         <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.qnaLock == 1}" disabled>
                                         <label class="form-check-label" for="qnaLock"> 비밀글 </label>
@@ -126,7 +126,7 @@
 								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
 						</th:block> -->
 								<a class="btn btn-outline-primary" style="float: right"
-								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
+								th:href="@{/community/qna/modify(id=${qna.id})}">수정하기</a>
 
 
 						<!-- 답변 목록 -->
@@ -142,7 +142,7 @@
                     <div id="answersContainer" style="font-size: 1.2em;">
                             <div class="answer">
                                 <p th:text="${qna.content}"></p>
-                                <small>작성자: <span th:text="${qna.author}"></span></small><br>
+                                <small>작성자: <span th:text="${qna.qnaUserId}"></span></small><br>
                                 <small>작성시간: <span th:text="${qna.createdTime}"></span></small>
                             </div>
                     </div>
@@ -177,7 +177,7 @@
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
-    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>
