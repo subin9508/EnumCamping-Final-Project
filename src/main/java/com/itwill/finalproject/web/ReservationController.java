@@ -201,18 +201,5 @@ public class ReservationController {
 		    return "/reservation/order";
 		}
 		
-		@GetMapping("/reservationConfirm")
-		public String reservationConfirm(@RequestParam(name = "resId") int resId, Model model) {
-			log.debug("reservationConfirm()");
-			
-			ReservationMaster resMaster = userSvc.readReservationMasterDetails(resId).orElseThrow();
-			List<ReservationDetailDto> resDetail = userSvc.readReservationDetails(resId);
-
-			model.addAttribute("resMaster", resMaster);
-			model.addAttribute("resDetail", resDetail);
-
-			return "reservation/reservationConfirm";
-		}
-
 
 }

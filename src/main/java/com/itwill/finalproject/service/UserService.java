@@ -233,9 +233,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<ReservationDetailDto> readReservationDetails(Integer rdId) {
-        log.info("Finding reservation details for resvationMaster: {}", rdId);
-        List<ReservationDetailDto> resDetails = reservationDetailRepo.findByRdId(rdId);
+    public List<ReservationDetailDto> readReservationDetails(Integer resId) {
+        log.info("Finding reservation details for resvationMaster: {}", resId);
+        List<ReservationDetailDto> resDetails = reservationDetailRepo.findDetailsByResId(resId);
         log.info("Found ReservationDetails: {}", resDetails);
 
         return resDetails;
