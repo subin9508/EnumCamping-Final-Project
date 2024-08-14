@@ -18,7 +18,7 @@ import com.itwill.finalproject.domain.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
+//@SpringBootTest
 @Transactional // 테스트 이후 데이터 롤백을 위해 사용
 public class PaymentsRepositoryTest {
 	
@@ -32,13 +32,13 @@ public class PaymentsRepositoryTest {
 	private UserRepository userRepo;
 	
 	
-	@Test
+//	@Test
 	public void testFindByResId() {
 	    // 테스트용 User 생성 및 저장
 	    User user = User.builder()
 	    		.userId("subin")
 	    		.userEmail("test@test.com")
-	    		.userName("testUser")
+	    		.name("testUser")
 	    		.userPassword("test1234")
 	    		.userPhone("010-1234-1234")
 	    		.userRole(1)

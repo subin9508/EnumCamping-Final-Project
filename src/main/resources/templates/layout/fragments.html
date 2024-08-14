@@ -107,12 +107,13 @@
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/community/notice/list}">공지사항</a></li>
 									<li><a class="nav-link" aria-current="page"
-										th:href="@{/community/qna/list}">Q&A</a></li>
-									<li><a class="nav-link" aria-current="page" hidden
+										th:href="@{/community/qna/list}">QnA</a></li>
+									<li><a class="nav-link" aria-current="page" style="display: none;" 
 										th:href="@{/community}">FAQ</a></li>
-									<li><a class="nav-link" aria-current="page" hidden
+									<li><a class="nav-link" aria-current="page"  style="display: none;"
 										th:href="@{/community}">이용후기</a></li>
-								</ul></li>
+								</ul>
+                            </li>
 						</ul>
 						<ul class="navbar-nav navbar-user ms-auto">
 							<li class="nav-item" sec:authorize="isAuthenticated()">
@@ -312,18 +313,24 @@
 	<th:block th:fragment="community-sidebar">
 		<aside class="sidebar d-none d-md-block col-md-3">
 
-			<div class="sidebar-header">
-				<h3 id="title">커뮤니티</h3>
-			</div>
-			<ul class="sidebar-menu">
-				<li class="sidebar-item"><a th:href="@{../notice/list}">공지사항</a>
-				</li>
-				<li><a th:href="@{../qna/list}">Q&A</a></li>
-				<li class="sidebar-item"><a th:href="@{../faq}" class="hidden">FAQ</a>
-				</li>
-				<li class="sidebar-item"><a th:href="@{../review}"
-					class="hidden">이용후기</a></li>
-			</ul>
+		    <div class="sidebar-header">
+		    	<h3 id="title">커뮤니티</h3>
+		    </div>
+		    <ul class="sidebar-menu">
+		        <li class="sidebar-item">
+		            <a th:href="@{../notice/list}">공지사항</a>           
+		        </li>
+		        <li class="sidebar-item">
+		            <a th:href="@{../qna/list}">QnA</a>
+		        </li>
+		        <li class="sidebar-item">
+		           <a th:href="@{../faq}" class="hidden"  >FAQ</a> 
+		        </li>
+		        <li class="sidebar-item">
+		            <a th:href="@{../review}" class="hidden"  >이용후기</a>
+		        </li>
+		    </ul>
+
 
 		</aside>
 	</th:block>

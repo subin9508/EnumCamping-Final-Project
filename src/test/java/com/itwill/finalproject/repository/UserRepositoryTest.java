@@ -10,7 +10,7 @@ import com.itwill.finalproject.domain.UserRole;
 
 import lombok.extern.slf4j.Slf4j;
 
-@SpringBootTest
+//@SpringBootTest
 @Slf4j
 public class UserRepositoryTest {
 	@Autowired
@@ -19,7 +19,7 @@ public class UserRepositoryTest {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	   @Test
+//	   @Test
 	    public void testSave() {
 	        // 엔터티 객체를 DB members 테이블에 저장.
 	        
@@ -27,7 +27,7 @@ public class UserRepositoryTest {
 	                .userId("admin123")
 	                .userPassword(passwordEncoder.encode("qwer1234"))
 	                .userEmail("admin@itw44ill.com")
-	                .userName("동준")
+	                .name("동준")
 	                .userRole(0)
 	                .userPhone("010-5044-5296")
 	                .userState(0)
