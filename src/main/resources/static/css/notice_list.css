@@ -7,11 +7,12 @@
 
     .footer-main-content {
         flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
-        margin-left: 210px; /* 사이드바와의 간격 */
+        margin-left: 180px; /* 사이드바와의 간격 */
     }
 
     .card {
         margin: 2rem auto;
+        margin-top:100px;
         padding: 2rem;
         background-color: #fff;
         border-radius: 10px;
@@ -21,16 +22,25 @@
     }
 
     .table {
-        margin-bottom: 0;
+        margin-top: 20px;
         text-align: center;
+        table-layout:fixed;
+        width: 100%;
+        min-width: 600px;
     }
 
     .table th .table td{
-
         text-align: center;
         vertical-align: middle;
-       
+        white-space: nowrap; 
     }
+    
+   
+    
+    .num {
+        width: 100px; /* 번호 칸의 최소 너비를 100px로 지정 */
+    }
+    
     
     .table-hover tbody tr:hover {
     background-color: #f1f1f1;
@@ -40,5 +50,38 @@
         color: #7C9C63;
         text-decoration: none;
     }
+    
+    .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
 
+@media (max-width: 576px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .table tbody tr td {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table tbody tr td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
  
