@@ -4,7 +4,8 @@
 <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/footer.css}">
-<link rel="stylesheet" th:href="@{/css/map.css}">
+<link rel="stylesheet" th:href="@{/css/notice_list.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
 <!-- Bootstrap CSS -->
 <link
     href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
@@ -19,9 +20,9 @@
         <div class="footer-main-content">
             <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
             <main>
-                <div class="mt-2 card" style="margin-left: 10px">
-                    <div class="card-header">
-                        <h2>새 글 작성</h2>
+                <div class="card" >
+                    <div class="card-header" style="background-color: white;">
+                        <h2 class="text-center">새 공지 작성</h2>
                     </div>
                     <div class="card-body">
                         <form method="post"
@@ -30,12 +31,12 @@
                             <!-- form에서 action 속성값일 설정하지 않으면 현재 요청 주소로 요청을 다시 보냄 -->
                             <div class="mt-2">
                                 <input class="form-control" type="text"
-                                    name="notTitle" placeholder="제목 입력"
+                                    name="title" placeholder="제목 입력"
                                     required autofocus />
                             </div>
                             <div class="mt-2">
                                 <textarea class="form-control" rows="8"
-                                    name="notContent"
+                                    name="content"
                                     placeholder="내용 입력"
                                     required="required"></textarea>
                             </div>
@@ -59,7 +60,7 @@
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
-    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>

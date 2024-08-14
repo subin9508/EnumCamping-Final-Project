@@ -44,6 +44,7 @@ public class ReservationMaster {
 	
 	private String requirement;
 	
+	@CreatedDate
 	private LocalDateTime resCreatedTime;
 
 	

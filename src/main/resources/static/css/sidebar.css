@@ -14,9 +14,7 @@ a {
 
 /* 사이드바 스타일링 */
 .sidebar {
-    width: 100%;
-    max-width: 200px;
-    margin-top: 50px;
+    width: 200px;
     padding: 20px; /* 패딩 추가 */
     position: fixed;
     top: 10%;
@@ -28,6 +26,9 @@ a {
     overflow-y: auto;
     /* Scrollable contents if viewport is shorter than content. */
 }
+
+
+
 
 .sidebar-header {
     text-align: center;
@@ -53,4 +54,6 @@ a {
     display: block;
     padding: 10px;
     text-align: center;
+
 }
+

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.repository.QnARepository;
+import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MyPageService {
 	
 	private final UserRepository userRepo;
+	private final ReservationMasterRepository resRepo;
 	
 	// 사용자 정보 조회
 	public User read(String userId) {
@@ -25,7 +27,7 @@ public class MyPageService {
 		return userRepo.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
 		
 	}
-		
+
 	// 사용자 정보 업데이트
 	public void update(UserUpdateDto dto) {
 		log.debug("update({})", dto);
