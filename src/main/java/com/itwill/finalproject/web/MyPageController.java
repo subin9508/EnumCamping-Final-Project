@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.QnAListItemDto;
+import com.itwill.finalproject.dto.QnAUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.QnAService;
@@ -196,11 +197,25 @@ public class MyPageController {
     
 //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/delete")
-    public String delete(@RequestParam("id") Long id) {
+    public String delete(@RequestParam("id") Long id, @RequestParam(name="userId") String userId, Model model, HttpSession session) {
         log.info("delete(id={})", id);
+        
+     // 사용자 정보를 조회하여 세선에 저장
+     User user = userService.read(userId);
+     session.setAttribute("user", user);
         
         qnaService.delete(id);
         
-        return "redirect:/mypage/qna_list";
+        return "redirect:/mypage/qna_list?userId=" + userId;
     }
+    
+    @PostMapping("/update")
+    public String update(QnAUpdateDto dto) {
+        log.info("update(dto={})", dto);
+        
+        qnaService.update(dto);
+        
+        return "redirect:/mypage/qna_details?id=" + dto.getId();
+    }
+    
 }

@@ -53,7 +53,7 @@
         <div class="footer-main-content">
             <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
             
-            <div class="container-fluid">
+            <div class="details-container-fluid">
             <main>
             	<div class="qna-details-container">
 
@@ -125,9 +125,10 @@
 							<a class="btn btn-outline-primary" style="float: right"
 								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
 						</th:block> -->
-								<a class="btn btn-outline-primary" style="float: right"
-								th:href="@{/mypage/qna_modify(id=${qna.qnaUserId})}">수정하기</a>
-
+						
+							<a class="btn btn-modify btn-outline-primary" style="float: right"
+								th:href="@{/mypage/qna_modify(id=${qna.id})}">수정하기</a>
+						
 
 						<!-- 답변 목록 -->
 <!--                     <div id="answersContainer" style="font-size: 1.2em;">
@@ -139,7 +140,7 @@
                             </div>
                         </th:block>
                     </div> -->
-                    <div id="answersContainer" style="font-size: 1.2em;">
+                    <div class="mt-5" id="answersContainer" style="font-size: 1.2em;">
                             <div class="answer">
                                 <p th:text="${qna.content}"></p>
                                 <small>작성자: <span th:text="${qna.qnaUserId}"></span></small><br>

@@ -128,6 +128,10 @@ body, nav, aside, main {
     #top .nav-link {
         margin-right: 20px; /* 중간 화면 크기에서 마진 줄이기 */
     }
+    
+    .nav-item-main {
+	margin-left: 3rem;
+}
 
 }
 
@@ -152,6 +156,10 @@ body, nav, aside, main {
     	height: 30px;
     	width: 100px;
     }
+    
+    .nav-item-main {
+	margin-left: 2rem;
+}
 
 }
 

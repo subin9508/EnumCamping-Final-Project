@@ -16,7 +16,7 @@
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
         <div class="footer-main-content">
             <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
-               <div class="container-fluid">
+               <div class="list-container-fluid">
                 <main>
                     <div class="card">
                         <h2 class="qna-title">문의내역</h2>
@@ -56,10 +56,10 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <a style="text-align: left">총 게시글 수: <span th:text="${totalCount}"></span> 개</a>
+                            <a class="d-flex justify-content-end" style="text-align: left">총 게시글 수:&nbsp; <span th:text="${totalCount}"></span> 개</a>
                             <div>
                                 <nav aria-label="Page navigation example" th:if="${totalPages != null and totalPages > 0}">
-                                    <ul class="pagination">
+                                    <ul class="pagination mt-2 d-flex justify-content-center">
                                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                                             <a class="page-link" 
                                             	th:href="@{|${baseUrl}?p=${currentPage != null && currentPage > 0 ? currentPage - 1 : 0}&userId=${user.userId}|}" 

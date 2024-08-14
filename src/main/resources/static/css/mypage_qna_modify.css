@@ -1,63 +1,85 @@
 @charset "UTF-8";
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #fff;
-    }
 
-    .modify-wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #fff;
+}
 
-    .container-fluid {
-        flex: 1;
-        padding: 20px;
+.modify-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.modify-container-fluid {
+	flex: 1;
+	padding: 20px;
+	margin-left: 148px;
+}
+
+.qna-modify-container {
+	padding: 2rem;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin-right: 326px;
+	margin-left: 148px;
+	min-width: 435px;
+}
+
+.qna-title {
+	color: #7C9C63;
+	margin-bottom: 1.5rem;
+	border-bottom: 2px solid #7C9C63;
+	padding-bottom: 0.5rem;
+}
+
+.form-label {
+	font-weight: bold;
+	color: #495057;
+}
+
+.form-control {
+	margin-bottom: 1rem;
+}
+
+.form-control:read-only {
+	background-color: #e9ecef;
+}
+
+#qnaContent {
+	min-height: 150px;
+}
+
+.card-footer {
+	background-color: transparent;
+	border-top: none;
+	padding-top: 1rem;
+}
+
+.btn {
+	margin-left: 0.5rem;
+}
+
+.qna-content {
+	display: flex;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+
+    .modify-container-fluid {
+        padding: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
     .qna-modify-container {
-        padding: 2rem;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        margin-right: 326px;
-        margin-left: 148px;
+        width: 100%; /* 작은 화면에서는 너비를 100%로 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 확보 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
     }
 
-    .qna-title {
-        color: #7C9C63;
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid #7C9C63;
-        padding-bottom: 0.5rem;
-    }
-
-    .form-label {
-        font-weight: bold;
-        color: #495057;
-    }
-
-    .form-control {
-        margin-bottom: 1rem;
-    }
-
-    .form-control:read-only {
-        background-color: #e9ecef;
-    }
-
-    #qnaContent {
-        min-height: 150px;
-    }
-
-    .card-footer {
-        background-color: transparent;
-        border-top: none;
-        padding-top: 1rem;
-    }
-
-    .btn {
-        margin-left: 0.5rem;
-    }
     
-    .qna-content {
-        display: flex;
-    }
+}

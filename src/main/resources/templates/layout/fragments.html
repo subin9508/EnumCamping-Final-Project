@@ -296,7 +296,7 @@
 					</div>
 					<div class="modal-footer">
 						<!-- 탈퇴 버튼을 링크로 변경 -->
-						<a th:href="@{/user/deactivateUser(userId=${user.userId})}"
+						<a th:href="@{/user/deactivateUser(userId=${session.signedInUser})}"
 							class="btn btn-danger">회원 탈퇴 페이지로 이동</a>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
