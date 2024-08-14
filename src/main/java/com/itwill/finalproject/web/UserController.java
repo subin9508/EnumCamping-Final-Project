@@ -266,7 +266,7 @@ public class UserController {
 		}
 
 		// 사용자 정보 가져오기
-		User userInfo = userService.updateProfileImage(userKey, null);
+		User userInfo = userService.updatePassword(user);
 		log.info("가져온 사용자 정보: {}", userInfo);
 		model.addAttribute("user", userInfo);
 

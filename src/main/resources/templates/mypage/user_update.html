@@ -46,14 +46,14 @@
 			<div class="row">
 				<div class="col-md-3 mypage-sidebar">
 					<!-- 사이드바 포함 -->
-					<th:block th:replace="fragments/mypage-sidebar :: mypage-sidebar"></th:block>
+					<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
 				</div>
 				<div class="col-md-9 main-content">
 					<div class="card card-reservation mt-2">
 						<div class="card-reservation-header">내 정보 수정</div>
 						<div class="card-reservation-body text-center">
 							<form id="updateForm" method="post"
-								th:action="@{/user/user_update}" enctype="multipart/form-data">
+								th:action="@{/mypage/user_update}">
 
 								<div class="mb-3 row">
 									<label for="userName" class="col-sm-2 col-form-label">이름</label>
@@ -130,9 +130,7 @@
 	<script type="text/javascript"
 		src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
-	<script th:inline="javascript">
-		var contextPath = [[${pageContext.request.contextPath}]];
-    </script>
+	
 
 	<script th:src="@{/js/user_update.js}"></script>
 
