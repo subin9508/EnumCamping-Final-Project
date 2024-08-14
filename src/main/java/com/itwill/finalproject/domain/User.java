@@ -112,6 +112,7 @@ public class User implements UserDetails {
 //	        
 //	        return authorities;
 //	    }
+	
 
 	@Override
 	public String getPassword() {
@@ -121,7 +122,7 @@ public class User implements UserDetails {
 
 	@Override
 	public String getUsername() {
-
+		
 		return userId;
 	}
 

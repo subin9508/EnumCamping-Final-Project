@@ -14,7 +14,7 @@ public class UserCreateDto {
 	private String name; // 사용자 이름
 	private String userPhone; // 사용자 전화번호
 	private String userEmail; // 사용자 이메일
-	private Integer userRole = 0; // 유저롤
+	private Integer userRole = 1; // 유저롤
 	private Integer userState = 1; // 유저상태
 	
 

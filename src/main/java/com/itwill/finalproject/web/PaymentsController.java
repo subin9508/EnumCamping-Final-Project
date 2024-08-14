@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -126,19 +128,24 @@ public class PaymentsController {
         }
     }
     
-    @GetMapping("/reservation/succeeded/{resId}")
-    public String paymentSucceeded(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
+    @GetMapping("/reservation/successed/{resId}")
+    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
     	
-    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName();
+    	
+//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
         Optional<ReservationMaster> resMaster = userService.readReservationMasterDetails(resId);
-        List<ReservationDetailDto> resDetail = userService.readReservationDetails(rdId);
+
+        List<ReservationDetailDto> resDetail = userService.readReservationDetails(resId);
+
         
-        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
+//        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
         model.addAttribute("resMaster", resMaster);
         model.addAttribute("resDetail", resDetail);
         model.addAttribute("userId", userId); // 모델에 userId 추가
 
-        return "reservation/succeeded"; // succeeded.html 파일을 가리킴
+        return "reservation/successed"; // succeeded.html 파일을 가리킴
     }
 }

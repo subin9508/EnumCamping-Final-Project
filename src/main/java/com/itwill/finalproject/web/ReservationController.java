@@ -125,7 +125,7 @@ public class ReservationController {
 		    log.debug("userId={}", userId);
 		    User user = userSvc.read(userId);
 		    model.addAttribute("user", user);
-		    
+		    log.debug("user={}", user);
 		    // User 객체에서 userKey 가져오기
 		    Integer userKey = user.getUserKey();
 		    log.debug("userKey={}", userKey);
@@ -151,7 +151,7 @@ public class ReservationController {
 		    
 		    if (reservationMasterMap == null || reservationDetailList == null) {
 		        log.error("reservationMasterMap or reservationDetailList is null");
-		        return "/reservation/order";
+		        return "reservation/order";
 		    }
 		    
 		    // ReservationMaster 객체 생성 및 설정
@@ -198,21 +198,8 @@ public class ReservationController {
 		    model.addAttribute("reservationMaster", reservationMaster);
 		    model.addAttribute("reservationDetails", updatedReservationDetails);
 		    
-		    return "/reservation/order";
+		    return "reservation/order";
 		}
 		
-		@GetMapping("/reservationConfirm")
-		public String reservationConfirm(@RequestParam(name = "resId") int resId, Model model) {
-			log.debug("reservationConfirm()");
-			
-			ReservationMaster resMaster = userSvc.readReservationMasterDetails(resId).orElseThrow();
-			List<ReservationDetailDto> resDetail = userSvc.readReservationDetails(resId);
-
-			model.addAttribute("resMaster", resMaster);
-			model.addAttribute("resDetail", resDetail);
-
-			return "reservation/reservationConfirm";
-		}
-
 
 }

@@ -29,8 +29,24 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
 	       nativeQuery = true)
 	int deleteByResId(@Param("userKey") Integer userKey);
 
-	 // ResId에 해당하는 물품 리스트 조회
-    List<ReservationDetailDto> findByRdId(Integer rdId);
+	 // RdId에 해당하는 물품 리스트 조회
+    ReservationDetail findByRdId(Long rdId);
+//
+
+    @Query("select new com.itwill.finalproject.dto.ReservationDetailDto(rd.reservationMaster.resId, i.itemId, " +
+    	       "rd.itemQuantity, rd.itemAmount, i.itemName, i.itemImg) " +
+    	       "from ReservationDetail rd join rd.item i " +
+    	       "where rd.reservationMaster.resId = :resId")
+    	List<ReservationDetailDto> findDetailsByResId(@Param("resId") Integer resId);
+
+
+
+    
+    
+    //같은 resId를 가진 rdId찾기
+    @Query("SELECT rd.rdId FROM ReservationDetail rd WHERE rd.reservationMaster.resId = :resId")
+    List<Long> findRdIdByResId(@Param("resId") Integer resId);
+    
     
 //    // userId에 해당하는 예약 상세 정보 조회
 //    List<ReservationListDto> findByUserId(String userId);

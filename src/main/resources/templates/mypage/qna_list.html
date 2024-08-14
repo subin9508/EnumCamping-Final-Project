@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage_qna_list.css}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <div class="footer-main-content">
+            <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+               <div class="list-container-fluid">
+                <main>
+                    <div class="card">
+                        <h2 class="qna-title">문의내역</h2>
+                        <div class="card-body">
+
+                            <table class="table table-hover">
+                                <colgroup>
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                    <col style="width: 25%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>문의 번호</th>
+                                        <th>제목</th>
+                                        <th>수정시간</th>
+                                        <th>답변 상태</th>
+                                        <th>조회수</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="qna : ${qnas}" style="cursor:pointer; text-align: center;"
+                                        th:onclick="|location.href='@{/mypage/qna_details(id=${qna.id})}'|">
+                                        <td class="col-1" th:text="${qna.id}"></td>
+                                        <td class="col-3">
+                                            <a th:href="@{/mypage/qna_details(id=${qna.id})}">
+                                                <span th:text="${qna.title}"></span>
+                                                <img th:if="${qna.qnaLock == 1}" th:src="@{/images/community/secret.png}" class="secret-icon" alt="비밀글">
+                                            </a>
+                                        </td>
+                                        <td class="col-2" th:text="${#temporals.format(qna.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                        <td th:class="${qna.qnaState == 0 ? 'status-waiting col-2' : 'status-completed col-2'}">
+                                            <span th:text="${qna.qnaState == 0 ? '답변 대기' : '답변 완료'}"></span>
+                                        </td>
+                                        <td class="col-1" th:text="${qna.qnaViewCnt}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a class="d-flex justify-content-end" style="text-align: left">총 게시글 수:&nbsp; <span th:text="${totalCount}"></span> 개</a>
+                            <div>
+                                <nav aria-label="Page navigation example" th:if="${totalPages != null and totalPages > 0}">
+                                    <ul class="pagination mt-2 d-flex justify-content-center">
+                                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                            <a class="page-link" 
+                                            	th:href="@{|${baseUrl}?p=${currentPage != null && currentPage > 0 ? currentPage - 1 : 0}&userId=${user.userId}|}" 
+                                            	aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                            th:classappend="${currentPage != null && currentPage == i} ? 'active'">
+                                            <a class="page-link" 
+                                            	th:href="@{|${baseUrl}?p=${i}&userId=${user.userId}|}" th:text="${i + 1}"></a>
+                                        </li>
+                                        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                                            <a class="page-link" th:href="@{|${baseUrl}?p=${currentPage != null && currentPage + 1 < totalPages ? currentPage + 1 : currentPage}&userId=${user.userId}|}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+				</div>
+            </div>
+    		<!-- 푸터 -->
+    		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        </div>
+        
+        <!-- 부트 스트랩 JS -->
+		<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+		<!-- Weather JS -->
+		<th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+</body>
+</html>

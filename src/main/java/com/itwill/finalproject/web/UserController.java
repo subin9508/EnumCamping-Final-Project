@@ -17,6 +17,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -168,35 +170,81 @@ public class UserController {
 		}
 	}
 
+	// 비밀번호 확인 폼을 보여주는 메서드
+	@GetMapping("/password_check")
+	public String showPasswordCheckForm() {
+		return "user/password_check";
+	}
+
+	// 비밀번호 확인 처리 메서드
+	@PostMapping("/password_check")
+	public String passwordCheck(@RequestParam("password") String password, HttpSession session, Model model) {
+		// 세션에서 사용자 ID 가져옴
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	     String userId = authentication.getName();
+//		String userId = (String) session.getAttribute("signedInUser");
+		if (userId == null) {
+			return "redirect:/user/signin";
+		}
+
+		// 사용자 정보 조회
+		User user = userService.read(userId);
+		if (user == null) {
+			return "redirect:/user/signin";
+		}
+
+		// 비밀번호 확인을 위한 DTO 생성
+
+		UserSignInDto dto = new UserSignInDto();
+
+		dto.setUserId(user.getUserId());
+		dto.setUserPassword(password);
+
+		// 비밀번호 확인
+		User verifiedUser = userService.read(dto).orElseThrow();
+		if (verifiedUser != null) {
+			// 비밀번호가 일치하면 사용자 정보 수정 페이지로 리다이렉트
+			return "redirect:/user/user_update";
+		} else {
+			// 비밀번호가 일치하지 않으면 에러 메시지와 함께 비밀번호 확인 페이지로 돌아감
+			model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
+			return "user/password_check";
+		}
+	}
+
 	@GetMapping("/findid")
 	public String findIdForm() {
 		return "user/findid"; // 아이디 찾기 입력 폼으로 이동
 	}
-
+/*
 	@PostMapping("/findid")
 	public String findId(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			Model model) {
-		String userId = userService.findIdByNameAndEmail(name, email);
+		Optional<User> user = userService.findIdByNameAndEmail(name, email);
+		String userId = user.map(User::getUserId).orElse(null);
 		if (userId != null) {
 
 			model.addAttribute("userId", userId);
 			return "user/displayid"; // 아이디 찾기 성공 화면으로 이동
 		} else {
-
+			
 			model.addAttribute("message", "등록되지 않은 이름 또는 이메일입니다.");
 			return "user/findid"; // 아이디 찾기 입력 폼으로 다시 이동
 		}
 	}
+	*/
+	
 
 	@GetMapping("/findpassword")
 	public String findPasswordForm(Model model) {
 		return "user/findpassword"; // 패스워드 찾기 입력 폼으로 이동
 	}
-
+/*
 	@PostMapping("/findpassword")
 	public String findPassword(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			@RequestParam("user_id") String id, Model model) {
-		String userPassword = userService.findPasswordByNameAndEmailAndId(name, email, id);
+		Optional<User> user = userService.findPasswordByNameAndEmailAndId(name, email, id);
+		String userPassword = user.map(User::getUserPassword).orElse(null);
 		if (userPassword != null) {
 			model.addAttribute("userPassword", userPassword);
 			return "user/displaypassword"; // 비밀번호 찾기 성공 화면으로 이동
@@ -205,66 +253,71 @@ public class UserController {
 			return "user/findpassword"; // 비밀번호 찾기 입력 폼으로 다시 이동
 		}
 	}
-
+*/
 	// 회원 탈퇴 페이지 조회
 	@GetMapping("/deactivateUser")
 	public String deactivateAccount(Model model, HttpSession session) {
 		// 세션에서 사용자 ID 가져오기
-		Integer userKey = (Integer) session.getAttribute("loginUserId");
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	    String userId = authentication.getName();
+	    User user = userService.read(userId);
+	    Integer userKey = user.getUserKey();
+//		Integer userKey = (Integer) session.getAttribute("loginUserId");
 		log.info("세션에서 가져온 userKey: {}", userKey);
 		if (userKey == null) {
 			return "redirect:/user/signin"; // 로그인 페이지로 리다이렉트
 		}
 
-	      // 사용자 정보 가져오기
-        Optional<User> userOptional = userService.findByUserKey(userKey);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            log.debug("가져온 사용자 정보: {}", user);
-            model.addAttribute("user", user);
-        } else {
-            // 사용자 정보가 없는 경우에 대한 처리
-            log.warn("사용자 정보를 찾을 수 없습니다. userKey: {}", userKey);
-            return "redirect:/error"; // 예시: 에러 페이지로 리다이렉트
-        }
+		// 사용자 정보 가져오기
+		User userInfo = userService.updatePassword(user);
+		log.info("가져온 사용자 정보: {}", userInfo);
+		model.addAttribute("user", userInfo);
 
-        return "user/deactivateUser";
-    }
+		return "user/deactivateUser";
+	}
 
-
-	// 회원 탈퇴 처리
 	@PostMapping("/deactivateUser")
 	@ResponseBody
 	public ResponseEntity<?> deactivateAccount(@RequestBody UserDeactivateDto dto, HttpSession session,
-			HttpServletResponse response) {
-		log.info("Received deactivation request for userKey: {}", dto.getUserKey());
-		log.info("Password received: {}", dto.getUserPassword());
+	        HttpServletResponse response) {
+	    log.info("Received deactivation request.");
 
-		// 요청 바디에서 id와 password를 추출
-		Integer userKey = (Integer) dto.getUserKey();
-		String userPassword = (String) dto.getUserPassword();
+	    // 현재 로그인된 사용자 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName(); // 현재 로그인된 사용자 ID
 
-		log.info("Before calling service - userKey: {}, password: {}", userKey, userPassword);
+	    // 사용자 ID를 통해 사용자 정보를 조회
+	    User user = userService.read(userId); // userService에서 사용자 정보를 조회하는 메서드
+	    
+	    if (user == null) {
+	        log.error("User not found for ID: {}", userId);
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
 
-		// 회원 탈퇴 서비스 호출
-		boolean result = userService.deactivateAccount(userKey, userPassword);
+	    Integer userKey = user.getUserKey(); // 현재 사용자의 userKey
+	    String userPassword = dto.getUserPassword(); // 요청 바디에서 받은 비밀번호
 
-		if (result) {
-			// 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
-			session.invalidate();
+	    log.info("userKey: {}, password: {}", userKey, userPassword);
 
-			// 쿠키 삭제
-			Cookie cookie = new Cookie("user", null);
-			cookie.setMaxAge(0);
-			cookie.setPath("/");
-			response.addCookie(cookie);
+	    // 회원 탈퇴 서비스 호출
+	    boolean result = userService.deactivateAccount(userKey, userPassword);
 
-			log.info("Account deactivated successfully.");
-			return ResponseEntity.ok().body("/semiproject");
-		} else {
-			log.info("비밀번호가 일치하지 않습니다.");
-			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-		}
+	    if (result) {
+	        // 성공적으로 탈퇴한 경우, 세션 무효화 및 세션 삭제
+	        session.invalidate();
+
+	        // 쿠키 삭제
+	        Cookie cookie = new Cookie("user", null);
+	        cookie.setMaxAge(0);
+	        cookie.setPath("/");
+	        response.addCookie(cookie);
+
+	        log.info("Account deactivated successfully.");
+	        return ResponseEntity.ok().body("/semiproject");
+	    } else {
+	        log.info("비밀번호가 일치하지 않습니다.");
+	        return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+	    }
 	}
-
 }

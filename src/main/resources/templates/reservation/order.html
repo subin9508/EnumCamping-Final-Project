@@ -35,6 +35,7 @@
                 <td colspan="2" style="text-align: center;">
                   <label for="userName" style="font-size: 18px;">이름</label >
                 </td>
+
                 <td colspan="5" style="font-size: 18px;" th:text="${user.name}"></td>
               </tr>
               <tr>
@@ -106,9 +107,7 @@
         </table>
         <div class="mt-2">
           <label for="requirement" class="form-label" style="font-size: 18px;">요청사항</label>
-          <textarea id="requirement" class="form-control" rows="5" style="font-size: 18px;" readonly>
-                            <th:block th:text="${reservationMaster.requirement ?: '요청없음'}"></th:block>
-                        </textarea>
+          <textarea id="requirement" class="form-control" rows="5" style="font-size: 18px;" readonly th:text="${reservationMaster.requirement ?: '요청없음'}"></textarea>
         </div>
         <br><br>
       </div>
