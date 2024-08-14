@@ -16,8 +16,6 @@ import com.itwill.finalproject.domain.User;
 
 import com.itwill.finalproject.domain.UserRole;
 import com.itwill.finalproject.dto.ReservationDetailDto;
-
-
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
@@ -134,9 +132,13 @@ public class UserService implements UserDetailsService {
 	
 
 	public User read(String userId) {
-		log.info("read(id={})", userId);
+	    log.info("read(id={})", userId);
 
-		return userRepo.findByUserId(userId).orElse(null);
+	    // Optional<User>를 반환
+	    Optional<User> userOptional = userRepo.findByUserId(userId);
+
+	    // Optional에서 값을 안전하게 추출
+	    return userOptional.orElse(null); // 값이 존재하면 User 반환, 아니면 null 반환
 	}
 
 
@@ -154,23 +156,23 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	
+/*	
 	//이름,아이디,이메일을 검색해 비밀번호를 찾는 메서드
-	public String findPasswordByNameAndEmailAndId(String name, String email, String id) {
+	public Optional<User> findPasswordByNameAndEmailAndId(String name, String email, String id) {
 		log.info("findPasswordByNameAndEmailAndId({}{}{})", name, email, id);
-		Optional<User> user = userRepo.findPasswordByNameAndEmailAndId(name, email, id);
-		return user.map(User::getUserPassword).orElse(null);
+		Optional<User> userPassword = userRepo.findByUserNameAndUserEmailAndUserId(name, email, id);
+		return userPassword;
 	}
 	
 	//이름,이메일을 검색해 아이디를 찾는 메서드
-	public String findIdByNameAndEmail(String name, String email) {
-	    // 데이터베이스에서 사용자 아이디 찾기 로직
-		Optional<User> user = userRepo.findIdByNameAndEmail(name, email);
+	public Optional<User> findIdByNameAndEmail(String name, String email) {
+	    // 데이터베이스에서 사용자 아이디 찾기 로직	
+		Optional<User> userId = userRepo.findByUserNameAndUserEmail(name, email);
 		log.info("findIdByNameAndEmail({}{})", name, email);
-		return user.map(User::getUserId).orElse(null);
+		return userId;
 	    
 	}
-
+*/
 	
 	// 회원탈퇴 관련
 	// 시큐리티 적용
@@ -199,6 +201,7 @@ public class UserService implements UserDetailsService {
 	}
     
     public boolean checkUserIsActive(String userId) {
+    		log.info("userRepo.checkUserIsActive(userId) ={}",userRepo.checkUserIsActive(userId));
         return userRepo.checkUserIsActive(userId) == 1; // 1이면 활성(로그인가능), 0이면 비활성(탈퇴 & 계정 정지)
     }
     
@@ -209,16 +212,12 @@ public class UserService implements UserDetailsService {
     }
     
     
-    @Transactional
-    public User updateProfileImage(Integer userKey, String profileImage) {
-        log.info("Updating profile image for userKey: {} with profileImage: {}", userKey, profileImage);
-
-        // 프로필 이미지 업데이트
-        userRepo.updateProfileImage(profileImage, userKey);
-
-        // 업데이트된 사용자 정보 반환
-        return userRepo.findByUserKey(userKey).orElse(null);
+    
+    // 유저 키로 사용자 조회
+    public Optional<User> findByUserKey(Integer userKey) {
+    	return userRepo.findByUserKey(userKey);
     }
+    
     
     public Optional<ReservationMaster> readReservationList(Integer userKey) {
         Optional<ReservationMaster> list = reservationMasterRepo.findById(userKey);
@@ -234,14 +233,17 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<ReservationDetailDto> readReservationDetails(Integer rdId) {
-        log.info("Finding reservation details for resvationMaster: {}", rdId);
-        List<ReservationDetailDto> resDetails = reservationDetailRepo.findByRdId(rdId);
+    public List<ReservationDetailDto> readReservationDetails(Integer resId) {
+        log.info("Finding reservation details for resvationMaster: {}", resId);
+        List<ReservationDetailDto> resDetails = reservationDetailRepo.findDetailsByResId(resId);
         log.info("Found ReservationDetails: {}", resDetails);
 
         return resDetails;
     }
     
    
+    
+    
+    
     
 }

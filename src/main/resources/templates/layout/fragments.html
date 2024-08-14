@@ -38,12 +38,12 @@
 
 		<header class="bg-white">
 			<nav class="navbar navbar-expand-md navbar-light">
-				<div class="container-fluid">
+				<div class="container-fluid ">
 					<div class="d-flex align-items-center">
 						<!-- Logo -->
 						<a class="navbar-brand" href="/enumcamping"> <img alt="logo"
 							th:src="@{/images/main/logo_horizontal.png}"
-							style="height: 60px; width: 200px;">
+							id="logo-img">
 						</a>
 						<!-- 날씨 정보 -->
 						<div class="ms-3 text-center d-none d-md-block">
@@ -67,7 +67,7 @@
 					<!-- Navbar 링크 -->
 					<div class="collapse navbar-collapse" id="navbarContent">
 						<ul class="navbar-nav navbar-links d-flex justify-content-center">
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/introduce/enumIntro}" style="font-weight: bold;">캠핑장
 									소개</a>
 								<ul class="subMenu">
@@ -82,7 +82,7 @@
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/introduce/map}">캠핑장 위치</a></li>
 								</ul></li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/info/infoTime}" style="font-weight: bold;">이용안내</a>
 								<ul class="subMenu">
 									<li><a class="nav-link" aria-current="page"
@@ -98,26 +98,27 @@
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/info/infoRental}">대여 물품 목록</a></li>
 								</ul></li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/reservation/calendar}" style="font-weight: bold;">예약</a>
 							</li>
-							<li class="nav-item mx-5"><a class="nav-link menu"
+							<li class="nav-item nav-item-main"><a class="nav-link menu"
 								th:href="@{/community/notice/list}" style="font-weight: bold;">커뮤니티</a>
 								<ul class="subMenu">
 									<li><a class="nav-link" aria-current="page"
 										th:href="@{/community/notice/list}">공지사항</a></li>
 									<li><a class="nav-link" aria-current="page"
-										th:href="@{/community/qna/list}">Q&A</a></li>
-									<li><a class="nav-link" aria-current="page" hidden
+										th:href="@{/community/qna/list}">QnA</a></li>
+									<li><a class="nav-link" aria-current="page" style="display: none;" 
 										th:href="@{/community}">FAQ</a></li>
-									<li><a class="nav-link" aria-current="page" hidden
+									<li><a class="nav-link" aria-current="page"  style="display: none;"
 										th:href="@{/community}">이용후기</a></li>
-								</ul></li>
+								</ul>
+                            </li>
 						</ul>
 						<ul class="navbar-nav navbar-user ms-auto">
 							<li class="nav-item" sec:authorize="isAuthenticated()">
 								<a class="nav-link"
-								th:href="@{/user/myPage(userId=${session.signedInUser})}"
+								th:href="@{/mypage/myInfo(userId=${session.signedInUser})}"
 								style="font-weight: bold;">마이페이지</a>
 							</li>
 							<li class="nav-item" sec:authorize="isAuthenticated()">
@@ -270,12 +271,12 @@
 			</div>
 			<ul class="sidebar-menu">
 				<li class="sidebar-item"><a
-					th:href="@{/user/myPage(userId=${user.userId})}">내 정보</a></li>
+					th:href="@{/mypage/myInfo(userId=${session.signedInUser})}">내 정보</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/user/reservation_list(userId=${user.userId})}">예약내역</a>
+					th:href="@{/mypage/reservation_list(userId=${session.signedInUser})}">예약내역</a>
 				</li>
 				<li class="sidebar-item"><a
-					th:href="@{/user/qna_list(userId=${user.userId})}">문의내역</a></li>
+					th:href="@{/mypage/qna_list(userId=${session.signedInUser})}">문의내역</a></li>
 				<li class="sidebar-item"><a href="#" data-bs-toggle="modal"
 					data-bs-target="#deleteAccountModal">회원탈퇴</a></li>
 			</ul>
@@ -298,7 +299,7 @@
 					</div>
 					<div class="modal-footer">
 						<!-- 탈퇴 버튼을 링크로 변경 -->
-						<a th:href="@{/user/deactivateUser(userId=${user.userId})}"
+						<a th:href="@{/user/deactivateUser(userId=${session.signedInUser})}"
 							class="btn btn-danger">회원 탈퇴 페이지로 이동</a>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
@@ -320,7 +321,7 @@
 		            <a th:href="@{../notice/list}">공지사항</a>           
 		        </li>
 		        <li class="sidebar-item">
-		            <a th:href="@{/community/qna/list}">Q&A</a>
+		            <a th:href="@{../qna/list}">QnA</a>
 		        </li>
 		        <li class="sidebar-item">
 		           <a th:href="@{../faq}" class="hidden"  >FAQ</a> 
@@ -329,6 +330,7 @@
 		            <a th:href="@{../review}" class="hidden"  >이용후기</a>
 		        </li>
 		    </ul>
+
 
 		</aside>
 	</th:block>

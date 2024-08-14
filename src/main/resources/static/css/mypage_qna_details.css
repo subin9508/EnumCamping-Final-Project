@@ -6,9 +6,10 @@
     min-height: 100vh;
 }
 
-.container-fluid {
+.details-container-fluid {
     flex: 1;
     padding: 20px;
+    margin-left: 148px;
 }
 
 .qna-details-container {
@@ -19,6 +20,7 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin-right: 326px;
     margin-left: 148px;
+    min-width: 435px;
 }
 
 .qna-details-container h2 {
@@ -100,6 +102,45 @@
     border-radius: 10px;
 }
 
+#answersContainer {
+    margin-top: 2rem; /* 수정하기 버튼과 간격 확보 */
+}
+
 .qna-content {
-        display: flex;
+	display: flex;
+}
+
+.btn-modify {
+	margin-top: 5px;
+}
+
+/* 반응형 */
+
+@media (max-width: 768px) {
+
+    .details-container-fluid {
+        padding: 0;
+        margin-left: 0;
+        margin-right: 0;
     }
+
+    .qna-details-container {
+        width: 100%; /* 작은 화면에서는 너비를 100%로 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 확보 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
+    }
+
+    .card {
+        width: 100%; /* 카드가 화면 전체 너비를 차지하게 설정 */
+        margin: 0; /* 여백 제거 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 만듦 */
+    }
+
+    .card-body {
+        width: 100%; /* 테이블이 카드 안에서 꽉 차도록 설정 */
+        overflow-x: auto; /* 내용이 넘칠 경우 가로 스크롤 허용 */
+    }
+    
+}

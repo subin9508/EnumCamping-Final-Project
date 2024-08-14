@@ -31,6 +31,7 @@ public class QnAAnswer extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; // 번호
 	
+    @ToString.Exclude // toString 메서드를 만들 때 제외시킴.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QNA_POST_ID") // FK 제약조건이 있는 컬럼 이름.
     private QnA qna;

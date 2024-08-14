@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,12 +7,13 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-<link th:href="@{/css/myPage.css}" rel="stylesheet" />
+<link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
 <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
 
- <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+
 <style>
 .btn-outline-success {
 	border: 1px solid green;
@@ -67,12 +69,12 @@ footer {
 							<div class="card-reservation-header">내 정보</div>
 							<div class="card-reservation-body text-center">
 								<form id="updateForm" method="post"
-									th:action="@{/user/user_update}" enctype="multipart/form-data">
+									th:action="@{/mypage/user_update}">
 									<div class="mb-3 row">
 										<label for="userName" class="col-sm-2 col-form-label">이름</label>
 										<div class="col-sm-10">
 											<input type="text" class="form-control" id="userName"
-												name="userName" th:value="${user.userName}" readonly>
+												name="userName" th:value="${user.name}" readonly>
 										</div>
 									</div>
 									<div class="mb-3 row">
@@ -83,10 +85,11 @@ footer {
 										</div>
 									</div>
 									<div class="mb-3 row">
-										<label for="userPassword" class="col-sm-2 col-form-label">PW</label>
+										<label for="userPassword" class="col-sm-2 col-form-label">비밀번호</label>
 										<div class="col-sm-10">
+											<!-- 비밀번호 필드는 표시하지 않음 -->
 											<input type="password" class="form-control" id="userPassword"
-												name="userPassword" th:value="${user.userPassword}" readonly>
+												name="userPassword" placeholder="비밀번호 변경 시 입력" readonly>
 										</div>
 									</div>
 									<div class="mb-3 row">
@@ -106,8 +109,8 @@ footer {
 								</form>
 								<div class="mb-3 row">
 									<div class="col-sm-8 offset-sm-2">
-										<a th:href="@{/user/password_check}"
-											class="btn btn-outline-success btn-link-custom">수정하기</a>
+										<a th:href="@{/mypage/password_check}"
+											class="btn btn-outline-success btn-link-custom">정보 수정하기</a>
 									</div>
 								</div>
 							</div>
@@ -117,17 +120,18 @@ footer {
 			</main>
 		</div>
 		
-	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"
 		type="text/javascript"></script>
-	<script>
-        var contextPath = [[${#httpServletRequest.contextPath}]];
-    </script>
+	<script th:inline="javascript">
+		var contextPath = /*[[@{/}]]*/'';
+	</script>
 	<!-- 부트 스트랩 JS -->
-        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
-        
-        <!-- Weather JS -->
-        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>
+

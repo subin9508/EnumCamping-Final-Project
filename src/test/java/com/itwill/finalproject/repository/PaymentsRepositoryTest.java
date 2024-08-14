@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.Payments;
+import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,14 +34,37 @@ public class PaymentsRepositoryTest {
 	@Autowired 
 	private UserRepository userRepo;
 	
+	@Autowired
+	private ReservationDetailRepository rdRepo;
 	
 	@Test
+	@Transactional
+	public void test() {
+		
+		//List<ReservationMaster> list=rdRepo.findReservationMasterByReservationMasterResId(40);
+		
+//		List<Long> list = rdRepo.findRdIdByResId(45);
+		
+		List<ReservationDetailDto> list2 = rdRepo.findDetailsByResId(45);
+		
+//		log.info("{}",list.get(0));
+		
+		log.info("{}",list2.get(0));
+		log.info("{}",list2.get(1));
+		log.info("{}",list2.get(2));
+		
+		
+	}
+	
+	
+	
+//	@Test
 	public void testFindByResId() {
 	    // 테스트용 User 생성 및 저장
 	    User user = User.builder()
 	    		.userId("subin")
 	    		.userEmail("test@test.com")
-	    		.userName("testUser")
+	    		.name("testUser")
 	    		.userPassword("test1234")
 	    		.userPhone("010-1234-1234")
 	    		.userRole(1)

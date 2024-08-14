@@ -71,9 +71,8 @@ public class QnAController {
     
 //    @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
-    public String create(@ModelAttribute QnACreateDto dto) {
+    public String create(QnACreateDto dto) {
         log.info("QNA create(dto={})", dto);
-     
         
         // 서비스 계층의 메서드를 호출해서 작성한 포스트를 DB에 저장.
         qnaSvc.create(dto);

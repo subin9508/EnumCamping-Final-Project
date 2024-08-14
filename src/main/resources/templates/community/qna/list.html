@@ -168,7 +168,7 @@ ul.pagination {
                                                 <img th:if="${qna.qnaLock == 1}" th:src="@{/images/community/secret.png}" class="secret-icon" alt="비밀글">
                                             </a>
                                         </td>
-                                        <td class="col-2" th:text="${qna.qnaUserId}"></td>
+                                        <td class="col-2" th:text="${qna.author}"></td>
                                         <td class="col-2" th:text="${#temporals.format(qna.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                         <td th:class="${qna.qnaState == 0 ? 'status-waiting col-2' : 'status-completed col-2'}">
                                             <span th:text="${qna.qnaState == 0 ? '답변 대기' : '답변 완료'}"></span>
@@ -232,7 +232,7 @@ ul.pagination {
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     
     <!-- Weather JS -->
-    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>

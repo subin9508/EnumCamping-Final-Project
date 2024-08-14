@@ -77,7 +77,7 @@ async function handlePaymentResponse(rsp, resId) {
                 // resId 로깅
  
                 console.log("이동할 예약 ID:", resId);
-                window.location.href = `/enumcamping/reservation/succeeded/${resId}`; // 결제 성공 페이지로 이동
+                window.location.href = `/enumcamping/reservation/successed/${resId}`; // 결제 성공 페이지로 이동
             } else {
                 throw new Error("서버 검증 실패" + (result.fail_reason || "알 수 없는 오류"));
             }

@@ -22,22 +22,12 @@
                     <h1><strong>[ENUM 캠핑장 소개]</strong></h1>
                 </div>
                 <section class="facility-section">
-                    <div class="slider-container">
-                        <div class="slider">
-                            <input type="radio" name="slide" id="slide1" checked>
-                            <input type="radio" name="slide" id="slide2">
-                            <input type="radio" name="slide" id="slide3">
-                            <ul class="imgs">
-                                <li><img src="https://cdn.pixabay.com/photo/2020/08/21/15/04/tent-5506381_1280.jpg" alt="Image 1"></li>
-                                <li><img src="https://cdn.pixabay.com/photo/2017/08/06/02/32/camp-2587926_1280.jpg" alt="Image 2"></li>
-                                <li><img src="https://cdn.pixabay.com/photo/2017/08/07/18/28/night-2606510_1280.jpg" alt="Image 3"></li>
-                            </ul>
-                            <div class="bullets">
-                                <label for="slide1"></label>
-                                <label for="slide2"></label>
-                                <label for="slide3"></label>
-                            </div>
-                        </div>
+                    <div id="slideshow" class="slider-container">
+                        <ul class="imgs">
+                            <li><img src="https://cdn.pixabay.com/photo/2020/08/21/15/04/tent-5506381_1280.jpg" alt="Image 1"></li>
+                            <li><img src="https://cdn.pixabay.com/photo/2017/08/06/02/32/camp-2587926_1280.jpg" alt="Image 2"></li>
+                            <li><img src="https://cdn.pixabay.com/photo/2017/08/07/18/28/night-2606510_1280.jpg" alt="Image 3"></li>
+                        </ul>
                     </div>
                 </section>
                 <section>
@@ -62,9 +52,37 @@
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
 
+    <!-- jQuery 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     <!-- Weather JS -->
     <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+    <!-- 슬라이더 동작을 위한 JavaScript -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    var slideIndex = 0;
+    var slideCount = $('#slideshow ul.imgs li').length;
+
+    function showNextSlide() {
+        slideIndex++;
+        if (slideIndex >= slideCount) {
+            // 마지막 슬라이드에서 첫 번째 슬라이드로 전환
+            slideIndex = 0;
+        }
+        $('#slideshow ul.imgs').css('transform', 'translateX(' + (-slideIndex * 100) + '%)');
+    }
+
+    // 첫 번째 슬라이드 복사본을 마지막에 추가
+    var firstSlide = $('#slideshow ul.imgs li:first-child').clone();
+    $('#slideshow ul.imgs').append(firstSlide);
+    
+    // 슬라이드 컨테이너의 너비를 조정
+    $('#slideshow ul.imgs').css('width', ((slideCount + 1) * 100) + '%');
+
+    setInterval(showNextSlide, 3000); // 3초마다 슬라이드 전환
+});
+</script>
 </body>
 </html>
