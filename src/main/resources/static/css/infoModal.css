@@ -76,8 +76,46 @@
     z-index: 1050; /* 버튼이 항상 위에 표시되도록 z-index 설정 */
 }
 
-@media only screen and (max-width: 768px) {
+/* 반응형 */
+/* 작은 화면에 맞춘 스타일 조정 */
+@media (max-width: 768px) {    
+    	/* 작은 화면에서 .facilities-section, .facilities-card, .main-content 스타일 적용 */
+    .facilities-section {
+       display: grid;
+       grid-template-columns: 1fr; /* 작은 화면에서 카드가 나란히 2개씩 배치되도록 설정 */
+       gap: 10px; /* 카드 사이의 간격 설정 */
+    }
+    
     .facilities-card {
+        min-width: 100%; /* 작은 화면에서 카드가 화면을 가득 채우도록 설정 */
+    }
+
+    .main-content {
+        margin-left: 0 !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
+        width: 100%;
+        padding: 0 15px;
+    }
+    
+	table {
         width: 100%;
     }
+    
+    td, th {
+        display: inline-block; /* 셀을 블록화 */
+        width: 50%; /* 한 줄에 2개씩 배치되도록 너비 조정 */
+        box-sizing: border-box; /* 패딩과 테두리 포함 */
+    }
+
+    td img, th img {
+        width: 100%; /* 이미지가 셀을 가득 채우도록 */
+        height: auto; /* 이미지 비율 유지 */
+    }
+
+    /* 각 이미지 밑의 텍스트를 중앙 정렬 */
+    td, th {
+        text-align: center;
+        vertical-align: top;
+    }
+    
+    
 }
