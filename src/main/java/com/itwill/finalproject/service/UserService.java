@@ -156,7 +156,7 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	
+/*	
 	//이름,아이디,이메일을 검색해 비밀번호를 찾는 메서드
 	public Optional<User> findPasswordByNameAndEmailAndId(String name, String email, String id) {
 		log.info("findPasswordByNameAndEmailAndId({}{}{})", name, email, id);
@@ -172,7 +172,7 @@ public class UserService implements UserDetailsService {
 		return userId;
 	    
 	}
-
+*/
 	
 	// 회원탈퇴 관련
 	// 시큐리티 적용

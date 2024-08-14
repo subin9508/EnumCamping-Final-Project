@@ -114,7 +114,7 @@ public class User implements UserDetails {
 //	        
 //	        return authorities;
 //	    }
-
+	
 
 	@Override
 	public String getPassword() {

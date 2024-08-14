@@ -216,7 +216,7 @@ public class UserController {
 	public String findIdForm() {
 		return "user/findid"; // 아이디 찾기 입력 폼으로 이동
 	}
-
+/*
 	@PostMapping("/findid")
 	public String findId(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			Model model) {
@@ -232,14 +232,14 @@ public class UserController {
 			return "user/findid"; // 아이디 찾기 입력 폼으로 다시 이동
 		}
 	}
-	
+	*/
 	
 
 	@GetMapping("/findpassword")
 	public String findPasswordForm(Model model) {
 		return "user/findpassword"; // 패스워드 찾기 입력 폼으로 이동
 	}
-
+/*
 	@PostMapping("/findpassword")
 	public String findPassword(@RequestParam("user_name") String name, @RequestParam("user_email") String email,
 			@RequestParam("user_id") String id, Model model) {
@@ -253,7 +253,7 @@ public class UserController {
 			return "user/findpassword"; // 비밀번호 찾기 입력 폼으로 다시 이동
 		}
 	}
-
+*/
 	// 회원 탈퇴 페이지 조회
 	@GetMapping("/deactivateUser")
 	public String deactivateAccount(Model model, HttpSession session) {
