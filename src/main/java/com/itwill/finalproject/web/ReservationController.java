@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,7 +90,9 @@ public class ReservationController {
 	// 예약확인 페이지
 		@GetMapping("/order")
 		public String showOrderPage(HttpSession session, Model model) {
-		    String userId = (String) session.getAttribute("signedInUser");
+			 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		     String userId = authentication.getName();
+//		    String userId = (String) session.getAttribute("signedInUser");
 		    User user = userSvc.read(userId);
 		    Integer userKey = user.getUserKey();
 		    
@@ -111,7 +115,13 @@ public class ReservationController {
 		    log.debug("reservationList(requestData={})", requestData);
 		    
 		    // 세션에서 사용자 정보 가져오기
-		    String userId = (String) session.getAttribute("signedInUser");
+		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		  
+		       String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
+		        // 인증된 사용자에 대한 처리
+//		    String userId = (String) session.getAttribute("signedInUser");
+		    
 		    log.debug("userId={}", userId);
 		    User user = userSvc.read(userId);
 		    model.addAttribute("user", user);
