@@ -82,7 +82,7 @@ public class SecurityConfig  {
 		http.authorizeHttpRequests((auth) ->
 	        auth
 	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                    "/user/myPage", "/user/qna_modify", "/user/update")
+	                    "/mypage/**", "/user/qna_modify", "/user/update")
 	            .hasAuthority("USER")
 	            .anyRequest()
 	            .permitAll()
