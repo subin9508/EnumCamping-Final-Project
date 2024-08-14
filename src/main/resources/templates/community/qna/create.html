@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/mypage_qna_list.css}">
+<!-- Bootstrap CSS -->
+<link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+    rel="stylesheet">
+
+
+<style>
+/* 반응형 스타일 */
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column; /* 작은 화면에서는 세로로 배치 */
+            }
+
+            .sidebar {
+                width: 100%; /* 사이드바가 전체 너비를 차지 */
+                max-width: 100%;
+                margin-bottom: 20px; /* 메인 콘텐츠와 간격을 유지 */
+                margin-right: 20px; 
+            }
+
+            .main-content {
+                margin-left: 0; /* 작은 화면에서는 여백 제거 */
+                width: 100%; /* 메인 콘텐츠가 전체 너비를 차지 */
+            }
+
+            .qna-list-container {
+                margin-top: 20px; /* 작은 화면에서 여백 추가 */
+            }
+            
+            .search-form {
+                flex-direction: column; /* 검색 폼을 세로로 배치 */
+            }
+
+            .search-form .form-control {
+                margin-bottom: 10px; /* 요소 사이에 여백 추가 */
+                width: 100%;
+            }
+
+            .search-form .btnSearch, .search-form .btnList {
+                width: 100%; /* 버튼 너비를 100%로 설정 */ 
+            }
+        }
+  
+</style>
+    
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- 상단 메뉴바 -->
+        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+
+        <div class="footer-main-content qna-content">
+        
+            <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-11 px-md-3">
+                <div class="mt-2 card" style="width: 85%">
+                    <div class="card-header">
+                        <h2>새 글 작성</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post"
+                            th:action="@{/community/qna/create}">
+                            <!-- 같은 주소로 action 할 때는 생략 가능. -->
+                            <!-- form에서 action 속성값일 설정하지 않으면 현재 요청 주소로 요청을 다시 보냄 -->
+                            <div class="mt-2">
+                                <input class="form-control" type="text"
+                                    name="title" placeholder="제목 입력"
+                                    required autofocus />
+                            </div>
+                            <div class="mt-2">
+                                <textarea class="form-control" rows="5"
+                                    name="content"
+                                    placeholder="내용 입력"
+                                    required="required"></textarea>
+                            </div>					
+							
+							<!-- 비밀글 체크박스 -->
+							<div class="mt-2 form-check">
+								<input class="form-check-input" type="checkbox" id="qnaLock"
+									name="qnaLock" value="1"> <label
+									class="form-check-label" for="qnaLock">비밀글로 설정</label>
+							</div>
+							
+							<div class="d-none">
+                            <label class="form-label" for="qnaUserId">작성자</label>
+                            <input type="text" class="form-control" id="qnaUserId"
+                                name="qnaUserId" readonly />
+                        	</div>
+								<!-- name="author" th:value="${#authentication.author}" readonly /> -->
+								
+							<div class="mt-2">
+                                <input
+                                    class="form-control btn btn-outline-success"
+                                    type="submit" value="저장" />
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 푸터 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+
+    <!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+    <!-- Weather JS -->
+    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+
+</body>
+</html>
