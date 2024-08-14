@@ -1,121 +1,151 @@
 @charset "UTF-8";
-.facilities-section {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
+
+.img:hover {
+    opacity: 0.5; /*  이미지 클릭 시 밝기 조절 */
 }
 
-.facilities-card {
-    width: 30%;
-    margin: 10px;
-    text-align: center;
-    cursor: pointer;
+/* 모달 스타일 */
+/*
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0; top: 0;
+    height: 100%; width: 100%;
+    overflow: auto; /* 스크롤 허용 auto */
+/*    background-color: rgba(0, 0, 0, 0.8);
+}
+*/
+/* 모달창 이미지 */
+/*
+.modal_content {
+    margin: auto;
+    display: block;
+    width: 50%; height: auto;
+    border-radius: 10px;
+    animation-name: zoom;
+    animation-duration: 0.8s;
 }
 
-.facilities-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-}
-
-.modal-dialog {
-    max-width: 500px; /* 모달 창의 너비를 500px로 고정 */
-}
-
-.modal-content {
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0; /* 패딩 제거 */
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
 }
 
 .modal-content img {
-    max-width: 100%;
-    max-height: calc(100% - 60px); /* 하단 텍스트 공간을 확보하기 위해 이미지 높이 조정 */
-    object-fit: contain; /* 이미지를 비율에 맞게 조정 */
-}
-
-.carousel-inner {
     width: 100%;
     height: auto;
 }
+*/
 
-.modal-footer {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    width: 100%;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: center; /* 제목을 중앙으로 정렬 */
-    align-items: center;
-    position: relative;
-}
-
-.modal-title {
-    flex-grow: 1; /* 제목이 가운데 정렬되도록 플렉스 공간 차지 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-}
-
-.btn-close {
+/* 닫기 버튼 꾸미기 */
+.close {
     position: absolute;
-    right: 15px; /* 닫기 버튼을 오른쪽 끝에 위치 */
     top: 15px;
-    z-index: 1050; /* 버튼이 항상 위에 표시되도록 z-index 설정 */
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover, .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+.heading-3 {
+  width: 100px;
+  height: 29px;
+  position: absolute;
+  left: 50px;
+  top: 100px;
+}
+.div {
+  color: #000000;
+  text-align: left;
+  font-family: "NotoSansKr-DemiLight", sans-serif;
+  font-size: 30px;
+  letter-spacing: -0.8px;
+  font-weight: 400;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 200px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.horizontal-divider {
+  background: #ebebeb;
+  width: 950px;
+  height: 1px;
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%);
+  top: 40%;
+}
+
+.horizontal-divider2 {
+  background: #111111;
+  width: 200px;
+  height: 1px;
+  position: absolute;
+  left: 30%;
+  transform: translateX(-50%);
+  top: 40%;
+}
+
+.facilities-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.facilities-card {
+   
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fc-img-container {
+    width: 100%;
+    padding-bottom: 66%; /* 4:3 비율을 유지하기 위한 설정 */
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.fc-img-container img {
+     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* 반응형 */
 /* 작은 화면에 맞춘 스타일 조정 */
-@media (max-width: 768px) {    
-    	/* 작은 화면에서 .facilities-section, .facilities-card, .main-content 스타일 적용 */
+@media (max-width: 768px) {
     .facilities-section {
-       display: grid;
-       grid-template-columns: 1fr; /* 작은 화면에서 카드가 나란히 2개씩 배치되도록 설정 */
-       gap: 10px; /* 카드 사이의 간격 설정 */
+        grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나의 카드만 표시 */
     }
-    
     .facilities-card {
         min-width: 100%; /* 작은 화면에서 카드가 화면을 가득 채우도록 설정 */
     }
-
     .main-content {
         margin-left: 0 !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
         width: 100%;
         padding: 0 15px;
     }
-    
-	table {
-        width: 100%;
-    }
-    
-    td, th {
-        display: inline-block; /* 셀을 블록화 */
-        width: 50%; /* 한 줄에 2개씩 배치되도록 너비 조정 */
-        box-sizing: border-box; /* 패딩과 테두리 포함 */
-    }
-
-    td img, th img {
-        width: 100%; /* 이미지가 셀을 가득 채우도록 */
-        height: auto; /* 이미지 비율 유지 */
-    }
-
-    /* 각 이미지 밑의 텍스트를 중앙 정렬 */
-    td, th {
-        text-align: center;
-        vertical-align: top;
-    }
-    
-    
 }
