@@ -36,7 +36,7 @@ public class User implements UserDetails {
 	private Integer userKey; // PK
 
 	@Column(nullable = false, name = "USER_NAME")
-	private String userName; // 유저 이름
+	private String name; // 유저 이름
 
 	@Column(nullable = false, unique = true)
 	private String userId; // 로그인 아이디

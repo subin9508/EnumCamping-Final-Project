@@ -95,7 +95,7 @@ public class ReservationController {
 //		    String userId = (String) session.getAttribute("signedInUser");
 		    User user = userSvc.read(userId);
 		    Integer userKey = user.getUserKey();
-		    
+		    log.info("user={}",user);
 		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserId(userKey);
 		    List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
