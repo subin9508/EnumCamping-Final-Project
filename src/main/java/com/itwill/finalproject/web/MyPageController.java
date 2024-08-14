@@ -1,15 +1,17 @@
 package com.itwill.finalproject.web;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,7 +20,7 @@ import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.service.MyPageService;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,18 +32,14 @@ public class MyPageController {
     
     private final MyPageService myPageService;
     
-    private String getUserIdFromSession(HttpSession session) {
-        Object userIdObj = session.getAttribute("signedInUser");
-        if (userIdObj instanceof String) {
-            return (String) userIdObj;
-        }
-        log.warn("세션에 유효한 userId가 없습니다.");
-        return null;
+    private String getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
     
     @GetMapping("/myInfo")
-    public String myPage(Model model, HttpSession session) {
-        String userId = getUserIdFromSession(session);
+    public String myPage(Model model) {
+        String userId = getUserId();
         if (userId != null) {
             User user = myPageService.read(userId);
             model.addAttribute("user", user);
@@ -49,7 +47,7 @@ public class MyPageController {
             return "mypage/myInfo";
         }
         
-        log.warn("세션에 로그인된 사용자 정보가 없습니다.");
+        log.warn("인증된 사용자 정보가 없습니다.");
         return "redirect:/user/signin";
     }
     
@@ -59,9 +57,8 @@ public class MyPageController {
     }
     
     @PostMapping("/password_check")
-    public String passwordCheck(@RequestParam("password") String password, 
-            HttpSession session, Model model) {
-        String userId = getUserIdFromSession(session);
+    public String passwordCheck(@RequestParam("password") String password, Model model) {
+        String userId = getUserId();
         if (userId == null) {
             return "redirect:/user/signin";
         }
@@ -81,14 +78,14 @@ public class MyPageController {
     }
     
     @GetMapping("/user_update")
-    public String userUpdate(HttpSession session, Model model) {
-        String userId = getUserIdFromSession(session);
+    public String userUpdate(Model model) {
+        String userId = getUserId();
         if (userId == null) {
             return "redirect:/user/signin";
         }
 
         User user = myPageService.read(userId);
-        log.debug("session user: {}", user);
+        log.debug("authenticated user: {}", user);
 
         if (user == null) {
             return "redirect:/user/signin";
@@ -100,25 +97,23 @@ public class MyPageController {
     
     @PostMapping("/user_update")
     @ResponseBody
-    public ResponseEntity<?> userUpdate(
-            @RequestParam("userId") String userId,
-            @RequestParam("userPassword") String userPassword,
-            @RequestParam("userPhone") String userPhone,
-            HttpSession session) {
-    	
-    	UserUpdateDto dto = new UserUpdateDto();
-        dto.setUserId(userId);
-        dto.setUserPassword(userPassword);
-        dto.setUserPhone(userPhone);
+    public ResponseEntity<?> userUpdate(@RequestBody UserUpdateDto dto, HttpServletResponse response) {
         log.debug("user_update(dto={})", dto);
 
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
+
+        // null 체크
+        if (dto == null || dto.getUserId() == null || dto.getUserId().isEmpty()) {
+            result.put("success", false);
+            result.put("message", "사용자 정보가 올바르지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
 
         // 비밀번호 유효성 검사
         if (dto.getUserPassword() != null && !dto.getUserPassword().isEmpty()) {
             if (dto.getUserPassword().length() < 8 || !dto.getUserPassword().matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$")) {
-                response.put("success", false);
-                response.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
+                result.put("success", false);
+                result.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
                 return ResponseEntity.badRequest().body(response);
             }
         }
@@ -126,28 +121,52 @@ public class MyPageController {
         // 전화번호 유효성 검사
         if (dto.getUserPhone() != null && !dto.getUserPhone().isEmpty()) {
             if (!dto.getUserPhone().matches("^01[0-9]-\\d{3,4}-\\d{4}$")) {
-                response.put("success", false);
-                response.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
+                result.put("success", false);
+                result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
                 return ResponseEntity.badRequest().body(response);
             }
         }
 
         try {
-            myPageService.update(dto);
-            User updatedUser = myPageService.read(dto.getUserId());
-            session.setAttribute("user", updatedUser);
+            // 기존 사용자 정보 불러오기
+            User existingUser = myPageService.read(dto.getUserId());
+            log.info("기존 사용자 정보 = {}", existingUser);
 
-            response.put("success", true);
-            response.put("message", "사용자 정보가 성공적으로 업데이트 되었습니다.");
-            response.put("redirectUrl", "/mypage/myInfo?userId=" + dto.getUserId());
-            return ResponseEntity.ok(response);
+            if (existingUser == null) {
+                result.put("success", false);
+                result.put("message", "사용자를 찾을 수 없습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // 해당 값들이 null일 경우 기존 값 유지
+            if(dto.getUserEmail() == null || dto.getUserEmail().isEmpty()) {
+                dto.setUserEmail(existingUser.getUserEmail());
+            }
+            if(dto.getName() == null || dto.getName().isEmpty()) {
+                dto.setName(existingUser.getName());
+            }
+            
+            // userRole은 항상 기존 값 사용
+            dto.setUserRole(existingUser.getUserRole());
+   
+            // 사용자 정보 업데이트
+            myPageService.update(dto);
+            log.info("업데이트 된 정보 = {}", dto);
+            
+            // 성공 시 리디렉션 URL 포함하여 응답 반환
+            result.put("success", true);
+            result.put("message", "사용자 정보가 성공적으로 업데이트 되었습니다.");
+            result.put("redirectUrl", "/enumcamping/mypage/myInfo?userId=" + dto.getUserId());
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             log.error("사용자 정보 업데이트 중 오류 발생", e);
-            response.put("success", false);
-            response.put("message", "사용자 정보 업데이트에 실패했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            result.put("success", false);
+            result.put("message", "사용자 정보 업데이트에 실패했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
+}
+
     
     /*
 	// 마이페이지 - 예약목록
@@ -186,4 +205,3 @@ public class MyPageController {
     
     
     
-}
