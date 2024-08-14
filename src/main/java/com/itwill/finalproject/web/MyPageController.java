@@ -33,6 +33,7 @@ import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -179,7 +180,7 @@ public class MyPageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
-}
+
 
     
 
@@ -277,4 +278,4 @@ public class MyPageController {
     }
     */   
 
-    
+}
