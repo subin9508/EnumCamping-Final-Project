@@ -23,11 +23,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 아이디 찾기
 	@Query("SELECT u.userId FROM User u WHERE u.userName = :userName AND u.userEmail = :userEmail")
-	Optional<String> findIdByNameAndEmail(@Param("userName") String userName, @Param("userEmail") String userEmail);
+	Optional<User> findIdByNameAndEmail(@Param("userName") String userName, @Param("userEmail") String userEmail);
 
 	// 비밀번호 찾기
 	@Query("SELECT u.userPassword FROM User u WHERE u.userName = :userName AND u.userEmail = :userEmail AND u.userId = :userId")
-	Optional<String> findPasswordByNameAndEmailAndId(@Param("userName") String userName,
+	Optional<User> findPasswordByNameAndEmailAndId(@Param("userName") String userName,
 			@Param("userEmail") String userEmail, @Param("userId") String userId);
 
 	// 사용자 ID로 사용자 정보 조회
@@ -57,10 +57,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = "SELECT COUNT(*) FROM users WHERE user_id = :userId AND (deactiveuntil IS NULL OR deactiveuntil <= CURRENT_DATE)", nativeQuery = true)
 	int checkDeactivationPeriod(@Param("userId") String userId);
 
-	// 프로필 이미지 수정
-	@Modifying
-	@Transactional
-	@Query("UPDATE User u SET u.profileImage = :profileImage WHERE u.userKey = :userKey")
-	void updateProfileImage(@Param("profileImage") String profileImage, @Param("userKey") Integer userKey);
+	
 
 }

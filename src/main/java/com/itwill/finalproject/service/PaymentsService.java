@@ -27,13 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentsService {
     
     @Autowired
-    private PaymentsRepository paymentsRepository;
+    private PaymentsRepository paymentsRepo;
 
     @Autowired
-    private ReservationMasterRepository reservationMasterRepository;
+    private ReservationMasterRepository reservationMasterRepo;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
     
     private IamportClient iamportClient;
     
@@ -43,18 +43,18 @@ public class PaymentsService {
 
     public Map<String, Object> getPaymentInfoByResId(Integer resId) throws ServiceException {
         try {
-            ReservationMasterDto reservation = reservationMasterRepository.findById(resId)
+            ReservationMasterDto reservation = reservationMasterRepo.findById(resId)
                 .map(ReservationMasterDto::of)
                 .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
 
-            User user = userRepository.findByUserId(reservation.getUserId())
+            User user = userRepo.findByUserId(reservation.getUserId())
                 .orElseThrow(() -> new ServiceException("User not found for userId: " + reservation.getUserId()));
             
             Map<String, Object> paymentInfo = new HashMap<>(); 
             paymentInfo.put("name", "예약 번호 " + reservation.getResId());
             paymentInfo.put("amount", reservation.getResTotalPrice());
             paymentInfo.put("email", user.getUserEmail());
-            paymentInfo.put("buyerName", user.getUserName());
+            paymentInfo.put("buyerName", user.getUsername()); //이거 아마 유저아이디로 나올거임
             paymentInfo.put("phoneNumber", user.getUserPhone());
             paymentInfo.put("resState", reservation.getResState());
 
@@ -82,7 +82,7 @@ public class PaymentsService {
         dto.setBuyerEmail(payment.getBuyerEmail());
 
         try {
-            Payments savedPayment = paymentsRepository.save(dto);
+            Payments savedPayment = paymentsRepo.save(dto.toEntity());
             return savedPayment != null ? "SUCCESS" : "FAIL:01";
         } catch (Exception e) {
             log.error("Error saving payment", e);
@@ -93,7 +93,7 @@ public class PaymentsService {
     @Transactional
     public void updateReservationState(Integer resId, Integer resState) throws ServiceException {
         try {
-        	paymentsRepository.updateReservationState(resId, resState);
+        	paymentsRepo.updateReservationState(resId, resState);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
