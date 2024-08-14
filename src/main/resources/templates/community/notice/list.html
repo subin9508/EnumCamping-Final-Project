@@ -68,6 +68,9 @@
                                         th:text="${n.title}"></td>
                                     <td class="col-3" th:text="*{#temporals.format(n.modifiedTime,'yyyy-MM-dd HH:mm:ss')}"></td> 
                                 </tr>
+                                    <tr th:if="${#lists.isEmpty(notices)}">
+                                        <td colspan="3" class="text-center">일치하는 결과가 없습니다</td>
+                                    </tr>
                             </tbody>
                         </table>
                         </div>
