@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,16 +55,20 @@ public class MyPageController {
     }
     
     @GetMapping("/myInfo")
-    public String myPage(Model model, HttpSession session) {
-        String userId = getUserIdFromSession(session);
+    public String myPage(Model model) {
+        // 현재 인증된 사용자의 정보를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName(); // 인증된 사용자의 이름(ID)
+        
         if (userId != null) {
+            // 사용자 정보를 서비스에서 읽어옴
             User user = myPageService.read(userId);
             model.addAttribute("user", user);
             log.debug("마이페이지에 표시될 사용자 정보: {}", user);
             return "mypage/myInfo";
         }
-        
-        log.warn("세션에 로그인된 사용자 정보가 없습니다.");
+
+        log.warn("인증된 사용자 정보가 없습니다.");
         return "redirect:/user/signin";
     }
     
