@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.UserUpdateDto;
+
 import com.itwill.finalproject.repository.QnARepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
+
 import com.itwill.finalproject.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MyPageService {
 	
 	private final UserRepository userRepo;
-	private final ReservationMasterRepository resRepo;
 	
 	// 사용자 정보 조회
 	public User read(String userId) {
@@ -32,8 +33,8 @@ public class MyPageService {
 	public void update(UserUpdateDto dto) {
 		log.debug("update({})", dto);
 		
-		// DTO를 Entity로 변환하여 업데이트 수행
-		User result = userRepo.save(dto.toEntity());
+		// 업데이트 수행
+		int result = userRepo.update(dto.getUserId(), dto.getUserPassword(), dto.getUserPhone());
 		log.debug("update 결과 = {}", result);
 	
 	}

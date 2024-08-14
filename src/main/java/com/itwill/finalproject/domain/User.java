@@ -47,7 +47,7 @@ public class User implements UserDetails {
 	@Column(nullable = false, unique = true)
 	private String userEmail; // 이메일
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 
 	private String userPhone; // 핸드폰
 
@@ -64,8 +64,6 @@ public class User implements UserDetails {
 
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
-
-	private String profileImage; // 프로필 사진
 
 	// 편의 메서드
 //	// 유저의 권한을 부여하는 메서드.
