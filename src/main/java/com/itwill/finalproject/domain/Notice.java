@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Notice  {
+public class Notice extends BaseTimeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +41,13 @@ public class Notice  {
 	@Column(name = "not_content")
 	private String content;
 	
-	@CreatedDate
-	@Column(name = "not_created_time")
-	private LocalDateTime createdTime;
-	
-	@LastModifiedDate
-	@Column(name = "not_modified_time")
-	private LocalDateTime modifiedTime;
+//	@CreatedDate
+//	@Column(name = "not_created_time")
+//	private LocalDateTime createdTime;
+//	
+//	@LastModifiedDate
+//	@Column(name = "not_modified_time")
+//	private LocalDateTime modifiedTime;
 	
 	
 	

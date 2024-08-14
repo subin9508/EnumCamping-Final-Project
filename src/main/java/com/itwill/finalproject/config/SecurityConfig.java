@@ -6,11 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 //import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -21,8 +25,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 @EnableMethodSecurity
 //-> 컨트롤러 메서드에서 인증(로그인), 권한 설정을 하기 위해서.
 public class SecurityConfig  {
-
-	
 
 	// Spring Security 5 버전부터 비밀번호는 반드시 암호화를 해야만 함.
 	// 만약 비밀번호를 암호화하지 않으면, HTTP 403(access denied, 접근 거부) 또는
@@ -82,7 +84,7 @@ public class SecurityConfig  {
 		http.authorizeHttpRequests((auth) ->
 	        auth
 	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                    "/mypage/**", "/user/qna_modify", "/user/update")
+	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
 	            .hasAuthority("USER")
 	            .anyRequest()
 	            .permitAll()

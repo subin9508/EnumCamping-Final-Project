@@ -111,6 +111,17 @@ ul.pagination {
             
             <main class="col-md-9 ms-sm-auto col-lg-11 px-md-3">
                 <div class="qna-list-container mt-10 card" style="width: 85%" >
+                
+                <!-- 리스트 페이지 상단에 알림 메시지 표시 -->
+						<th:block th:if="${message}">
+							<div class="alert alert-warning alert-dismissible fade show"
+								role="alert">
+								<span th:text="${message}"></span>
+								<button type="button" class="btn-close" data-bs-dismiss="alert"
+									aria-label="Close"></button>
+							</div>
+						</th:block>
+                
                     <div class="card-header" style="background-color: white;">
                         <h1 class="qna-title align-center mt-2"style="color:#7C9C63; border-bottom: 2px solid #7C9C63;">QnA</h1>
                         
@@ -145,9 +156,7 @@ ul.pagination {
 
                     </div>
                     <div class="card-body">
-                    <!-- 알림 메시지 표시 -->
-                    <div th:if="${message}" class="alert alert-warning" role="alert" th:text="${message}"></div>
-                        <table class="table table-hover">
+						<table class="table table-hover">
                             <thead>
                                 <tr style="text-align: center;">
                                     <th>번호</th>
@@ -168,7 +177,7 @@ ul.pagination {
                                                 <img th:if="${qna.qnaLock == 1}" th:src="@{/images/community/secret.png}" class="secret-icon" alt="비밀글">
                                             </a>
                                         </td>
-                                        <td class="col-2" th:text="${qna.author}"></td>
+                                        <td class="col-2" th:text="${qna.qnaUserId}"></td>
                                         <td class="col-2" th:text="${#temporals.format(qna.modifiedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                         <td th:class="${qna.qnaState == 0 ? 'status-waiting col-2' : 'status-completed col-2'}">
                                             <span th:text="${qna.qnaState == 0 ? '답변 대기' : '답변 완료'}"></span>
@@ -232,7 +241,7 @@ ul.pagination {
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     
     <!-- Weather JS -->
-    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>
