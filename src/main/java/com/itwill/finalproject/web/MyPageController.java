@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -148,4 +148,42 @@ public class MyPageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+    
+    /*
+	// 마이페이지 - 예약목록
+	@GetMapping("/reservation_list")
+	public String reservationList(@RequestParam(name="userId") String userId, Model model, HttpSession session) {
+		log.debug("reservation_list(userId={})", userId);
+		//userId로 사용자 정보 찾음(이거 필요 없는 것 같음)
+		User user = userService.read(userId);
+		session.setAttribute("user", user); // 사용자 정보를 세션에 저장
+		
+		//userId를 아규먼트로 받으면서 왜 굳이 User 다시 찾고 getUserId를 한거지? 이부분은 기말로 옮기면서 수정하면 될 것 같음
+		//user을 list에서 쓰려고 했던 것 같은데 필요 없어서 (주문자 이름 이런거 안 넣음) 안 쓴 것 같음 - 빼면 됨!
+		List<ReservationListDto> list = userService.readReservationList(user.getUserId());
+		 log.debug("list=({})", list);
+	     model.addAttribute("reservations", list);
+	     model.addAttribute("user", user); // 모델에 사용자 정보 추가
+		
+	     return "/user/reservation_list"; // 반환할 뷰의 이름
+	}
+    
+	// 마이페이지 - 예약 상세
+    @GetMapping("/reservation_details")
+    public void reservationDetails(@RequestParam(name="resId") int resId, Model model) {
+    	log.debug("reservation_details()");
+    	//예약 번호로 예약 상세 내용들을 받음
+    	ReservationMaster resMaster = userService.readReservationMasterDetails(resId);
+    	
+    	List<ReservationDetailListDto> resDetail = userService.readReservationDetails(resId);
+    	
+    	//master 내용이랑 detail 내용이 모두 필요함
+    	model.addAttribute("resMaster", resMaster);
+    	model.addAttribute("resDetail", resDetail);
+    	
+    }
+    */
+    
+    
+    
 }
