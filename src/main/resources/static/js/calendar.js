@@ -461,34 +461,35 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     
 	var selectedItems = [];
 
-    function updateQuantity(itemId, itemPrice) {
-        var quantity = document.getElementById('quantity-' + itemId).value;
-        console.log('quantity= ', quantity);
-        var totalPrice = quantity * itemPrice;
-		
-        // document.getElementById('total-' + itemId).textContent = totalPrice + '원';
+function updateQuantity(itemId, itemPrice) {
+    var quantity = document.getElementById('quantity-' + itemId).value;
+    console.log('quantity= ', quantity);
+    var totalPrice = quantity * itemPrice;
+    
+    // 각 항목의 총 가격을 업데이트
+    document.getElementById('total-' + itemId).textContent = totalPrice + '원';
 
-        var selectedItem = {
-            itemId: itemId,
-            itemQuantity: quantity,
-            itemAmount: totalPrice
-        };
+    var selectedItem = {
+        itemId: itemId,
+        itemQuantity: quantity,
+        itemAmount: totalPrice
+    };
 
-        var existingIndex = selectedItems.findIndex(item => item.itemId === itemId);
-        if (existingIndex !== -1) {
-            if (quantity > 0) {
-                selectedItems[existingIndex] = selectedItem;
-            } else {
-                selectedItems.splice(existingIndex, 1);
-            }
+    var existingIndex = selectedItems.findIndex(item => item.itemId === itemId);
+    if (existingIndex !== -1) {
+        if (quantity > 0) {
+            selectedItems[existingIndex] = selectedItem;
         } else {
-            if (quantity > 0) {
-                selectedItems.push(selectedItem);
-            }
+            selectedItems.splice(existingIndex, 1);
         }
-
-        updateTotalAllItems();
+    } else {
+        if (quantity > 0) {
+            selectedItems.push(selectedItem);
+        }
     }
+
+    updateTotalAllItems();
+}
 
     function updateTotalAllItems() {
         // price 값을 숫자로 변환
