@@ -6,14 +6,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 //import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+
+import com.itwill.finalproject.domain.UserRole;
 
 @Configuration
 //-> 스프링 컨테이너에서 생성하고 관리하는 설정 컴포넌트.
@@ -21,8 +27,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 @EnableMethodSecurity
 //-> 컨트롤러 메서드에서 인증(로그인), 권한 설정을 하기 위해서.
 public class SecurityConfig  {
-
-	
 
 	// Spring Security 5 버전부터 비밀번호는 반드시 암호화를 해야만 함.
 	// 만약 비밀번호를 암호화하지 않으면, HTTP 403(access denied, 접근 거부) 또는
@@ -79,15 +83,28 @@ public class SecurityConfig  {
 		// (1) SecurityConfig 빈에 @EnableMethodSecurity 애너테이션을 설정.
 		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
 
+//		http.authorizeHttpRequests((auth) ->
+//	        auth
+//	            .requestMatchers("/reservation/**", "/user/deactivateUser",
+//	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+//	            .hasAnyAuthority("USER", "ADMIN") // USER와 ADMIN 모두 접근 가능
+//	            .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+//	            .hasAuthority("ADMIN") // ADMIN만 접근 가능
+//	            .anyRequest()
+//	            .permitAll()
+//	        );
+		
+		
 		http.authorizeHttpRequests((auth) ->
-	        auth
-	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                    "/mypage/**", "/user/qna_modify", "/user/update")
-	            .hasAuthority("USER")
-	            .anyRequest()
-	            .permitAll()
-	        );
-	      
+	    auth
+	        .requestMatchers("/reservation/**", "/user/deactivateUser",
+	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
+	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
+	        .anyRequest()
+	        .permitAll()
+	    );
 	        
 		 
 		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.

@@ -18,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,10 +37,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.QnAUpdateDto;
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserDeactivateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
+import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -55,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
+	private final QnAService qnaService;
 
 	@GetMapping("/signin")
 	public void signin() {
@@ -320,4 +326,5 @@ public class UserController {
 	        return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
 	    }
 	}
+	
 }

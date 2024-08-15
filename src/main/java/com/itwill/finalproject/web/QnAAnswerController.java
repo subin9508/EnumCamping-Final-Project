@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itwill.finalproject.domain.QnAAnswer;
+import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.dto.QnAAnswerRegisterDto;
 import com.itwill.finalproject.dto.QnAAnswerUpdateDto;
 import com.itwill.finalproject.service.QnAAnswerService;
@@ -30,11 +30,11 @@ public class QnAAnswerController {
     
 //    @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<QnAAnswer> registerComment(@RequestBody QnAAnswerRegisterDto dto) {
-        log.info("registgerComment(dto={})", dto);
+    public ResponseEntity<QnAAnswers> registerComments(@RequestBody QnAAnswerRegisterDto dto) {
+        log.info("registgerComments(dto={})", dto);
         
         // 서비스 계층의 메서드 호출(댓글 등록 서비스 실행)
-        QnAAnswer entity = qnaAnswerSvc.create(dto);
+        QnAAnswers entity = qnaAnswerSvc.create(dto);
         log.info("save 결과: {}", entity);
         
         return ResponseEntity.ok(entity);
@@ -42,20 +42,20 @@ public class QnAAnswerController {
     
 //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/all/{qnaPostId}")
-    public ResponseEntity<Page<QnAAnswer>> getCommentList(
+    public ResponseEntity<Page<QnAAnswers>> getCommentsList(
             @PathVariable(name = "qnaPostId") Long qnaPostId,
             @RequestParam(name = "p", defaultValue = "0") int pageNo) {
         log.info("getCommentList(qnaPostId={}, pageNo={})", qnaPostId, pageNo);
         
-        Page<QnAAnswer> data = qnaAnswerSvc.readCommentList(qnaPostId, pageNo);
+        Page<QnAAnswers> data = qnaAnswerSvc.readCommentsList(qnaPostId, pageNo);
         
         return ResponseEntity.ok(data);
     }
     
 //    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteComment(@PathVariable Long id) {
-        log.info("deleteComment(id={})", id);
+    public ResponseEntity<Long> deleteComments(@PathVariable Long id) {
+        log.info("deleteComments(id={})", id);
         
         qnaAnswerSvc.delete(id);
         
@@ -64,9 +64,9 @@ public class QnAAnswerController {
     
 //    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateComment(@PathVariable Long id,
+    public ResponseEntity<Long> updateComments(@PathVariable Long id,
             @RequestBody QnAAnswerUpdateDto dto) {
-        log.info("updateComment(id={}, dto={})", id, dto);
+        log.info("updateComments(id={}, dto={})", id, dto);
         
         qnaAnswerSvc.update(dto);
         

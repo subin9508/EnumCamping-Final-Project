@@ -72,9 +72,35 @@
 		font-weight: bold;
 		
 	}
- 
+ 	 	
 	/*
 	Label the data
 	*/
 	#custom-responsive-table td:before { content: attr(data-title); }
+	
+	
+	/* 작은 화면에서 .facilities-section, .facilities-card, .main-content 스타일 적용 */
+    .facilities-section {
+       display: grid;
+       grid-template-columns: 1fr 1fr; /* 작은 화면에서 카드가 나란히 2개씩 배치되도록 설정 */
+       gap: 10px; /* 카드 사이의 간격 설정 */
+    }
+    
+    .facilities-card {
+        min-width: 100%; /* 작은 화면에서 카드가 화면을 가득 채우도록 설정 */
+    }
+
+    .main-content {
+        margin-left: 0 !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
+        width: 100%;
+        padding: 0 15px;
+    }
+}
+
+/* 작은 화면에서 카드가 한 줄에 1개씩 배치되도록 설정 */
+@media only screen and (max-width: 500px) {
+    .facilities-section {
+       grid-template-columns: 1fr; /* 카드가 한 줄에 하나씩 배치되도록 설정 */
+    }
+    
 }

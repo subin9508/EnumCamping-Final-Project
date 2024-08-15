@@ -1,85 +1,87 @@
-@charset "UTF-8";
+ @charset "UTF-8";
+ 
+    .wrapper {
+            display: flex;
+        }
 
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #fff;
-}
 
-.modify-wrapper {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-}
-
-.modify-container-fluid {
-	flex: 1;
-	padding: 20px;
-	margin-left: 148px;
-}
-
-.qna-modify-container {
-	padding: 2rem;
-	background-color: #fff;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	margin-right: 326px;
-	margin-left: 148px;
-	min-width: 435px;
-}
-
-.qna-title {
-	color: #7C9C63;
-	margin-bottom: 1.5rem;
-	border-bottom: 2px solid #7C9C63;
-	padding-bottom: 0.5rem;
-}
-
-.form-label {
-	font-weight: bold;
-	color: #495057;
-}
-
-.form-control {
-	margin-bottom: 1rem;
-}
-
-.form-control:read-only {
-	background-color: #e9ecef;
-}
-
-#qnaContent {
-	min-height: 150px;
-}
-
-.card-footer {
-	background-color: transparent;
-	border-top: none;
-	padding-top: 1rem;
-}
-
-.btn {
-	margin-left: 0.5rem;
-}
-
-.qna-content {
-	display: flex;
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-
-    .modify-container-fluid {
-        padding: 5px;
-        margin-left: 5px;
-        margin-right: 5px;
+    .footer-main-content {
+        flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
+        margin-left: 180px; /* 사이드바와의 간격 */
     }
 
-    .qna-modify-container {
-        width: 100%; /* 작은 화면에서는 너비를 100%로 설정 */
-        margin: 0; /* 여백 제거 */
-        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 확보 */
-        box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
+    .card {
+        margin: 2rem auto;
+        margin-top:100px;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
+
     }
 
+    .table {
+        margin-top: 20px;
+        text-align: center;
+        table-layout:fixed;
+        width: 100%;
+        min-width: 600px;
+    }
+
+    .table th .table td{
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap; 
+    }
     
+   
+    
+    .num {
+        width: 100px; /* 번호 칸의 최소 너비를 100px로 지정 */
+    }
+    
+    
+    .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
 }
+
+    a {
+        color: #7C9C63;
+        text-decoration: none;
+    }
+    
+    .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+@media (max-width: 576px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .table tbody tr td {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table tbody tr td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
+ 

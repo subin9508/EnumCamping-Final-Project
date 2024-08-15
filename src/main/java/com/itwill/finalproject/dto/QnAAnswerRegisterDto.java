@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class QnAAnswerRegisterDto {
 	private Long qnaPostId;
-	private String content;
+	private String contents;
 	private String userId;
 }

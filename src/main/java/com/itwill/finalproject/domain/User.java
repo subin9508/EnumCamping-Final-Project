@@ -19,12 +19,14 @@ import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
+@Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
@@ -84,23 +86,43 @@ public class User implements UserDetails {
 //		return this;
 //	}
 
+//	// 사용자 권한을 문자열로 변환
+//	public String getRoleString(Integer role) {
+//		switch (role) {
+//		case 0:
+//			return "ADMIN";
+//		case 1:
+//			return "USER";
+//		default:
+//			return "ROLE_UNKNOWN";
+//		}
+//	}
+
+
 	// 사용자 권한을 문자열로 변환
 	public String getRoleString(Integer role) {
-		switch (role) {
-		case 0:
-			return "ADMIN";
-		case 1:
-			return "USER";
-		default:
-			return "ROLE_UNKNOWN";
-		}
+	    if (role == 0) {
+	        return UserRole.ADMIN.getAuthority(); // "ADMIN"
+	    } else if (role == 1) {
+	        return UserRole.USER.getAuthority(); // "USER"
+	    } else {
+	        return "ROLE_UNKNOWN";
+	    }
 	}
-
+	
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// 권한 숫자를 문자열로 변환 후 권한 객체 생성
-		return List.of(new SimpleGrantedAuthority(getRoleString(this.userRole)));
+	    // userRole 값에 따라 권한 문자열을 생성
+	    String roleString = getRoleString(this.userRole);
+	    return List.of(new SimpleGrantedAuthority(roleString));
 	}
+	
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//		// 권한 숫자를 문자열로 변환 후 권한 객체 생성
+//		return List.of(new SimpleGrantedAuthority(getRoleString(this.userRole)));
+//	}
 
 //	 @Override
 //	    public Collection<? extends GrantedAuthority> getAuthorities() {
