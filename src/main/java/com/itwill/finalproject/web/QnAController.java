@@ -1,13 +1,10 @@
 package com.itwill.finalproject.web;
 
-import java.security.Principal;
+
+import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwill.finalproject.domain.QnA;
+import com.itwill.finalproject.domain.QnAAnswers;
+import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.QnACreateDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnASearchRequestDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
+import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
-import com.itwill.finalproject.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class QnAController {
 	
 	private final QnAService qnaSvc;
+	private final QnAAnswerService qnaanwserSvc;
 	
 	// 비밀글 접근 가능 여부를 확인하는 메서드
 	private boolean canAccessQnA(QnA qna, UserDetails userDetails) {
@@ -97,101 +97,7 @@ public class QnAController {
         return "redirect:/community/qna/list";
     }
 
-    
-//    @PreAuthorize("hasRole('USER')")
-//    @GetMapping({ "/details", "/modify" })
-//    public void details(@RequestParam(name = "id") Long id, 
-//    		@AuthenticationPrincipal UserDetails userDetails,
-//    		Model model) {
-//        log.info("details(id={})", id);
-//        
-//        QnA qna = qnaSvc.readById(id);
-//
-//        // 접근 제한 로직
-//        if (!canAccessQnA(qna, userDetails)) {
-//            model.addAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-//            model.addAttribute("accessDenied", true);
-//        }
-//
-//        model.addAttribute("qna", qna);
-//        model.addAttribute("signedInUser", userDetails.getUsername());
-//        model.addAttribute("userRole", userDetails.getAuthorities().stream()
-//                            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")) ? 0 : 1);
-//
-//        //-> view 이름은, 요청 주소가 "details"인 경우에는 details.html
-//        // 요청 주소가 "modify"인 경우에는 modify.html
-//    }
-        
-    	
-// // QnA 게시글 수정 폼 조회
-//    @GetMapping("/modify")
-//    public String modifyForm(@RequestParam(name = "id") Long id, 
-//                             @AuthenticationPrincipal UserDetails userDetails,
-//                             Model model) {
-//        log.debug("modifyForm(Id={})", id);
-//
-//        // QnA 게시글 조회
-//        QnA qna = qnaSvc.readById(id);
-//        String signedInUser = userDetails.getUsername();
-//        boolean isAdmin = userDetails.getAuthorities().stream()
-//                                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//
-//        log.debug("signedInUser: {}", signedInUser);
-//        log.debug("isAdmin: {}", isAdmin);
-//        log.debug("qnaUserId: {}", qna.getQnaUserId());
-//
-//        // 비밀글 여부 확인
-//        if (qna.getQnaLock() == 1 && !qna.getQnaUserId().equals(signedInUser) && !isAdmin) {
-//            model.addAttribute("message", "비밀글은 작성자와 관리자만 볼 수 있습니다.");
-//            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
-//        }
-//
-//        model.addAttribute("qna", qna);
-//        model.addAttribute("signedInUser", signedInUser);
-//        model.addAttribute("userRole", isAdmin ? 0 : 1);
-//
-//        return "/community/qna/modify"; // 수정 페이지로 이동
-//    }
-//
-//    // QnA 게시글 상세 조회
-//    @GetMapping("/details")
-//    public String details(@RequestParam(name = "id") Long id, 
-//                          @AuthenticationPrincipal UserDetails userDetails,
-//                          Model model,
-//                          RedirectAttributes redirectAttributes
-//                          ) {
-//        log.debug("details(Id={})", id);
-//
-//        // QnA 게시글 조회
-//        QnA qna = qnaSvc.readById(id);
-//        String signedInUser = userDetails.getUsername();
-//        boolean isAdmin = userDetails.getAuthorities().stream()
-//                                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//
-//        log.debug("signedInUser: {}", signedInUser);
-//        log.debug("isAdmin: {}", isAdmin);
-//        log.debug("qnaUserId: {}", qna.getQnaUserId());
-//
-//        // 비밀글 여부 확인
-//        if (!canAccessQnA(qna, userDetails)) {
-//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-//            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
-//        }
-//
-//        // 조회수 증가
-////        QnAListItemDto.updateViewCount(id); // 조회수 증가 메서드 호출
-//        model.addAttribute("qna", qna);
-//        model.addAttribute("signedInUser", signedInUser);
-//        model.addAttribute("userRole", isAdmin ? 0 : 1);
-//
-//        // 답변 목록 추가
-////        List<QnAAnswerDto> answers = qnaanswerService.getAnswersByQnaPostId(qnaPostId);
-////        log.debug("답변 목록 추가:{}", answers);
-////        model.addAttribute("answers", answers);
-//
-//        return "/community/qna/details";
-//    }
-    
+       
     
  // QnA 게시글 수정 폼 조회
     @GetMapping("/modify")
@@ -210,11 +116,11 @@ public class QnAController {
         log.debug("isAdmin: {}", isAdmin);
         log.debug("qnaUserId: {}", qna.getQnaUserId());
 
-        // 비밀글 여부 확인
-        if (qna.getQnaLock() == 1 && !qna.getQnaUserId().equals(signedInUser) && !isAdmin) {
-            redirectAttributes.addFlashAttribute("message", "비밀글은 작성자와 관리자만 볼 수 있습니다.");
-            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
-        }
+//        // 비밀글 여부 확인
+//        if (qna.getQnaLock() == 1 && !qna.getQnaUserId().equals(signedInUser) && !isAdmin) {
+//            redirectAttributes.addFlashAttribute("message", "비밀글은 작성자와 관리자만 볼 수 있습니다.");
+//            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
+//        }
 
         model.addAttribute("qna", qna);
         model.addAttribute("signedInUser", signedInUser);
@@ -233,12 +139,13 @@ public class QnAController {
 
         // QnA 게시글 조회
         QnA qna = qnaSvc.readById(id);
-        String signedInUser = userDetails.getUsername();
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
+        // 로그인을 하지 않은 경우, userDetails는 null
+        String signedInUser = (userDetails != null) ? userDetails.getUsername() : null;
+        Integer userRole = ((User) userDetails).getUserRole(); // userRole 값을 가져옴
+        
         log.debug("signedInUser: {}", signedInUser);
-        log.debug("isAdmin: {}", isAdmin);
+        log.debug("userRole: {}", userRole);
         log.debug("qnaUserId: {}", qna.getQnaUserId());
         log.debug("qnaLock: {}", qna.getQnaLock());
 
@@ -248,20 +155,48 @@ public class QnAController {
 //            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
 //        }
 
-        if (!canAccessQnA(qna, userDetails)) {
-            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-            return "redirect:/community/qna/list?p=" + pageNo;
+//        if (!canAccessQnA(qna, userDetails)) {
+//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
+//            return "redirect:/community/qna/list?p=" + pageNo;
+//        }
+        
+        // 비밀글 여부 확인
+        if (qna.isSecret()) {
+            // 비밀글인데 로그인하지 않았거나 작성자가 아니거나 관리자가 아닌 경우 접근 불가
+            if (signedInUser == null || 
+                (!qna.getQnaUserId().equals(signedInUser) && userRole == 0)) {
+                redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
+                return "redirect:/community/qna/list?p=" + pageNo;
+            }
         }
         
         // 조회수 증가 조건: 
-        if (!qna.isSecret() || qna.getQnaUserId().equals(signedInUser) || isAdmin) {
+        if (!qna.isSecret() || qna.getQnaUserId().equals(signedInUser)) {
         	log.debug("Incrementing view count");
         	qna.incrementViewCount(); // 조회수 증가 메서드 호출
         }
         
+        // 댓글 목록 조회
+        Page<QnAAnswers> comments = qnaanwserSvc.readCommentsList(id, pageNo);
+        model.addAttribute("comments", comments.getContent());
+        log.debug("Comments: {}", comments.getContent());
+        model.addAttribute("commentPage", comments);
+        
+        // **답변 목록 조회 추가**
+        List<QnAAnswers> qnaAnswers = qnaanwserSvc.findByQnaId(id);  // QnA ID로 답변 리스트 조회
+        
+        // 답변이 없으면 상태를 '답변 대기'로 설정
+        if (qnaAnswers.isEmpty()) {
+            qna.setQnaState(0);  // 답변 대기 상태
+        } else {
+            qna.setQnaState(1);  // 답변 완료 상태
+        }
+        
+        model.addAttribute("qnaAnswers", qnaAnswers);  // 답변 리스트 모델에 추가
+        
         model.addAttribute("qna", qna);
         model.addAttribute("signedInUser", signedInUser);
-        model.addAttribute("userRole", isAdmin ? 0 : 1);
+        model.addAttribute("userRole", userRole);
         model.addAttribute("pageNo", pageNo);
 
         return "/community/qna/details";

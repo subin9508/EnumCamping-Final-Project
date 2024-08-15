@@ -4,6 +4,7 @@
 <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
 <link rel="stylesheet" th:href="@{/css/mypage_qna_modify.css}">
 <!-- Bootstrap CSS -->
 <link
@@ -21,30 +22,32 @@
             <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
 
             <main>
-                <div class="not-modify-container">
+                <div class="card">
                     <h2 class="not-title">문의내역 수정</h2>
 
                     <form id="modifyForm">
                         <div class="mb-3">
                             <label for="id" class="form-label">번호</label>
                             <input id="id" class="form-control"
-                                type="text" name="qnaId"
-                                value="${qna.id}" readonly />
+                                type="text" name="id"
+                                th:value="${qna.id}" readonly />
                         </div>
                         <div class="mb-3">
                             <label for="title" class="form-label">제목</label>
                             <input id="title" class="form-control"
-                                type="text" name="qnaTitle"
-                                value="${qna.title}" />
+                                type="text" name="title"
+                                th:value="${qna.title}" />
                         </div>
                         <div class="mb-3">
                             <label for="content" class="form-label">내용</label>
                             <textarea id="content" class="form-control"
-                                name="qnaContent" rows="5">${qna.content}</textarea>
+                                name="content" rows="5" th:text="${qna.content}"></textarea>
                         </div>
                     </form>
 
                     <div class="card-footer">
+                    	<button id="btnDelete" 
+                    		class="btn btn-outline-danger">삭제하기</button>
                         <button id="btnUpdate"
                             class="btn btn-outline-primary">업데이트</button>
                     </div>

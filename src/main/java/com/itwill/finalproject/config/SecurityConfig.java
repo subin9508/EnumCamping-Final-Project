@@ -19,6 +19,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import com.itwill.finalproject.domain.UserRole;
+
 @Configuration
 //-> 스프링 컨테이너에서 생성하고 관리하는 설정 컴포넌트.
 //-> 스프링 컨테이너에서 필요한 곳에 의존성 주입을 해줌.
@@ -81,15 +83,28 @@ public class SecurityConfig  {
 		// (1) SecurityConfig 빈에 @EnableMethodSecurity 애너테이션을 설정.
 		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
 
+//		http.authorizeHttpRequests((auth) ->
+//	        auth
+//	            .requestMatchers("/reservation/**", "/user/deactivateUser",
+//	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+//	            .hasAnyAuthority("USER", "ADMIN") // USER와 ADMIN 모두 접근 가능
+//	            .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+//	            .hasAuthority("ADMIN") // ADMIN만 접근 가능
+//	            .anyRequest()
+//	            .permitAll()
+//	        );
+		
+		
 		http.authorizeHttpRequests((auth) ->
-	        auth
-	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
-	            .hasAuthority("USER")
-	            .anyRequest()
-	            .permitAll()
-	        );
-	      
+	    auth
+	        .requestMatchers("/reservation/**", "/user/deactivateUser",
+	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
+	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
+	        .anyRequest()
+	        .permitAll()
+	    );
 	        
 		 
 		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.

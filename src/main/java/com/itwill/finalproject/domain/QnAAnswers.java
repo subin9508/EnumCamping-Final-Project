@@ -25,7 +25,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="QNAANSWERS")
-public class QnAAnswer extends BaseTimeEntity {
+public class QnAAnswers extends BaseTimeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,12 +36,12 @@ public class QnAAnswer extends BaseTimeEntity {
     @JoinColumn(name = "QNA_POST_ID") // FK 제약조건이 있는 컬럼 이름.
     private QnA qna;
 	
-    private String content; // 내용
+    private String contents; // 내용
     
     private String userId; // 작성자
     
-    public QnAAnswer update(String content) {
-        this.content = content;
+    public QnAAnswers update(String contents) {
+        this.contents = contents;
         return this;
     }
 }

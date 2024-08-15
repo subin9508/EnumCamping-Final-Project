@@ -1,5 +1,5 @@
 /**
- * details에 추가
+ *
  */
 
  document.addEventListener('DOMContentLoaded', ()=>{
@@ -15,9 +15,6 @@
 
         }
     });
-    
-    
-    
     
  });
  

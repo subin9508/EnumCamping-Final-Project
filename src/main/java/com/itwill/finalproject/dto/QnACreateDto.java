@@ -17,6 +17,7 @@ public class QnACreateDto {
 				.content(content)
 				.qnaUserId(qnaUserId)
 				.qnaViewCnt(0) // 글 작성 시 조회수를 0으로 초기화
+				.qnaState(0)
 				.qnaLock(qnaLock)
 				.build();
 	}
