@@ -18,6 +18,7 @@ import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.domain.PaymentsCancel;
+import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -188,15 +189,26 @@ public class PaymentsService {
 	                       .resId(payment.getResId())
 	                       .canAmount(payment.getResTotalPrice())
 	                       .canDate(LocalDateTime.now())
+	                       .canRole("구매자")
 	                       .build();
 
 	               paymentsCancelRepo.save(paymentsCancel);
-
+	               	
+	               // 예약 상태를 취소로 업데이트
+	               Integer resId = payment.getResId();
+	               updateReservationState(resId, 2);  // 2는 취소 상태
+	               
 	               log.info("Payment cancellation successful for payId: {}", payId);
 	               return "Payment cancellation successful";
 	           } else {
-	               log.error("Cancellation failed: Payment status is not cancelled on PG site");
-	               return "Cancellation failed: Payment status is not cancelled on PG site";
+	        	// 실패 이유를 명확히 로그에 기록
+	               if (response != null && response.getResponse() != null) {
+	                   log.error("Cancellation failed: Status = {}, Message = {}",
+	                       response.getResponse().getStatus(), response.getResponse().getFailReason());
+	               } else {
+	                   log.error("Cancellation failed: No response from PG site.");
+	               }
+	               throw new ServiceException("Cancellation failed: Payment status is not cancelled on PG site");
 	           }
 	       } catch (IamportResponseException e) {
 	           log.error("API call failed: ", e);
@@ -204,6 +216,20 @@ public class PaymentsService {
 	       } catch (Exception e) {
 	           log.error("Error during cancellation", e);
 	           throw new ServiceException("Error during cancellation: " + e.getMessage(), e);
+	       }
+	   }
+	   
+	   
+	   @Transactional
+	   public void updateReservationState(Integer resId, int resState) throws ServiceException {
+	       try {
+	           ReservationMaster reservation = reservationMasterRepo.findById(resId)
+	                   .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
+	           reservation.setResState(resState);
+	           reservationMasterRepo.save(reservation);
+	       } catch (Exception e) {
+	           log.error("Failed to update reservation state for resId: {}", resId, e);
+	           throw new ServiceException("Failed to update reservation state: " + e.getMessage(), e);
 	       }
 	   }
 		        		    
