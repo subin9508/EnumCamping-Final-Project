@@ -98,7 +98,7 @@ public class SecurityConfig  {
 		http.authorizeHttpRequests((auth) ->
 	    auth
 	        .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create", "/api/qnAAnswers/**")
 	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
 	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
 	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능

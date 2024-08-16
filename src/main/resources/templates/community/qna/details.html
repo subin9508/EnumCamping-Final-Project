@@ -9,7 +9,8 @@
 <!-- Bootstrap CSS -->
 <link
     href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
-    rel="stylesheet">
+    rel="stylesheet" />
+
 
 <style>
 .card h2 {
@@ -44,27 +45,12 @@
 
 </style>
 
-	    <!-- JavaScript 변수 설정 (Thymeleaf 변수 전달) -->
-<!-- <script th:inline="javascript">
-    /* 
-     * signedInUser와 userRole이 null이거나 정의되지 않은 경우를 처리합니다.
-     * 템플릿 엔진에서 변수가 JavaScript로 제대로 삽입되도록 보장합니다.
-     */
-    var signedInUser = /*[[${signedInUser}]]*/ '[[${signedInUser}]]';
-    var userRole = /*[[${userRole}]]*/ '[[${userRole}]]';
-</script> -->
-
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	
-		<script th:src="@{/js/qna_answer.js}"></script>
-	
-
 <script th:inline="javascript">
-    /* Thymeleaf로부터 변수를 안전하게 받아오기 */
     var signedInUser = /*[[${signedInUser != null ? '"' + signedInUser + '"' : '""'}]]*/ "";
     var userRole = /*[[${userRole != null ? '"' + userRole + '"' : '""'}]]*/ "";
+    console.log('signedInUser:', signedInUser);  // 콘솔에 로그인 사용자 출력
+    console.log('userRole:', userRole);  // 콘솔에 userRole 출력
 </script>
-
  
 </head>
 <body>
@@ -89,7 +75,7 @@
                         </th:block>
 					<!-- 상세 정보는 접근이 허용된 경우에만 표시 -->
                     <th:block th:if="${accessDenied != true}">
-					<div class="mt-10 card">
+					<div class="mt-10 card" th:object="${post}">
                     <div class="card-header" style="background-color: white;">
                         <h2 th:text="${qna.title}"></h2>
                     </div>
@@ -149,35 +135,42 @@
 							<a class="btn btn-outline-primary" style="float: right"
 								th:href="@{/community/qna/modify(id=${qna.id})}">수정하기</a>
 						</th:block> 
+					
+					
+		<!-- 답변 작성/목록 Collapse -->
+        <div class="mt-2 card">
+            <div class="card-header">
+                <button class="btn btn-outline-secondary" id="btnToggle"
+                    data-toggle="collapse">댓글 보기</button>
+            </div>
+            <div class="card-body collapse" id="collapseQnAAnswers">
+                <!-- 답변 작성 -->
+                <div class="row">
+                    <div class="col-10">
+                        <textarea class="form-control" id="QnAAnswersText" rows="3"
+                            placeholder="답변 내용 작성"></textarea>
+                        
+                        <!-- 답변 작성자를 로그인 사용자 이름으로 설정 -->
+                        <input class="d-none" id="QnAAnswersUserId" th:value="${#authentication.name}" readonly />
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-success form-control"
+                            id="btnRegisterQnAAnswers">등록</button>
+                    </div>
+                </div>
+                
+                <!-- 답변 목록 -->
+                <div class="mt-2" id="divQnAAnswers"></div>
+                
+                <!-- 답변 목록 페이징 처리를 위한 버튼: [더보기] 버튼 -->
+                <div id="divBtnMore" class="mt-2 d-flex d-none justify-content-center">
+                    <button class="btn btn-outline-secondary" id="btnMoreQnAAnswers">더보기</button>
+                </div>
+            </div>
+        </div>
 								
 
-					 <!-- 답변 목록 -->
-                     <div id="answersContainer" style="font-size: 1.2em;">
-
-								<th:block th:if="${#lists.isEmpty(qnaAnswers)}">
-									<p>답변이 없습니다.</p>
-								</th:block>
-
-
-								<th:block th:each="answer : ${qnaAnswers}">
-                            <div class="answer">
-                                <p th:text="${answer.contents}"></p>
-                                <small>작성자: <span th:text="${answer.qnaUserId}"></span></small><br>
-                                <small>작성시간: <span th:text="${#temporals.format(answer.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></span></small>
-                            </div>
-                        </th:block>
-                    </div> 
                     
-
-                    <!-- 답변 등록 폼 -->
-                     <th:block th:if="${userRole == 0}">
-                        <div class="mt-2 d-flex align-items-center">
-                            <div class="flex-grow-1 me-3">
-                                <textarea class="form-control flex-grow-1" rows="2" id="answerContent" placeholder="답변을 작성해주세요" style="font-size:1.1em;"></textarea>
-                            </div>
-                            <button class="btn btn-register" style="font-size:1.5em;" id="btnRegisterAnswer">답변 등록</button>
-                        </div>
-                    </th:block> 
                     </th:block>
                 
                 </div>
@@ -188,13 +181,17 @@
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
-
-
+	
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
     <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
 		
+		<!-- Ajax를 사용하기 위한 Axios 자바스크립트 라이브러리 -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+        <!-- 댓글 기능을 위한 자바스크립트 -->
+        <script th:src="@{/js/qna_answer.js}"></script>
 </body>
 </html>
