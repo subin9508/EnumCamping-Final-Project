@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-fluid {
+    flex: 1;
+    padding: 20px;
+}
+
+.card {
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-right: 326px;
+    margin-left: 148px;
+}
+
+.card-title {
+    color: #0056b3;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 0.5rem;
+}
+
+.table {
+        margin-bottom: 0;
+        text-align: center;
+    }
+    
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.footer-main-content {
+    display: flex;
+}
+

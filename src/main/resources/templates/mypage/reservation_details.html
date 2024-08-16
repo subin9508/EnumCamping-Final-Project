@@ -4,21 +4,24 @@
    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
     <link th:href="@{/css/header.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
-    <link th:href="@{/css/reservation_details.css}" rel="stylesheet">
+    <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+    <link th:href="@{/css/notice_list.css}" rel="stylesheet">
 </head>
 <body>
     <div class="wrapper">
         <!-- Header fragment inclusion -->
          <th:block th:replace="~{/layout/fragments :: header}"></th:block>
-        <div class="footer-main-content reservation-content">
-            <!-- Sidebar fragment inclusion -->
-            <th:include fragment="fragments/mypage-sidebar :: sidebarFragment"></th:include>
+        <div class="footer-main-content">
+            <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
             <main>
                 <div class="card">
-                    <h2>상세 예약내역</h2>
+                	<div class="card-header" style="background-color: white;">
+							<h2 class="text-center">상세 예약 내역</h2>
+					</div>
+					<div class="card-body">
                     <form>
                         <input id="resId" name="resId" type="hidden" th:value="${resMaster.resId}">
-                        <input id="userId" name="userId" type="hidden" th:value="${resMaster.userId}">
+                        <input id="userId" name="userId" type="hidden" th:value="${resMaster.user.userId}">
                         
                         <div class="row">
                             <div class="col-md-6">
@@ -71,7 +74,7 @@
                                         <td th:text="${rs.itemQuantity}"></td>
                                         <td th:text="${rs.itemAmount} + '원'"></td>
                                     </tr>
-                                    <tr th:if="${#lists.isEmpty(resDetail) or !#lists.anyMatch(resDetail, rs -> rs.itemId > 20)}">
+                                    <tr th:if="${#lists.size(resDetail) eq 1}">
                                         <td colspan="3" class="text-center">선택하신 구매/대여물품이 없습니다.</td>
                                     </tr>
                                 </tbody>
@@ -94,12 +97,13 @@
                             <input id="resState" class="form-control" type="text" th:value="${resMaster.resState == 0 ? '예약대기' : (resMaster.resState == 1 ? '예약완료' : (resMaster.resState == 2 ? '예약취소' : '알 수 없음'))}" readonly />
                         </div>
                     </form>
+                </div>
 
                     <!-- 예약 완료 상태일 때만 취소 버튼 보여줌 -->
-                    <div th:if="${resMaster.resState == 1}" class="card-footer">
+                    <div class="card-footer" th:if="${resMaster.resState == 1}" style="background-color: white;">
                         <button id="btnPayCancel" class="btn btn-danger">예약취소</button>
                     </div>
-                </div>
+               </div>
             </main>
         </div>
         <!-- Footer fragment inclusion -->

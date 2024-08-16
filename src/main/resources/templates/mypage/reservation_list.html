@@ -4,7 +4,8 @@
 <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
-<link th:href="@{/css/reservation_list.css}" rel="stylesheet" />
+<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+<link th:href="@{/css/notice_list.css}" rel="stylesheet" />
 </head>
 <body>
 	<div class="wrapper">
@@ -12,27 +13,28 @@
 		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 		<div class="footer-main-content">
 			<!-- 사이드바 포함 -->
-			<th:block fragment="~{/layout/fragments :: mypage-sidebar}"></th:block>
-			<div class="container-fluid">
+			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
 				<main>
 					<div class="card">
-						<h2 class="card-title">예약 내역 리스트</h2>
-						<div class="card-body">
-							<table class="table table-hover">
-								<colgroup>
+						<div class="card-header" style="background-color: white;">
+							<h2 class="text-center">예약 내역 리스트</h2>
+						</div>
+					<div class="card-body">
+						<table class="table table-hover">
+							<colgroup>
 									<col style="width: 25%;">
 									<col style="width: 25%;">
 									<col style="width: 25%;">
 									<col style="width: 25%;">
-								</colgroup>
-								<thead>
+							</colgroup>
+							<thead>
 									<tr>
 										<th>예약 번호</th>
 										<th>숙박 구역</th>
 										<th>숙박 일자</th>
 										<th>예약 상태</th>
 									</tr>
-								</thead>
+							</thead>
 								<tbody>
 									<!-- 예약 내역이 없을 경우 -->
 									<tr th:if="${#lists.isEmpty(reservations)}">
@@ -40,29 +42,34 @@
 									</tr>
 									<!-- 예약 내역이 있는 경우 -->
 									<tr th:each="r : ${reservations}"
-										th:if="${r.resState != 0 && r.itemId <= 20}"
-										th:onclick="|location.href='@{/user/reservation_details(resId=${r.resId})}'|"
+										th:if="${r.resState != 0 }"
+										th:onclick="|location.href='@{/mypage/reservation_details(resId=${r.resId})}'|"
 										style="cursor: pointer;">
 										<td th:text="${r.resId}"></td>
-										<td><span th:if="${1 <= r.itemId && r.itemId <= 4}">캠핑존
-												A-1</span> <span th:if="${5 <= r.itemId && r.itemId <= 8}">캠핑존
-												A-2</span> <span th:if="${9 <= r.itemId && r.itemId <= 12}">캠핑존
-												B-1</span> <span th:if="${13 <= r.itemId && r.itemId <= 16}">캠핑존
-												B-2</span> <span th:if="${17 <= r.itemId && r.itemId <= 20}">캠핑존
-												C</span></td>
+										
+										<td>
+											<span th:each="details : ${r.reservationDetails}">
+									            <span th:if="${1 <= details.item.itemId && details.item.itemId <= 4}">캠핑존 A-1</span>
+												<span th:if="${5 <= details.item.itemId && details.item.itemId <= 8}">캠핑존 A-2</span>
+												<span th:if="${9 <= details.item.itemId && details.item.itemId <= 12}">캠핑존 B-1</span>
+												<span th:if="${13 <= details.item.itemId && details.item.itemId <= 16}">캠핑존 B-2</span>
+												<span th:if="${17 <= details.item.itemId && details.item.itemId <= 20}">캠핑존 C</span>
+									        </span>
+										</td>
 										<td th:text="${r.resCheckIn}"></td>
-										<td><span th:if="${r.resState == 0}"
-											style="color: green;">예약대기</span> <span
-											th:if="${r.resState == 1}" style="color: blue;">예약완료</span> <span
-											th:if="${r.resState == 2}" style="color: red;">예약취소</span></td>
+										<td>
+											<span th:if="${r.resState == 0}" style="color: green;">예약대기</span>
+											<span th:if="${r.resState == 1}" style="color: blue;">예약완료</span>
+											<span th:if="${r.resState == 2}" style="color: red;">예약취소</span>
+										</td>
 									</tr>
+
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</main>
 			</div>
-		</div>
 		<!-- 푸터 포함 -->
 		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 	</div>

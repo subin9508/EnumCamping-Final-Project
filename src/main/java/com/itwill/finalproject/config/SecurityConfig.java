@@ -105,6 +105,7 @@ public class SecurityConfig  {
 	        .anyRequest()
 	        .permitAll()
 	    );
+
 	        
 		 
 		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
