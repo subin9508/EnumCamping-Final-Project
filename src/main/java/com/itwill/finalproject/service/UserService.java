@@ -63,16 +63,32 @@ public class UserService implements UserDetailsService {
 //		return result;
 //	}
 //	
-	//회원 가입 서비스 security 적용
-	 @Transactional
-	    public User create(UserCreateDto dto) {
-	        log.info("create(dto={})", dto);
-	        
-	        User result = userRepo.save(dto.toEntity(passwordEncoder));
-	        // save() -> (1) insert into members, (2) insert into member_roles
-	        return result;
-	    }
+//	//회원 가입 서비스 security 적용
+//	 @Transactional
+//	    public User create(UserCreateDto dto) {
+//	        log.info("create(dto={})", dto);
+//	        
+//	        User result = userRepo.save(dto.toEntity(passwordEncoder));
+//	        // save() -> (1) insert into members, (2) insert into member_roles
+//	        return result;
+//	    }
 
+    
+    @Transactional
+    public User create(UserCreateDto dto) {
+        log.info("create(dto={})", dto);
+        
+        User user = dto.toEntity(passwordEncoder);
+        
+        // 기본적으로 일반 사용자는 USER 역할을 부여 (userRole = 1)
+        user.setUserRole(1); // USER
+        
+        // 만약 관리자를 생성할 필요가 있다면 다음과 같이 설정 가능
+        // user.setUserRole(0); // ADMIN
+        
+        return userRepo.save(user);
+    }
+    
 	
 	
 	// 로그인 서비스
