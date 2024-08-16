@@ -271,12 +271,12 @@
 			</div>
 			<ul class="sidebar-menu">
 				<li class="sidebar-item"><a
-					th:href="@{/mypage/myInfo(userId=${user.userId})}">내 정보</a></li>
+					th:href="@{/mypage/myInfo(userId=${userId})}">내 정보</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/mypage/reservation_list(userId=${user.userId})}">예약내역</a>
+					th:href="@{/mypage/reservation_list(userId=${userId})}">예약내역</a>
 				</li>
 				<li class="sidebar-item"><a
-					th:href="@{/user/qna_list(userId=${user.userId})}">문의내역</a></li>
+					th:href="@{/mypage/qna_list(userId=${userId})}">문의내역</a></li>
 				<li class="sidebar-item"><a href="#" data-bs-toggle="modal"
 					data-bs-target="#deleteAccountModal">회원탈퇴</a></li>
 			</ul>
@@ -299,7 +299,7 @@
 					</div>
 					<div class="modal-footer">
 						<!-- 탈퇴 버튼을 링크로 변경 -->
-						<a th:href="@{/user/deactivateUser(userId=${user.userId})}"
+						<a th:href="@{/user/deactivateUser(userId=${userId})}"
 							class="btn btn-danger">회원 탈퇴 페이지로 이동</a>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
