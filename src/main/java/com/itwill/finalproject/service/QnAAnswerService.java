@@ -30,7 +30,7 @@ public class QnAAnswerService {
     
     public QnAAnswers create(QnAAnswerRegisterDto dto) {
         log.info("create(dto={})", dto);
-        log.info("QnA Content in DTO: {}", dto.getContents()); // 추가된 로
+        log.info("QnA Content in DTO: {}", dto.getContents());
         
         // 댓글이 달릴 QnA 엔터티를 검색:
         QnA qna = qnaRepo.findById(dto.getQnaPostId()).orElseThrow();
@@ -41,9 +41,11 @@ public class QnAAnswerService {
                 .contents(dto.getContents())
                 .userId(dto.getUserId())
                 .build();
+        log.info("ENTITY: {}", entity);
         
         // DB에 저장(insert 쿼리 실행)
         qnaAnswerRepo.save(entity);
+        log.info("SAVE ENTITY: {}", entity);
         
         return entity;
     }

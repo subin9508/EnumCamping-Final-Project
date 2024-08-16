@@ -43,6 +43,29 @@
 }
 
 </style>
+
+	    <!-- JavaScript 변수 설정 (Thymeleaf 변수 전달) -->
+<!-- <script th:inline="javascript">
+    /* 
+     * signedInUser와 userRole이 null이거나 정의되지 않은 경우를 처리합니다.
+     * 템플릿 엔진에서 변수가 JavaScript로 제대로 삽입되도록 보장합니다.
+     */
+    var signedInUser = /*[[${signedInUser}]]*/ '[[${signedInUser}]]';
+    var userRole = /*[[${userRole}]]*/ '[[${userRole}]]';
+</script> -->
+
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	
+		<script th:src="@{/js/qna_answer.js}"></script>
+	
+
+<script th:inline="javascript">
+    /* Thymeleaf로부터 변수를 안전하게 받아오기 */
+    var signedInUser = /*[[${signedInUser != null ? '"' + signedInUser + '"' : '""'}]]*/ "";
+    var userRole = /*[[${userRole != null ? '"' + userRole + '"' : '""'}]]*/ "";
+</script>
+
+ 
 </head>
 <body>
 
@@ -165,11 +188,13 @@
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
+
+
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
     <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
-
+		
 </body>
 </html>

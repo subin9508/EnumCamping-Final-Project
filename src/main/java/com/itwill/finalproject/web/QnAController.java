@@ -142,7 +142,11 @@ public class QnAController {
 
         // 로그인을 하지 않은 경우, userDetails는 null
         String signedInUser = (userDetails != null) ? userDetails.getUsername() : null;
-        Integer userRole = ((User) userDetails).getUserRole(); // userRole 값을 가져옴
+        Integer userRole = null;
+        
+        if (userDetails != null) {
+            userRole = ((User) userDetails).getUserRole(); // userRole 값을 가져옴
+        }
         
         log.debug("signedInUser: {}", signedInUser);
         log.debug("userRole: {}", userRole);
@@ -164,7 +168,7 @@ public class QnAController {
         if (qna.isSecret()) {
             // 비밀글인데 로그인하지 않았거나 작성자가 아니거나 관리자가 아닌 경우 접근 불가
             if (signedInUser == null || 
-                (!qna.getQnaUserId().equals(signedInUser) && userRole == 0)) {
+                (!qna.getQnaUserId().equals(signedInUser) && userRole != 0)) {
                 redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
                 return "redirect:/community/qna/list?p=" + pageNo;
             }
