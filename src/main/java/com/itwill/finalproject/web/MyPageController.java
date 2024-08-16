@@ -54,14 +54,19 @@ public class MyPageController {
     
     @GetMapping("/myInfo")
     public String myPage(Model model) {
-        String userId = getUserId();
+
+        // 현재 인증된 사용자의 정보를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName(); // 인증된 사용자의 이름(ID)
+
         if (userId != null) {
+            // 사용자 정보를 서비스에서 읽어옴
             User user = myPageService.read(userId);
             model.addAttribute("user", user);
             log.debug("마이페이지에 표시될 사용자 정보: {}", user);
             return "mypage/myInfo";
         }
-        
+
         log.warn("인증된 사용자 정보가 없습니다.");
         return "redirect:/user/signin";
     }
@@ -186,12 +191,13 @@ public class MyPageController {
 
     // 특정 사용자의 QnA 목록 조회    
     @GetMapping("/qna_list")
-	public void qnaList(@RequestParam(name = "p", defaultValue = "0" ) int pageNo, @RequestParam(name="userId") String userId, Model model, HttpSession session) {
-		log.debug("qna_list(userId={})", userId);
+	public void qnaList(@RequestParam(name = "p", defaultValue = "0" ) int pageNo, Model model) {
+		log.debug("qna_list(pageNo={})", pageNo);
 		
 		// 사용자 정보를 조회하여 세선에 저장
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName(); // 인증된 사용자의 이름(ID)
 		User user = userService.read(userId);
-		session.setAttribute("user", user);
 		
 		// 해당 사용자의 QnA 목록 조회
 		 Page<QnAListItemDto> page = qnaService.readByUserId(userId, pageNo, Sort.by("id").descending());

@@ -118,7 +118,7 @@
 						<ul class="navbar-nav navbar-user ms-auto">
 							<li class="nav-item" sec:authorize="isAuthenticated()">
 								<a class="nav-link"
-								th:href="@{/mypage/myInfo(userId=${session.signedInUser})}"
+								th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}"
 								style="font-weight: bold;">마이페이지</a>
 							</li>
 							<li class="nav-item" sec:authorize="isAuthenticated()">
@@ -271,12 +271,12 @@
 			</div>
 			<ul class="sidebar-menu">
 				<li class="sidebar-item"><a
-					th:href="@{/mypage/myInfo(userId=${session.signedInUser})}">내 정보</a></li>
+					th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">내 정보</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/mypage/reservation_list(userId=${session.signedInUser})}">예약내역</a>
+					th:href="@{|/mypage/reservation_list?userId=${#authentication.name}|}">예약내역</a>
 				</li>
 				<li class="sidebar-item"><a
-					th:href="@{/mypage/qna_list(userId=${session.signedInUser})}">문의내역</a></li>
+					th:href="@{|/mypage/qna_list?userId=${#authentication.name}|}">문의내역</a></li>
 				<li class="sidebar-item"><a href="#" data-bs-toggle="modal"
 					data-bs-target="#deleteAccountModal">회원탈퇴</a></li>
 			</ul>
@@ -299,7 +299,7 @@
 					</div>
 					<div class="modal-footer">
 						<!-- 탈퇴 버튼을 링크로 변경 -->
-						<a th:href="@{/user/deactivateUser(userId=${session.signedInUser})}"
+						<a th:href="@{|/user/deactivateUser?userId=${#authentication.name}|}"
 							class="btn btn-danger">회원 탈퇴 페이지로 이동</a>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
