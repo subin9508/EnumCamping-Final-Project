@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
-import com.itwill.finalproject.dto.ReservationDetailListDto;
-import com.itwill.finalproject.dto.ReservationListDto;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.UserService;
@@ -168,27 +167,22 @@ public class MyPageController {
  		List<ReservationMaster> list = myPageService.readAllReservation(userId);
 		log.debug("list=({})", list);
 	    model.addAttribute("reservations", list);
-//	    model.addAttribute("user", user); // 모델에 사용자 정보 추가
-		
-	     return "/mypage/reservation_list"; // 반환할 뷰의 이름
+	    return "/mypage/reservation_list"; // 반환할 뷰의 이름
 	}
-    /*
+    
 	// 마이페이지 - 예약 상세
     @GetMapping("/reservation_details")
     public void reservationDetails(@RequestParam(name="resId") int resId, Model model) {
     	log.debug("reservation_details()");
     	//예약 번호로 예약 상세 내용들을 받음
-    	ReservationMaster resMaster = myPageService.readReservationMasterDetails(resId);
-    	
-    	List<ReservationDetailListDto> resDetail = myPageService.readReservationDetails(resId);
-    	
+    	Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+    	log.info("resMaster={}",resMaster);
+    	List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
+    	log.info("resDetail = {}",resDetail);
     	//master 내용이랑 detail 내용이 모두 필요함
-    	model.addAttribute("resMaster", resMaster);
+    	model.addAttribute("resMaster", resMaster.get());
     	model.addAttribute("resDetail", resDetail);
     	
     }
-    */
-    
-    
     
 }
