@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class QnAAnswerUpdateDto {
 	private Long id;
-	private String content;
+	private String contents;
 }

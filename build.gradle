@@ -70,6 +70,11 @@ dependencies {
     }
     // -----------------------------
     
+    
+    //mysql
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+	//--------------------------
 
     // iamport ------------
     implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
@@ -82,7 +87,7 @@ dependencies {
 
     
   }
-
+	// --------------------
 }
 
 tasks.named('test') {

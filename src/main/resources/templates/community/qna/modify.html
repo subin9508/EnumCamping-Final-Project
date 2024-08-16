@@ -4,6 +4,7 @@
 <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
 <link rel="stylesheet" th:href="@{/css/mypage_qna_modify.css}">
 <!-- Bootstrap CSS -->
 <link
@@ -17,34 +18,36 @@
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
-        <div class="footer-main-content not-content">
+        <div class="footer-main-content">
             <th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
 
             <main>
-                <div class="not-modify-container">
+                <div class="card">
                     <h2 class="not-title">문의내역 수정</h2>
 
                     <form id="modifyForm">
                         <div class="mb-3">
                             <label for="id" class="form-label">번호</label>
                             <input id="id" class="form-control"
-                                type="text" name="notPostId"
-                                value="${notice.notPostId}" readonly />
+                                type="text" name="id"
+                                th:value="${qna.id}" readonly />
                         </div>
                         <div class="mb-3">
                             <label for="title" class="form-label">제목</label>
                             <input id="title" class="form-control"
-                                type="text" name="notTitle"
-                                value="${notice.notTitle}" />
+                                type="text" name="title"
+                                th:value="${qna.title}" />
                         </div>
                         <div class="mb-3">
                             <label for="content" class="form-label">내용</label>
                             <textarea id="content" class="form-control"
-                                name="notContent" rows="5">${notice.notContent}</textarea>
+                                name="content" rows="5" th:text="${qna.content}"></textarea>
                         </div>
                     </form>
 
                     <div class="card-footer">
+                    	<button id="btnDelete" 
+                    		class="btn btn-outline-danger">삭제하기</button>
                         <button id="btnUpdate"
                             class="btn btn-outline-primary">업데이트</button>
                     </div>
@@ -56,11 +59,15 @@
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
 
+	<script th:src="@{/js/qna_delete.js}"></script>
+    <script th:src="@{/js/qna_modify.js}"></script>
+	
+	
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
-    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>

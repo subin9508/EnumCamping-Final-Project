@@ -57,14 +57,15 @@
             <main>
             	<div class="qna-details-container">
 
-                    <!-- 알림 메시지 표시 -->
-                    <th:block th:if="${session.message}">
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <span th:text="${session.message}"></span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </th:block>
-
+                        <!-- 알림 메시지 표시 -->
+                        <th:block th:if="${message}">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <span th:text="${message}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </th:block>
+					<!-- 상세 정보는 접근이 허용된 경우에만 표시 -->
+                    <th:block th:if="${accessDenied != true}">
 					<div class="mt-10 card">
                     <div class="card-header" style="background-color: white;">
                         <h2 th:text="${qna.title}"></h2>
@@ -105,65 +106,56 @@
                             </div>
                             
                                 <!-- 비밀글 체크박스, 관리자 또는 작성자인 경우에만 표시 -->
-                                <th:block th:if="${userRole == 0 || signedInUser == qna.author}">
+                                <th:block th:if="${userRole == 0 || signedInUser == qna.qnaUserId}">
                                     <div class="mt-2 form-check">
-                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.qnaLock == 1}" disabled>
+                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.isSecret()}" disabled>
                                         <label class="form-check-label" for="qnaLock"> 비밀글 </label>
                                     </div>
                                 </th:block>
                                                         
                             <a class="btn btnList"
                                 style="align-items: right"
-                                th:href="@{/community/qna/list}">목록보기</a>
+                                th:href="@{/community/qna/list(p=${pageNo})}">목록보기</a>
                         </form>
                     </div>
                 </div>
 
 						<!-- 로그인 사용자 아이디와 작성자 아이디가 같은 경우에만 수정하기 버튼을 보여줌 -->
-<!-- 						<th:block
-							th:if="${signedInUser != null and signedInUser == qna.author}">
+ 						<th:block
+							th:if="${signedInUser != null and signedInUser == qna.qnaUserId}">
 							<a class="btn btn-outline-primary" style="float: right"
-								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
-						</th:block> -->
-								<a class="btn btn-outline-primary" style="float: right"
-								th:href="@{/community/qna/modify(id=${qna.author})}">수정하기</a>
+								th:href="@{/community/qna/modify(id=${qna.id})}">수정하기</a>
+						</th:block> 
+								
+
+					 <!-- 답변 목록 -->
+                     <div id="answersContainer" style="font-size: 1.2em;">
+
+								<th:block th:if="${#lists.isEmpty(qnaAnswers)}">
+									<p>답변이 없습니다.</p>
+								</th:block>
 
 
-						<!-- 답변 목록 -->
-<!--                     <div id="answersContainer" style="font-size: 1.2em;">
-                        <th:block th:each="answer : ${answers}">
+								<th:block th:each="answer : ${qnaAnswers}">
                             <div class="answer">
-                                <p th:text="${answer.content}"></p>
-                                <small>작성자: <span th:text="${answer.author}"></span></small><br>
-                                <small>작성시간: <span th:text="${answer.createdTime}"></span></small>
+                                <p th:text="${answer.contents}"></p>
+                                <small>작성자: <span th:text="${answer.qnaUserId}"></span></small><br>
+                                <small>작성시간: <span th:text="${#temporals.format(answer.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></span></small>
                             </div>
                         </th:block>
-                    </div> -->
-                    <div id="answersContainer" style="font-size: 1.2em;">
-                            <div class="answer">
-                                <p th:text="${qna.content}"></p>
-                                <small>작성자: <span th:text="${qna.author}"></span></small><br>
-                                <small>작성시간: <span th:text="${qna.createdTime}"></span></small>
-                            </div>
-                    </div>
+                    </div> 
                     
 
                     <!-- 답변 등록 폼 -->
-<!--                     <th:block th:if="${userRole == 0}">
+                     <th:block th:if="${userRole == 0}">
                         <div class="mt-2 d-flex align-items-center">
                             <div class="flex-grow-1 me-3">
                                 <textarea class="form-control flex-grow-1" rows="2" id="answerContent" placeholder="답변을 작성해주세요" style="font-size:1.1em;"></textarea>
                             </div>
                             <button class="btn btn-register" style="font-size:1.5em;" id="btnRegisterAnswer">답변 등록</button>
                         </div>
-                    </th:block>   -->  
-                    
-                        <div class="mt-2 d-flex align-items-center">
-                            <div class="flex-grow-1 me-3">
-                                <textarea class="form-control flex-grow-1" rows="2" id="answerContent" placeholder="답변을 작성해주세요" style="font-size:1.1em;"></textarea>
-                            </div>
-                            <button class="btn btn-register" style="font-size:1.5em;" id="btnRegisterAnswer">답변 등록</button>
-                        </div>
+                    </th:block> 
+                    </th:block>
                 
                 </div>
             </main>

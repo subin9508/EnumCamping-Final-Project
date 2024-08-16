@@ -30,6 +30,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 사용자 ID로 사용자 정보 조회
 	Optional<User> findByUserKey(Integer userKey);
+	
+	// 사용자 정보 업데이트
+	@Modifying
+	@Transactional
+	@Query("UPDATE User u SET u.userPassword = :userPassword, u.userPhone = :userPhone WHERE u.userId = :userId")
+	int update(@Param("userId") String userId, @Param("userPassword") String userPassword,
+			@Param("userPhone") String userPhone);
 
 	// 회원 비활성화
 	@Modifying

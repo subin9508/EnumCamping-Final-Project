@@ -15,14 +15,20 @@ public class NoticeUpdateDto {
 	private int id;
 	private String title;
 	private String content;
-	private LocalDateTime modifiedTime;
+//	private LocalDateTime modifiedTime;
 	
 	//update는 createdTime 바꾸지 않음
 	
 	//Notice에 dto 내용 넣기
+//	 public Notice toEntity() {
+//		 return Notice.builder().title(title).content(content)
+//				 .modifiedTime(modifiedTime).id(id).build();
+//	 }
+	 
+		//Notice에 dto 내용 넣기
 	 public Notice toEntity() {
 		 return Notice.builder().title(title).content(content)
-				 .modifiedTime(modifiedTime).id(id).build();
+				 .id(id).build();
 	 }
 	
 }

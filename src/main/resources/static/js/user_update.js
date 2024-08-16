@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const updateForm = document.querySelector('form#updateForm');
+    const inputUserId = document.querySelector('input#userId');
     const inputUserPassword = document.querySelector('input#userPassword');
     const inputUserPasswordConfirm = document.querySelector('input#userPasswordConfirm');
     const inputUserPhone = document.querySelector('input#userPhone');
-
+    const inputUserEmail = document.querySelector('input#userEmail');
+	const inputUserName = document.querySelector('input#userName');
+	
+	
     // 서버에서 반환된 에러 메시지 표시
     const errorMessage = document.querySelector('.alert-danger');
     if (errorMessage) {
@@ -87,16 +91,28 @@ document.addEventListener('DOMContentLoaded', () => {
             showError(inputUserPhone, '전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678');
             isValid = false;
         }
-
+        
+        // 폼 제출 부분
         if (isValid) {
             // 업데이트 내용 저장 확인
             const result = confirm('입력하신 내용으로 저장할까요?');
             if (result) {
-                const formData = new FormData(updateForm);
+                const formData = {
+					userId: inputUserId.value, // userId를 포함
+                    userPassword: inputUserPassword.value,
+                    userPasswordConfirm: inputUserPasswordConfirm.value,
+                    userPhone: inputUserPhone.value,
+                    userEmail: inputUserEmail.value,
+                    userName: inputUserName.value
+                 
+                };
 
                 fetch(updateForm.action, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
                 })
                 .then(response => response.json())
                 .then(data => {

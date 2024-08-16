@@ -1,13 +1,17 @@
 package com.itwill.finalproject.domain;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -60,5 +64,20 @@ public class QnA extends BaseTimeEntity {
         this.content = content; 
         
         return this;
+    }
+    
+    // 조회수 증가 메서드
+    public void incrementViewCount() {
+        this.qnaViewCnt = (this.qnaViewCnt == null ? 0 : this.qnaViewCnt) + 1;
+    }
+    
+    // 비밀글 여부를 확인하는 메서드
+	public boolean isSecret() {
+		return this.qnaLock != null && this.qnaLock != 0;
+	}
+	
+    // 비밀글 설정 메서드 (Optional)
+    public void setSecret(Integer qnaLock) {
+        this.qnaLock = qnaLock;
     }
 }
