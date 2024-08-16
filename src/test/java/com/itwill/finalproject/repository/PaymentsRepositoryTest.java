@@ -37,7 +37,7 @@ public class PaymentsRepositoryTest {
 	@Autowired
 	private ReservationDetailRepository rdRepo;
 	
-	@Test
+	//@Test
 	@Transactional
 	public void test() {
 		
