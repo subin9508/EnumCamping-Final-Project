@@ -69,6 +69,7 @@ public class SecurityConfig  {
 		
 		
 		http.csrf((csrf) -> csrf.disable());
+		http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")); // API 엔드포인트에 대해서만 CSRF 비활성화
 
 		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
 		// http.formLogin(Customizer.withDefaults());
