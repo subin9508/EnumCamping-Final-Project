@@ -1,5 +1,6 @@
 package com.itwill.finalproject.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -24,16 +28,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.itwill.finalproject.domain.ReservationMaster;
-import com.itwill.finalproject.dto.ReservationDetailDto;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.itwill.finalproject.domain.QnA;
+import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
+import com.itwill.finalproject.exception.CustomValidationException;
 import com.itwill.finalproject.service.MyPageService;
+import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAService;
-
 import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,6 +58,7 @@ public class MyPageController {
     private final MyPageService myPageService;
     private final UserService userService;
     private final QnAService qnaService;
+    private final ProfileService profileService;
     
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,19 +67,14 @@ public class MyPageController {
     
     @GetMapping("/myInfo")
     public String myPage(Model model) {
-
-        // 현재 인증된 사용자의 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName(); // 인증된 사용자의 이름(ID)
-
+        String userId = getUserId();
         if (userId != null) {
-            // 사용자 정보를 서비스에서 읽어옴
             User user = myPageService.read(userId);
             model.addAttribute("user", user);
             log.debug("마이페이지에 표시될 사용자 정보: {}", user);
             return "mypage/myInfo";
         }
-
+        
         log.warn("인증된 사용자 정보가 없습니다.");
         return "redirect:/user/signin";
     }
@@ -102,16 +106,13 @@ public class MyPageController {
     }
     
     @GetMapping("/user_update")
-
-    public String userUpdate(Model model) {
-        String userId = getUserId();
+    public String userUpdate(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String userId = userDetails.getUsername();
         if (userId == null) {
             return "redirect:/user/signin";
         }
 
         User user = myPageService.read(userId);
-        log.debug("authenticated user: {}", user);
-
         if (user == null) {
             return "redirect:/user/signin";
         }
@@ -119,76 +120,98 @@ public class MyPageController {
         model.addAttribute("user", user);
         return "mypage/user_update"; 
     }
-    
+
     @PostMapping("/user_update")
     @ResponseBody
-    public ResponseEntity<?> userUpdate(@RequestBody UserUpdateDto dto, HttpServletResponse response) {
-        log.debug("user_update(dto={})", dto);
+    public ResponseEntity<?> userUpdate(
+        @RequestParam(value = "file", required = false) MultipartFile file,
+        @RequestParam(value = "deleteProfileImage", required = false) String deleteProfileImage,
+        @ModelAttribute UserUpdateDto dto,
+        @AuthenticationPrincipal UserDetails userDetails) {
 
         Map<String, Object> result = new HashMap<>();
 
-        // null 체크
+        // 사용자 ID 설정
+        String userId = userDetails.getUsername();
+        dto.setUserId(userId);
+
+        // 유효성 검사
         if (dto == null || dto.getUserId() == null || dto.getUserId().isEmpty()) {
             result.put("success", false);
             result.put("message", "사용자 정보가 올바르지 않습니다.");
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(result);
         }
 
-        // 비밀번호 유효성 검사
-        if (dto.getUserPassword() != null && !dto.getUserPassword().isEmpty()) {
-            if (dto.getUserPassword().length() < 8 || !dto.getUserPassword().matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$")) {
-                result.put("success", false);
-                result.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
-                return ResponseEntity.badRequest().body(response);
-            }
+        if (!isValidPassword(dto.getUserPassword())) {
+            result.put("success", false);
+            result.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
+            return ResponseEntity.badRequest().body(result);
         }
 
-        // 전화번호 유효성 검사
-        if (dto.getUserPhone() != null && !dto.getUserPhone().isEmpty()) {
-            if (!dto.getUserPhone().matches("^01[0-9]-\\d{3,4}-\\d{4}$")) {
-                result.put("success", false);
-                result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
-                return ResponseEntity.badRequest().body(response);
-            }
+        if (!isValidPhone(dto.getUserPhone())) {
+            result.put("success", false);
+            result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
+            return ResponseEntity.badRequest().body(result);
         }
 
         try {
             // 기존 사용자 정보 불러오기
             User existingUser = myPageService.read(dto.getUserId());
-            log.info("기존 사용자 정보 = {}", existingUser);
-
             if (existingUser == null) {
                 result.put("success", false);
                 result.put("message", "사용자를 찾을 수 없습니다.");
-                return ResponseEntity.badRequest().body(response);
+                return ResponseEntity.badRequest().body(result);
             }
-            
-            // 해당 값들이 null일 경우 기존 값 유지
-            if(dto.getUserEmail() == null || dto.getUserEmail().isEmpty()) {
-                dto.setUserEmail(existingUser.getUserEmail());
+
+            // 프로필 이미지 업로드 처리
+            try {
+                if (file != null && !file.isEmpty()) {
+                    ProfileDto profileDto = new ProfileDto();
+                    profileDto.setFile(file);
+                    profileDto.setTitle(""); // 빈 문자열로 title 설정
+                    profileService.ProfileUpload(profileDto, existingUser);
+                }
+            } catch (Exception e) {
+                log.error("프로필 이미지 업로드 중 오류 발생: " + e.getMessage(), e);
+                result.put("success", false);
+                result.put("message", "프로필 이미지 업로드에 실패했습니다.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
             }
-            if(dto.getName() == null || dto.getName().isEmpty()) {
-                dto.setName(existingUser.getName());
+
+            // 프로필 이미지 삭제 처리
+            try {
+                if ("true".equals(deleteProfileImage)) {
+                    profileService.deleteProfileImage(existingUser);
+                }
+            } catch (Exception e) {
+                log.error("프로필 이미지 삭제 중 오류 발생: " + e.getMessage(), e);
+                result.put("success", false);
+                result.put("message", "프로필 이미지 삭제에 실패했습니다.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
             }
-            
-            // userRole은 항상 기존 값 사용
-            dto.setUserRole(existingUser.getUserRole());
-   
+
             // 사용자 정보 업데이트
             myPageService.update(dto);
-            log.info("업데이트 된 정보 = {}", dto);
-            
+
             // 성공 시 리디렉션 URL 포함하여 응답 반환
             result.put("success", true);
             result.put("message", "사용자 정보가 성공적으로 업데이트 되었습니다.");
             result.put("redirectUrl", "/enumcamping/mypage/myInfo?userId=" + dto.getUserId());
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            log.error("사용자 정보 업데이트 중 오류 발생", e);
+            log.error("사용자 정보 업데이트 중 오류 발생: " + e.getMessage(), e);
             result.put("success", false);
             result.put("message", "사용자 정보 업데이트에 실패했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$");
+    }
+
+    private boolean isValidPhone(String phone) {
+        return phone != null && phone.matches("^01[0-9]-\\d{3,4}-\\d{4}$");
     }
 
 
