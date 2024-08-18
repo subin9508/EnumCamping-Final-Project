@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta http-equiv="Cache-Control"
-	content="no-store, no-cache, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
 <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
 
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<!-- Bootstrap CSS -->
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+
+
 
 <style>
 .btn-outline-success {
@@ -100,7 +101,7 @@ footer {
 												name="userId" th:value="${user.userId}" readonly>
 										</div>
 									</div>
-									<div class="mb-3 row">
+									<div class="mb-3 row d-none">
 										<label for="userPassword" class="col-sm-2 col-form-label">비밀번호</label>
 										<div class="col-sm-10">
 											<!-- 비밀번호 필드는 표시하지 않음 -->
@@ -135,7 +136,7 @@ footer {
 				</div>
 			</main>
 		</div>
-		
+
 		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"
@@ -145,7 +146,7 @@ footer {
 	</script>
 	<!-- 부트 스트랩 JS -->
 	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
-	
+
 	<!-- Weather JS -->
 	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 </body>
