@@ -41,10 +41,10 @@ public class QnARepositoryTest {
     
     // 테스트 오류 
 //    @Test 
-    public void testReadCommentsList() {
-        // 실제로 데이터베이스에 존재하는 QnA ID를 사용해야 합니다.
-        Long id = qnaRepository.findAll().get(0).getId(); // 첫 번째 QnA의 ID 사용
-        Page<QnAAnswers> result = qnaAnswerService.readCommentsList(id, 0);
-        assertFalse(result.isEmpty(), "The result should not be empty.");
-    }
+//    public void testReadCommentsList() {
+//        // 실제로 데이터베이스에 존재하는 QnA ID를 사용해야 합니다.
+//        Long id = qnaRepository.findAll().get(0).getId(); // 첫 번째 QnA의 ID 사용
+//        Page<QnAAnswers> result = qnaAnswerService.readCommentsList(id);
+//        assertFalse(result.isEmpty(), "The result should not be empty.");
+//    }
 }

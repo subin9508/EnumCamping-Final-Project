@@ -62,11 +62,12 @@ public class UserController {
 	private final UserService userService;
 	private final QnAService qnaService;
 
+	
 	@GetMapping("/signin")
 	public void signin() {
 		log.info("signin()");
 	}
-
+	
 //	@PostMapping("/signin")
 //	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
 //			HttpSession session) throws IOException {

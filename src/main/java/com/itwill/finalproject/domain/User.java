@@ -110,13 +110,19 @@ public class User implements UserDetails {
 	    }
 	}
 	
-	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 	    // userRole 값에 따라 권한 문자열을 생성
 	    String roleString = getRoleString(this.userRole);
-	    return List.of(new SimpleGrantedAuthority(roleString));
+	    return List.of(new SimpleGrantedAuthority("ROLE_" + roleString));
 	}
+	
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//	    // userRole 값에 따라 권한 문자열을 생성
+//	    String roleString = getRoleString(this.userRole);
+//	    return List.of(new SimpleGrantedAuthority(roleString));
+//	}
 	
 //	@Override
 //	public Collection<? extends GrantedAuthority> getAuthorities() {
