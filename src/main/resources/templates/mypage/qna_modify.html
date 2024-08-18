@@ -13,7 +13,6 @@
 </head>
 <body>
 
-
     <div class="modify-wrapper">
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
@@ -22,10 +21,10 @@
             <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
 			<div class="modify-container-fluid">
             <main>
-                <div class="qna-modify-container">
+                <div class="card">
                     <h2 class="not-title">문의내역 수정</h2>
 
-                    <form id="updateForm" method="post" th:action="@{/mypage/update}">
+                    <form id="modifyForm" method="post" th:action="@{/mypage/update}">
                         <div class="mb-3">
                             <label for="id" class="form-label">번호</label>
                             <input id="id" class="form-control"
@@ -65,15 +64,15 @@
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
+    
+    <script th:src="@{/js/qna_delete.js}"></script>
+    <script th:src="@{/js/qna_modify.js}"></script>
 
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
     <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
-    
-    <!-- qna_modify JS -->
-   	<script th:src="@{/js/qna_modify.js}"></script>
 
 </body>
 </html>
