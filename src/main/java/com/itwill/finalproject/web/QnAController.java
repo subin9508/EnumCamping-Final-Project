@@ -149,17 +149,39 @@ public class QnAController {
     	
         // 현재 인증된 사용자 정보를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails authenticatedUserDetails = (UserDetails) authentication.getPrincipal();
-               
-        // UserService를 통해 User 객체를 가져옴
-        User user = userService.findByUserId(authenticatedUserDetails.getUsername());
-        
-        // 유저가 null인 경우 예외 처리
-        if (user == null) {
-            throw new NullPointerException("User object is null");
+        Object principal = authentication.getPrincipal();
+
+        String signedInUser = null;
+        Integer userRole = null;
+
+        if (principal instanceof UserDetails) {
+            UserDetails authenticatedUserDetails = (UserDetails) principal;
+            signedInUser = authenticatedUserDetails.getUsername();
+            userRole = userService.findByUserId(signedInUser).getUserRole();
+        } else if (principal instanceof String) {
+            signedInUser = (String) principal;
+            User user = userService.findByUserId(signedInUser);
+            if (user != null) {
+                userRole = user.getUserRole();
+            }
+        } else {
+            throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
         }
         
-        model.addAttribute("user", user);
+     
+//        // 현재 인증된 사용자 정보를 가져옴
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserDetails authenticatedUserDetails = (UserDetails) authentication.getPrincipal();
+        
+//        // UserService를 통해 User 객체를 가져옴
+//        User user = userService.findByUserId(authenticatedUserDetails.getUsername());
+//        
+//        // 유저가 null인 경우 예외 처리
+//        if (user == null) {
+//            throw new NullPointerException("User object is null");
+//        }
+//        
+//        model.addAttribute("user", user);
         
         // QnA 게시글 조회
         QnA qna = qnaSvc.readById(id);
@@ -173,8 +195,8 @@ public class QnAController {
 //        }
 
         // 로그인을 하지 않은 경우, userDetails는 null
-        String signedInUser = user.getUsername();
-        Integer userRole = user.getUserRole();
+//        String signedInUser = user.getUsername();
+//        Integer userRole = user.getUserRole();
         
         log.debug("signedInUser: {}", signedInUser);
         log.debug("userRole: {}", userRole);
@@ -208,15 +230,22 @@ public class QnAController {
 //        	qna.incrementViewCount(); // 조회수 증가 메서드 호출
 //        }
 
-        if (!qna.isSecret()) {
-            // 비밀글이 아니면 모든 사용자에게 조회수 증가
-            log.debug("Incrementing view count for non-secret QnA");
-            qna.incrementViewCount();
-        } else if (signedInUser != null && (qna.getQnaUserId().equals(signedInUser) || userRole == 0)) {
-            // 비밀글인데 작성자이거나 관리자일 경우에만 조회수 증가
-            log.debug("Incrementing view count for secret QnA (authorized user)");
-            qna.incrementViewCount();
-        }
+//        if (!qna.isSecret()) {
+//            // 비밀글이 아니면 모든 사용자에게 조회수 증가
+//            log.debug("Incrementing view count for non-secret QnA");
+//            qna.incrementViewCount();
+//        } else if (signedInUser != null && (qna.getQnaUserId().equals(signedInUser) || userRole == 0)) {
+//            // 비밀글인데 작성자이거나 관리자일 경우에만 조회수 증가
+//            log.debug("Incrementing view count for secret QnA (authorized user)");
+//            qna.incrementViewCount();
+//        } else {
+//            // 비밀글인데 작성자나 관리자가 아닌 경우 접근 불가
+//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
+//            return "redirect:/community/qna/list";
+//        }
+        
+        // 비밀글 여부 확인 및 조회수 증가
+        qna = qnaSvc.incrementViewCount(id, signedInUser, userRole);
         
         // 댓글 목록 조회
         List<QnAAnswers> comments = qnaanwserSvc.readCommentsList(id);
@@ -225,6 +254,7 @@ public class QnAController {
         
         // **답변 목록 조회 추가**
         List<QnAAnswers> qnaAnswers = qnaanwserSvc.findByQnaId(id);  // QnA ID로 답변 리스트 조회
+        model.addAttribute("qnaAnswers", qnaAnswers);  // 답변 리스트 모델에 추가
         
         // 답변이 없으면 상태를 '답변 대기'로 설정
         if (qnaAnswers.isEmpty()) {
@@ -233,11 +263,10 @@ public class QnAController {
             qna.setQnaState(1);  // 답변 완료 상태
         }
         
-        model.addAttribute("qnaAnswers", qnaAnswers);  // 답변 리스트 모델에 추가
         
         model.addAttribute("qna", qna);
         model.addAttribute("signedInUser", signedInUser);
-        model.addAttribute("userRole", user.getAuthorities());
+        model.addAttribute("userRole", userRole);
         model.addAttribute("pageNo", pageNo);
 
         return "/community/qna/details";

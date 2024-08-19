@@ -135,14 +135,17 @@
                                 <!-- 비밀글 체크박스, 관리자 또는 작성자인 경우에만 표시 -->
                                 <th:block th:if="${userRole == 0 || signedInUser == qna.qnaUserId}">
                                     <div class="mt-2 form-check">
-                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.isSecret()}" disabled>
+                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.qnaLock == 1}" disabled>
                                         <label class="form-check-label" for="qnaLock"> 비밀글 </label>
                                     </div>
                                 </th:block>
+                               
+                               <input type="hidden" id="currentPage" name="currentPage" th:value="${pageNo}">
                                                                         
                             <a class="btn btnList"
                                 style="align-items: right"
-                                th:href="@{/community/qna/list(p=${pageNo})}">목록보기</a>
+                                th:href="@{/community/qna/list(p=${currentPage}, category=${category}, keyword=${keyword})}">
+                                목록보기</a>
                         </form>
                     </div>
                 </div>

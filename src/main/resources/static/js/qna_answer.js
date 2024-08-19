@@ -1,8 +1,26 @@
+let currentPage = 0; // 현재 페이지 번호를 저장하는 변수
+
 window.onload = function() {
     console.log("Window onload 이벤트가 발생했습니다.");
+	
+	// URL 파라미터에서 페이지 번호를 추출합니다.
+	const urlParams = new URLSearchParams(window.location.search);
+	currentPage = urlParams.get('p'); // 'p' 파라미터가 없으면 0으로 설정
+	
+	// currentPage가 null 또는 빈 문자열이면 0으로 설정
+	if (!currentPage || isNaN(currentPage)) {
+	    currentPage = 0;
+	}
+	
+	console.log(`Current Page initialized to ${currentPage}`);
+	
 	setTimeout(initQnaAnswers, 100);  // 요소가 렌더링된 후 실행
-	getAllQnaAnswers(); // 페이지 로드 시 댓글 목록 불러오기
 	// initQnaAnswers();
+	getAllQnaAnswers(); // 페이지 로드 시 댓글 목록 불러오기
+	
+	// 페이지 로드 후 링크 업데이트
+	updateDetailLinks();
+	updateListButton();
 };
 
 function initQnaAnswers() {
@@ -108,7 +126,6 @@ function hideQnaAnswersInput() {
 
     observer.observe(document.body, { childList: true, subtree: true });
 }*/
-
 
 
 function getAllQnaAnswers(qnaPostId) {
@@ -274,4 +291,25 @@ function updateQnaAnswers(event) {
             getAllQnaAnswers(qnaPostId);
         })
         .catch((error) => console.log('댓글 업데이트 중 오류 발생:', error));
+}
+
+function updateDetailLinks() {
+    document.querySelectorAll('.qna-detail-link').forEach(link => {
+        const qnaId = link.getAttribute('data-id');
+        link.href = `/community/qna/details?id=${qnaId}&p=${currentPage}`;
+    });
+}
+
+function updateListButton() {
+    const btnList = document.querySelector('.btnList');
+	if (btnList) {
+	        btnList.onclick = () => {
+	            // currentPage가 존재하지 않으면 0으로 설정
+	            const page = currentPage !== undefined && currentPage !== null && currentPage !== '' ? currentPage : 0;
+	            console.log(`Navigating to list page with currentPage = ${page}`);
+	            window.location.href = `/community/qna/list?p=${page}&category=${category}&keyword=${keyword}`;
+	        };
+	    } else {
+	        console.error('btnList element not found.');
+	    }
 }

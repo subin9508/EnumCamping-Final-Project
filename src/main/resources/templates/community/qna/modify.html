@@ -43,7 +43,21 @@
                             <textarea id="content" class="form-control"
                                 name="content" rows="5" th:text="${qna.content}"></textarea>
                         </div>
-                    </form>
+
+						<!-- 비밀글 체크박스 -->
+						<div class="mb-3 form-check">
+							<input class="form-check-input" type="checkbox" id="qnaLock"
+								name="qnaLock" value="1" th:checked="${qna.qnaLock == 1}">
+							<label class="form-check-label" for="qnaLock">비밀글로 설정</label>
+						</div>
+
+						<div class="d-none">
+                            <label class="form-label" for="qnaUserId">작성자</label>
+                            <input type="text" class="form-control" id="qnaUserId"
+                                name="qnaUserId" th:value="${#authentication.principal.userId}" readonly />
+                        	</div>
+
+					</form>
 
                     <div class="card-footer">
                     	<button id="btnDelete" 
