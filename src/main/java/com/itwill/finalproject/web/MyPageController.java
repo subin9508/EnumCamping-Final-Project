@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +62,9 @@ public class MyPageController {
     private final QnAService qnaService;
     private final ProfileService profileService;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
@@ -97,7 +102,7 @@ public class MyPageController {
         }
         
         // 비밀번호 확인 로직 (서비스 레이어에서 처리하도록 수정 필요)
-        if (user.getUserPassword().equals(password)) {
+        if (passwordEncoder.matches(password, user.getUserPassword())) {
             return "redirect:/mypage/user_update";
         } else {
             model.addAttribute("errorMessage", "비밀번호가 일치하지 않습니다.");
@@ -118,6 +123,7 @@ public class MyPageController {
         }
 
         model.addAttribute("user", user);
+        model.addAttribute("oldPassword", user.getUserPassword()); // 기존 비밀번호 전달
         return "mypage/user_update"; 
     }
 
@@ -142,24 +148,40 @@ public class MyPageController {
             return ResponseEntity.badRequest().body(result);
         }
 
-        if (!isValidPassword(dto.getUserPassword())) {
-            result.put("success", false);
-            result.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
-            return ResponseEntity.badRequest().body(result);
-        }
-
-        if (!isValidPhone(dto.getUserPhone())) {
-            result.put("success", false);
-            result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
-            return ResponseEntity.badRequest().body(result);
-        }
-
         try {
             // 기존 사용자 정보 불러오기
             User existingUser = myPageService.read(dto.getUserId());
             if (existingUser == null) {
                 result.put("success", false);
                 result.put("message", "사용자를 찾을 수 없습니다.");
+                return ResponseEntity.badRequest().body(result);
+            }
+
+            // 비밀번호 처리
+            if (dto.getUserPassword() != null && !dto.getUserPassword().trim().isEmpty()) {
+                if (!isValidPassword(dto.getUserPassword())) {
+                    result.put("success", false);
+                    result.put("message", "비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.");
+                    return ResponseEntity.badRequest().body(result);
+                }
+                
+                // 새 비밀번호가 기존 비밀번호와 동일한지 확인
+                if (passwordEncoder.matches(dto.getUserPassword(), existingUser.getUserPassword())) {
+                	result.put("success", false);
+                	result.put("message", "새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.");
+                	return ResponseEntity.badRequest().body(result);
+                }
+                 
+                // 새 비밀번호 암호화
+                dto.setUserPassword(passwordEncoder.encode(dto.getUserPassword()));
+            } else {
+                // 비밀번호가 비어있으면 기존 비밀번호 유지
+                dto.setUserPassword(existingUser.getUserPassword());
+            }
+
+            if (!isValidPhone(dto.getUserPhone())) {
+                result.put("success", false);
+                result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
                 return ResponseEntity.badRequest().body(result);
             }
 
