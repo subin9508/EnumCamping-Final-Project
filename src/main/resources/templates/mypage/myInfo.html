@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta http-equiv="Cache-Control"
-	content="no-store, no-cache, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
 <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
 
- <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<!-- Bootstrap CSS -->
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
+
+
+
 <style>
 .btn-outline-success {
 	border: 1px solid green;
@@ -68,6 +70,23 @@ footer {
 							<div class="card-reservation-body text-center">
 								<form id="updateForm" method="post"
 									th:action="@{/mypage/user_update}">
+
+									<!-- 기존 코드 위치에 추가 -->
+									<div class="mb-3 row">
+										<label class="col-sm-2 col-form-label">프로필 이미지</label>
+										<div class="col-sm-10">
+											<img
+												th:if="${user.profile != null and user.profile.profileImageUrl != null}"
+												th:src="@{/profile/{imageFileName}(imageFileName=${user.profile.profileImageUrl})}"
+												alt="프로필 이미지" class="img-thumbnail"
+												style="max-width: 200px;">
+											<p
+												th:if="${user.profile == null or user.profile.profileImageUrl == null}">프로필
+												이미지가 없습니다.</p>
+										</div>
+									</div>
+
+
 									<div class="mb-3 row">
 										<label for="userName" class="col-sm-2 col-form-label">이름</label>
 										<div class="col-sm-10">
@@ -82,11 +101,12 @@ footer {
 												name="userId" th:value="${user.userId}" readonly>
 										</div>
 									</div>
-									<div class="mb-3 row">
-										<label for="userPassword" class="col-sm-2 col-form-label">PW</label>
+									<div class="mb-3 row d-none">
+										<label for="userPassword" class="col-sm-2 col-form-label">비밀번호</label>
 										<div class="col-sm-10">
+											<!-- 비밀번호 필드는 표시하지 않음 -->
 											<input type="password" class="form-control" id="userPassword"
-												name="userPassword" th:value="${user.userPassword}" readonly>
+												name="userPassword" placeholder="비밀번호 변경 시 입력" readonly>
 										</div>
 									</div>
 									<div class="mb-3 row">
@@ -107,7 +127,7 @@ footer {
 								<div class="mb-3 row">
 									<div class="col-sm-8 offset-sm-2">
 										<a th:href="@{/mypage/password_check}"
-											class="btn btn-outline-success btn-link-custom">수정하기</a>
+											class="btn btn-outline-success btn-link-custom">정보 수정하기</a>
 									</div>
 								</div>
 							</div>
@@ -116,8 +136,8 @@ footer {
 				</div>
 			</main>
 		</div>
-		
-	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"
 		type="text/javascript"></script>
@@ -125,9 +145,9 @@ footer {
 		var contextPath = /*[[@{/}]]*/'';
 	</script>
 	<!-- 부트 스트랩 JS -->
-        <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
-        
-        <!-- Weather JS -->
-        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>

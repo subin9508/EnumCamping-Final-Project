@@ -270,15 +270,19 @@
 				<h3 id="title">마이페이지</h3>
 			</div>
 			<ul class="sidebar-menu">
-				<li class="sidebar-item"><a
-					th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">내 정보</a></li>
-				<li class="sidebar-item"><a
-					th:href="@{|/mypage/reservation_list?userId=${#authentication.name}|}">예약내역</a>
+				<li class="sidebar-item">
+					<a th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">내 정보</a>
 				</li>
-				<li class="sidebar-item"><a
-					th:href="@{|/mypage/qna_list?userId=${#authentication.name}|}">문의내역</a></li>
-				<li class="sidebar-item"><a href="#" data-bs-toggle="modal"
-					data-bs-target="#deleteAccountModal">회원탈퇴</a></li>
+				<li class="sidebar-item">
+					<a th:href="@{|/mypage/reservation_list?userId=${#authentication.name}|}">예약내역</a>
+				</li>
+				<li class="sidebar-item">
+					<a th:href="@{|/mypage/qna_list?userId=${#authentication.name}|}">문의내역</a>
+				</li>
+				<li class="sidebar-item">
+					<a href="#" data-bs-toggle="modal"
+					data-bs-target="#deleteAccountModal">회원탈퇴</a>
+        </li>
 			</ul>
 		</aside>
 

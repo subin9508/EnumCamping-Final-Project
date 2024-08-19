@@ -69,6 +69,7 @@ public class SecurityConfig  {
 		
 		
 		http.csrf((csrf) -> csrf.disable());
+		// http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")); // API 엔드포인트에 대해서만 CSRF 비활성화
 
 		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
 		// http.formLogin(Customizer.withDefaults());
@@ -98,13 +99,14 @@ public class SecurityConfig  {
 		http.authorizeHttpRequests((auth) ->
 	    auth
 	        .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create", "/api/qnAAnswers/**")
 	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
 	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
 	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
 	        .anyRequest()
 	        .permitAll()
 	    );
+
 	        
 		 
 		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.

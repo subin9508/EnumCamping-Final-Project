@@ -26,6 +26,7 @@ import com.itwill.finalproject.dto.ReservationListDto;
 import com.itwill.finalproject.exception.ControllerException;
 import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.domain.ReservationMaster;
+import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.service.PaymentsService;
 import com.itwill.finalproject.service.UserService;
@@ -47,12 +48,13 @@ public class PaymentsController {
     // 스프링의 @Autowired를 사용하여 의존성을 주입받을 필드를 정의
     private final PaymentsService paymentsService;
     private final UserService userService;
+    private final MyPageService mypageService;
 
     // 생성자를 통해 의존성 주입
-    @Autowired
-    public PaymentsController(PaymentsService paymentsService, UserService userService) {
+    public PaymentsController(PaymentsService paymentsService, UserService userService, MyPageService myPageService) {
         this.paymentsService = paymentsService;
         this.userService = userService;
+        this.mypageService = myPageService;
 
         // 가맹점 식별키와 비밀키 전달하여 api 인증
         this.api = new IamportClient("3360178750462177",
@@ -137,9 +139,9 @@ public class PaymentsController {
 	    String userId = authentication.getName();
     	
 //    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
-        Optional<ReservationMaster> resMaster = userService.readReservationMasterDetails(resId);
+        Optional<ReservationMaster> resMaster = mypageService.readReservationMasterDetails(resId);
 
-        List<ReservationDetailDto> resDetail = userService.readReservationDetails(resId);
+        List<ReservationDetailDto> resDetail = mypageService.readReservationDetails(resId);
 
         
 //        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
@@ -159,7 +161,7 @@ public class PaymentsController {
 	 * @param resId
 	 * @return 에러 메세지 반환
 	 */
-    @GetMapping("/getPayId/{resId}")
+    @GetMapping("/mypage/reservation_details/getPayId/{resId}")
     public ResponseEntity<?> getPayId(@PathVariable("resId") Integer resId) {
         try {
             Integer payId = paymentsService.getPayIdByResId(resId); // 결제 ID를 조회
@@ -176,8 +178,14 @@ public class PaymentsController {
 	 * @param payId 결제 키로 결제를 식별
 	 * @return ResponseEntity 객체로 HTTP 응답 상태와 메세지를 반환.
 	 */
-    @PostMapping("/cancel/{payId}")
-    public ResponseEntity<String> cancelPayment(@PathVariable Integer payId) {
+    @ResponseBody
+    @PostMapping("/mypage/reservation_details/cancel/{payId}")
+    public ResponseEntity<String> cancelPayment(@PathVariable("payId") Integer payId) {
+    	
+        if (payId == null || payId <= 0) {
+            return ResponseEntity.badRequest().body("Invalid payId");
+        }
+    	
         try {
             String result = paymentsService.cancelPayment(payId);
             if ("Payment cancellation successful".equals(result)) {
@@ -192,6 +200,7 @@ public class PaymentsController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reservation not found for the given payment ID.");
                 }
             } else {
+            	log.warn("Cancellation failed: {}", result);
                 // 결과 메시지에 따라 적절한 HTTP 상태 코드를 반환
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }

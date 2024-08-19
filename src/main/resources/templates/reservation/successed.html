@@ -44,11 +44,11 @@
 									<div th:if="${item.itemId >= 1 && item.itemId <= 20}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemId >= 1 && item.itemId <= 4 ? '1구역' : 
-                           item.itemId >= 5 && item.itemId <= 8 ? '2구역' :
-                           item.itemId >= 9 && item.itemId <= 12 ? '3구역' :
-                           item.itemId >= 13 && item.itemId <= 16 ? '4구역' :
-                           item.itemId >= 17 && item.itemId <= 20 ? '5구역' : ''}" />
+											th:value="${item.itemId >= 1 && item.itemId <= 4 ? 'A-1' : 
+                           item.itemId >= 5 && item.itemId <= 8 ? 'A-2' :
+                           item.itemId >= 9 && item.itemId <= 12 ? 'B-1' :
+                           item.itemId >= 13 && item.itemId <= 16 ? 'B-2' :
+                           item.itemId >= 17 && item.itemId <= 20 ? 'C' : ''}" />
 									</div>
 								</div>
 							</div>
@@ -64,8 +64,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:if="${#lists.isEmpty(resDetail)}">
-                                            <td colspan="4" style="text-align: center;">선택하신 구매/대여물품이 없습니다.</td>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center;" th:if="${resDetail.?[itemId > 20].size() == 0}">
+                                                선택하신 구매/대여물품이 없습니다.</td>
                                         </tr>
                                         <tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}" >
                                             <td th:text="${rs.itemName}"></td>
@@ -79,7 +80,7 @@
 
                             <div class="mt-2">
                                 <label for="resTotalPrice" class="form-label" style="font-size: 21px; font-weight: bold;">총 가격</label>
-                                <input id="resTotalPrice" class="form-control" type="text" th:value="${resMaster.isPresent()} ? ${resMaster.get().resTotalPrice} : 0" readonly />
+                                <input id="resTotalPrice" class="form-control" type="text" th:value="${resMaster.isPresent()} ? ${resMaster.get().resTotalPrice + '원'} : 0" readonly />
                             </div>
                             <br />
 

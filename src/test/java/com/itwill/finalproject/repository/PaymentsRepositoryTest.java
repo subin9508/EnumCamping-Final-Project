@@ -7,13 +7,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.Payments;
-import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.ReservationDetailDto;
@@ -21,7 +18,7 @@ import com.itwill.finalproject.dto.ReservationDetailDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
+//@SpringBootTest
 @Transactional // 테스트 이후 데이터 롤백을 위해 사용
 public class PaymentsRepositoryTest {
 	
