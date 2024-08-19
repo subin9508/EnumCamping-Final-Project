@@ -26,7 +26,7 @@ main {
 .footer {
     text-align: center;
     padding: 10px;
-    background-color: #333;
+    background-color: black;
     color: white;
     position: relative;
     bottom: 0;
@@ -40,6 +40,7 @@ main {
     align-items: center;
     padding: 20px;
     width: 100%;
+    margin-left: -180px;
 }
 
 .slider-container {
@@ -94,21 +95,35 @@ ul.imgs li img {
     margin-bottom: 20px;
     width: 100%;
     max-width: 1200px;
+    margin-left: -25px;
 }
 
 .box {
-    padding: 28px;
+    padding: 20px;
     text-align: center;
     width: 100%;
-    max-width: 250px;
+    max-width: 250px; /* 박스의 최대 너비를 늘립니다 */
     height: auto;
     margin: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center; /* 중앙 정렬 */
     flex: 1 1 calc(33.333% - 40px);
 }
+
+.box h2 {
+    font-size: 1.2em; /* 제목 크기 조정 */
+    margin-bottom: 10px;
+}
+
+.box h3 {
+    font-size: 1em; /* 본문 크기 조정 */
+    line-height: 1.5;
+    margin-bottom: 0;
+    white-space: normal; /* 줄바꿈을 허용하여 전체 내용 표시 */
+}
+
 
 @media (max-width: 1200px) {
     .facility-section {

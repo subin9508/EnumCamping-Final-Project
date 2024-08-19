@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputUserName = document.querySelector('input#userName');
     const deleteProfileImageButton = document.getElementById('deleteProfileImage');
 	
+	
+	// 서버에서 기존 비밀번호를 가져온다고 가정 (기존 비밀번호를 meta 태그를 통해 전달 받음)
+	const oldPassword = document.querySelector('meta[name="oldPassword"]').getAttribute('content');
     
     // 서버에서 반환된 에러 메시지 표시
     const errorMessage = document.querySelector('.alert-danger');
@@ -47,18 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
         if (!this.value.match(passwordPattern)) {
             showError(this, '비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.');
-        } else {
+        } else if (this.value === oldPassword) {
+			showError(this, '새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.');
+		} else {
             clearError(this);
         }
     });
 
-    inputUserPasswordConfirm.addEventListener('input', function() {
-        if (this.value !== inputUserPassword.value) {
-            showError(this, '비밀번호가 일치하지 않습니다.');
-        } else {
-            clearError(this);
-        }
-    });
+	inputUserPasswordConfirm.addEventListener('input', function() {
+		if (this.value === '') {
+			clearError(this); // 공란일 때는 에러 메시지를 제거
+		} else if (this.value !== inputUserPassword.value) {
+			showError(this, '비밀번호가 일치하지 않습니다.');
+		} else {
+			clearError(this);
+		}
+	});
 
     inputUserPhone.addEventListener('input', function() {
         const phonePattern = /^01[0-9]-\d{3,4}-\d{4}$/;
@@ -170,7 +177,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!inputUserPassword.value.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/)) {
             showError(inputUserPassword, '비밀번호는 8자리 이상이며, 영문과 숫자를 포함해야 합니다.');
             isValid = false;
-        } else {
+        } else if(inputUserPassword.value === oldPassword) {
+			showError(inputUserPassword, '새 비밀번호는 기존 비밀번호와 다르게 설정해야 합니다.');
+			isValid = false;
+		} else {
             clearError(inputUserPassword);
         }
 

@@ -14,134 +14,204 @@ footer {
     margin-top: auto;
 }
 
-.main-content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .card-container {
-  width: 100%;
-  max-width: 600px; /* 카드의 최대 너비를 600px로 조정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 추가 */
-  margin: 0 auto; /* 카드 컨테이너를 수평 중앙에 배치 */
+    width: 100%;
+    max-width: 800px; /* 카드의 최대 너비를 800px로 조정 */
+    height: 600px; /* 카드의 높이 조정 */
+    overflow-y: auto;
+    margin: 0 auto;
 }
 
 .mypage-sidebar {
-  width: 250px;
+    width: 250px;
 }
 
 .main-content {
-  flex: 1;
-  padding: 20px;
+    flex: 1;
+    padding: 20px;
+    margin-left: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .card {
-  width: 100%;
-  max-width: 600px; /* 카드의 최대 너비를 600px로 조정 */
-  margin: 0 auto; /* 카드 자체를 수평 중앙에 배치 */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 카드에 그림자 효과 */
-  border: 1px solid #ddd; /* 카드 테두리 색상 추가 */
-  border-radius: 5px; /* 카드 모서리 둥글게 */
+    width: 100%;
+    max-width: 800px; /* 카드의 최대 너비를 800px로 조정 */
+    height: 600px; /* 카드의 높이 조정 */
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
 .card-header {
-  background-color: #f8f9fa; /* 헤더 배경색을 밝게 */
-  color: #7C9C63; /* 헤더 텍스트 색상 */
-  border-bottom: 1px solid #ddd; /* 헤더와 바디 사이 테두리 추가 */
-  padding: 10px 15px; /* 패딩 조정 */
-  font-weight: bold; /* 폰트 두껍게 */
-  text-align: center; /* 텍스트 가운데 정렬 */
+    background-color: #f8f9fa;
+    color: #7C9C63;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    font-weight: bold;
+    text-align: center;
 }
 
 .card-title {
-  color: #7C9C63;
+    color: #7C9C63;
 }
 
 .card-body {
-  padding: 20px; /* 기본값보다 큰 패딩 */
+    padding: 20px;
 }
 
 .mb-3 {
-  margin-bottom: 0.5rem !important; /* 각 입력 필드 사이의 간격 줄임 */
+    margin-bottom: 0.5rem !important;
 }
 
 .card-footer {
-  background-color: #f8f9fa; /* 푸터 배경색을 밝게 */
-  border-top: 1px solid #ddd; /* 푸터와 바디 사이 테두리 추가 */
-  padding: 10px 15px; /* 패딩 조정 */
-  text-align: center; /* 텍스트 가운데 정렬 */
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    padding: 10px 15px;
+    text-align: center;
 }
 
 .row .col-form-label {
-  text-align: right;
-  width: 120px;
+    text-align: right;
+    width: 120px;
 }
 
 label.col-sm-2.col-form-label {
-  margin-right: -27px;
+    margin-right: -27px;
 }
 
 .row .form-control {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 /* 프로필 이미지 영역 스타일 */
 .profile-image-area {
-  margin-bottom: 20px;
-  text-align: center; /* 중앙 정렬 */
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-#profileImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto; /* 이미지 중앙 정렬 */
+.profileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* 이미지를 원형으로 */
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #7C9C63; /* 원형 테두리 추가 */
 }
 
 #deleteImage {
-  cursor: pointer;
-  color: red;
-  font-weight: bold;
-  margin-left: 10px;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 .profile-btn-area {
-  margin-top: 10px;
-  text-align: center; /* 중앙 정렬 */
+    margin-top: 10px;
+    text-align: center;
 }
 
 .profile-btn-area label, .profile-btn-area button {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 #imageInput {
-  display: none;
+    display: none;
 }
 
 /* 새로운 CSS 클래스 추가 */
 .card-reservation-header {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  color: #7C9C63;
-  padding: 10px;
-  font-size: 1.25rem;
-  font-weight: bold;
-  text-align: center;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    color: #7C9C63;
+    padding: 10px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 .card-reservation {
-  margin: 20px 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-left: -488px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left: -488px;
 }
 
 .card-reservation-body {
-  padding: 15px;
+    padding: 15px;
+    margin-left: 5px;
+    margin-top: 200px;
+}
+
+/* 반응형을 위한 미디어 쿼리 추가 */
+@media (max-width: 1024px) {
+    .mypage-sidebar {
+        width: 200px; /* 사이드바 너비를 줄임 */
+    }
+
+    .main-content {
+        margin-left: 220px; /* 사이드바 너비 줄어든 만큼 마진 조정 */
+    }
+    
+    .card-container, .card {
+        max-width: 100%; /* 카드의 최대 너비를 화면 크기에 맞춤 */
+        height: auto; /* 높이를 자동으로 조정 */
+    }
+
+    .card-reservation {
+        margin-left: 0; /* 마진을 없애서 화면 너비에 맞춤 */
+    }
+
+    .card-reservation-body {
+        margin-top: 50px; /* 상단 마진을 줄여서 카드가 화면에 잘 보이게 함 */
+        margin-left: 0; /* 마진을 없애서 화면 너비에 맞춤 */
+    }
+}
+
+@media (max-width: 768px) {
+    .mypage-sidebar {
+        width: 100%; /* 화면이 더 작아지면 사이드바가 전체 너비를 차지 */
+        margin-bottom: 20px; /* 사이드바와 콘텐츠 사이에 간격 추가 */
+    }
+
+    .main-content {
+        margin-left: 0; /* 사이드바가 전체 너비를 차지하므로 마진 제거 */
+        flex-direction: column; /* 콘텐츠를 세로로 정렬 */
+        align-items: flex-start; /* 콘텐츠가 좌측 정렬되도록 조정 */
+    }
+
+    .card-container, .card, .card-reservation {
+        width: 100%; /* 모든 카드가 화면 너비를 차지하도록 설정 */
+        max-width: 100%; /* 카드의 최대 너비를 화면 크기에 맞춤 */
+        height: auto; /* 높이를 자동으로 조정 */
+    }
+
+    .card-reservation-body {
+        margin-top: 20px; /* 상단 마진을 더 줄여서 카드가 화면에 잘 보이게 함 */
+        margin-left: 0; /* 마진을 없애서 화면 너비에 맞춤 */
+    }
+}
+
+@media (max-width: 480px) {
+    .profileImage {
+        width: 100px; /* 프로필 이미지 크기를 줄임 */
+        height: 100px; /* 프로필 이미지 높이도 줄임 */
+    }
+
+    .row .col-form-label {
+        width: 100px; /* 라벨 너비를 줄여서 화면에 잘 맞도록 조정 */
+    }
+
+    .row .form-control {
+        margin-left: 5px; /* 폼 컨트롤의 마진을 줄임 */
+    }
+
+    .card-body {
+        padding: 10px; /* 카드 내용의 패딩을 줄여서 공간을 확보 */
+    }
 }
