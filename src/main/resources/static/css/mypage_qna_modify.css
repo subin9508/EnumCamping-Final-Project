@@ -1,87 +1,78 @@
  @charset "UTF-8";
- 
-    .wrapper {
-            display: flex;
-        }
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer-main-content {
+	flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
+	padding: 20px;
+	margin-left: 180px; /* 사이드바와의 간격 */
+}
+
+.card {
+	margin: 2rem auto;
+	padding: 2rem;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
+}
+
+.table {
+	margin-top: 20px;
+	text-align: center;
+	table-layout: fixed;
+	width: 100%;
+	min-width: 600px;
+}
+
+.table th .table td {
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.num {
+	width: 100px; /* 번호 칸의 최소 너비를 100px로 지정 */
+}
+
+.table-hover tbody tr:hover {
+	background-color: #f1f1f1;
+}
+
+a {
+	color: #7C9C63;
+	text-decoration: none;
+}
+
+.table-responsive {
+	overflow-x: auto;
+	width: 100%;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
 
 
     .footer-main-content {
-        flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
-        margin-left: 180px; /* 사이드바와의 간격 */
+        margin-left: 0; /* 사이드바가 사라졌으므로 왼쪽 마진을 제거 */
+        padding: 10px;
+    }
+
+    .qna-modify-container {
+        width: 100%; /* 작은 화면에서는 너비를 100%로 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 확보 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
     }
 
     .card {
-        margin: 2rem auto;
-        margin-top:100px;
-        padding: 2rem;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
-
-    }
-
-    .table {
-        margin-top: 20px;
-        text-align: center;
-        table-layout:fixed;
-        width: 100%;
-        min-width: 600px;
-    }
-
-    .table th .table td{
-        text-align: center;
-        vertical-align: middle;
-        white-space: nowrap; 
-    }
-    
-   
-    
-    .num {
-        width: 100px; /* 번호 칸의 최소 너비를 100px로 지정 */
-    }
-    
-    
-    .table-hover tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-    a {
-        color: #7C9C63;
-        text-decoration: none;
-    }
-    
-    .table-responsive {
-    overflow-x: auto;
-    width: 100%;
-}
-
-@media (max-width: 576px) {
-    .table thead {
-        display: none;
-    }
-
-    .table tbody tr {
-        display: block;
-        margin-bottom: 15px;
-    }
-
-    .table tbody tr td {
-        display: block;
-        text-align: right;
-        font-size: 14px;
-        position: relative;
-        padding-left: 50%;
-    }
-
-    .table tbody tr td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
+        width: 100%; /* 카드가 화면 전체 너비를 차지하게 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 만듦 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
     }
 }
- 

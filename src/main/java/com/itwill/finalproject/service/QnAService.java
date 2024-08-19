@@ -116,6 +116,9 @@ public class QnAService {
             throw new SecurityException("You are not authorized to update this QnA post.");
         }
         
+     // 비밀글 상태를 업데이트
+        entity.setQnaLock(dto.getQnaLock());
+        
         entity.update(dto.getTitle(), dto.getContent());
         
         qnaRepo.save(entity); // 변경사항을 저장해야 modifiedTime이 갱신
@@ -172,11 +175,24 @@ public class QnAService {
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
     
+//    @Transactional
+//    public void incrementViewCount(Long id) {
+//        QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
+//        qna.incrementViewCount(); // 조회수 증가
+//        qnaRepo.save(qna); // 변경사항 저장
+//    }
+    
     @Transactional
-    public void incrementViewCount(Long id) {
-        QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
-        qna.incrementViewCount(); // 조회수 증가
-        qnaRepo.save(qna); // 변경사항 저장
-    }
+    public QnA incrementViewCount(Long qnaId, String userId, Integer userRole) {
+        QnA qna = qnaRepo.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + qnaId));
 
+        // 비밀글이 아니거나, 비밀글이고 작성자 또는 관리자인 경우에만 조회수 증가
+        if (!qna.isSecret() || (userId != null && (userId.equals(qna.getQnaUserId()) || userRole == 0))) {
+            qna.setQnaViewCnt(qna.getQnaViewCnt() + 1);
+            qnaRepo.save(qna);
+        }
+
+        return qna;
+    }
 }

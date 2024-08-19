@@ -62,10 +62,12 @@ public class UserController {
 	private final UserService userService;
 	private final QnAService qnaService;
 
+	
 	@GetMapping("/signin")
 	public void signin() {
 		log.info("signin()");
 	}
+
 
 	@PostMapping("/signin")
 	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
@@ -86,6 +88,7 @@ public class UserController {
 
 		// 비활성화된 사용자 확인
 		System.out.println("checking if user is active");
+
 //		log.info("Checking if user is active...");
 		boolean isActive = userService.checkUserIsActive(dto.getUserId());
 		log.info("User active status: {}", isActive);

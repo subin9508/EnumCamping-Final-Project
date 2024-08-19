@@ -274,10 +274,10 @@
 					<a th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">내 정보</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{|/mypage/reservation_list?userId=${#authentication.name}|}">예약내역</a>
+					<a th:href="@{|/mypage/reservation_list?userId=${#authentication.name}|}">내 예약내역</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{|/mypage/qna_list?userId=${#authentication.name}|}">문의내역</a>
+					<a th:href="@{|/mypage/qna_list?userId=${#authentication.name}|}">내 문의내역</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="#" data-bs-toggle="modal"
@@ -328,10 +328,10 @@
 		            <a th:href="@{../qna/list}">QnA</a>
 		        </li>
 		        <li class="sidebar-item">
-		           <a th:href="@{../faq}" class="hidden"  >FAQ</a> 
+		           <a th:href="@{../faq}" class="d-none"  >FAQ</a> 
 		        </li>
 		        <li class="sidebar-item">
-		            <a th:href="@{../review}" class="hidden"  >이용후기</a>
+		            <a th:href="@{../review}" class="d-none"  >이용후기</a>
 		        </li>
 		    </ul>
 

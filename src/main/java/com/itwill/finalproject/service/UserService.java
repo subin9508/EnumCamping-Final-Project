@@ -1,9 +1,14 @@
 package com.itwill.finalproject.service;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,8 +40,14 @@ public class UserService implements UserDetailsService {
 	
 	private final PasswordEncoder passwordEncoder; 
     private final UserRepository userRepo;
-
-
+    
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepo = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+    
+    
 	// 아이디 중복 체크: true - 중복되지 않은 아이디(사용 가능한 아이디), false - 중복된 아이디.
     
     public boolean checkUserid(String userId) {
@@ -122,22 +133,70 @@ public class UserService implements UserDetailsService {
 	 
 	
 	//UserDetailsService 오버라이드
-	 @Override
-	 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	        // DB 테이블(members)에 username이 일치하는 사용자가 있으면 UserDetails 타입의
-	        // 객체를 리턴하고, 그렇지 않으면 UsernameNotFoundException을 던짐.
-	        
-	        log.info("loadUserByUsername(username={})", username);
-	        
-	        Optional<User> entity = userRepo.findByUserId(username);
-	        if (entity.isPresent()) {
-	            return entity.get();
-	        } else {
-	            throw new UsernameNotFoundException(username + ": 일치하는 사용자 정보 없음.");
-	        }
+//	 @Override
+//	 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//	        // DB 테이블(members)에 username이 일치하는 사용자가 있으면 UserDetails 타입의
+//	        // 객체를 리턴하고, 그렇지 않으면 UsernameNotFoundException을 던짐.
+//	        
+//	        log.info("loadUserByUsername(username={})", username);
+//	        
+//	        Optional<User> entity = userRepo.findByUserId(username);
+//	        if (entity.isPresent()) {
+//	            return entity.get();
+//	        } else {
+//	            throw new UsernameNotFoundException(username + ": 일치하는 사용자 정보 없음.");
+//	        }
+//	    }
+	 
+//	    @Override
+//	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//	        com.itwill.finalproject.domain.User user = userRepo.findByUserId(username)
+//	            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+//
+//	        List<GrantedAuthority> authorities = new ArrayList<>();
+//	        if (user.getUserRole() == 0) {
+//	            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+//	        } else {
+//	            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+//	        }
+//
+//	        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+//	    }
+	
+	    
+//	 @Override
+//	 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//	     com.itwill.finalproject.domain.User user = userRepo.findByUserId(username)
+//	         .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+//
+//	     return new org.springframework.security.core.userdetails.User(
+//	         user.getUsername(), 
+//	         user.getPassword(), 
+//	         getAuthorities(user)
+//	     );
+//	 }
+//	 
+//
+//	 private Collection<? extends GrantedAuthority> getAuthorities(com.itwill.finalproject.domain.User user) {
+//		    List<GrantedAuthority> authorities = new ArrayList<>();
+//		    // 사용자의 역할에 따라 권한을 부여합니다.
+//		    authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.values()[user.getUserRole()].name()));
+//		    return authorities;
+//		}
+	 
+	 
+	    @Override
+	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	        User user = userRepo.findByUserId(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+//	        List<GrantedAuthority> authorities = new ArrayList<>();
+//	        authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRole.values()[user.getUserRole()].name()));
+//	        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+	        return user; // 직접 커스텀 User 객체를 반환
 	    }
 	 
-
+	 
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
 	public boolean checkEmail(String userEmail) {
 		log.info("checkUserEmail(email={})", userEmail);
@@ -233,5 +292,8 @@ public class UserService implements UserDetailsService {
     	return userRepo.findByUserKey(userKey);
     }
     
+    public User findByUserId(String userId) {
+        return userRepo.findByUserId(userId).orElse(null);
+    }
     
 }

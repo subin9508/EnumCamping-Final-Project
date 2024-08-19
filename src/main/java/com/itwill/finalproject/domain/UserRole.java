@@ -9,6 +9,7 @@ public enum UserRole {
     USER(1,"USER"),
     WITHDRAWUSER(2,"WITHDRAWUSER");
     
+
 	private int code;
     private String authority;
     
@@ -20,9 +21,11 @@ public enum UserRole {
     
     
     
+
     public String getAuthority() {
-        return this.authority;
+        return  this.role;
     }
+
     
     public int getCode() {
     	return this.code;
@@ -39,8 +42,10 @@ public enum UserRole {
         throw new IllegalArgumentException("Unknown role Authority: " + value);
     }
     public static List<String> getAllAuthorities() {
+
         return Arrays.stream(UserRole.values())
-                     .map(UserRole::getAuthority)
-                     .collect(Collectors.toList());
+            .filter(r -> r.role.equals(role))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No role defined for " + role));
     }
 }

@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.itwill.finalproject.domain.ReservationMaster;
+import com.itwill.finalproject.dto.ReservationDetailDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwill.finalproject.domain.QnA;
@@ -42,6 +44,7 @@ import com.itwill.finalproject.exception.CustomValidationException;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAService;
+
 import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -106,6 +109,7 @@ public class MyPageController {
     }
     
     @GetMapping("/user_update")
+
     public String userUpdate(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String userId = userDetails.getUsername();
         if (userId == null) {
