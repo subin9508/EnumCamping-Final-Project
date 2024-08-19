@@ -1,6 +1,7 @@
 package com.itwill.finalproject.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -124,6 +125,10 @@ public class QnAAnswerService {
 	public QnA findQnAById(Long id) {
 		return qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
 
+	}
+	
+	public Optional<QnAAnswers> findQnAAnsById(Long id) {
+	    return qnaAnswerRepo.findQnAAnsById(id).stream().findFirst();
 	}
 	
 	@Transactional

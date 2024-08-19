@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -92,11 +93,20 @@ public class QnAAnswerController {
         return ResponseEntity.ok(id);
     }
     
-    @PreAuthorize("hasRole('USER')") 
+    @PreAuthorize("hasRole('ADMIN')") 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateComments(@PathVariable Long id,
+    public ResponseEntity<Long> updateComments(@PathVariable(name = "id") Long id,
             @RequestBody QnAAnswerUpdateDto dto) {
         log.info("updateComments(id={}, dto={})", id, dto);
+        
+        log.info("Received update request for QnAAnswers with ID: {}", id);
+
+        // Check if the entity exists
+        Optional<QnAAnswers> entity = qnaAnswerSvc.findQnAAnsById(id);
+        if (entity.isEmpty()) {
+            log.error("QnAAnswers with ID: {} not found", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         
         qnaAnswerSvc.update(dto);
         
