@@ -9,27 +9,44 @@ public enum UserRole {
     ADMIN("ADMIN");
     
     
-    private String authority;
+//    private String authority;
+//    
+//    // 주의: enum의 생성자는 항상 private. private 수식어는 생략함.
+//    UserRole(String authority) {
+//        this.authority = authority;
+//    }
+//    
+//    public String getAuthority() {
+//        return this.authority;
+//    }
+//    public static UserRole fromValue(String value) {
+//        for (UserRole role : values()) {
+//            if (role.getAuthority() == value) {
+//                return role;
+//            }
+//        }
+//        throw new IllegalArgumentException("Unknown role Authority: " + value);
+//    }
+//    public static List<String> getAllAuthorities() {
+//        return Arrays.stream(UserRole.values())
+//                     .map(UserRole::getAuthority)
+//                     .collect(Collectors.toList());
+//    }
     
-    // 주의: enum의 생성자는 항상 private. private 수식어는 생략함.
-    UserRole(String authority) {
-        this.authority = authority;
+    private String role;
+
+    UserRole(String role) {
+        this.role = role;
     }
-    
+
     public String getAuthority() {
-        return this.authority;
+        return  this.role;
     }
-    public static UserRole fromValue(String value) {
-        for (UserRole role : values()) {
-            if (role.getAuthority() == value) {
-                return role;
-            }
-        }
-        throw new IllegalArgumentException("Unknown role Authority: " + value);
-    }
-    public static List<String> getAllAuthorities() {
+
+    public static UserRole fromRole(String role) {
         return Arrays.stream(UserRole.values())
-                     .map(UserRole::getAuthority)
-                     .collect(Collectors.toList());
+            .filter(r -> r.role.equals(role))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No role defined for " + role));
     }
 }

@@ -62,6 +62,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = "SELECT COUNT(*) FROM users WHERE user_id = :userId AND (deactiveuntil IS NULL OR deactiveuntil <= CURRENT_DATE)", nativeQuery = true)
 	int checkDeactivationPeriod(@Param("userId") String userId);
 
-	
-
 }

@@ -44,12 +44,30 @@
 }
 
 </style>
-
-<script th:inline="javascript">
+<!-- <script th:inline="javascript">
     var signedInUser = /*[[${signedInUser != null ? '"' + signedInUser + '"' : '""'}]]*/ "";
     var userRole = /*[[${userRole != null ? '"' + userRole + '"' : '""'}]]*/ "";
     console.log('signedInUser:', signedInUser);  // 콘솔에 로그인 사용자 출력
     console.log('userRole:', userRole);  // 콘솔에 userRole 출력
+</script> -->
+
+
+<!-- <script th:inline="javascript">
+    // 로그인 사용자와 역할 정보를 JavaScript 변수로 전달
+    var signedInUser = /*[[${signedInUser}]]*/ "";
+    var userRoleRaw = /*[[${userRole}]]*/ "";
+    console.log('signedInUser:', signedInUser);  // 콘솔에 로그인 사용자 출력
+    console.log('userRoleRaw:', userRoleRaw);  // 콘솔에 userRole 출력
+</script> -->
+ 
+ <!-- 로그인 사용자와 역할 정보를 JavaScript 변수로 전달 -->
+<script th:inline="javascript">
+    var signedInUser = /*[[${signedInUser != null ? '"' + signedInUser + '"' : '""'}]]*/ "";
+    var userRoleRaw = /*[[${userRole != null ? userRole : '[]'}]]*/ [];
+    var authenticatedUser = /*[[${authenticatedUser != null ? '"' + authenticatedUser + '"' : '""'}]]*/ "";
+    console.log('authenticatedUser:', authenticatedUser);  // 콘솔에 authenticatedUser 출력
+    console.log('signedInUser:', signedInUser);  // 콘솔에 로그인 사용자 출력
+    console.log('userRoleRaw:', userRoleRaw);  // 콘솔에 userRole 출력
 </script>
  
 </head>
@@ -74,7 +92,7 @@
                             </div>
                         </th:block>
 					<!-- 상세 정보는 접근이 허용된 경우에만 표시 -->
-                    <th:block th:if="${accessDenied != true}">
+                    <div th:if="${accessDenied != true}">
 					<div class="mt-10 card" th:object="${post}">
                     <div class="card-header" style="background-color: white;">
                         <h2 th:text="${qna.title}"></h2>
@@ -117,14 +135,17 @@
                                 <!-- 비밀글 체크박스, 관리자 또는 작성자인 경우에만 표시 -->
                                 <th:block th:if="${userRole == 0 || signedInUser == qna.qnaUserId}">
                                     <div class="mt-2 form-check">
-                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.isSecret()}" disabled>
+                                        <input class="form-check-input" type="checkbox" id="qnaLock" name="qnaLock" th:checked="${qna.qnaLock == 1}" disabled>
                                         <label class="form-check-label" for="qnaLock"> 비밀글 </label>
                                     </div>
                                 </th:block>
-                                                        
+                               
+                               <input type="hidden" id="currentPage" name="currentPage" th:value="${pageNo}">
+                                                                        
                             <a class="btn btnList"
                                 style="align-items: right"
-                                th:href="@{/community/qna/list(p=${pageNo})}">목록보기</a>
+                                th:href="@{/community/qna/list(p=${currentPage}, category=${category}, keyword=${keyword})}">
+                                목록보기</a>
                         </form>
                     </div>
                 </div>
@@ -137,20 +158,17 @@
 						</th:block> 
 					
 					
-		<!-- 답변 작성/목록 Collapse -->
+		<!-- 답변 작성/목록  -->
+<!-- 		<th:block th:if="${signedInUser != null}">
         <div class="mt-2 card">
-            <div class="card-header">
-                <button class="btn btn-outline-secondary" id="btnToggle"
-                    data-toggle="collapse">댓글 보기</button>
-            </div>
             <div class="card-body collapse" id="collapseQnAAnswers">
-                <!-- 답변 작성 -->
+                답변 작성
                 <div class="row">
                     <div class="col-10">
                         <textarea class="form-control" id="QnAAnswersText" rows="3"
                             placeholder="답변 내용 작성"></textarea>
                         
-                        <!-- 답변 작성자를 로그인 사용자 이름으로 설정 -->
+                        답변 작성자를 로그인 사용자 이름으로 설정
                         <input class="d-none" id="QnAAnswersUserId" th:value="${#authentication.name}" readonly />
                     </div>
                     <div class="col-2">
@@ -159,19 +177,55 @@
                     </div>
                 </div>
                 
-                <!-- 답변 목록 -->
+                답변 목록
                 <div class="mt-2" id="divQnAAnswers"></div>
-                
-                <!-- 답변 목록 페이징 처리를 위한 버튼: [더보기] 버튼 -->
-                <div id="divBtnMore" class="mt-2 d-flex d-none justify-content-center">
-                    <button class="btn btn-outline-secondary" id="btnMoreQnAAnswers">더보기</button>
-                </div>
             </div>
         </div>
-								
+        </th:block> -->
+  		
+  		<div th:if="${!qna.isSecret() || (signedInUser != null && (signedInUser == qna.qnaUserId || userRole == 'ROLE_ADMIN'))}" id="divQnaAnswers">
+								<div id="divQnaAnswers">
+									<!-- 댓글 목록 표시 -->
+								</div>
+							</div>
+							<!-- 숨겨진 필드를 사용하여 userRole 값을 전달 -->
+                    		<input type="hidden" id="userRole" th:value="${userRole}"/>
+							
+							<!-- 관리자 권한이 없을 경우 메시지 출력 -->
+							<th:block
+								th:if="${#lists.isEmpty(userRole) || userRole[0].authority != 'ROLE_ADMIN'}">
+								<p>관리자 권한이 없습니다.</p>
+							</th:block>
 
-                    
-                    </th:block>
+							<th:block th:if="${userRole == 'ROLE_ADMIN'}">
+								<p>관리자 권한 확인됨.</p>
+							</th:block>
+
+							<!-- 관리자만 댓글 등록 가능 -->
+							<th:block th:if="${!#lists.isEmpty(userRole) && userRole[0].authority == 'ROLE_ADMIN'}">
+								<div class="mt-2 card" id="qnaAnswerCard" >
+									<div class="card-body">
+										<div class="row">
+											<div class="col-10">
+												<textarea class="form-control" id="qnaAnswersText" rows="3"
+													placeholder="답변 내용 작성"></textarea>
+													<span id="authenticatedUser" th:text="${authenticatedUser}"></span>
+												<input class="d-none" id="qnaAnswersUserId"
+													th:value="${signedInUser}" readonly />
+											</div>
+											<div class="col-2">
+												<button class="btn btn-outline-success form-control"
+													id="btnRegisterQnaAnswers">등록</button>
+											</div>
+										</div>
+									</div>
+									</div>
+							 </th:block>								
+							</div>
+							
+
+
+						</div>
                 
                 </div>
             </main>
