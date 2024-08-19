@@ -13,13 +13,10 @@
 <body>
 <div class="wrapper">
 	<th:block th:replace="~{/layout/fragments :: header}"></th:block>
-	<div class="footer-main-content">
+
 	<th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
-	<div class="content">
-		<main class="main-content"
-			style="margin-left: 300px; margin-top: 50px;">
-			<div class="content-1">
-				<br>
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div class="content-1 text-left mt-5">
 				<h1>
 					<strong>[주변 볼거리]</strong>
 				</h1>
@@ -125,8 +122,8 @@
 				</div>
 			</div>
 		</main>
-	</div>
-	</div>
+
+
 	<!-- 푸터 -->
 	<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 </div>

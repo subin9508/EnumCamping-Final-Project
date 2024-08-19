@@ -3,19 +3,25 @@ package com.itwill.finalproject.domain;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,7 +72,10 @@ public class User implements UserDetails {
 
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
-
+	
+	 @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+//	 @JoinColumn(name = "profile_image") // FK로 매핑
+	 private Profile profile;
 	// 편의 메서드
 //	// 유저의 권한을 부여하는 메서드.
 //	public User addRole(UserRole role) {

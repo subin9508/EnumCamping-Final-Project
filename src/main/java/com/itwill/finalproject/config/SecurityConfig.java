@@ -85,6 +85,7 @@ public class SecurityConfig  {
 	// - 로그인 페이지(뷰), 로그아웃 페이지 설정.
 	// - 페이지 접근 권한(ADMIN, USER) 설정.
 	// - 인증 설정(로그인 없이 접근 가능한 페이지 vs 로그인해야만 접근 가능한 페이지)
+
 //	@Bean
 //	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //				
@@ -115,6 +116,30 @@ public class SecurityConfig  {
 ////	        );
 //		
 //		
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	
+		
+		
+		
+		http.csrf((csrf) -> csrf.disable());
+		// http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")); // API 엔드포인트에 대해서만 CSRF 비활성화
+
+		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
+		// http.formLogin(Customizer.withDefaults());
+		// Custom 로그인 HTML 페이지를 사용.
+		http.formLogin((login) -> login.loginPage("/user/signin"));
+
+		// 페이지 접근 권한, 인증 구성: 아래의 1 또는 2 방법 중 한 가지를 선택.
+		// 1. HttpSecurity.authorizeHttpRequests(Customizer customizer) 메서드에서 설정.
+		// -> 장점: 한 곳에서 모든 설정을 구성할 수 있음.
+		// -> 단점: 새로운 요청 경로가 생길 때마다 설정 구성 코드를 수정해야 함.
+		// 2. 컨트롤러 메서드에서 애너테이션으로 설정.
+		// (1) SecurityConfig 빈에 @EnableMethodSecurity 애너테이션을 설정.
+		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
+
+
 //		http.authorizeHttpRequests((auth) ->
 //	    auth
 //	        .requestMatchers("/reservation/**", "/user/deactivateUser",

@@ -45,7 +45,7 @@
 }
 
 a {
-	color: #7C9C63;
+	color: black;
 	text-decoration: none;
 }
 
@@ -58,7 +58,8 @@ a {
 	
 	.list-container-fluid {
 		padding: 0;
-		margin-left: 0;
+		margin-left: 10px;
+		margin-right: 10px;
 	}
 
 	.card {
@@ -73,7 +74,7 @@ a {
         overflow-x: auto; /* 내용이 넘칠 경우 가로 스크롤 허용 */
     }
 
-	.table th, .table td {
+	.table td {
 		white-space: normal; /* 텍스트 줄바꿈 허용 */
 	}
 	
