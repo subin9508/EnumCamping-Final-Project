@@ -177,17 +177,17 @@ public class UserService implements UserDetailsService {
 		log.info("findPasswordByNameAndEmailAndId({}{}{})", name, email, id);
 		Optional<User> userPassword = userRepo.findByUserNameAndUserEmailAndUserId(name, email, id);
 		return userPassword;
-	}
+	}*/
 	
 	//이름,이메일을 검색해 아이디를 찾는 메서드
 	public Optional<User> findIdByNameAndEmail(String name, String email) {
 	    // 데이터베이스에서 사용자 아이디 찾기 로직	
-		Optional<User> userId = userRepo.findByUserNameAndUserEmail(name, email);
+		Optional<User> userId = userRepo.findByNameAndUserEmail(name, email);
 		log.info("findIdByNameAndEmail({}{})", name, email);
 		return userId;
 	    
 	}
-*/
+
 	
 	// 회원탈퇴 관련
 	// 시큐리티 적용
@@ -217,7 +217,7 @@ public class UserService implements UserDetailsService {
     
     public boolean checkUserIsActive(String userId) {
     		log.info("userRepo.checkUserIsActive(userId) ={}",userRepo.checkUserIsActive(userId));
-        return userRepo.checkUserIsActive(userId) == 1; // 1이면 활성(로그인가능), 0이면 비활성(탈퇴 & 계정 정지)
+        return userRepo.checkUserIsActive(userId) > 0; // 2이면 비활성(탈퇴 & 계정 정지) 
     }
     
     public boolean checkDeactivationPeriod(String userId) {

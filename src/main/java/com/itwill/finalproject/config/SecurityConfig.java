@@ -104,7 +104,7 @@ public class SecurityConfig  {
 	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
 	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
 	        .anyRequest()
-	        .permitAll()
+	        .permitAll() //다시수정
 	    );
 
 	        

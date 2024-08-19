@@ -5,20 +5,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum UserRole {
-    USER("USER"),
-    ADMIN("ADMIN");
+    ADMIN(0,"ADMIN"),
+    USER(1,"USER"),
+    WITHDRAWUSER(2,"WITHDRAWUSER");
     
-    
+	private int code;
     private String authority;
     
     // 주의: enum의 생성자는 항상 private. private 수식어는 생략함.
-    UserRole(String authority) {
-        this.authority = authority;
+    UserRole(int code, String authority) {
+        this.code = code;
+    	this.authority = authority;
     }
+    
+    
     
     public String getAuthority() {
         return this.authority;
     }
+    
+    public int getCode() {
+    	return this.code;
+    }
+    
+  
+    
     public static UserRole fromValue(String value) {
         for (UserRole role : values()) {
             if (role.getAuthority() == value) {

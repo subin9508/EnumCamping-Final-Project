@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 
 <title>Enum Camping</title>
+<link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
+<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <style>
 .container {
 	background: #fff;
@@ -40,7 +42,7 @@
 						<div class="content-1">
 							<br>
 							<h1>
-								<strong th:text="${session.signedInUser} + '님!'"></strong>
+								<strong th:text="${#authentication.name} + '님!'"></strong>
 							</h1>
 							<h1>
 								<strong>탈퇴하면 enum 캠핑장과의 추억이</strong>
