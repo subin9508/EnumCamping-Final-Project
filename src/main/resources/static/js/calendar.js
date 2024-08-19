@@ -491,21 +491,27 @@ function updateQuantity(itemId, itemPrice) {
     updateTotalAllItems();
 }
 
-    function updateTotalAllItems() {
-        // price 값을 숫자로 변환
-        const priceText = document.getElementById('price-value').innerText;
-        console.log('priceText:', priceText); // 로그 추가        
-        const price = parseInt(priceText.replace(/[^0-9]/g, ''), 10) || 0; // 숫자만 추출하고 정수로 변환
-        console.log('price:', price); // 로그 추가
-        
-        var total = selectedItems.reduce(function(sum, item) {
-            return sum + item.itemAmount;
-        }, price);
-        console.log('total:', total); // 로그 추가
-        
-        var totalAllItemsElement = document.getElementById('totalAllItems');
-        totalAllItemsElement.textContent = '전체 총 가격: ' + total + '원';
-    }
+ function updateTotalAllItems() {
+     // price 값을 숫자로 변환
+     const priceText = document.getElementById('price-value').innerText;
+     console.log('priceText:', priceText); // 로그 추가
+     const price = parseInt(priceText.replace(/[^0-9]/g, ''), 10) || 0; // 숫자만 추출하고 정수로 변환
+     console.log('price:', price); // 로그 추가
+
+     // 선택된 모든 아이템의 총 가격을 계산
+     var total = selectedItems.reduce(function(sum, item) {
+         return sum + item.itemAmount;
+     }, 0);
+     console.log('total:', total); // 로그 추가
+
+     // 합계를 표시할 요소를 업데이트
+     var totalSumElement = document.getElementById('totalSum');
+     totalSumElement.textContent = '아이템 총 가격: ' + total + '원';
+
+     // 전체 총 가격도 업데이트
+     var totalAllItemsElement = document.getElementById('totalAllItems');
+     totalAllItemsElement.textContent = '전체 총 가격: ' + (total + price) + '원';
+ }
     
     // night 라디오 버튼에 이벤트 리스너 추가
     function addNightRadioEventListeners() {
