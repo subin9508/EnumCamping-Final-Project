@@ -6,6 +6,7 @@
 <title>Enum Camping</title>
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
 <style>
 .container {
 	background: #fff;
@@ -40,7 +41,7 @@
 						<div class="content-1">
 							<br>
 							<h1>
-								<strong th:text="${session.signedInUser} + '님!'"></strong>
+								<strong th:text="${user.userId} + '님!'"></strong>
 							</h1>
 							<h1>
 								<strong>탈퇴하면 enum 캠핑장과의 추억이</strong>
