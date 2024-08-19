@@ -168,11 +168,37 @@
         <!-- 부트 스트랩 JS -->
         <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
     
+        <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const images = document.querySelectorAll('.img');
+    
+    images.forEach((image, index) => {
+        image.addEventListener('click', (event) => {
+            const imgIndex = index;
+            const carouselElement = document.getElementById('carouselExampleControls');
+            const carousel = new bootstrap.Carousel(carouselElement);
+            carousel.to(imgIndex);
+
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+
+            const activeItem = carouselElement.querySelector('.carousel-item.active');
+            const newTitle = activeItem.getAttribute('data-title');
+            document.getElementById('modalTitle').textContent = newTitle;
+        });
+    });
+
+    const carouselElement = document.getElementById('carouselExampleControls');
+    carouselElement.addEventListener('slide.bs.carousel', function (e) {
+        const activeItem = e.relatedTarget;
+        const newTitle = activeItem.getAttribute('data-title');
+        document.getElementById('modalTitle').textContent = newTitle;
+    });
+});
+</script>
+    
         <!-- Weather JS -->
         <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
         
-        <!-- infoRental JS -->
-        <script th:src="@{/js/infoRental.js}"></script>
-				
 </body>
 </html>

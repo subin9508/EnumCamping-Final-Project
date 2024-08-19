@@ -90,7 +90,7 @@
                         </div>
                         <div class="mt-2">
                             <label for="resCreatedTime" class="form-label">예약 일시</label>
-                            <input id="resCreatedTime" class="form-control" type="text" th:value="${resMaster.resCreatedTime}" readonly />
+                            <input id="resCreatedTime" class="form-control" type="text" th:value="*{#temporals.format(resMaster.resCreatedTime,'yyyy-MM-dd HH:mm:ss')}" readonly />
                         </div>
                         <div class="mt-2">
                             <label for="resState" class="form-label">예약 상태</label>

@@ -141,6 +141,7 @@ public class SecurityConfig  {
 
 
 //		http.authorizeHttpRequests((auth) ->
+
 //	    auth
 //	        .requestMatchers("/reservation/**", "/user/deactivateUser",
 //	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
@@ -171,7 +172,7 @@ public class SecurityConfig  {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/reservation/**", "/user/deactivateUser", "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
                     .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
-                .requestMatchers("/admin/**")
+                .requestMatchers("/admin/**","/community/notice/create" , "/community/notice/modify")
                     .hasRole(UserRole.ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "/api/qnaAnswers")
                     .hasRole(UserRole.ADMIN.name())
@@ -179,6 +180,7 @@ public class SecurityConfig  {
                     .permitAll()
             )
             .userDetailsService(userService); // 사용자 정의 UserDetailsService 등록
+
 
         return http.build();
     }

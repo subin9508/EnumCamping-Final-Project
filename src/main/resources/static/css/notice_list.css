@@ -1,5 +1,6 @@
  @charset "UTF-8";
  
+ 
     .wrapper {
             display: flex;
         }
@@ -7,34 +8,28 @@
 
     .footer-main-content {
         flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
-        margin-left: 180px; /* 사이드바와의 간격 */
+        
     }
 
     .card {
-        margin: 2rem auto;
+        margin-left: 220px; /* 사이드바와의 간격 */
         margin-top:100px;
+        margin-right:100px;
+        /*max-width:1200px;*/
         padding: 2rem;
         background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
-
+        /*width: calc(100% - 220px);  전체에서 사이드바의 너비를 뺀 너비 */
     }
 
     .table {
         margin-top: 20px;
         text-align: center;
-        table-layout:fixed;
         width: 100%;
-        min-width: 600px;
+        white-space: nowrap;  /*시각 안 줄어듦!!!*/
     }
 
-    .table th .table td{
-        text-align: center;
-        vertical-align: middle;
-        white-space: nowrap; 
-    }
-    
    
     
     .num {
@@ -56,32 +51,40 @@
     width: 100%;
 }
 
-@media (max-width: 576px) {
-    .table thead {
-        display: none;
+@media (max-width: 768px) {
+    .list-container-fluid {
+        padding: 0;
+        margin-left: 0;
     }
 
-    .table tbody tr {
-        display: block;
-        margin-bottom: 15px;
+    .card {
+        width: 100%; /* 카드가 화면 전체 너비를 차지하게 설정 */
+        margin: 0; /* 여백을 없애서 카드가 전체 화면을 차지하도록 설정 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 만듦 */
     }
 
-    .table tbody tr td {
-        display: block;
-        text-align: right;
-        font-size: 14px;
-        position: relative;
-        padding-left: 50%;
+    .card-body .table {
+        width: 100%; /* 테이블이 카드 안에서 꽉 차도록 설정 */
+        overflow-x: auto; /* 내용이 넘칠 경우 가로 스크롤 허용 */
     }
 
-    .table tbody tr td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
+}
+
+@media (max-width: 534px) {
+    .container {
+        width: 100%;
+        min-width: 320px; /* 컨테이너의 최소 너비를 설정 */
+    }
+    
+    #allList{
+        min-width: 150px; 
+        min-height: 20px; 
+        margin-left: auto;
+    }
+    .search {
+        display: none !important;
     }
 }
+
  
