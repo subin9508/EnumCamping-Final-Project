@@ -13,12 +13,10 @@
 <body>
 <div class="wrapper">
     <th:block th:replace="~{/layout/fragments :: header}"></th:block>
-
+	<div class="footer-main-content">
     <th:block th:replace="~{/layout/fragments :: intro-sidebar}"
     	th:attr="class='intro-sidebar'"></th:block>
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="content-1">
-
             <div class="content-1 text-left mt-5">
                 <h1><strong>[편의시설]</strong></h1>
             </div>
@@ -127,8 +125,8 @@
                     </div>
                 </div>
             </div>
-        </div>
     </main>
+    </div>
 
     <!-- 푸터 -->
     <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
@@ -148,17 +146,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const imgIndex = index;
             const carouselElement = document.getElementById('carouselExampleControls');
             const carousel = new bootstrap.Carousel(carouselElement);
+
+            // 먼저 Carousel을 해당 인덱스로 이동
             carousel.to(imgIndex);
 
+            // 슬라이드 이동 후에 제목을 업데이트
+            carouselElement.addEventListener('slid.bs.carousel', function onSlide(e) {
+                const activeItem = carouselElement.querySelector('.carousel-item.active');
+                const newTitle = activeItem.getAttribute('data-title');
+                document.getElementById('modalTitle').textContent = newTitle;
+
+                // 이벤트 리스너 중복 등록 방지
+                carouselElement.removeEventListener('slid.bs.carousel', onSlide);
+            });
+
+            // 이후 모달을 표시
             const modal = new bootstrap.Modal(document.getElementById('imageModal'));
             modal.show();
-
-            const activeItem = carouselElement.querySelector('.carousel-item.active');
-            const newTitle = activeItem.getAttribute('data-title');
-            document.getElementById('modalTitle').textContent = newTitle;
         });
     });
 
+    // Carousel의 슬라이드가 변경될 때 제목을 업데이트
     const carouselElement = document.getElementById('carouselExampleControls');
     carouselElement.addEventListener('slide.bs.carousel', function (e) {
         const activeItem = e.relatedTarget;
@@ -166,6 +174,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('modalTitle').textContent = newTitle;
     });
 });
+
 </script>
 
 <!-- Weather JS -->
