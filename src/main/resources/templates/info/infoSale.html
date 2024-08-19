@@ -166,8 +166,48 @@
    
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+
+	<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const images = document.querySelectorAll('.img');
     
-    <!-- Weather JS -->
+    images.forEach((image, index) => {
+        image.addEventListener('click', (event) => {
+            const imgIndex = index;
+            const carouselElement = document.getElementById('carouselExampleControls');
+            const carousel = new bootstrap.Carousel(carouselElement);
+
+            // 먼저 Carousel을 해당 인덱스로 이동
+            carousel.to(imgIndex);
+
+            // 슬라이드 이동 후에 제목을 업데이트
+            carouselElement.addEventListener('slid.bs.carousel', function onSlide(e) {
+                const activeItem = carouselElement.querySelector('.carousel-item.active');
+                const newTitle = activeItem.getAttribute('data-title');
+                document.getElementById('modalTitle').textContent = newTitle;
+
+                // 이벤트 리스너 중복 등록 방지
+                carouselElement.removeEventListener('slid.bs.carousel', onSlide);
+            });
+
+            // 이후 모달을 표시
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+        });
+    });
+
+    // Carousel의 슬라이드가 변경될 때 제목을 업데이트
+    const carouselElement = document.getElementById('carouselExampleControls');
+    carouselElement.addEventListener('slide.bs.carousel', function (e) {
+        const activeItem = e.relatedTarget;
+        const newTitle = activeItem.getAttribute('data-title');
+        document.getElementById('modalTitle').textContent = newTitle;
+    });
+});
+
+</script>
+
+	<!-- Weather JS -->
     <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
