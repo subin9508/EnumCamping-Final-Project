@@ -160,7 +160,7 @@
         min-width: 100%; /* 작은 화면에서 카드가 화면을 가득 채우도록 설정 */
     }
     .main-content {
-        margin-left: 0 !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
+        margin-left: 10px !important; /* 사이드바가 제거되었을 때 레이아웃 보정 */
         width: 100%;
         padding: 0 15px;
     }
