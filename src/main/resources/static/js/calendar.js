@@ -98,73 +98,101 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 column.style.color = "#A9A9A9";
             }
 
-            // @brief   전월, 명월 음영처리
-            // @details 현재년과 선택 년도가 같은경우
-            if(toDay.getFullYear() == nowDate.getFullYear()) {
+			// @brief   전월, 명월 음영처리
+			// @details 현재년과 선택 년도가 같은경우
+			if (toDay.getFullYear() == nowDate.getFullYear()) {
 
-                // @details 현재월과 선택월이 같은경우
-                if(toDay.getMonth() == nowDate.getMonth()) {
+				// @details 현재월과 선택월이 같은경우
+				if (toDay.getMonth() == nowDate.getMonth()) {
 
-                    // @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
-                    if(nowDate.getDate() > day && Math.sign(day) == 1) {
-                        column.style.backgroundColor = "#F6F7F8";
-                    }
+					// @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
+					if (nowDate.getDate() > day && Math.sign(day) == 1) {
+						column.style.backgroundColor = "#F6F7F8";
+					}
 
-                    // @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
-                    else if(nowDate.getDate() < day && lastDate.getDate() >= day) {
-                        column.style.backgroundColor = "#FFFFFF";
-                        column.style.cursor = "pointer";
-                        column.onclick = function(){ calendarChoiceDay(this); }
-                    }
+					// @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
+					else if (nowDate.getDate() < day && lastDate.getDate() >= day) {
+						column.style.backgroundColor = "#FFFFFF";
+						column.style.cursor = "pointer";
+						column.onclick = function() { calendarChoiceDay(this); }
+					}
 
-                    // @details 현재일인 경우
-                    else if(nowDate.getDate() == day) {
-                        column.style.backgroundColor = "#FFFFE6";
-                        column.style.cursor = "pointer";
-                        column.onclick = function(){ calendarChoiceDay(this); }
-                    }
+					// @details 현재일인 경우
+					else if (nowDate.getDate() == day) {
+						column.style.backgroundColor = "#FFFFE6";
+						column.style.cursor = "pointer";
+						column.onclick = function() { calendarChoiceDay(this); }
+					}
 
-                // @details 현재월보다 이전인경우
-                } else if(toDay.getMonth() < nowDate.getMonth()) {
-                    if(Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                        column.style.backgroundColor = "#E5E5E5";
-                    }
-                }
+					// @details 현재월보다 이전인경우
+				} else if (toDay.getMonth() < nowDate.getMonth()) {
+					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+						column.style.backgroundColor = "#E5E5E5";
+					}
+				}
 
-                // @details 현재월보다 이후인경우
-                else {
-                    if (toDay.getMonth() > nowDate.getMonth()+2){
-                        if(Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                        column.style.backgroundColor = "#E5E5E5";
-                        }
-                    } else {
-                        if(Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                            column.style.backgroundColor = "#FFFFFF";
-                            column.style.cursor = "pointer";
-                            column.onclick = function(){ calendarChoiceDay(this); }
-                        }
-                        
-                    }
-                }
-            }
+				// @details 현재월보다 이후인경우
+				else {
+					// 현재 날짜로부터 3개월 후의 날짜를 계산
+					let threeMonthsLater = new Date(nowDate);
+					threeMonthsLater.setMonth(nowDate.getMonth() + 3);
 
-            // @details 선택한년도가 현재년도보다 작은경우
-            else if(toDay.getFullYear() < nowDate.getFullYear()) {
-                if(Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                    column.style.backgroundColor = "#E5E5E5";
-                }
-            }
+					// 만약 3개월 후의 날짜가 연도를 넘어갈 경우를 처리
+					if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
+						threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
+					}
 
-            // @details 선택한년도가 현재년도보다 큰경우
-            else {
-                if(Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                    column.style.backgroundColor = "#FFFFFF";
-                    column.style.cursor = "pointer";
-                    column.onclick = function(){ calendarChoiceDay(this); }
-                }
-            }
-            dom++;
-        }
+					// 현재 달력에서 표시된 날짜를 계산
+					let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
+
+					// 3개월 이후의 날짜보다 currentDay가 이후라면 비활성화
+					if (currentDay >= threeMonthsLater) {
+						if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
+							column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
+						}
+					} else {
+						if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
+							column.style.backgroundColor = "#FFFFFF"; // 활성화
+							column.style.cursor = "pointer";
+							column.onclick = function() { calendarChoiceDay(this); }
+						}
+					}
+				}
+			}
+
+			// @details 선택한년도가 현재년도보다 작은경우
+			else if (toDay.getFullYear() < nowDate.getFullYear()) {
+				if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+					column.style.backgroundColor = "#E5E5E5";
+				}
+			}
+
+			// @details 선택한년도가 현재년도보다 큰경우
+			else {
+				let threeMonthsLater = new Date(nowDate);
+				threeMonthsLater.setMonth(nowDate.getMonth() + 3);
+
+				if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
+					threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
+				}
+
+				let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
+
+				if (currentDay >= threeMonthsLater) {
+					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+						column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
+					}
+				} else {
+					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+						column.style.backgroundColor = "#FFFFFF";
+						column.style.cursor = "pointer";
+						column.onclick = function() { calendarChoiceDay(this); }
+					}
+				}
+			}
+			dom++;
+		}
+
         console.log('buildCalendar - current selectedDate:', selectedDate);
     }
 
@@ -491,21 +519,27 @@ function updateQuantity(itemId, itemPrice) {
     updateTotalAllItems();
 }
 
-    function updateTotalAllItems() {
-        // price 값을 숫자로 변환
-        const priceText = document.getElementById('price-value').innerText;
-        console.log('priceText:', priceText); // 로그 추가        
-        const price = parseInt(priceText.replace(/[^0-9]/g, ''), 10) || 0; // 숫자만 추출하고 정수로 변환
-        console.log('price:', price); // 로그 추가
-        
-        var total = selectedItems.reduce(function(sum, item) {
-            return sum + item.itemAmount;
-        }, price);
-        console.log('total:', total); // 로그 추가
-        
-        var totalAllItemsElement = document.getElementById('totalAllItems');
-        totalAllItemsElement.textContent = '전체 총 가격: ' + total + '원';
-    }
+ function updateTotalAllItems() {
+     // price 값을 숫자로 변환
+     const priceText = document.getElementById('price-value').innerText;
+     console.log('priceText:', priceText); // 로그 추가
+     const price = parseInt(priceText.replace(/[^0-9]/g, ''), 10) || 0; // 숫자만 추출하고 정수로 변환
+     console.log('price:', price); // 로그 추가
+
+     // 선택된 모든 아이템의 총 가격을 계산
+     var total = selectedItems.reduce(function(sum, item) {
+         return sum + item.itemAmount;
+     }, 0);
+     console.log('total:', total); // 로그 추가
+
+     // 합계를 표시할 요소를 업데이트
+     var totalSumElement = document.getElementById('totalSum');
+     totalSumElement.textContent = '아이템 총 가격: ' + total + '원';
+
+     // 전체 총 가격도 업데이트
+     var totalAllItemsElement = document.getElementById('totalAllItems');
+     totalAllItemsElement.textContent = '전체 총 가격: ' + (total + price) + '원';
+ }
     
     // night 라디오 버튼에 이벤트 리스너 추가
     function addNightRadioEventListeners() {

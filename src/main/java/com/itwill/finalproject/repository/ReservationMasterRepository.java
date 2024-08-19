@@ -44,6 +44,5 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	@Query("select rm from ReservationMaster rm "
 			+ "where rm.user.userId = :userId " )
 	List<ReservationMaster> selectMasterByUserId(@Param("userId") String userId);
-	
 
 }

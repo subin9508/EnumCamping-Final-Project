@@ -13,19 +13,19 @@
 </head>
 <body>
 
-
-    <div class="modify-wrapper">
+    <div class="wrapper">
         <!-- 상단 메뉴바 -->
         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
-        <div class="footer-main-content qna-content">
+        <div class="footer-main-content">
             <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
 			<div class="modify-container-fluid">
             <main>
-                <div class="qna-modify-container">
+            <div class="qna-modify-container">
+                <div class="card">
                     <h2 class="not-title">문의내역 수정</h2>
 
-                    <form id="updateForm" method="post" th:action="@{/mypage/update}">
+                    <form id="modifyForm" method="post" th:action="@{/mypage/update}">
                         <div class="mb-3">
                             <label for="id" class="form-label">번호</label>
                             <input id="id" class="form-control"
@@ -43,6 +43,12 @@
                             <textarea id="content" class="form-control"
                                 name="content" rows="5" th:text="${qna.content}"></textarea>
                         </div>
+                        <!-- 비밀글 체크박스 -->
+						<div class="mb-3 form-check">
+							<input class="form-check-input" type="checkbox" id="qnaLock"
+								name="qnaLock" value="1" th:checked="${qna.qnaLock == 1}">
+							<label class="form-check-label" for="qnaLock">비밀글로 설정</label>
+						</div>                        
                         <div class="mb-3 d-none">
                             <label for="userId" class="form-label">작성자</label>
                             <input id="userId" class="form-control"
@@ -59,21 +65,22 @@
 						</div>
 
 					</div>
+					</div>
             </main>
             </div>
         </div>
         <!-- 푸터 -->
         <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
     </div>
+    
+    <script th:src="@{/js/qna_delete.js}"></script>
+    <script th:src="@{/js/qna_modify.js}"></script>
 
     <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
-    <th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
-    
-    <!-- qna_modify JS -->
-   	<script th:src="@{/js/qna_modify.js}"></script>
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
 </body>
 </html>
