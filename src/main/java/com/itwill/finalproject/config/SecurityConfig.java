@@ -142,48 +142,33 @@ public class SecurityConfig  {
 
 //		http.authorizeHttpRequests((auth) ->
 
-//	    auth
-//	        .requestMatchers("/reservation/**", "/user/deactivateUser",
-//	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
-//	        .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name()) // UserRole enum 이름 사용
-//	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
-//	        .hasRole(UserRole.ADMIN.name()) // 'ADMIN'을 'ROLE_ADMIN'으로 자동 변환
-//	        .requestMatchers(HttpMethod.POST, "/api/qnaAnswers")
-//	        .hasRole(UserRole.ADMIN.name()) // 댓글 등록은 관리자만 가능
-//	        .anyRequest()
-//	        .permitAll()
-//	    );
-//
-//	        
-//		 
-//		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
-//	}
-	
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .formLogin(formLogin -> formLogin
-                .loginPage("/user/signin")
-                .defaultSuccessUrl("/", true)
-                .permitAll()
-            )
-            .logout(logout -> logout.permitAll())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/reservation/**", "/user/deactivateUser", "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
-                    .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
-                .requestMatchers("/admin/**","/community/notice/create" , "/community/notice/modify")
-                    .hasRole(UserRole.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/api/qnaAnswers")
-                    .hasRole(UserRole.ADMIN.name())
-                .anyRequest()
-                    .permitAll()
-            )
-            .userDetailsService(userService); // 사용자 정의 UserDetailsService 등록
+//	        auth
+//	            .requestMatchers("/reservation/**", "/user/deactivateUser",
+//	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
+//	            .hasAnyAuthority("USER", "ADMIN") // USER와 ADMIN 모두 접근 가능
+//	            .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+//	            .hasAuthority("ADMIN") // ADMIN만 접근 가능
+//	            .anyRequest()
+//	            .permitAll()
+//	        );
+		
+		
+		http.authorizeHttpRequests((auth) ->
+	    auth
+	        .requestMatchers("/reservation/**", "/user/deactivateUser",
+	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create", "/api/qnAAnswers/**")
+	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
+	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
+	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
+	        .anyRequest()
+	        .permitAll() //다시수정
+	    );
 
+	        
+		 
+		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
+	}
 
-        return http.build();
-    }
 
 	
 }
