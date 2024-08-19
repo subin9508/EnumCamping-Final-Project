@@ -63,11 +63,16 @@
  <!-- 로그인 사용자와 역할 정보를 JavaScript 변수로 전달 -->
 <script th:inline="javascript">
     var signedInUser = /*[[${signedInUser != null ? '"' + signedInUser + '"' : '""'}]]*/ "";
-    var userRoleRaw = /*[[${userRole != null ? userRole : '[]'}]]*/ [];
+    var userRoleRaw = /*[[${userRole != null ? userRole : 'null'}]]*/ null;
     var authenticatedUser = /*[[${authenticatedUser != null ? '"' + authenticatedUser + '"' : '""'}]]*/ "";
+    
+ // userRoleRaw가 null이 아니면 userRole에 할당
+    var userRole = userRoleRaw !== null ? userRoleRaw : null;
+ 
     console.log('authenticatedUser:', authenticatedUser);  // 콘솔에 authenticatedUser 출력
     console.log('signedInUser:', signedInUser);  // 콘솔에 로그인 사용자 출력
     console.log('userRoleRaw:', userRoleRaw);  // 콘솔에 userRole 출력
+    console.log('userRole:', userRole);
 </script>
  
 </head>
@@ -183,7 +188,7 @@
         </div>
         </th:block> -->
   		
-  		<div th:if="${!qna.isSecret() || (signedInUser != null && (signedInUser == qna.qnaUserId || userRole == 'ROLE_ADMIN'))}" id="divQnaAnswers">
+  		<div th:if="${!qna.isSecret() || (signedInUser != null && (signedInUser == qna.qnaUserId ||  userRole == 0))}" id="divQnaAnswers">
 								<div id="divQnaAnswers">
 									<!-- 댓글 목록 표시 -->
 								</div>
@@ -192,17 +197,17 @@
                     		<input type="hidden" id="userRole" th:value="${userRole}"/>
 							
 							<!-- 관리자 권한이 없을 경우 메시지 출력 -->
-							<th:block
-								th:if="${#lists.isEmpty(userRole) || userRole[0].authority != 'ROLE_ADMIN'}">
+	<!-- 						<th:block
+								th:if="${userRole != 0}">
 								<p>관리자 권한이 없습니다.</p>
 							</th:block>
 
-							<th:block th:if="${userRole == 'ROLE_ADMIN'}">
+							<th:block th:if="${userRole == 0}">
 								<p>관리자 권한 확인됨.</p>
-							</th:block>
+							</th:block> -->
 
 							<!-- 관리자만 댓글 등록 가능 -->
-							<th:block th:if="${!#lists.isEmpty(userRole) && userRole[0].authority == 'ROLE_ADMIN'}">
+							<th:block th:if="${userRole == 0}">
 								<div class="mt-2 card" id="qnaAnswerCard" >
 									<div class="card-body">
 										<div class="row">

@@ -5,12 +5,8 @@ window.onload = function() {
 	
 	// URL 파라미터에서 페이지 번호를 추출합니다.
 	const urlParams = new URLSearchParams(window.location.search);
-	currentPage = urlParams.get('p'); // 'p' 파라미터가 없으면 0으로 설정
-	
-	// currentPage가 null 또는 빈 문자열이면 0으로 설정
-	if (!currentPage || isNaN(currentPage)) {
-	    currentPage = 0;
-	}
+	currentPage = urlParams.get('p') || 0 ; // 'p' 파라미터가 없으면 0으로 설정
+
 	
 	console.log(`Current Page initialized to ${currentPage}`);
 	
@@ -25,20 +21,31 @@ window.onload = function() {
 
 function initQnaAnswers() {
 	console.log('signedInUser:', signedInUser);
-	console.log('userRoleRaw:', userRoleRaw);
+	console.log('userRole:', userRole);
+	
+	
+	    // 관리자 권한이 있는지 확인 (userRole == 0)
+	    if (userRole === 0) {
+	        console.log('관리자 권한 확인됨.');
+	        displayQnaAnswersInput();  // 댓글 입력창을 보여줌
+	    } else {
+	        console.error('관리자 권한이 아닙니다. 버튼이 숨겨집니다.');
+	        hideQnaAnswersInput();  // 댓글 입력창을 숨김
+	    }
+	}
 	
     // let userRole = [];
 	// let userRole = userRoleRaw;
 	
 	// userRoleRaw가 올바르게 전달되었는지 확인합니다.
-	let userRole = Array.isArray(userRoleRaw) ? userRoleRaw : [];
+//	let userRole = Array.isArray(userRoleRaw) ? userRoleRaw : [];
 
 	
     // userRoleRaw는 이미 객체 배열 형태로 전달되므로 JSON 파싱이 필요 없습니다.
     // userRole = userRoleRaw;
 
-    console.log('signedInUser:', signedInUser);
-    console.log('userRole:', userRole);
+//    console.log('signedInUser:', signedInUser);
+//    console.log('userRole:', userRole);
 
 /*    if (Array.isArray(userRole) && userRole.some(role => role.authority === 'ROLE_ADMIN')) {
         console.log('관리자 권한 확인됨.');
@@ -52,7 +59,7 @@ function initQnaAnswers() {
     }*/
 	
 	// 배열 내부의 객체들을 개별적으로 출력
-	userRole.forEach((role, index) => {
+/*	userRole.forEach((role, index) => {
 	    console.log(`userRole[${index}]:`, role);
 	});
 	
@@ -63,7 +70,7 @@ function initQnaAnswers() {
 	        console.error('관리자 권한이 아닙니다. 버튼이 숨겨집니다.');
 	        hideQnaAnswersInput();
 	    }
-	}
+	} */
 
 
 function displayQnaAnswersInput() {
@@ -146,11 +153,23 @@ function getAllQnaAnswers(qnaPostId) {
 			            if (error.response && error.response.status === 403) {
 			                console.log('비밀글입니다. 권한이 없으면 목록을 볼 수 없습니다.');
 			            } else {
-			                console.log('댓글 목록 가져오기 중 오류 발생:', error);
+			                console.log('답글 목록 가져오기 중 오류 발생:', error);
 			            }
 			        });
 	}
 
+	function formatDateTime(dateTimeStr) {
+	    const date = new Date(dateTimeStr);
+
+	    const year = date.getFullYear();
+	    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+	    const day = date.getDate().toString().padStart(2, '0');
+	    const hours = date.getHours().toString().padStart(2, '0');
+	    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+	    return `${year}-${month}-${day} ${hours}:${minutes}`;
+	}
+	
 function makeQnaAnswersElements(data) {
 /*    const authUserElement = document.querySelector('span#authenticatedUser');
 	let authUser = '';  // authUser 변수를 함수 내에서 선언하고 초기화
@@ -181,6 +200,7 @@ function makeQnaAnswersElements(data) {
 	    console.log('div#divQnaAnswers 요소가 존재합니다.');
 	} else {
 	    console.error('div#divQnaAnswers 요소를 찾을 수 없습니다.');
+		return; // 요소가 없으면 함수 실행 중단
 	}
 	
     let htmlStr = '';
@@ -189,13 +209,13 @@ function makeQnaAnswersElements(data) {
         <div class="card card-body mt-2">
             <div class="mt-2">
                 <span class="fw-bold">${qnaanswers.userId}</span>
-                <span class="text-secondary">${qnaanswers.modifiedTime}</span>
+                <span class="text-secondary">${formatDateTime(qnaanswers.modifiedTime)}</span>
             </div>
             <div class="mt-2">
                 <textarea class="qnaAnswersText form-control" data-id="${qnaanswers.id}">${qnaanswers.contents}</textarea>
             </div>
         `;
-        if (authUser === qnaanswers.userId) {
+        if (authUser === qnaanswers.userId || userRole === 0) {
             htmlStr += `
             <div class="mt-2">
                     <button class="btnDelete btn btn-outline-danger btn-sm" data-id="${qnaanswers.id}">삭제</button>
@@ -241,12 +261,12 @@ function registerQnaAnswers() {
     axios.post('/enumcamping/api/qnaAnswers', data)
         .then((response) => {
             console.log(response.data);
-            alert('댓글 등록 성공!');
+            alert('답글이 등록되었습니다');
             document.querySelector('textarea#qnaAnswersText').value = '';
             getAllQnaAnswers(qnaPostId);
         })
         .catch((error) => {
-            console.error('댓글 등록 중 오류 발생:', error);
+            console.error('답글 등록 중 오류 발생:', error);
             console.error('Failed Request:', error.config);
         });
 }
@@ -261,11 +281,11 @@ function deleteQnaAnswers(event) {
     axios.delete(uri)
         .then((response) => {
             console.log(response);
-            alert(`댓글 #${id} 삭제 성공`);
+            alert(`답글 #${id} 삭제 성공`);
             const qnaPostId = document.querySelector('input#id').value;
             getAllQnaAnswers(qnaPostId);
         })
-        .catch((error) => console.log('댓글 삭제 중 오류 발생:', error));
+        .catch((error) => console.log('답글 삭제 중 오류 발생:', error));
 }
 
 function updateQnaAnswers(event) {
@@ -274,11 +294,11 @@ function updateQnaAnswers(event) {
 
     const contents = textarea.value;
     if (contents.trim() === '') {
-        alert('댓글 내용은 반드시 입력해야 합니다.');
+        alert('답글 내용은 반드시 입력해야 합니다.');
         return;
     }
 
-    if (!confirm('변경된 댓글을 저장할까요?')) {
+    if (!confirm('변경된 답글을 저장할까요?')) {
         return;
     }
 
@@ -287,10 +307,10 @@ function updateQnaAnswers(event) {
     axios.put(uri, data)
         .then((response) => {
             console.log(response);
-            alert(`댓글 #${id} 업데이트 성공!`);
+            alert(`답글 #${id} 업데이트 성공!`);
             getAllQnaAnswers(qnaPostId);
         })
-        .catch((error) => console.log('댓글 업데이트 중 오류 발생:', error));
+        .catch((error) => console.log('답글 업데이트 중 오류 발생:', error));
 }
 
 function updateDetailLinks() {
