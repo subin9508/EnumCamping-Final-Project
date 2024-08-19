@@ -5,6 +5,13 @@
 }
 
 /* 모달 스타일 */
+/* 모달창 이미지의 크기를 동일하게 유지하기 위한 스타일 */
+.carousel-item img {
+    width: 100%; /* 가로 크기를 부모 요소에 맞춤 */
+    height: 500px; /* 원하는 고정 높이 설정 */
+    object-fit: cover; /* 이미지가 컨테이너를 덮도록 설정하면서 비율 유지 */
+    border-radius: 10px; /* 이미지의 둥근 모서리 유지 */
+}
 /*
 .modal {
     display: none;
@@ -135,6 +142,14 @@
     object-fit: cover;
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 뷰포트의 전체 높이로 설정 */
+}
+
+
+
 /* 반응형 */
 /* 작은 화면에 맞춘 스타일 조정 */
 @media (max-width: 768px) {
@@ -149,4 +164,6 @@
         width: 100%;
         padding: 0 15px;
     }
+
+    
 }
