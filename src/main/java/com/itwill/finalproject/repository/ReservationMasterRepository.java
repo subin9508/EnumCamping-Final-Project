@@ -41,5 +41,9 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	@Query("DELETE FROM ReservationMaster rm "
 			+ "where rm.user.userKey = :userKey and rm.resState = 0")
 	int deleteByUserId(@Param("userKey") Integer userKey);
+	
+	// userId로 찾기
+	@Query("select rm from ReservationMaster rm " + "where rm.user.userId = :userId ")
+	List<ReservationMaster> selectMasterByUserId(@Param("userId") String userId);
 
 }

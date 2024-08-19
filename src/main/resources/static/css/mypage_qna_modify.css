@@ -2,10 +2,13 @@
 
 .wrapper {
 	display: flex;
+	flex-direction: column;
+    min-height: 100vh;
 }
 
 .footer-main-content {
 	flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지 */
+	padding: 20px;
 	margin-left: 180px; /* 사이드바와의 간격 */
 }
 
@@ -50,31 +53,26 @@ a {
 	width: 100%;
 }
 
-@media (max-width: 576px) {
-    .table thead {
-        display: none;
+/* 반응형 */
+@media (max-width: 768px) {
+
+
+    .footer-main-content {
+        margin-left: 0; /* 사이드바가 사라졌으므로 왼쪽 마진을 제거 */
+        padding: 10px;
     }
 
-    .table tbody tr {
-        display: block;
-        margin-bottom: 15px;
+    .qna-modify-container {
+        width: 100%; /* 작은 화면에서는 너비를 100%로 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 확보 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
     }
 
-    .table tbody tr td {
-        display: block;
-        text-align: right;
-        font-size: 14px;
-        position: relative;
-        padding-left: 50%;
-    }
-
-    .table tbody tr td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
+    .card {
+        width: 100%; /* 카드가 화면 전체 너비를 차지하게 설정 */
+        margin: 0; /* 여백 제거 */
+        padding: 1rem; /* 패딩을 줄여서 작은 화면에서도 여유 공간을 만듦 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함하여 크기 계산 */
     }
 }
