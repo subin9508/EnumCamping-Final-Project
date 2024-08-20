@@ -23,6 +23,7 @@ import com.itwill.finalproject.domain.UserRole;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
+import com.itwill.finalproject.exception.UserAccountDeactivatedException;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
@@ -176,19 +177,45 @@ public class UserService implements UserDetailsService {
 //		    return authorities;
 //		}
 
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		Optional<User> optionalUser = userRepo.findByUserId(username);
+//		if (!optionalUser.isPresent()) {
+//			throw new UsernameNotFoundException("User not found with username: " + username);
+//		}
+//		User user = optionalUser.get();
+//
+//		// UserRole이 이미 User 엔티티에 포함되어 있으므로,
+//		// 별도의 권한 변환 로직이 필요 없습니다.
+//		return new org.springframework.security.core.userdetails.User(user.getUserId(), user.getPassword(),
+//				user.getAuthorities() // User 엔티티의 getAuthorities() 메소드를 직접 사용합니다.
+//		);
+//	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> optionalUser = userRepo.findByUserId(username);
-		if (!optionalUser.isPresent()) {
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}
-		User user = optionalUser.get();
+	    Optional<User> optionalUser = userRepo.findByUserId(username);
+	    if (!optionalUser.isPresent()) {
+	        throw new UsernameNotFoundException("User not found with username: " + username);
+	    }
 
-		// UserRole이 이미 User 엔티티에 포함되어 있으므로,
-		// 별도의 권한 변환 로직이 필요 없습니다.
-		return new org.springframework.security.core.userdetails.User(user.getUserId(), user.getPassword(),
-				user.getAuthorities() // User 엔티티의 getAuthorities() 메소드를 직접 사용합니다.
-		);
+	    User user = optionalUser.get();
+
+	    // UserDetails 객체 생성 시 계정이 비활성화된 경우를 처리
+	    boolean accountNonLocked = true; // 계정이 잠겨 있는지 여부
+	    boolean credentialsNonExpired = true; // 자격 증명이 만료되지 않았는지 여부
+	    boolean accountNonExpired = true; // 계정이 만료되지 않았는지 여부
+	    boolean enabled = user.getUserRoleEnum() != UserRole.WITHDRAWUSER; // 계정이 활성화되었는지 여부
+
+	    return new org.springframework.security.core.userdetails.User(
+	        user.getUserId(),
+	        user.getPassword(),
+	        enabled, // 계정 활성화 여부
+	        accountNonExpired, // 계정 만료 여부
+	        credentialsNonExpired, // 자격 증명 만료 여부
+	        accountNonLocked, // 계정 잠김 여부
+	        user.getAuthorities() // 권한
+	    );
 	}
 
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.

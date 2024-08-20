@@ -1,51 +1,25 @@
 package com.itwill.finalproject.domain;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public enum UserRole {
-    ADMIN(0,"ADMIN"),
-    USER(1,"USER"),
-    WITHDRAWUSER(2,"WITHDRAWUSER");
-    
+	ADMIN(0), USER(1), WITHDRAWUSER(2);
 
-	private int code;
-    private String authority;
-    
-    // 주의: enum의 생성자는 항상 private. private 수식어는 생략함.
-    UserRole(int code, String authority) {
-        this.code = code;
-    	this.authority = authority;
-    }
-    
-    
-    
+	private final int value;
 
-    public String getAuthority() {
-        return  this.role;
-    }
+	UserRole(int value) {
+		this.value = value;
+	}
 
-    
-    public int getCode() {
-    	return this.code;
-    }
-    
-  
-    
-    public static UserRole fromValue(String value) {
-        for (UserRole role : values()) {
-            if (role.getAuthority() == value) {
-                return role;
-            }
-        }
-        throw new IllegalArgumentException("Unknown role Authority: " + value);
-    }
-    public static List<String> getAllAuthorities() {
+	public int getValue() {
+		return value;
+	}
 
-        return Arrays.stream(UserRole.values())
-            .filter(r -> r.role.equals(role))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("No role defined for " + role));
-    }
+	public static UserRole fromValue(int value) {
+		for (UserRole role : values()) {
+			if (role.value == value) {
+				return role;
+			}
+		}
+		throw new IllegalArgumentException("Invalid UserRole value: " + value);
+	}
+
 }

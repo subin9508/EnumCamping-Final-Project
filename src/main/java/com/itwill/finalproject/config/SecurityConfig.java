@@ -1,14 +1,21 @@
 package com.itwill.finalproject.config;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+//import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +28,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import com.itwill.finalproject.domain.UserRole;
+import com.itwill.finalproject.exception.UserAccountDeactivatedException;
 import com.itwill.finalproject.service.UserService;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 
@@ -30,7 +42,7 @@ import com.itwill.finalproject.service.UserService;
 //@EnableMethodSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 //-> 컨트롤러 메서드에서 인증(로그인), 권한 설정을 하기 위해서.
-public class SecurityConfig  {
+public class SecurityConfig {
 
 	// Spring Security 5 버전부터 비밀번호는 반드시 암호화를 해야만 함.
 	// 만약 비밀번호를 암호화하지 않으면, HTTP 403(access denied, 접근 거부) 또는
@@ -40,135 +52,53 @@ public class SecurityConfig  {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
-	
-    private final UserService userService;
-    
-    @Autowired
-    public SecurityConfig(@Lazy UserService userService) {
-        this.userService = userService;
-    }
-    
-	// 사용자 관리(로그인, 로그아웃, 회원가입 등)를 위한 서비스 인터페이스.
-	// 스프링 부트 애플리케이션에서 스프링 시큐리티를 이용한 로그인/로그아웃을 하려면
-	// UserDetailsService 인터페이스를 구현하는 서비스 클래스와
-	// UserDetails 인터페이스를 구현하는 엔터티 클래스가 있어야 함.
-	// 사용자 엔터티와 사용자 서비스를 구현하기 전에 테스트 용도로 사용할 코드.
-	/*
-	 * @Bean UserDetailsService inMemoryUserDetailsService() { // 애플리케이션이 동작 중에 메모리에
-	 * 임시 저장하는 사용자 객체를 생성: UserDetails user1 = User.withUsername("user1") // 로그인 사용자
-	 * 아이디 .password(passwordEncoder().encode("1111")) // 암호화된 로그인 비밀번호
-	 * .roles("USER") // 사용자 권한(ADMIN, USER, ...) .build(); // User 객체를 생성
-	 * 
-	 * UserDetails user2 = User.withUsername("user2")
-	 * .password(passwordEncoder().encode("2222")) .roles("ADMIN", "USER") .build();
-	 * 
-	 * UserDetails user3 = User.withUsername("user3")
-	 * .password(passwordEncoder().encode("3333")) .roles("ADMIN") .build();
-	 * 
-	 * // User 타입 객체 3개를 가지고 있는 UserDetailsService 객체를 생성하고 리턴. return new
-	 * InMemoryUserDetailsManager(user1, user2, user3); }
-	 */
-	
-//	@Bean
-//	UserDetailsService inMemoryUserDetailsService() {
-//	    UserDetails adminUser = User.withUsername("admin")
-//	        .password(passwordEncoder().encode("qwer1234"))
-//	        .roles("ADMIN")  // 'ADMIN'이 'ROLE_ADMIN'으로 변환됨
-//	        .build();
-//
-//	    return new InMemoryUserDetailsManager(adminUser);
-//	}
 
-	// 스프링 시큐리티 필터 체인 객체(bean)
-	// 로그인/로그아웃, 인증 필터에서 필요한 설정을 구성.
-	// - 로그인 페이지(뷰), 로그아웃 페이지 설정.
-	// - 페이지 접근 권한(ADMIN, USER) 설정.
-	// - 인증 설정(로그인 없이 접근 가능한 페이지 vs 로그인해야만 접근 가능한 페이지)
+	private final UserService userService;
 
-//	@Bean
-//	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//				
-//		http.csrf((csrf) -> csrf.disable());
-//
-//		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
-//		// http.formLogin(Customizer.withDefaults());
-//		// Custom 로그인 HTML 페이지를 사용.
-//		http.formLogin((login) -> login.loginPage("/user/signin"));
-//
-//		// 페이지 접근 권한, 인증 구성: 아래의 1 또는 2 방법 중 한 가지를 선택.
-//		// 1. HttpSecurity.authorizeHttpRequests(Customizer customizer) 메서드에서 설정.
-//		// -> 장점: 한 곳에서 모든 설정을 구성할 수 있음.
-//		// -> 단점: 새로운 요청 경로가 생길 때마다 설정 구성 코드를 수정해야 함.
-//		// 2. 컨트롤러 메서드에서 애너테이션으로 설정.
-//		// (1) SecurityConfig 빈에 @EnableMethodSecurity 애너테이션을 설정.
-//		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
-//
-////		http.authorizeHttpRequests((auth) ->
-////	        auth
-////	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-////	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
-////	            .hasAnyAuthority("USER", "ADMIN") // USER와 ADMIN 모두 접근 가능
-////	            .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
-////	            .hasAuthority("ADMIN") // ADMIN만 접근 가능
-////	            .anyRequest()
-////	            .permitAll()
-////	        );
-//		
-//		
-
-//	@Bean
-//	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	
-		
-		
-		
-//		http.csrf((csrf) -> csrf.disable());
-		// http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")); // API 엔드포인트에 대해서만 CSRF 비활성화
-
-		// 로그인 페이지(폼) 설정 - 스프링 시큐리티에서 제공하는 기본 HTML 페이지를 사용.
-		// http.formLogin(Customizer.withDefaults());
-		// Custom 로그인 HTML 페이지를 사용.
-//		http.formLogin((login) -> login.loginPage("/user/signin"));
-
-		// 페이지 접근 권한, 인증 구성: 아래의 1 또는 2 방법 중 한 가지를 선택.
-		// 1. HttpSecurity.authorizeHttpRequests(Customizer customizer) 메서드에서 설정.
-		// -> 장점: 한 곳에서 모든 설정을 구성할 수 있음.
-		// -> 단점: 새로운 요청 경로가 생길 때마다 설정 구성 코드를 수정해야 함.
-		// 2. 컨트롤러 메서드에서 애너테이션으로 설정.
-		// (1) SecurityConfig 빈에 @EnableMethodSecurity 애너테이션을 설정.
-		// (2) 각각의 컨트롤러 메서드에서 @PreAuthorize 또는 @PostAuthorize 애너테이션을 설정.
-
-
-//		http.authorizeHttpRequests((auth) ->
-
-//	        auth
-//	            .requestMatchers("/reservation/**", "/user/deactivateUser",
-//	                    "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create")
-//	            .hasAnyAuthority("USER", "ADMIN") // USER와 ADMIN 모두 접근 가능
-//	            .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
-//	            .hasAuthority("ADMIN") // ADMIN만 접근 가능
-//	            .anyRequest()
-//	            .permitAll()
-//	        );
-		
-		
-		http.authorizeHttpRequests((auth) ->
-	    auth
-	        .requestMatchers("/reservation/**", "/user/deactivateUser",
-	                "/mypage/**", "/user/qna_modify", "/user/update", "/community/qna/create", "/api/qnAAnswers/**")
-	        .hasAnyAuthority(UserRole.USER.getAuthority(), UserRole.ADMIN.getAuthority()) // USER와 ADMIN 모두 접근 가능
-	        .requestMatchers("/admin/**") // 관리자 페이지 접근 권한 설정
-	        .hasAuthority(UserRole.ADMIN.getAuthority()) // ADMIN만 접근 가능
-	        .anyRequest()
-	        .permitAll() //다시수정
-	    );
-
-	        
-		 
-		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
+	@Autowired
+	public SecurityConfig(@Lazy UserService userService) {
+		this.userService = userService;
 	}
 
+	 @Bean
+	 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		    http.csrf(csrf -> csrf.disable())
+		        .formLogin(formLogin -> formLogin
+		            .loginPage("/user/signin")
+		            .loginProcessingUrl("/user/signin")
+		            .defaultSuccessUrl("/", true)
+		            .failureHandler(authenticationFailureHandler())  // 커스텀 실패 핸들러 추가
+		            .permitAll())
+		        .logout(logout -> logout.permitAll())
+		        .authorizeHttpRequests(auth -> auth
+		            .requestMatchers("/user/signin").permitAll()
+		            .anyRequest().permitAll())
+		        .userDetailsService(userService);
 
-	
+		    return http.build();
+		}
+
+	    // 추가: AuthenticationProvider 설정
+//	    @Bean
+//	    public AuthenticationProvider authenticationProvider() {
+//	        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//	        authProvider.setUserDetailsService(userService);
+//	        authProvider.setPasswordEncoder(passwordEncoder());
+//	        return authProvider;
+//	    }
+	 
+	 @Bean
+	 public AuthenticationFailureHandler authenticationFailureHandler() {
+	     return new SimpleUrlAuthenticationFailureHandler() {
+	         @Override
+	         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+	                                             AuthenticationException exception) throws IOException, ServletException {
+	             if (exception instanceof UserAccountDeactivatedException) {
+	                 getRedirectStrategy().sendRedirect(request, response, "/user/signin");
+	             } else {
+	                 super.onAuthenticationFailure(request, response, exception);
+	             }
+	         }
+	     };
+	 }
 }
