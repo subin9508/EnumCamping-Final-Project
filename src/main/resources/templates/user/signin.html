@@ -125,10 +125,9 @@ a.signup:hover {
 								class="alert alert-warning" role="alert" th:text="${message}"></div>
 
 							<form method="post">
-								<div
-									th:if="${not #strings.isEmpty(param.result) and param.result == 'f'}"
-									class="text-danger" style="text-align: center;">아이디와
-									패스워드를 확인하세요.</div>
+								<!-- 로그인 실패 시 메시지 표시 -->
+								<div th:if="${param.error}" class="text-danger"
+									style="color: red;">아이디 또는 비밀번호가 일치하지 않습니다.</div>
 								<div
 									th:if="${not #strings.isEmpty(param.result) and param.result == 'inactive'}"
 									class="text-danger" style="text-align: center;">이 계정이

@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -67,8 +69,6 @@ public class User implements UserDetails {
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
 	 */
 
-	@Column(columnDefinition = "INT DEFAULT 1")
-	private Integer userState; // 유저 상태 (탈퇴인지 아닌지)
 
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;
@@ -108,25 +108,20 @@ public class User implements UserDetails {
 //	}
 
 
-	// 사용자 권한을 문자열로 변환
-	public String getRoleString(Integer role) {
-	    if (role == 0) {
-	        return UserRole.ADMIN.getAuthority(); // "ADMIN"
-	    } else if (role == 1) {
-	        return UserRole.USER.getAuthority(); // "USER"
-	    } else if (role == 2){ //"탈퇴회원"
-	    	return UserRole.WITHDRAWUSER.getAuthority(); 
-	    }
-	    else
-	    	return "UNKNOWN";
-	}
+	 @Enumerated(EnumType.STRING)
+	    @Column(nullable = false)
+	    private UserRole role;
+	 
+
 	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-	    // userRole 값에 따라 권한 문자열을 생성
-	    String roleString = getRoleString(this.userRole);
-	    return List.of(new SimpleGrantedAuthority("ROLE_" + roleString));
-	}
+	 @Override
+	    public Collection<? extends GrantedAuthority> getAuthorities() {
+	        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+	    }
+	 
+	 public String getRoleString() {
+	        return role.name();
+	    }
 	
 //	@Override
 //	public Collection<? extends GrantedAuthority> getAuthorities() {

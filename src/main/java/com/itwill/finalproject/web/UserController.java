@@ -76,7 +76,7 @@ public class UserController {
 
 		// 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
 		Optional<User> optionalUser = userService.read(dto);
-
+		log.info("optionalUser = {} ", optionalUser);
 		// 로그인 실패한 경우
 		if (!optionalUser.isPresent()) {
 			// 아이디와 비밀번호가 일치하는 사용자 없는 경우
@@ -85,7 +85,7 @@ public class UserController {
 		}
 
 		User user = optionalUser.get();
-
+		
 		// 비활성화된 사용자 확인
 		System.out.println("checking if user is active");
 
@@ -107,12 +107,12 @@ public class UserController {
 
 		// 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
 //		session.setAttribute("signedInUser", user.getUserId());
-		// 세션에 유저 role을 저장
+//		// 세션에 유저 role을 저장
 //		log.info("getUserId={}", user.getUserId());
 //		session.setAttribute("userRole", user.getUserRole());
-
+//
 //		session.setAttribute("loginUserId", user.getUserKey());
-
+//
 //		log.info("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
 
 		// 로그인 성공 후 이동할 타겟 페이지
