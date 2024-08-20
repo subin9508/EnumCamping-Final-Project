@@ -114,11 +114,9 @@ public class User implements UserDetails {
 	        return UserRole.ADMIN.getAuthority(); // "ADMIN"
 	    } else if (role == 1) {
 	        return UserRole.USER.getAuthority(); // "USER"
-	    } else if (role == 2){ //"탈퇴회원"
-	    	return UserRole.WITHDRAWUSER.getAuthority(); 
+	    } else {
+	        return "ROLE_UNKNOWN";
 	    }
-	    else
-	    	return "UNKNOWN";
 	}
 	
 	@Override
