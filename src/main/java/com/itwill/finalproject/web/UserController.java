@@ -91,9 +91,11 @@ public class UserController {
 
 //		log.info("Checking if user is active...");
 		boolean isActive = userService.checkUserIsActive(dto.getUserId());
+		
 		log.info("User active status: {}", isActive);
 		if (!isActive) {
 			// 사용자가 비활성 상태인 경우
+			
 			log.info("User is inactive");
 			return "redirect:/user/signin?result=inactive";
 		}

@@ -61,9 +61,8 @@ public class User implements UserDetails {
 
 	private String userPhone; // 핸드폰
 
-//	@Builder.Default// Builder 패턴에서도 null이 아닌 HashSet<> 객체로 초기화될 수 있도록.
-	@ToString.Exclude // toString() 메서드에서 제외.
-//	@Enumerated(EnumType.STRING) // DB 테이블에 저장될 때 상수(enum) 이름(문자열)을 사용.
+
+	@Column(nullable = false)
 	private Integer userRole;
 	/*
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
@@ -108,21 +107,25 @@ public class User implements UserDetails {
 //	}
 
 
-	 @Enumerated(EnumType.STRING)
-	    @Column(nullable = false)
-	    private UserRole role;
-	 
-
 	
-	 @Override
+	
+	 // UserRole enum을 Integer로 설정하는 메서드
+	    public void setUserRole(UserRole role) {
+	        this.userRole = role.getValue();
+	    }
+
+	    // Integer를 UserRole enum으로 반환하는 메서드
+	    public UserRole getUserRoleEnum() {
+	        return UserRole.fromValue(this.userRole);
+	    }
+
+
+
+	    @Override
 	    public Collection<? extends GrantedAuthority> getAuthorities() {
+	        UserRole role = getUserRoleEnum();
 	        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
 	    }
-	 
-	 public String getRoleString() {
-	        return role.name();
-	    }
-	
 //	@Override
 //	public Collection<? extends GrantedAuthority> getAuthorities() {
 //	    // userRole 값에 따라 권한 문자열을 생성

@@ -90,7 +90,6 @@ public class UserService implements UserDetailsService {
 		User user = dto.toEntity(passwordEncoder);
 
 		// 기본적으로 일반 사용자는 USER 역할을 부여 (userRole = 1)
-		user.setUserRole(1); // USER
 
 		// 만약 관리자를 생성할 필요가 있다면 다음과 같이 설정 가능
 		// user.setUserRole(0); // ADMIN
@@ -177,22 +176,20 @@ public class UserService implements UserDetailsService {
 //		    return authorities;
 //		}
 
-	 @Override
-	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	        Optional<User> optionalUser = userRepo.findByUserId(username);
-	        if (!optionalUser.isPresent()) {
-	            throw new UsernameNotFoundException("User not found with username: " + username);
-	        }
-	        User user = optionalUser.get();
-	        
-	        // UserRole이 이미 User 엔티티에 포함되어 있으므로,
-	        // 별도의 권한 변환 로직이 필요 없습니다.
-	        return new org.springframework.security.core.userdetails.User(
-	            user.getUserId(), 
-	            user.getPassword(), 
-	            user.getAuthorities() // User 엔티티의 getAuthorities() 메소드를 직접 사용합니다.
-	        );
-	    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Optional<User> optionalUser = userRepo.findByUserId(username);
+		if (!optionalUser.isPresent()) {
+			throw new UsernameNotFoundException("User not found with username: " + username);
+		}
+		User user = optionalUser.get();
+
+		// UserRole이 이미 User 엔티티에 포함되어 있으므로,
+		// 별도의 권한 변환 로직이 필요 없습니다.
+		return new org.springframework.security.core.userdetails.User(user.getUserId(), user.getPassword(),
+				user.getAuthorities() // User 엔티티의 getAuthorities() 메소드를 직접 사용합니다.
+		);
+	}
 
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
 	public boolean checkEmail(String userEmail) {
@@ -277,10 +274,10 @@ public class UserService implements UserDetailsService {
 		return count > 0; // 1 이상이면 활성화, 0이면 비활성화 // 1이면 비활성화 기간 종료(로그인가능), 0이면 기간 중(아직 비활성화)
 	}
 
-	// 사용자 ID를 사용하여 사용자 상태를 가져오는 메서드
-	public Integer getUserRoleByUserId(String userId) {
-		Optional<User> user = userRepo.findByUserId(userId);
-		return user != null ? user.get().getUserRole() : null;
+	// 사용자 ID를 사용하여 사용자 역할을 가져오는 메서드
+	public UserRole getUserRoleByUserId(String userId) {
+		Optional<User> userOptional = userRepo.findByUserId(userId);
+		return userOptional.map(user -> UserRole.fromValue(user.getUserRole())).orElse(null);
 	}
 
 	// 유저 키로 사용자 조회
