@@ -83,9 +83,9 @@ public class QnAAnswerController {
         return ResponseEntity.ok(comments);
     }
     
-    @PreAuthorize("hasRole('USER')")  
+    @PreAuthorize("hasRole('ADMIN')")  
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteComments(@PathVariable Long id) {
+    public ResponseEntity<Long> deleteComments(@PathVariable(name = "id") Long id) {
         log.info("deleteComments(id={})", id);
         
         qnaAnswerSvc.delete(id);

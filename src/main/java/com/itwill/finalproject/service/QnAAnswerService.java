@@ -128,7 +128,7 @@ public class QnAAnswerService {
 	}
 	
 	public Optional<QnAAnswers> findQnAAnsById(Long id) {
-	    return qnaAnswerRepo.findQnAAnsById(id).stream().findFirst();
+		return qnaAnswerRepo.findById(id);
 	}
 	
 	@Transactional

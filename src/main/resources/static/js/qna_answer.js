@@ -302,7 +302,7 @@ function updateQnaAnswers(event) {
         return;
     }
 
-    const uri = `/api/qnaAnswers/${id}`;
+    const uri = `/enumcamping/api/qnaAnswers/${id}`;
     const data = { id, contents };
 	
 	console.log(`Sending PUT request to ${uri} with data:`, data);
