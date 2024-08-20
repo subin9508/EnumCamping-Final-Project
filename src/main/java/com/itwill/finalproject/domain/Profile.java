@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -39,8 +40,9 @@ public class Profile {
 	@Column(name = "create_date")
 	private Timestamp createDate;
 	
+	@ToString.Exclude
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_key", nullable = false)
 	private User user;
 	
 	public void setUser(User user) {
