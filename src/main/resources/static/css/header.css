@@ -165,7 +165,7 @@ body, nav, aside, main {
 
 @media (max-width: 768px) {
     #top .nav-link {
-        margin-right: 10px; /* 아주 작은 화면에서 마진 최소화 */
+        margin-right: 5px; /* 아주 작은 화면에서 마진 최소화 */
         font-size: 1.1rem; /* 폰트 크기 약간 줄이기 */
     }
     

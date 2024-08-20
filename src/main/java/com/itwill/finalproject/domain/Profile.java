@@ -40,7 +40,7 @@ public class Profile {
 	private Timestamp createDate;
 	
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_key", nullable = false)
 	private User user;
 	
 	public void setUser(User user) {
