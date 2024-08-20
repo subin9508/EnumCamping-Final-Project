@@ -70,7 +70,7 @@
                                         </tr>
                                         <tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}" >
                                             <td th:text="${rs.itemName}"></td>
-                                            <td th:text="${rs.itemQuantity} + '개'"></td>
+                                            <td th:text="${rs.itemQuantity}	"></td>
                                             <td th:text="${rs.itemAmount + '원'}"></td>
                                         </tr>
                                     </tbody>

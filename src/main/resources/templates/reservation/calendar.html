@@ -214,7 +214,7 @@
                     <!-- 요청사항 입력 -->
                     <div class="container-fluid d-flex justify-content-center mt-3 row" id="requirement">
                         <h3 class="col-2">요청사항</h3>
-                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요"></textarea>
+                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"></textarea>
                     </div>
 
                     <!-- 전체 총 가격을 표시할 공간 -->
@@ -281,6 +281,9 @@
 
             // 전체 총 가격도 초기화
             document.getElementById('totalSum').textContent = '0원';
+            
+            // 요청사항 텍스트 영역 초기화
+            document.getElementById('special-requests').value = '';
         };
     </script>
 </body>
