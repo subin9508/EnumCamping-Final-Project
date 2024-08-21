@@ -69,58 +69,60 @@ public class UserController {
 	}
 
 
-	@PostMapping("/signin")
-	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
-			HttpSession session) throws IOException {
-		log.info("POST signIn({})", dto);
-
-		// 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
-		Optional<User> optionalUser = userService.read(dto);
-
-		// 로그인 실패한 경우
-		if (!optionalUser.isPresent()) {
-			// 아이디와 비밀번호가 일치하는 사용자 없는 경우
-
-			return "redirect:/user/signin?result=f&target=" + URLEncoder.encode(target, "UTF-8");
-		}
-
-		User user = optionalUser.get();
-
-		// 비활성화된 사용자 확인
-		System.out.println("checking if user is active");
-
-//		log.info("Checking if user is active...");
-		boolean isActive = userService.checkUserIsActive(dto.getUserId());
-		log.info("User active status: {}", isActive);
-		if (!isActive) {
-			// 사용자가 비활성 상태인 경우
-			log.info("User is inactive");
-			return "redirect:/user/signin?result=inactive";
-		}
-
-		// 비활성화 기간 확인
-		if (!userService.checkDeactivationPeriod(dto.getUserId())) {
-			// 비활성화 기간이 남아있는 경우
-			log.info("User is still in deactivation period");
-			return "redirect:/user/signin?result=deactivated";
-		}
+//	@PostMapping("/signin")
+//	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
+//			HttpSession session) throws IOException {
+//		log.info("POST signIn({})", dto);
+//
+//		// 사용자가 존재하는지 확인 (아이디와 비밀번호를 검증)
+//		Optional<User> optionalUser = userService.read(dto);
+//		log.info("optionalUser = {} ", optionalUser);
+//		// 로그인 실패한 경우
+//		if (!optionalUser.isPresent()) {
+//			// 아이디와 비밀번호가 일치하는 사용자 없는 경우
+//
+//			return "redirect:/user/signin?result=f&target=" + URLEncoder.encode(target, "UTF-8");
+//		}
+//
+//		User user = optionalUser.get();
+//		
+//		// 비활성화된 사용자 확인
+//		System.out.println("checking if user is active");
+//
+////		log.info("Checking if user is active...");
+//		boolean isActive = userService.checkUserIsActive(dto.getUserId());
+//		
+//		log.info("User active status: {}", isActive);
+//		if (!isActive) {
+//			// 사용자가 비활성 상태인 경우
+//			
+//			log.info("User is inactive");
+//			return "redirect:/user/signin?result=inactive";
+//		}
+//
+//		// 비활성화 기간 확인
+//		if (!userService.checkDeactivationPeriod(dto.getUserId())) {
+//			// 비활성화 기간이 남아있는 경우
+//			log.info("User is still in deactivation period");
+//			return "redirect:/user/signin?result=deactivated";
+//		}
 
 		// 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
 //		session.setAttribute("signedInUser", user.getUserId());
-		// 세션에 유저 role을 저장
+//		// 세션에 유저 role을 저장
 //		log.info("getUserId={}", user.getUserId());
 //		session.setAttribute("userRole", user.getUserRole());
-
+//
 //		session.setAttribute("loginUserId", user.getUserKey());
-
+//
 //		log.info("로그인 성공 - 세션에 loginUserId 저장: {}, 세션에 signedInUser 저장: {}", user.getUserKey(), user.getUserId());
 
-		// 로그인 성공 후 이동할 타겟 페이지
-		String targetPage = (target.equals("")) ? "/" : target;
-
-		return "redirect:" + targetPage;
-
-	}
+//		// 로그인 성공 후 이동할 타겟 페이지
+//		String targetPage = (target.equals("")) ? "/" : target;
+//
+//		return "redirect:" + targetPage;
+//
+//	}
 
 	@GetMapping("/signout")
 	public String signout(HttpServletRequest request, HttpServletResponse response) {
