@@ -27,7 +27,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("tempPassword", tempPassword);
         
-        String process = templateEngine.process("displaypassword", context);
+        String process = templateEngine.process("user/displaypassword", context);
         
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");

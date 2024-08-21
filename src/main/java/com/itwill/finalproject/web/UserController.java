@@ -243,10 +243,7 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/findpassword")
-	public String findPasswordForm(Model model) {
-		return "user/findpassword"; // 패스워드 찾기 입력 폼으로 이동
-	}
+	
 
 	
 	 
