@@ -149,6 +149,7 @@ public class SecurityConfig {
 //	            .permitAll()
 //	        );
 
+
 //		http.authorizeHttpRequests((auth) ->
 //	    auth
 //	        .requestMatchers("/reservation/**", "/user/deactivateUser",
@@ -164,6 +165,7 @@ public class SecurityConfig {
 //		 
 //		return http.build(); // DefaultSecurityFilterChain 객체를 생성해서 리턴.
 //	}
+
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

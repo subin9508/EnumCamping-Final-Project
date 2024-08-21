@@ -18,8 +18,7 @@
 	background-color: #fff;
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	margin-right: 326px;
-	margin-left: 148px;
+	width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
 }
 
 .qna-title {
@@ -32,6 +31,8 @@
 .table {
 	margin-bottom: 0;
 	text-align: center;
+	width: 100%;
+	overflow-x: auto; /* 테이블이 카드 안에서 꽉 차도록 설정하고, 넘치면 스크롤 가능 */
 }
 
 .table th, .table td {
@@ -74,8 +75,15 @@ a {
         overflow-x: auto; /* 내용이 넘칠 경우 가로 스크롤 허용 */
     }
 
-	.table td {
-		white-space: normal; /* 텍스트 줄바꿈 허용 */
-	}
+	.table th, .table td {
+        white-space: normal; /* 작은 화면에서는 텍스트 줄바꿈 허용 */
+    }
 	
 }
+
+@media (max-width: 965px) {
+	.table td {
+        white-space: normal; /* 작은 화면에서는 텍스트 줄바꿈 허용 */
+    }
+}
+

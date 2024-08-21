@@ -1,6 +1,7 @@
 package com.itwill.finalproject.domain;
 
 public enum UserRole {
+
 	ADMIN(0), USER(1), WITHDRAWUSER(2);
 
 	private final int value;
@@ -9,9 +10,11 @@ public enum UserRole {
 		this.value = value;
 	}
 
+
 	public int getValue() {
 		return value;
 	}
+
 
 	public static UserRole fromValue(int value) {
 		for (UserRole role : values()) {
@@ -21,5 +24,6 @@ public enum UserRole {
 		}
 		throw new IllegalArgumentException("Invalid UserRole value: " + value);
 	}
+
 
 }

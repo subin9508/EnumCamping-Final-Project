@@ -14,13 +14,11 @@
 
 .qna-details-container {
     margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-right: 326px;
-    margin-left: 148px;
-    min-width: 435px;
+	padding: 2rem;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: calc(100% - 220px); /* 전체에서 사이드바의 너비를 뺀 너비 */
 }
 
 .qna-details-container h2 {

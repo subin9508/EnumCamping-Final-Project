@@ -107,6 +107,7 @@ public class User implements UserDetails {
 //	}
 
 
+
 	
 	
 	 // UserRole enum을 Integer로 설정하는 메서드

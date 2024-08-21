@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -54,6 +56,7 @@ public class QnAController {
 	
 	@GetMapping("/list")
 	public void list(@RequestParam(name = "p", defaultValue = "0" ) int pageNo, 
+			 @RequestParam(name = "size", defaultValue = "5") int pageSize,  // 페이지 크기 매개변수 추가
 			@RequestParam(name = "category", required = false) String category,
 			@RequestParam(name = "keyword", required = false) String keyword,
 			Model model) {
@@ -63,8 +66,15 @@ public class QnAController {
 //	    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("id").descending());
 
 	    // 서비스 계층에서 페이지 데이터를 가져옵니다.
-	    Page<QnAListItemDto> page = qnaSvc.read(pageNo, Sort.by("id").descending());
+	 //   Page<QnAListItemDto> page = qnaSvc.read(pageNo, Sort.by("id").descending());
+	    
+	    // Pageable 객체 생성 (페이지 번호와 페이지 크기 포함)
+	    Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
 
+	    // 서비스 계층에서 페이지 데이터를 가져옵니다.
+	    Page<QnAListItemDto> page = qnaSvc.read(pageable);
+	    
+	    
 	    // 'page' 객체를 모델에 추가하여 템플릿에 전달
 	    model.addAttribute("pager", page);
 	    model.addAttribute("qnas", page.getContent());  // 페이지 콘텐츠를 별도로 전달
@@ -78,6 +88,8 @@ public class QnAController {
 	    model.addAttribute("category", category);
 	    model.addAttribute("keyword", keyword);
 	    
+	    // 현재 페이지 크기와 전체 목록 URL에 페이지 크기 추가
+	    model.addAttribute("size", pageSize);
 	    // pagination fragment에서 사용하기 위한 현재 요청 주소 정보
 	    model.addAttribute("baseUrl", "/community/qna/list");
     }
@@ -152,7 +164,7 @@ public class QnAController {
         Object principal = authentication.getPrincipal();
 
         String signedInUser = null;
-        Integer userRole = null;
+        Integer userRole = -1; // 비회원의 경우 userRole을 -1로 설정
 
         if (principal instanceof UserDetails) {
             UserDetails authenticatedUserDetails = (UserDetails) principal;
@@ -218,7 +230,7 @@ public class QnAController {
         if (qna.isSecret()) {
             // 비밀글인데 로그인하지 않았거나 작성자가 아니거나 관리자가 아닌 경우 접근 불가
             if (signedInUser == null || 
-                (!qna.getQnaUserId().equals(signedInUser) && userRole != 0)) {
+                (!qna.getQnaUserId().equals(signedInUser) && (userRole == null || userRole != 0))) {
                 redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
                 return "redirect:/community/qna/list";
             }
@@ -322,6 +334,21 @@ public class QnAController {
         model.addAttribute("baseUrl", "/community/qna/search");
         
         return "/community/qna/list";
+    }
+    
+    @GetMapping("/community/qna/list")
+    public String listQnaPosts(
+            @RequestParam(value = "p", defaultValue = "0") int pageNo,
+            @RequestParam(value = "size", defaultValue = "5") int pageSize,
+            Model model) {
+
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<QnA> qnaPosts = qnaSvc.findAll(pageRequest);
+
+        model.addAttribute("qnaPosts", qnaPosts);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("size", pageSize);
+        return "community/qna/list";
     }
 		
 }

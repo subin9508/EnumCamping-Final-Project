@@ -15,7 +15,7 @@ public class UserCreateDto {
 	private String userPhone; // 사용자 전화번호
 	private String userEmail; // 사용자 이메일
 	private Integer userRole = 1; // 유저롤
-	
+
 	
 
 	// UserCreateDto 객체를 User 엔티티 객체로 변환
