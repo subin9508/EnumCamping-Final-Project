@@ -42,7 +42,8 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	
 	//userId로 찾기
 	@Query("select rm from ReservationMaster rm "
-			+ "where rm.user.userId = :userId " )
+			+ "where rm.user.userId = :userId "
+			+ "order by id desc" )
 	List<ReservationMaster> selectMasterByUserId(@Param("userId") String userId);
 
 }
