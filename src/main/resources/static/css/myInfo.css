@@ -91,9 +91,10 @@ label.col-sm-2.col-form-label {
 .profile-image-area {
     margin-bottom: 20px;
     text-align: center;
+    margin-top: -150px;
 }
 
-.profileImage {
+.img-thumbnail {
     width: 150px;
     height: 150px;
     border-radius: 50%; /* 이미지를 원형으로 */

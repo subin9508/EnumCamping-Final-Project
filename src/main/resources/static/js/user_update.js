@@ -105,28 +105,29 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
                 
                 
-                
-                fetch(serverUrl, {
-                    method: 'POST',
-                    body: formData,
+
+				fetch(serverUrl, {
+					method: 'POST',
+					body: formData,
 					headers: headers
-					
+
 				})
 					.then(response => {
 						console.log('Received response:', response);
-						if (!response.ok) {
-							return response.text().then(text => {
-								throw new Error('서버 응답에 문제가 있습니다. Status: ' + response.status + ', Message: ' + text);
-							});
-						}
-						return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        if (data.redirectUrl) {
-                            window.location.href = data.redirectUrl;
-                        } else {
+						return response.text().then(text => {
+							try {
+								return JSON.parse(text);
+							} catch (e) {
+								throw new Error('서버 응답을 파싱할 수 없습니다: ' + text);
+							}
+						});
+					})
+					.then(data => {
+						if (data.success) {
+							alert(data.message);
+							if (data.redirectUrl) {
+								window.location.href = data.redirectUrl;
+							} else {
                             window.location.reload();
                         }
                     } else {
@@ -203,3 +204,4 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 });
+
