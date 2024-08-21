@@ -302,15 +302,22 @@ function updateQnaAnswers(event) {
         return;
     }
 
-    const uri = `/api/qnaAnswers/${id}`;
+    const uri = `/enumcamping/api/qnaAnswers/${id}`;
     const data = { id, contents };
+	
+	console.log(`Sending PUT request to ${uri} with data:`, data);
+	
     axios.put(uri, data)
         .then((response) => {
             console.log(response);
             alert(`답글 #${id} 업데이트 성공!`);
+			const qnaPostId = document.querySelector('input#id').value;  // qnaPostId를 다시 가져옴
             getAllQnaAnswers(qnaPostId);
         })
-        .catch((error) => console.log('답글 업데이트 중 오류 발생:', error));
+        .catch((error) => {
+		            console.log('답글 업데이트 중 오류 발생:', error);
+		            console.error('Failed Request:', error.config);
+		        });
 }
 
 function updateDetailLinks() {

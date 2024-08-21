@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
-<title>Enum Camping</title>
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
-
 <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+
+<!-- Bootstrap CSS -->
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+	rel="stylesheet">
 
 <style>
 .container {

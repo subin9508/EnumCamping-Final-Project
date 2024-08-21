@@ -125,19 +125,11 @@ a.signup:hover {
 								class="alert alert-warning" role="alert" th:text="${message}"></div>
 
 							<form method="post">
-								<div
-									th:if="${not #strings.isEmpty(param.result) and param.result == 'f'}"
-									class="text-danger" style="text-align: center;">아이디와
-									패스워드를 확인하세요.</div>
-								<div
-									th:if="${not #strings.isEmpty(param.result) and param.result == 'inactive'}"
-									class="text-danger" style="text-align: center;">이 계정이
-									비활성화되었습니다.</div>
-								<div
-									th:if="${not #strings.isEmpty(param.result) and param.result == 'deactivated'}"
-									class="text-danger" style="text-align: center;">비활성화 기간이
-									남아있습니다.</div>
-
+								<!-- 로그인 실패 시 메시지 표시 -->
+								<div th:if="${param.error}" class="text-danger"
+									style="color: red;">
+									<div th:text="${session.errorMessage}"></div>
+								</div>
 								<div class="form-group mt-5 d-flex align-items-center">
 									<label for="userid" class="form-label text-center">아이디</label>
 									<input type="text" name="username" placeholder="아이디"

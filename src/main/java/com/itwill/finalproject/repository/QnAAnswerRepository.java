@@ -16,5 +16,7 @@ public interface QnAAnswerRepository extends JpaRepository<QnAAnswers, Long> {
 		List<QnAAnswers> findByQnaId(Long id);
 		
 		List<QnAAnswers> findByQna(QnA qna);
+		
+		List<QnAAnswers> findQnAAnsById(Long id);
 
 }

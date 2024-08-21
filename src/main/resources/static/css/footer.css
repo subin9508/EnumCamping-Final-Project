@@ -59,6 +59,7 @@ footer {
 
 .column {
     margin-bottom: 0px; /* 아래 여백 추가 */
+    text-align: center; /* 각 column의 텍스트를 가운데 정렬 */
 }
 
 .column h5 {
@@ -79,15 +80,17 @@ footer {
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .footer-container {
-        flex-direction: column; /* 작은 화면에서는 세로로 정렬 */
-        align-items: center; /* 세로로 정렬 시 가운데 정렬 */
-    }
-
-    .column {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px; /* 각 column 간의 간격 */
-    }
+		flex-direction: column; /* 작은 화면에서는 세로로 정렬 */
+		align-items: center; /* 세로로 정렬 시 가운데 정렬 */
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center; /* space-between 대신 center 사용 */
+	}
+	.column {
+		flex: 1; /* 모든 column에 동일한 flex 값 적용 */
+		margin: 10px 10px; /* 좌우 여백 추가 */
+		text-align: center;
+	}
 	.image-container {
 		display: flex;
 		justify-content: center; /* 가로 방향 가운데 정렬 */
@@ -97,5 +100,12 @@ footer {
 	.image-container img {
 		width: 50px; /* 부모 요소의 너비에 맞추어 이미지 크기 조절 */
 		height: auto; /* 높이 자동으로 조절 */
+	}
+	
+	.footer-container {
+		padding-left: 0px;
+    	padding-right: 0px;
+    	text-align: center;
+    	width: 100%; /* 전체 너비 차지 */
 	}
 }

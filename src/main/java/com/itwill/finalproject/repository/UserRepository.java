@@ -47,7 +47,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	               "    u.deactiveuntil = DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY) " +
 	               "WHERE u.user_key = :userKey", nativeQuery = true)
 	void deactivateUser(@Param("userKey") Integer userKey);
-
+	 
+	
+	
 
 	// 탈퇴 회원 정보 저장
 	@Modifying
