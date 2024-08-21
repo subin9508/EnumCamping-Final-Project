@@ -33,7 +33,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
         helper.setFrom(fromEmail);
         helper.setTo(to);
-        helper.setSubject("임시 비밀번호 안내");
+        helper.setSubject("EnumCamping 임시 비밀번호 안내 문자입니다.");
         helper.setText(process, true);
         
         emailSender.send(mimeMessage);
