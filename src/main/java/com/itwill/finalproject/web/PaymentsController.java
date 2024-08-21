@@ -209,6 +209,35 @@ public class PaymentsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cancellation failed: " + e.getMessage());
         }
     }
+    
+    //------------------- 부분 취소 ----------------------
+    @ResponseBody
+    @PostMapping("/mypage/reservation_details/refund/{payId}")
+    public ResponseEntity<String> cancelPartialPayment(
+            @PathVariable("payId") Integer payId,
+            @RequestParam("cancelAmount") Integer cancelAmount
+            ) {
+
+        if (payId == null || payId <= 0 || cancelAmount == null || cancelAmount <= 0) {
+            return ResponseEntity.badRequest().body("Invalid payId or cancelAmount");
+        }
+
+        try {
+            String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
+            if ("Partial payment cancellation successful".equals(result)) {
+                // 부분 취소가 성공했을 때 예약 상태를 업데이트 (필요 시)
+                log.info("Partial payment cancelled successfully for payId: {}", payId);
+                return ResponseEntity.ok(result);
+            } else {
+                log.warn("Partial cancellation failed: {}", result);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+            }
+        } catch (ServiceException e) {
+            log.error("Error during partial payment cancellation for payId: {}", payId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation failed: " + e.getMessage());
+        }
+    }
+
 
     
     //------------------- 내 예약 목록 조회 ----------------------

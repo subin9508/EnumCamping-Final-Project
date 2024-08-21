@@ -1,5 +1,7 @@
 package com.itwill.finalproject.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -232,6 +234,31 @@ public class PaymentsService {
 	           throw new ServiceException("Failed to update reservation state: " + e.getMessage(), e);
 	       }
 	   }
+	   
+	   public String cancelPartialPayment(Integer payId, Integer cancelAmount) throws ServiceException {
+		    try {
+		        // 결제 ID를 통해 impUid를 조회
+		        String impUid = paymentsRepo.getImpUidByPayId(payId);
+
+		        if (impUid == null) {
+		            throw new ServiceException("Payment information not found for payId: " + payId);
+		        }
+
+		        // CancelData 객체 생성 시 취소할 금액을 지정하여 부분 취소 요청
+		        CancelData cancelData = new CancelData(impUid, false, BigDecimal.valueOf(cancelAmount)); // 부분 취소를 위한 CancelData
+		        IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
+
+		        if (response.getResponse() != null && "cancelled".equals(response.getResponse().getStatus())) {
+		            return "Partial payment cancellation successful";
+		        } else {
+		            String message = response.getMessage() != null ? response.getMessage() : "Partial cancellation failed";
+		            throw new ServiceException(message);
+		        }
+		    } catch (IamportResponseException | IOException e) {
+		        throw new ServiceException("Error during partial payment cancellation: " + e.getMessage(), e);
+		    }
+		}
+
 		        		    
     
 }

@@ -146,6 +146,10 @@
 		                </div>
 		                
 		             </div>
+		             <div class="d-flex justify-content-center">
+		             <input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요" value="100">		         
+		             <button id="btnPayRefund" class="btn btn-danger">부분환불</button>
+		             </div>
 				</main>
 		</div>
 		<!-- 푸터 포함 -->
@@ -203,6 +207,8 @@
             document.getElementById('special-requests').value = '';
         };
     </script>
-
+	
+	<!-- paymentRefund JS -->
+    <script th:src="@{/js/paymentRefund.js}"></script>
 </body>
 </html>

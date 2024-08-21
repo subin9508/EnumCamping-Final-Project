@@ -31,6 +31,10 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     @Query("UPDATE ReservationMaster r SET r.resState = :resState WHERE r.resId = :resId")
     int updateReservationState(@Param("resId") Integer resId, @Param("resState") Integer resState);
     
+    // 결제 ID를 통해 impUid 조회하는 메서드
+    @Query("SELECT p.impUid FROM Payments p WHERE p.payId = :payId")
+    String getImpUidByPayId(@Param("payId") Integer payId);
+    
     // imp_uid로 결제 정보 조회하여 결제에 연결된 예약 ID 반환 (웹훅시 사용)
     // @Query("SELECT p.resId FROM Payment p WHERE p.impUid = :impUid")
     // Integer findResIdByImpUid(@Param("impUid") String impUid);
