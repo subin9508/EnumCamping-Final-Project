@@ -75,13 +75,10 @@ footer {
 									<div class="mb-3 row">
 										<!-- <label class="col-sm-2 col-form-label">프로필 이미지</label> -->
 										<div class="profile-image-area">
-											<img
-												th:if="${user.profile != null and user.profile.profileImageUrl != null}"
-												th:src="@{/profile/{imageFileName}(imageFileName=${user.profile.profileImageUrl})}"
-												alt="프로필 이미지" class="profileImage img-thumbnail"
-												style="max-width: 200px;">
-											<p
-												th:if="${user.profile == null or user.profile.profileImageUrl == null}">이미지 없음</p>
+											<img th:if="${profileImageUrl != null}"
+											th:src="@{${profileImageUrl}}" alt="프로필 이미지"
+											class="img-thumbnail" style="max-width: 200px;">
+											<p th:if="${profileImageUrl == null}">이미지 없음</p>
 										</div>
 									</div>
 

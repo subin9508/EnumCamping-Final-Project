@@ -75,6 +75,15 @@ public class User implements UserDetails {
 	 @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
 //	 @JoinColumn(name = "profile_image") // FK로 매핑
 	 private Profile profile;
+	 
+	 
+	 public void setProfile(Profile profile) {
+		 this.profile = profile;
+		 if(profile != null) {
+			 profile.setUser(this);
+		 }
+	 }
+
 	// 편의 메서드
 //	// 유저의 권한을 부여하는 메서드.
 //	public User addRole(UserRole role) {
