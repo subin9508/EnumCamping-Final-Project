@@ -494,14 +494,17 @@ public class MyPageController {
     
     // 마이페이지 - 예약 변경
     @GetMapping("/reservation_update")
-	public void reservationUpdateCalendar(Model model) {
+	public void reservationUpdateCalendar(@RequestParam(name="resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
 		List<Items> items = reservationSvc.getAllItems();
+		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+    	log.info("resMaster={}",resMaster);
 		
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
 		model.addAttribute("items", items);
+		model.addAttribute("resMaster", resMaster.get());
 	}
     
     @GetMapping("/reservation_update/{date}")

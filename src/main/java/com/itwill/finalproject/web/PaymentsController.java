@@ -212,7 +212,7 @@ public class PaymentsController {
     
     //------------------- 부분 취소 ----------------------
     @ResponseBody
-    @PostMapping("/mypage/reservation_details/refund/{payId}")
+    @PostMapping("/mypage/reservation_update/refund/{payId}")
     public ResponseEntity<String> cancelPartialPayment(
             @PathVariable("payId") Integer payId,
             @RequestParam("cancelAmount") Integer cancelAmount
