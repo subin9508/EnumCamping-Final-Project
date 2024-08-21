@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -35,6 +37,7 @@ import com.itwill.finalproject.dto.ReservationDetailDto;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
@@ -49,7 +52,7 @@ import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
-
+import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -68,6 +71,7 @@ public class MyPageController {
     private final QnAService qnaService;
     private final QnAAnswerService qnaanwserSvc;
     private final ProfileService profileService;
+    private final ReservationService reservationSvc;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -486,7 +490,37 @@ public class MyPageController {
     	//master 내용이랑 detail 내용이 모두 필요함
     	model.addAttribute("resMaster", resMaster.get());
     	model.addAttribute("resDetail", resDetail);
-    	
     }
+    
+    // 마이페이지 - 예약 변경
+    @GetMapping("/reservation_update")
+	public void reservationUpdateCalendar(Model model) {
+		log.info("reservationUpdateCalendar");
+		List<Items> items = reservationSvc.getAllItems();
+		
+		for (Items item : items) {
+			log.info("Item: {}", item);
+		}
+		model.addAttribute("items", items);
+	}
+    
+    @GetMapping("/reservation_update/{date}")
+	@ResponseBody
+	public List<Integer> reservationUpdateCalendar(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+		log.debug("GET: calendar with date {}", date);
+		
+		 // 해당 날짜에 예약된 구역 ID 목록을 가져옵니다.
+        List<Integer> reservedAreaIds = reservationSvc.readReservedAreas(date);
+        return reservedAreaIds;
+	}
+    
+    @GetMapping("/reservation_update/{date}/{area}")
+	public ResponseEntity<List<ReservationMaster>> reservationUpdateCalendar(@PathVariable("date") String date, @PathVariable("area") int area) {
+		LocalDate checkInDate = LocalDate.parse(date);
+		log.debug("GET: calendar with date and area {}, {}", date, area);
+		List<ReservationMaster> reservations = reservationSvc.readReservationMaster(checkInDate, area);
+		
+		return new ResponseEntity<>(reservations, HttpStatus.OK);
+	}
     
 }

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+	<link th:href="@{/css/header.css}" rel="stylesheet" />
+	<link th:href="@{/css/footer.css}" rel="stylesheet" />
+	<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+	<link rel="stylesheet" th:href="@{/css/calendar.css}">
+</head>
+
+<body>
+	<div class="wrapper">
+		<!-- 헤더 포함 -->
+		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<div class="footer-main-content">
+			<!-- 사이드바 포함 -->
+			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+				<main style="flex-grow: 1; margin-left: 5%;">
+					<div>
+		                <table class="scriptCalendar">
+		                    <thead>
+		                        <tr id="trHead">
+		                            <td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
+		                            <td colspan="5"><span id="calYear">YYYY</span>년
+		                                <span id="calMonth">MM</span>월</td>
+		                            <td class="calendarBtn"
+		                                id="nextNextCalendar">&#62;&#62;</td>
+		                        </tr>
+		                        <tr id="weekDays">
+		                            <td>일</td>
+		                            <td>월</td>
+		                            <td>화</td>
+		                            <td>수</td>
+		                            <td>목</td>
+		                            <td>금</td>
+		                            <td>토</td>
+		                        </tr>
+		                    </thead>
+		                    <tbody></tbody>
+		                </table>
+		
+		                <div id="date" style="display: none;"></div>
+		                
+		                <!-- 이미지 URL 사용 -->
+		                <div class="area-card" style="display: none;">
+		                    <div class="card p-2" id="area1">
+		                        <label class="radio_label"
+		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+		                            <input class="area-radio" type="radio"
+		                            id="area1_radio" name="area" value="1">
+		                            <span class="radio_icon"></span> <img
+		                            alt="campingzone1"
+		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+		                            height="150px" width="200px"
+		                            style="margin: 0 10px;"> <span
+		                            class="radio_text"
+		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-1</strong></span>
+		                            <span style="text-align: right;">40,000원~</span>
+		                        </label>
+		                    </div>
+		                    <div class="card p-2" id="area2">
+		                        <label class="radio_label"
+		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+		                            <input class="area-radio" type="radio"
+		                            id="area2_radio" name="area" value="2">
+		                            <span class="radio_icon"></span> <img
+		                            alt="campingzone2"
+		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+		                            height="150px" width="200px"
+		                            style="margin: 0 10px;"> <span
+		                            class="radio_text"
+		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-2</strong></span>
+		                            <span style="text-align: right;">40,000원~</span>
+		                        </label>
+		                    </div>
+		                    <div class="card p-2" id="area3">
+		                        <label class="radio_label"
+		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+		                            <input class="area-radio" type="radio"
+		                            id="area3_radio" name="area" value="3">
+		                            <span class="radio_icon"></span> <img
+		                            alt="campingzone3"
+		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+		                            height="150px" width="200px"
+		                            style="margin: 0 10px;"> <span
+		                            class="radio_text"
+		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-1</strong></span>
+		                            <span style="text-align: right;">40,000원~</span>
+		                        </label>
+		                    </div>
+		                    <div class="card p-2" id="area4">
+		                        <label class="radio_label"
+		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+		                            <input class="area-radio" type="radio"
+		                            id="area4_radio" name="area" value="4">
+		                            <span class="radio_icon"></span> <img
+		                            alt="campingzone4"
+		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+		                            height="150px" width="200px"
+		                            style="margin: 0 10px;"> <span
+		                            class="radio_text"
+		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-2</strong></span>
+		                            <span style="text-align: right;">40,000원~</span>
+		                        </label>
+		                    </div>
+		                    <div class="card p-2" id="area5">
+		                        <label class="radio_label"
+		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+		                            <input class="area-radio" type="radio"
+		                            id="area5_radio" name="area" value="5">
+		                            <span class="radio_icon"></span> <img
+		                            alt="campingzone5"
+		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+		                            height="150px" width="200px"
+		                            style="margin: 0 10px;"> <span
+		                            class="radio_text"
+		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 C</strong></span>
+		                            <span style="text-align: right;">40,000원~</span>
+		                        </label>
+		                    </div>
+		                </div>
+		                
+		                <!-- 라디오 버튼으로 기간 선택 -->
+		                <div class="card mt-2 p-2" id="night-card"
+		                    style="display: none;">
+		                    <div class="night-radio_label"
+		                        id="night-radio_label">
+		                        <h3> <strong>이용 기간</strong> </h3>
+		                        <br/>
+		                        <br/>
+		                        <div class="radio-options">
+		                            <label> <input class="night-radio"
+		                                type="radio" name="night" value="1">
+		                                <span class="night-radio_text">1박 2일</span>
+		                            </label> 
+		                            <label> <input class="night-radio"
+		                                type="radio" name="night" value="2">
+		                                <span class="night-radio_text">2박 3일</span>
+		                            </label>
+		                        </div>
+		                    </div>
+		                    <div class="m-3" id="price" style="text-align: right; color: #7C9C63; font-size: 25px;">
+		                        <span id="price-label">캠핑존 가격: </span> <span
+		                            id="price-value"></span>원
+		                    </div>
+		                </div>
+		                
+		             </div>
+				</main>
+		</div>
+		<!-- 푸터 포함 -->
+		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+	</div>
+	
+	<!-- 부트 스트랩 JS -->
+    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+        
+    <!-- Weather JS -->
+    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+    
+    <!-- 캘린더 JS -->
+    <script th:src="@{/js/update_calendar.js}"></script>
+    
+    <script>
+        // JavaScript를 사용하여 날짜 입력 형식 제어
+        document.getElementById('reservationForm').addEventListener('submit', function(event) {
+            // Prevent form submission if validation fails
+            if (!validateDateInput('resCheckIn') || !validateDateInput('resCheckOut')) {
+                event.preventDefault();
+            }
+        });
+
+        function validateDateInput(inputId) {
+            var input = document.getElementById(inputId);
+            var pattern = /^\d{4}-\d{2}-\d{2}$/;
+            var isValid = pattern.test(input.value);
+            if (!isValid) {
+                input.setCustomValidity('Please enter a date in yyyy-mm-dd format.');
+            } else {
+                input.setCustomValidity('');
+            }
+            return isValid;
+        }
+
+        // 페이지가 로드될 때 콤보박스 초기화
+        window.onload = function() {
+            // 모든 콤보박스를 초기화합니다.
+            var quantitySelects = document.querySelectorAll('select[id^="quantity-"]');
+            quantitySelects.forEach(function(select) {
+                select.selectedIndex = 0; // 첫 번째 옵션을 선택(값이 0인 옵션)
+            });
+
+            // 각 아이템의 총 가격도 0원으로 초기화
+            var totalPrices = document.querySelectorAll('.total-price');
+            totalPrices.forEach(function(totalPrice) {
+                totalPrice.textContent = '0원';
+            });
+
+            // 전체 총 가격도 초기화
+            document.getElementById('totalSum').textContent = '0원';
+            
+            // 요청사항 텍스트 영역 초기화
+            document.getElementById('special-requests').value = '';
+        };
+    </script>
+
+</body>
+</html>

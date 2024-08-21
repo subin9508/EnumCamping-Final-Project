@@ -67,8 +67,6 @@ public class User implements UserDetails {
 	 * @Column(nullable = false) private String userRole; //일반유저인지 관리자인지
 	 */
 
-	@Column(columnDefinition = "INT DEFAULT 1")
-	private Integer userState; // 유저 상태 (탈퇴인지 아닌지)
 
 	@Column(name = "DEACTIVEUNTIL")
 	private LocalDate deactiveuntil;

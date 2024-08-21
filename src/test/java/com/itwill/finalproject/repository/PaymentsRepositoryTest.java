@@ -65,7 +65,6 @@ public class PaymentsRepositoryTest {
 	    		.userPassword("test1234")
 	    		.userPhone("010-1234-1234")
 	    		.userRole(1)
-	    		.userState(1)
 	    		.build();
 	   
 	    // 다른 필요한 필드들도 설정
