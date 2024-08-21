@@ -62,12 +62,10 @@ public class UserController {
 	private final UserService userService;
 	private final QnAService qnaService;
 
-	
 	@GetMapping("/signin")
 	public void signin() {
 		log.info("signin()");
 	}
-
 
 //	@PostMapping("/signin")
 //	public String signIn(UserSignInDto dto, @RequestParam(name = "target", defaultValue = "") String target,
@@ -107,7 +105,7 @@ public class UserController {
 //			return "redirect:/user/signin?result=deactivated";
 //		}
 
-		// 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
+	// 로그인 성공 시 세션에 로그인 사용자 아이디를 저장
 //		session.setAttribute("signedInUser", user.getUserId());
 //		// 세션에 유저 role을 저장
 //		log.info("getUserId={}", user.getUserId());
@@ -250,30 +248,19 @@ public class UserController {
 		return "user/findpassword"; // 패스워드 찾기 입력 폼으로 이동
 	}
 
-	/*
-	 * @PostMapping("/findpassword") public String
-	 * findPassword(@RequestParam("user_name") String
-	 * name, @RequestParam("user_email") String email,
-	 * 
-	 * @RequestParam("user_id") String id, Model model) { Optional<User> user =
-	 * userService.findPasswordByNameAndEmailAndId(name, email, id); String
-	 * userPassword = user.map(User::getUserPassword).orElse(null); if (userPassword
-	 * != null) { model.addAttribute("userPassword", userPassword); return
-	 * "user/displaypassword"; // 비밀번호 찾기 성공 화면으로 이동 } else {
-	 * model.addAttribute("message", "등록되지 않은 이름 또는 이메일 또는 아이디 입니다."); return
-	 * "user/findpassword"; // 비밀번호 찾기 입력 폼으로 다시 이동 } }
-	 */
+	
+	 
 	// 회원 탈퇴 페이지 조회
 	@GetMapping("/deactivateUser")
 	public String deactivateAccount(Model model, HttpSession session) {
 		// 세션에서 사용자 ID 가져오기
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
+
 		String userId = authentication.getName();
-		model.addAttribute("loginUserId",userId);
+		model.addAttribute("loginUserId", userId);
 		User user = userService.read(userId);
 		Integer userKey = (Integer) user.getUserKey();
-	
+
 //		 Integer userKey = (Integer) session.getAttribute("loginUserId");
 //		Integer userKey = (Integer) session.getAttribute("loginUserId");
 		log.info("세션에서 가져온 userKey: {}", userKey);
@@ -332,10 +319,7 @@ public class UserController {
 			log.warn("사용자 ID: {}의 비밀번호가 일치하지 않습니다.", userKey);
 			return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
 		}
-		
-		
+
 	}
-	
-	
 
 }

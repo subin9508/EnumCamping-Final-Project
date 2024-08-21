@@ -12,11 +12,14 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	//이메일 찾기
+	 User findByUserEmail(String userEmail);
+	
 	// 아이디 중복 체크
 	Optional<User> findByUserId(String userId);
 
 	// 이메일 중복 체크
-	Optional<User> findByUserEmail(String userEmail);
+	//Optional<User> findByUserEmail(String userEmail);
 
 	// 로그인
 	Optional<User> findByUserIdAndUserPassword(String userId, String userPassword);
@@ -31,6 +34,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 사용자 ID로 사용자 정보 조회
 	Optional<User> findByUserKey(Integer userKey);
+	
+	 
 	
 	// 사용자 정보 업데이트
 	@Modifying

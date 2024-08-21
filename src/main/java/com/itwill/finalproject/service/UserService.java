@@ -210,7 +210,7 @@ public class UserService implements UserDetailsService {
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
 	public boolean checkEmail(String userEmail) {
 		log.info("checkUserEmail(email={})", userEmail);
-		return !userRepo.findByUserEmail(userEmail).isPresent();
+		return !userRepo.findByUserEmail(userEmail).isEnabled();
 	}
 
 	public User read(String userId) {
