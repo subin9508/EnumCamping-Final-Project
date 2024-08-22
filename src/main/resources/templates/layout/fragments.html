@@ -118,7 +118,7 @@
 						<ul class="navbar-nav navbar-user ms-auto">
                             <li class="nav-item" sec:authorize="isAuthenticated()" th:if="${#authentication.name == 'admin'}">
                                 <a class="nav-link"
-                                th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}"
+                                th:href="@{/admin/price/zones}"
                                 style="font-weight: bold;">관리자 페이지</a>
                             </li>
 							<li class="nav-item" sec:authorize="isAuthenticated()" th:if="${#authentication.name != 'admin'}">
@@ -337,10 +337,33 @@
 		            <a th:href="@{../review}" class="d-none"  >이용후기</a>
 		        </li>
 		    </ul>
-
-
 		</aside>
 	</th:block>
+    
+    
+    <!-- 관리자 페이지 사이드바 -->
+    <th:block th:fragment="admin-sidebar">
+        <aside class="sidebar d-none d-md-block col-md-3">
+
+            <div class="sidebar-header">
+                <h3 id="title">관리자 페이지</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">관리자 정보</a>        
+                </li>
+                <li class="sidebar-item">
+                    <a th:href="@{../price/zones}">구역 가격 관리</a>
+                </li>
+                <li class="sidebar-item">
+                    <a th:href="@{../price/items}">물품 가격 관리</a>
+                </li>
+                <li class="sidebar-item d-none">
+                   <a th:href="@{../faq}" >예약 관리</a> 
+                </li>
+            </ul>
+        </aside>
+    </th:block>
 
 	<!-- ---------------------------------------------------------------------------------------------------- -->
 

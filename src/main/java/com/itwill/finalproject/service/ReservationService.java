@@ -44,6 +44,12 @@ public class ReservationService {
 		return itemsRepo.selectAllItems();
 	}
 	
+	// 전체 구역 리스트 가져오기
+		public List<Items> getAllZones() {
+			return itemsRepo.selectAllZones();
+		}
+	
+	
 	// 특정 아이템의 가격 조회
 	public Integer readItemPrice(int itemId) {
 		return itemsRepo.selectItemPrice(itemId);
