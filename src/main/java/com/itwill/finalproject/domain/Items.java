@@ -24,6 +24,13 @@ public class Items {
 	private String itemName; // 물품 이름
 	
 	@Basic(optional = false)
+	private String itemTime; //성수기 비성수기
+	
+	@Basic(optional = false)
+	private String itemWeekday; //평일 주말
+	
+	
+	@Basic(optional = false)
 	private Integer itemPrice; // 물품 가격
 	
 	private String itemImg; // 물품 사진 경로
