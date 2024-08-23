@@ -217,10 +217,15 @@ public class PaymentsController {
             @PathVariable("payId") Integer payId,
             @RequestParam("cancelAmount") Integer cancelAmount
             ) {
+    	
+    	log.info("payId: {}, cancelAmount: {}", payId, cancelAmount);  // payId와 cancelAmount 로그 확인
 
+    	
         if (payId == null || payId <= 0 || cancelAmount == null || cancelAmount <= 0) {
             return ResponseEntity.badRequest().body("Invalid payId or cancelAmount");
         }
+        
+        
 
         try {
             String result = paymentsService.cancelPartialPayment(payId, cancelAmount);

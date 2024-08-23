@@ -2,6 +2,8 @@
  * 
  */
 
+let refundAmount;
+
 document.addEventListener('DOMContentLoaded', function() {
     const btnPayRefund = document.querySelector('button#btnPayRefund'); // 결제 취소버튼 요소 선택
 	
@@ -22,7 +24,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		
         const resId = document.querySelector("input[name=resId]").value; // 예약 ID 입력값 가져오기
         const userId = document.querySelector("input[name=userId]").value; // userId 입력값 가져오기
-		const refundAmount = document.querySelector("input[name=refundAmount]").value; // 부분 환불 금액 입력값 가져오기
+		refundAmount = document.querySelector("input[name=refundAmount]").value; // 부분 환불 금액 입력값 가져오기
+		
+		console.log(refundAmount); // 이 시점에 refundAmount가 정의되어 있는지 확인
+		if (!refundAmount) {
+			console.error("refundAmount is not defined.");
+			return;
+		}
+
+		// refundAmount가 정의되지 않았을 때의 오류 방지
+        if (!refundAmount) {
+            alert("환불 금액을 입력하세요.");
+            return;
+        }
 		
         if (!resId) {
             alert("예약 아이디가 필요합니다."); // 예약 ID 없는 경우 알림
@@ -45,7 +59,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 
 			// 결제 ID로 결제 취소 요청을 POST로 전송
-            axios.post(`/enumcamping/mypage/reservation_update/refund/${payId}`)
+            axios.post(`/enumcamping/mypage/reservation_update/refund/${payId}`, null, {
+				params: {
+                    cancelAmount: refundAmount // 부분 환불 금액을 파라미터로 전달
+                }
+			})
                 .then(response => {
                     console.log("부분 환불 성공: ", response.data);
                     alert('부분환불이 성공적으로 처리되었습니다.');
@@ -55,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error("서버 응답 오류: ", error);
-                    alert('결제 취소 중 오류가 발생했습니다: ' + error.message);
+                    alert('부분 취소 중 오류가 발생했습니다: ' + error.message);
                 });
         })
         .catch(error => {

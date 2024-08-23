@@ -102,7 +102,7 @@
                     <!-- 예약 완료 상태일 때만 취소 버튼 보여줌 -->
                     <div class="card-footer" th:if="${resMaster.resState == 1}" style="background-color: white; display: flex;">
                         <button id="btnPayCancel" class="btn btn-danger">예약취소</button>
-                        <a class="btn btn-success" th:href="@{/mypage/reservation_update}" style="margin-left: auto;">예약변경</a>
+                        <a class="btn btn-success" th:onclick="|location.href='@{/mypage/reservation_update(resId=${resMaster.resId})}'|" style="margin-left: auto;">예약변경</a>
                     </div>
                </div>
             </main>
