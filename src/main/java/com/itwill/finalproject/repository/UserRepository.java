@@ -23,6 +23,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	// 아이디 중복 체크
 	Optional<User> findByUserId(String userId);
 
+	// name 찾기 
+	User findByName(String name);
+	
+	
 	// 이메일 중복 체크
 	//Optional<User> findByUserEmail(String userEmail);
 
