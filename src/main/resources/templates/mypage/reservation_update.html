@@ -40,16 +40,20 @@
 		                    </thead>
 		                    <tbody></tbody>
 		                </table>
-		
-		                <div id="date" style="display: none;"></div>
-		                
-		                <!-- 이미지 URL 사용 -->
-		                <div class="area-card" style="display: none;">
+
+					<div id="date" style="display: none;"></div>
+					<div th:each="detail : ${resDetail}">
+    <span th:text="${detail.itemId}">itemId</span>
+    <span th:text="${detail.itemName}">itemName</span>
+</div>
+
+					<div class="area-card" th:each="detail : ${resDetail}">
 		                    <div class="card p-2" id="area1">
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
-		                            id="area1_radio" name="area" value="1">
+		                            id="area1_radio" name="area" value="1"
+		                            >
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -61,7 +65,8 @@
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
-		                            id="area2_radio" name="area" value="2">
+		                            id="area2_radio" name="area" value="2"
+		                            >
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -108,8 +113,7 @@
 		                </div>
 		                
 		                <!-- 라디오 버튼으로 기간 선택 -->
-		                <div class="card mt-2 p-2" id="night-card"
-		                    style="display: none;">
+		                <div class="card mt-2 p-2" id="night-card">
 		                    <div class="night-radio_label"
 		                        id="night-radio_label">
 		                        <h3> <strong>이용 기간</strong> </h3>
@@ -133,7 +137,7 @@
 		                </div>
 		                
 		                <!-- 아이템 테이블 -->
-                <div class="m-3" id="items-table" style="display: none;">
+                <div class="m-3" id="items-table">
                     <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
                         <h3><strong>대여 및 판매 물품</strong></h3>
                     </div>

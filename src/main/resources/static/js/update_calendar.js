@@ -1,5 +1,5 @@
  /**
-  *  /reservation/calendar.jsp에 포함
+  *  /mypage/reservation_update.jsp에 포함
   */
 var selectedDate = null;
 var selectedArea= null;
@@ -22,6 +22,8 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
+        
+               
 });
 
 var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
@@ -235,10 +237,6 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         selectedNight = null;
         console.log('calendarChoiceDay - selectedDate=', selectedDate);
         
-        // night 라디오 버튼 숨기기
-        const nightCard = document.getElementById('night-card');
-        nightCard.style.display = 'none';
-        
         // 선택한 날짜에 대한 예약 정보 가져오기
         getReservations(year, month, day);
         
@@ -255,10 +253,6 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         });
         
         selectedArea = null;
-        
-        // 아이템 테이블 숨기기
-        const itemsTable = document.getElementById('items-table');
-        itemsTable.style.display = 'none';
         
         
         // 두 가지 조건이 모두 만족되었는지 확인하여 함수 호출
@@ -645,7 +639,6 @@ function addNextPageEventListeners() {
         console.error("btnNextPage element not found");
     }
 }
-
     
 
     /**
