@@ -1,5 +1,7 @@
 package com.itwill.finalproject.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -232,6 +234,80 @@ public class PaymentsService {
 	           throw new ServiceException("Failed to update reservation state: " + e.getMessage(), e);
 	       }
 	   }
+	   
+	   
+	   // 부분 취소 메서드
+	   @Transactional
+	   public String cancelPartialPayment(Integer payId, Integer cancelAmount) throws ServiceException {
+	       log.debug("Attempting to partially cancel payment with payId: {} and cancelAmount: {}", payId, cancelAmount);
+
+	       Payments payment = paymentsRepo.findById(payId)
+	               .orElseThrow(() -> new ServiceException("Payment not found for payId: " + payId));
+
+	       log.debug("Retrieved payment: {}", payment);
+	       log.debug("impuid={}", payment.getImpUid());
+
+	       if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
+	           log.info("Payment already cancelled for payId: {}", payId);
+	           return "Payment already cancelled";
+	       }
+
+	       try {
+	           String impUid = payment.getImpUid();
+	           log.debug("impUid={}", impUid);
+
+	           // 부분 취소를 위해 취소 금액을 지정
+	           CancelData cancelData = new CancelData(impUid, true, BigDecimal.valueOf(cancelAmount));
+	           IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
+
+	           log.debug("Iamport API response: {}", response);
+	           
+	        // 응답에 대한 상세 로그 추가
+	           if (response != null) {
+	               log.debug("Iamport API response status: {}", response.getResponse().getStatus());
+	               log.debug("Iamport API response message: {}", response.getResponse().getFailReason());
+	           }
+
+	           if (response != null && response.getResponse() != null 
+	               && "cancelled".equalsIgnoreCase(response.getResponse().getStatus())) {
+
+	               // 부분 취소가 성공하면, 결제 상태를 업데이트 (필요에 따라 금액 수정)
+	               payment.setPayStatus("PARTIAL_CANCEL");  // 부분 취소 상태로 업데이트
+	               payment.setResTotalPrice(payment.getResTotalPrice());
+	               paymentsRepo.save(payment);
+
+	               // 취소 내역을 PaymentsCancel 엔티티로 저장
+	               PaymentsCancel paymentsCancel = PaymentsCancel.builder()
+	                       .payId(payId)
+	                       .impUid(payment.getImpUid())
+	                       .resId(payment.getResId())
+	                       .canAmount(cancelAmount)
+	                       .canDate(LocalDateTime.now())
+	                       .canRole("구매자")
+	                       .build();
+
+	               paymentsCancelRepo.save(paymentsCancel);
+
+	               log.info("Partial payment cancellation successful for payId: {}", payId);
+	               return "Partial payment cancellation successful";
+	           } else {
+	               if (response != null && response.getResponse() != null) {
+	                   log.error("Partial cancellation failed: Status = {}, Message = {}",
+	                           response.getResponse().getStatus(), response.getResponse().getFailReason());
+	               } else {
+	                   log.error("Partial cancellation failed: No response from PG site.");
+	               }
+	               throw new ServiceException("Partial cancellation failed: Payment status is not cancelled on PG site");
+	           }
+	       } catch (IamportResponseException e) {
+	           log.error("API call failed: ", e);
+	           throw new ServiceException("API call failed: " + e.getMessage(), e);
+	       } catch (Exception e) {
+	           log.error("Error during partial cancellation", e);
+	           throw new ServiceException("Error during partial cancellation: " + e.getMessage(), e);
+	       }
+	   }
+
 		        		    
     
 }
