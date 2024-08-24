@@ -1,6 +1,5 @@
 package com.itwill.finalproject.web;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +24,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-
-import org.springframework.web.bind.annotation.RequestBody;
-
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.itwill.finalproject.domain.ReservationMaster;
-import com.itwill.finalproject.dto.ReservationDetailDto;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -51,7 +43,6 @@ import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
-import com.itwill.finalproject.exception.CustomValidationException;
 import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.ProfileService;
@@ -60,7 +51,6 @@ import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -516,14 +506,17 @@ public class MyPageController {
     
     // 마이페이지 - 예약 변경
     @GetMapping("/reservation_update")
-	public void reservationUpdateCalendar(Model model) {
+	public void reservationUpdateCalendar(@RequestParam(name="resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
 		List<Items> items = reservationSvc.getAllItems();
+		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+    	log.info("resMaster={}",resMaster);
 		
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
 		model.addAttribute("items", items);
+		model.addAttribute("resMaster", resMaster.get());
 	}
     
     @GetMapping("/reservation_update/{date}")

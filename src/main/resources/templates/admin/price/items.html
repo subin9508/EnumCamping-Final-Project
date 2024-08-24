@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+      <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+      <link rel="stylesheet" th:href="@{/css/header.css}">
+      <link rel="stylesheet" th:href="@{/css/footer.css}">
+      <link rel="stylesheet" th:href="@{/css/price.css}">
+      <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+      
+      
+      
+	</head>
+	<body>
+    
+        <div class="wrapper">
+            <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+            <div class="footer-main-content">
+                <th:block th:replace="~{/layout/fragments :: admin-sidebar}"></th:block>
+                <main>
+                <!-- 아이템 테이블 -->
+                <div class="card" id="items-table">
+                    <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
+                        <h3><strong>물품 목록</strong></h3>
+                    </div>
+                    <div class=" justify-content-center">
+                    <form id="modifyForm">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>설명</th>
+                                    <th>가격</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="i : ${items}">
+                                    <td class="item-name col-3" th:text="${i.itemName}">
+                                    </td>
+                                    <td class="item-description col-6">
+                                    
+                                    <input class="form-control" type="text" style="width:100%; border: 0;" th:value="${i.itemDesc}" />
+                                        
+                                    </td>
+                                    <td class="item-price col-3">
+                                        <div style="display: inline-flex; align-items: center; justify-content: center;">
+                                            <input class="form-control" type="text" style="width:80%; border: 0; text-align: right;" th:value="${i.itemPrice}" />
+                                            <span>원</span>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
+                            <input type="hidden" name="redirectUrl" value="/admin/price/items">
+                            <button class="btn btn-outline-primary" id="btnApply">적용</button>
+                        </div>
+                        </form>
+                    </div>
+                    
+                
+                </div>
+                
+                
+                
+                </main>
+            </div>
+            <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        </div>
+        
+      <script th:src="@{/js/price.js}"></script>
+      <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+      <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	</body>
+</html>
