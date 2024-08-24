@@ -455,7 +455,8 @@ public class MyPageController {
     
 //    @PreAuthorize("hasRole('USER')")
 	@GetMapping("/delete")
-	public String delete(@RequestParam("id") Long id, Model model, HttpSession session) {
+	public String delete(@RequestParam("id") Long id, Model model, HttpSession session,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("delete(id={})", id);
 
 		// 사용자 정보를 조회하여 세선에 저장
@@ -464,7 +465,7 @@ public class MyPageController {
 		User user = userService.read(userId);
 		session.setAttribute("user", user);
 
-		qnaService.delete(id);
+		qnaService.delete(id, userDetails.getUsername());
 
 		return "redirect:/mypage/qna_list?userId=" + userId;
 	}

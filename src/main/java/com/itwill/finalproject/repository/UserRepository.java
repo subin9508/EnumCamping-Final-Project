@@ -23,6 +23,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 로그인
 	Optional<User> findByUserIdAndUserPassword(String userId, String userPassword);
+	
+	// name 찾기 
+	User findByName(String name);
 
 	// 아이디 찾기
 	@Query("SELECT u FROM User u WHERE u.name = :name AND u.userEmail = :userEmail")
