@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (validateBeforeSignUp(event)) {
             alert('회원가입을 축하합니다');
+			document.querySelector('form').submit(); // 검증 성공 시 폼 제출
         }
     });
 
