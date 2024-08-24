@@ -2,6 +2,7 @@ package com.itwill.finalproject.service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,12 +204,13 @@ public class UserService implements UserDetailsService {
 	public boolean checkEmail(String userEmail) {
 		log.info("checkUserEmail(email={})", userEmail);
 		
-		User user = userRepo.findByUserEmail(userEmail);
-		if (user == null) {
+		List<User> user = userRepo.findByUserEmailList(userEmail);
+		if (user.isEmpty()) {
 		    // 사용자가 존재하지 않는 경우에 대한 처리
 			log.info("사용가능이메일입니다.");
 			return true;
-		}
+		} 
+		log.info("user={}",user);
 		log.info("중복된 이메일입니다.");
 		return false;
 		
