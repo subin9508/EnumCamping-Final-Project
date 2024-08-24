@@ -69,19 +69,19 @@ public class QnAAnswerController {
             @PathVariable(name = "id") Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        // QnA 게시글이 비밀글인지 확인
         QnA qna = qnaAnswerSvc.findQnAById(id);
         String signedInUser = (userDetails != null) ? userDetails.getUsername() : null;
-        Integer userRole = (userDetails != null) ? ((User) userDetails).getUserRole() : null;
+        boolean isAdministrator = (userDetails instanceof User) && ((User) userDetails).getUserRole() == 0;
 
         // 비밀글인 경우, 작성자나 관리자만 댓글을 볼 수 있음
-        if (qna.isSecret() && (signedInUser == null || (!qna.getQnaUserId().equals(signedInUser) && userRole != 0))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 접근 금지 응답
+        if (qna.isSecret() && (signedInUser == null || (!qna.getQnaUserId().equals(signedInUser) && !isAdministrator))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         List<QnAAnswers> comments = qnaAnswerSvc.findByQnaId(id);
         return ResponseEntity.ok(comments);
     }
+
     
     @PreAuthorize("hasRole('ADMIN')")  
     @DeleteMapping("/{id}")
