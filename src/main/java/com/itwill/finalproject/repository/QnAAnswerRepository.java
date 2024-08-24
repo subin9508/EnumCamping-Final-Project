@@ -11,7 +11,12 @@ import com.itwill.finalproject.domain.QnAAnswers;
 
 public interface QnAAnswerRepository extends JpaRepository<QnAAnswers, Long> {
 
-		Page<QnAAnswers> findByQna(QnA qna, Pageable pageable);
+//		Page<QnAAnswers> findByQna(QnA qna, Pageable pageable);
 		
 		List<QnAAnswers> findByQnaId(Long id);
+		
+		List<QnAAnswers> findByQna(QnA qna);
+		
+		List<QnAAnswers> findQnAAnsById(Long id);
+
 }

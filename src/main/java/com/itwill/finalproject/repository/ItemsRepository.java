@@ -13,6 +13,10 @@ public interface ItemsRepository extends JpaRepository<Items, Integer>{
 			+ "where i.itemId >= 21")
 	List<Items> selectAllItems();
 	
+	@Query("select i from Items i "
+			+ "where i.itemId <= 20")
+	List<Items> selectAllZones();
+	
 	@Query("select i.itemPrice from Items i "
 			+ "where i.itemId = :itemId")
 	Integer selectItemPrice(@Param("itemId") int itemId);

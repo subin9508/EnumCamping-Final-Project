@@ -61,6 +61,21 @@ ul.pagination {
     color: white;
 }
 
+/* 드롭다운 스타일 추가 */
+.select-page-size {
+    border-radius: 5px;
+    background-color: #fff;
+    color: black;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.select-page-size:hover {
+    background-color: #fff; /* hover 상태에서 약간 밝은 색상으로 변경 */
+    border-color: #708b58;
+    color: black;
+}
+
 /* 반응형 스타일 */
         @media (max-width: 768px) {
             .wrapper {
@@ -148,13 +163,37 @@ ul.pagination {
                                 <div class="col-2">
                                     <button type="button"
                                         class="form-control btn btnList"
-                                        th:onclick="|location.href='@{/community/qna/list}'|">전체
+                                        th:onclick="|location.href='@{/community/qna/list(p=${currentPage})}'|">전체
                                         목록</button>
                                 </div>
                             </div>
                         </form>
 
-                    </div>
+						<div
+							class="d-flex justify-content-between align-items-center mt-4">
+							<div>
+								<a style="text-align: left"><span
+									th:text="${totalCount}"></span>개의 글
+								</a>
+							</div>
+							<div>
+								<form id="pageSizeForm" th:action="@{/community/qna/list}"
+									method="get" class="d-inline">
+									<select id="pageSize" name="size"
+										class="form-select select-page-size"
+										onchange="this.form.submit()" style="width: 120%;">
+										<option value="5" th:selected="${size == 5}">5개씩</option>
+										<option value="10" th:selected="${size == 10}">10개씩</option>
+										<option value="15" th:selected="${size == 15}">15개씩</option>
+									</select> <input type="hidden" name="p" th:value="${currentPage}" /> <input
+										type="hidden" name="category" th:value="${category}" /> <input
+										type="hidden" name="keyword" th:value="${keyword}" />
+								</form>
+							</div>
+						</div>
+
+
+					</div>
                     <div class="card-body">
 						<table class="table table-hover">
                             <thead>
@@ -169,10 +208,10 @@ ul.pagination {
                             </thead>
 							<tbody>
                                     <tr th:each="qna : ${qnas}" style="cursor:pointer; text-align: center;"
-                                        th:onclick="|location.href='@{/community/qna/details(id=${qna.id})}'|">
+                                        th:onclick="|location.href='@{/community/qna/details(id=${qna.id}, p=${currentPage})}'|">
                                         <td class="col-1" th:text="${qna.id}"></td>
                                         <td class="col-3">
-                                            <a th:href="@{/community/qna/details(id=${qna.id})}">
+                                            <a class="qna-detail-link" data-id="${qna.id}" th:href="@{/community/qna/details(id=${qna.id}, p=${currentPage})}">
                                                 <span th:text="${qna.title}"></span>
                                                 <img th:if="${qna.qnaLock == 1}" th:src="@{/images/community/secret.png}" class="secret-icon" alt="비밀글">
                                             </a>
@@ -190,10 +229,13 @@ ul.pagination {
                             </tbody>
                         </table>
                         
-                         <a style="text-align: left">총 게시글 수: <span th:text="${totalCount}"></span> 개</a>
+                         <!-- <a style="text-align: left">총 게시글 수: <span th:text="${totalCount}"></span> 개</a>  -->
                             <div class="text-end">
-                                <a class="btn btnCreate" th:href="@{/community/qna/create}" style="text-align: right">글작성</a>
+                                <a class="btn btnCreate mt-3" th:href="@{/community/qna/create}" style="text-align: right">글 작성</a>
                             </div>
+                            
+                            
+                            
                             <div>
                                 <nav aria-label="Page navigation example" th:if="${totalPages != null and totalPages > 0}">
                                     <ul class="pagination">

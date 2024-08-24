@@ -20,7 +20,7 @@
     
         <!-- 갤러리 섹션 -->
         <section id="gallery" class="gallery">
-            <div class="container-fluid">
+            <div>
                 <div id="carouselExampleIndicators"
                     class="carousel slide carousel-fade"
                     data-bs-pause="false" data-bs-ride="carousel">
@@ -112,31 +112,29 @@
         </section>
     
         <!-- 공지사항 섹션 -->
-        <section id="notice" class="section-content py-5">
+        <section id="notice" class="section-content py-5 mx-5">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5 mb-3">
+                 <div class="row d-flex justify-content-center align-items-center g-3">
+                    <div class="col-md-4 mb-3">
                         <h2 class="notice-h fw-bold text-success">공지사항</h2>
                         <div class="card border-0 border-light mt-3">
                             <div class="card-body">
                                 <h5 class="card-title">공지사항</h5>
-                                <p class="card-text">중요공지입니다</p>
-                                <a
-                                    href="/semiproject/community/notice/details?id=1"
+                                <p class="card-text">중요공지입니다. 꼭 공지사항 확인하세요. 매우 중요합니다.</p>
+                                <a th:href="@{/community/notice/details?id=1}"
                                     class="stretched-link"></a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2"></div>
-                    <div class="col-md-5 mb-3">
+                    <div class="col-md-4 mb-3">
                         <h2 class="notice-h fw-bold text-success">이벤트</h2>
                         <div class="card border-0 border-light mt-3">
                             <div class="card-body">
                                 <h5 class="card-title">이넘 캠핑장 오픈 이벤트</h5>
                                 <p class="card-text">오픈 특가! 회원가입 후 첫 예약
                                     고객님께는 오로라 가루 1개를 증정해 드립니다!</p>
-                                <a
-                                    href="/semiproject/community/notice/details?id=2"
+                                <a th:href="@{/community/notice/details?id=2}"
                                     class="stretched-link"></a>
                             </div>
                         </div>

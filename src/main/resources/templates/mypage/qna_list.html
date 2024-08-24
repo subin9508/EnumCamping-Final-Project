@@ -18,6 +18,14 @@
 	margin-left: 5px;
 	vertical-align: middle;
 }
+
+.status-waiting {
+	color: red !important;
+}
+
+.status-completed {
+	color: blue !important;
+}
 </style>
 </head>
 <body>
@@ -28,7 +36,7 @@
                <div class="list-container-fluid">
                 <main>
                     <div class="card">
-                        <h2 class="qna-title">문의내역</h2>
+                        <h2 class="qna-title">내 문의내역</h2>
                         <div class="card-body">
 
                             <table class="table table-hover">
@@ -102,6 +110,6 @@
 		<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
 		<!-- Weather JS -->
-		<th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+        <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.itwill.finalproject.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,40 +32,49 @@ public class QnAAnswerService {
 
     // 새로운 답변 생성
     @Transactional
+//    public QnAAnswers create(QnAAnswerRegisterDto dto) {
+//        log.info("create(dto={})", dto);
+//        log.info("QnA Content in DTO: {}", dto.getContents());
+//        
+//        // 현재 사용자 ID를 설정
+//        dto.setUserId(getCurrentUserId());
+//
+//        QnA qna = qnaRepo.findById(dto.getQnaPostId()).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + dto.getQnaPostId()));
+//
+//        QnAAnswers entity = QnAAnswers.builder()
+//                .qna(qna)
+//                .contents(dto.getContents())
+//                .userId(dto.getUserId())
+//                .build();
+//        
+//        log.info("ENTITY: {}", entity);
+//        
+//        qnaAnswerRepo.save(entity);
+//        log.info("SAVE ENTITY: {}", entity);
+//        
+//        return entity;
+//    }
+    
     public QnAAnswers create(QnAAnswerRegisterDto dto) {
-        log.info("create(dto={})", dto);
-        log.info("QnA Content in DTO: {}", dto.getContents());
-        
-        // 현재 사용자 ID를 설정
-        dto.setUserId(getCurrentUserId());
+        QnA qna = qnaRepo.findById(dto.getQnaPostId())
+                         .orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + dto.getQnaPostId()));
 
-        QnA qna = qnaRepo.findById(dto.getQnaPostId()).orElseThrow();
+        QnAAnswers answer = new QnAAnswers();
+        answer.setQna(qna);
+        answer.setContents(dto.getContents());
+        answer.setUserId(dto.getUserId());
 
-        QnAAnswers entity = QnAAnswers.builder()
-                .qna(qna)
-                .contents(dto.getContents())
-                .userId(dto.getUserId())
-                .build();
-        
-        log.info("ENTITY: {}", entity);
-        
-        qnaAnswerRepo.save(entity);
-        log.info("SAVE ENTITY: {}", entity);
-        
-        return entity;
+        return qnaAnswerRepo.save(answer);
     }
     
     @Transactional(readOnly = true)
-    public Page<QnAAnswers> readCommentsList(Long id, int pageNo) {
-        log.info("readCommentsList(id={}, pageNo={})", id, pageNo);
+    public List<QnAAnswers> readCommentsList(Long id) {
+        log.info("readCommentsList(id={})", id);
         
         QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
-        
-        Pageable pageable = PageRequest.of(pageNo, 5, Sort.by("modifiedTime").descending());
-        
-        Page<QnAAnswers> data = qnaAnswerRepo.findByQna(qna, pageable);
-        log.info("data.number = {}, data.totalPages = {}",
-                data.getNumber(), data.getTotalPages());
+                
+        List<QnAAnswers> data = qnaAnswerRepo.findByQna(qna);
+        log.info("data = {}", data);
         
         if(data.isEmpty()) {
             log.warn("No QnAAnswers found for QnA ID: {}", id);
@@ -94,7 +104,10 @@ public class QnAAnswerService {
     }
 
     public List<QnAAnswers> findByQnaId(Long qnaId) {
-        return qnaAnswerRepo.findByQnaId(qnaId);
+        QnA qna = qnaRepo.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + qnaId));
+
+        return qnaAnswerRepo.findByQna(qna);
     }
 
     private String getCurrentUserId() {
@@ -108,4 +121,21 @@ public class QnAAnswerService {
             throw new SecurityException("You are not authorized to modify this answer.");
         }
     }
+
+	public QnA findQnAById(Long id) {
+		return qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
+
+	}
+	
+	public Optional<QnAAnswers> findQnAAnsById(Long id) {
+		return qnaAnswerRepo.findById(id);
+	}
+	
+	@Transactional
+	public void updateQnAStateToAnswered(Long qnaId) {
+	    QnA qna = qnaRepo.findById(qnaId)
+	                     .orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + qnaId));
+	    qna.setQnaState(1);
+	    qnaRepo.save(qna);
+	}
 }

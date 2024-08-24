@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 회원가입 버튼 클릭 시 최종 유효성 검사
     btnSignUp.addEventListener('click', (event) => {
+        
+        event.preventDefault(); //엔터 눌러서 넘어가는 것 방지
+        
         if (validateBeforeSignUp(event)) {
             alert('회원가입을 축하합니다');
         }

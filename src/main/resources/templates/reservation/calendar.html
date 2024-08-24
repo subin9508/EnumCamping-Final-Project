@@ -189,7 +189,7 @@
                                     </td>
                                     <td class="narrow" style="width: 20%; height: 10%; text-align: center; font-weight: normal;">
                                         <div class="quantity-controls">
-                                            <select th:id="'quantity-' + ${i.itemId}" th:onchange="updateQuantity([[${i.itemId}]], [[${i.itemPrice}]])">
+                                            <select th:id="'quantity-' + ${i.itemId}" th:onchange="updateQuantity([[${i.itemId}]], [[${i.itemPrice}]])" autocomplete="off">
                                                 <option value="0">0</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
@@ -198,15 +198,23 @@
                                         </div>
                                         <p />
                                         <div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    
+
+                    <!-- 아이템 총 가격을 표시할 공간 -->
+                    <div class="card mt-2 p-2" style="border: none;">
+                        <div class="m-3" id="sumOfAllItems" style="text-align: right; color: #7C9C63; font-size: 25px;">
+                            <span id="totalSum">0원</span>
+                        </div>
+                    </div>
+
                     <!-- 요청사항 입력 -->
                     <div class="container-fluid d-flex justify-content-center mt-3 row" id="requirement">
                         <h3 class="col-2">요청사항</h3>
-                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요"></textarea>
+                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"></textarea>
                     </div>
 
                     <!-- 전체 총 가격을 표시할 공간 -->
@@ -233,7 +241,7 @@
         <!-- Weather JS -->
         <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
         
-        <!-- 팝업 JS -->
+        <!-- 캘린더 JS -->
         <script th:src="@{/js/calendar.js}"></script>
         
     <script>
@@ -256,6 +264,27 @@
             }
             return isValid;
         }
+
+        // 페이지가 로드될 때 콤보박스 초기화
+        window.onload = function() {
+            // 모든 콤보박스를 초기화합니다.
+            var quantitySelects = document.querySelectorAll('select[id^="quantity-"]');
+            quantitySelects.forEach(function(select) {
+                select.selectedIndex = 0; // 첫 번째 옵션을 선택(값이 0인 옵션)
+            });
+
+            // 각 아이템의 총 가격도 0원으로 초기화
+            var totalPrices = document.querySelectorAll('.total-price');
+            totalPrices.forEach(function(totalPrice) {
+                totalPrice.textContent = '0원';
+            });
+
+            // 전체 총 가격도 초기화
+            document.getElementById('totalSum').textContent = '0원';
+            
+            // 요청사항 텍스트 영역 초기화
+            document.getElementById('special-requests').value = '';
+        };
     </script>
 </body>
 </html>

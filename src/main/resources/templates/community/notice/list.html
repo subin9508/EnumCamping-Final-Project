@@ -23,7 +23,7 @@
                         <form class="mt-2" th:action="@{/community/notice/search}"
                             action="${noticeSearchPage }">
                             <div class="row">
-                                <div class="col-2">
+                                <div class="col-2 search">
                                     <select class="form-control text-center"
                                         name="category">
                                         <option value="t">제목</option>
@@ -31,18 +31,18 @@
                                         <option value="tc">제목+내용</option>
                                     </select>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 search">
                                     <input class="form-control"
                                         type="text" name="keyword"
                                         placeholder="검색어 입력" required />
                                 </div>
-                                <div class="col-2">
-                                    <input type="submit"
-                                        class="form-control btn btn-outline-primary"
+                                <div class="col-2 search">
+                                    <input type="submit" 
+                                        class="form-control btn btn-outline-primary "
                                         value="검색" />
                                 </div>
                                 <div class="col-2">
-                                    <button type="button"
+                                    <button type="button" id="allList"
                                         class="form-control btn btn-outline-primary"
                                         th:onclick="|location.href='@{/community/notice/list}'|">전체
                                         목록</button>
@@ -76,8 +76,7 @@
                         </div>
                     </div>
                     
-                    <!-- th:if="${userRole == 0}" -->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
+                    <div th:if="${#authentication.name == 'admin'}" class="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
                         <button type="button" onclick="location.href ='create'"
                             class="btn btn-outline-primary" >공지사항 작성</button>
                     </div>

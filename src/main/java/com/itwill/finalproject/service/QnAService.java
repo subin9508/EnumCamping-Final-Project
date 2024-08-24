@@ -26,6 +26,10 @@ public class QnAService {
 	
 	private final QnARepository qnaRepo;
 	
+    public Page<QnA> findAll(PageRequest pageRequest) {
+        return qnaRepo.findAll(pageRequest);
+    }
+	
     // 현재 인증된 사용자의 ID를 가져오는 메서드
     private String getAuthenticatedUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -35,25 +39,41 @@ public class QnAService {
         return null;
     }
 	
+//    @Transactional(readOnly = true)
+//    public Page<QnAListItemDto> read(int pageNo, Sort sort) {
+//        log.info("read(pageNo={}, sort={})", pageNo, sort);
+//        
+//        // Pageable 객체 생성
+//        Pageable pageable = PageRequest.of(pageNo, 5, sort);
+//        
+//        // 영속성(persistence/repository) 계층의 메서드를 호출해서 엔터티들의 리스트를 가져옴.
+//        Page<QnA> list = qnaRepo.findAll(pageable);
+//        list.forEach(qna -> log.info("QnA ID: {}, Title: {}, UserId: {}, ViewCnt: {}", qna.getId(), qna.getTitle(), qna.getQnaUserId(), qna.getQnaViewCnt()));
+//        log.info("page.totalPages = {}", list.getTotalPages()); // 전체 페이지 개수
+//        log.info("page.number = {}", list.getNumber()); // 현재 페이지 번호
+//        log.info("page.hasPrevious = {}", list.hasPrevious()); // 이전 페이지가 있는 지 여부
+//        log.info("page.hasNext = {}", list.hasNext()); // 다음 페이지가 있는 지 여부
+//        
+//        Page<QnAListItemDto> qnas = list.map(QnAListItemDto::fromEntity);
+//        
+//        return qnas;
+//    }
+    
+    
     @Transactional(readOnly = true)
-    public Page<QnAListItemDto> read(int pageNo, Sort sort) {
-        log.info("read(pageNo={}, sort={})", pageNo, sort);
-        
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(pageNo, 5, sort);
-        
-        // 영속성(persistence/repository) 계층의 메서드를 호출해서 엔터티들의 리스트를 가져옴.
+    public Page<QnAListItemDto> read(Pageable pageable) {
+        log.info("read(pageable={})", pageable);
+
         Page<QnA> list = qnaRepo.findAll(pageable);
         list.forEach(qna -> log.info("QnA ID: {}, Title: {}, UserId: {}, ViewCnt: {}", qna.getId(), qna.getTitle(), qna.getQnaUserId(), qna.getQnaViewCnt()));
-        log.info("page.totalPages = {}", list.getTotalPages()); // 전체 페이지 개수
-        log.info("page.number = {}", list.getNumber()); // 현재 페이지 번호
-        log.info("page.hasPrevious = {}", list.hasPrevious()); // 이전 페이지가 있는 지 여부
-        log.info("page.hasNext = {}", list.hasNext()); // 다음 페이지가 있는 지 여부
-        
-        Page<QnAListItemDto> qnas = list.map(QnAListItemDto::fromEntity);
-        
-        return qnas;
+        log.info("page.totalPages = {}", list.getTotalPages());
+        log.info("page.number = {}", list.getNumber());
+        log.info("page.hasPrevious = {}", list.hasPrevious());
+        log.info("page.hasNext = {}", list.hasNext());
+
+        return list.map(QnAListItemDto::fromEntity);
     }
+    
 	
     @Transactional
     public Long create(QnACreateDto dto) {
@@ -116,6 +136,9 @@ public class QnAService {
             throw new SecurityException("You are not authorized to update this QnA post.");
         }
         
+     // 비밀글 상태를 업데이트
+        entity.setQnaLock(dto.getQnaLock());
+        
         entity.update(dto.getTitle(), dto.getContent());
         
         qnaRepo.save(entity); // 변경사항을 저장해야 modifiedTime이 갱신
@@ -172,11 +195,24 @@ public class QnAService {
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
     
+//    @Transactional
+//    public void incrementViewCount(Long id) {
+//        QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
+//        qna.incrementViewCount(); // 조회수 증가
+//        qnaRepo.save(qna); // 변경사항 저장
+//    }
+    
     @Transactional
-    public void incrementViewCount(Long id) {
-        QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
-        qna.incrementViewCount(); // 조회수 증가
-        qnaRepo.save(qna); // 변경사항 저장
-    }
+    public QnA incrementViewCount(Long qnaId, String userId, Integer userRole) {
+        QnA qna = qnaRepo.findById(qnaId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + qnaId));
 
+        // 비밀글이 아니거나, 비밀글이고 작성자 또는 관리자인 경우에만 조회수 증가
+        if (!qna.isSecret() || (userId != null && (userId.equals(qna.getQnaUserId()) || userRole == 0))) {
+            qna.setQnaViewCnt(qna.getQnaViewCnt() + 1);
+            qnaRepo.save(qna);
+        }
+
+        return qna;
+    }
 }

@@ -161,7 +161,7 @@ public class PaymentsController {
 	 * @param resId
 	 * @return 에러 메세지 반환
 	 */
-    @GetMapping("/getPayId/{resId}")
+    @GetMapping("/mypage/reservation_details/getPayId/{resId}")
     public ResponseEntity<?> getPayId(@PathVariable("resId") Integer resId) {
         try {
             Integer payId = paymentsService.getPayIdByResId(resId); // 결제 ID를 조회
@@ -178,8 +178,14 @@ public class PaymentsController {
 	 * @param payId 결제 키로 결제를 식별
 	 * @return ResponseEntity 객체로 HTTP 응답 상태와 메세지를 반환.
 	 */
-    @PostMapping("/cancel/{payId}")
-    public ResponseEntity<String> cancelPayment(@PathVariable Integer payId) {
+    @ResponseBody
+    @PostMapping("/mypage/reservation_details/cancel/{payId}")
+    public ResponseEntity<String> cancelPayment(@PathVariable("payId") Integer payId) {
+    	
+        if (payId == null || payId <= 0) {
+            return ResponseEntity.badRequest().body("Invalid payId");
+        }
+    	
         try {
             String result = paymentsService.cancelPayment(payId);
             if ("Payment cancellation successful".equals(result)) {
@@ -194,6 +200,7 @@ public class PaymentsController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Reservation not found for the given payment ID.");
                 }
             } else {
+            	log.warn("Cancellation failed: {}", result);
                 // 결과 메시지에 따라 적절한 HTTP 상태 코드를 반환
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }
