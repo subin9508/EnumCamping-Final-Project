@@ -29,6 +29,7 @@ import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.service.PaymentsService;
+import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -49,12 +50,14 @@ public class PaymentsController {
     private final PaymentsService paymentsService;
     private final UserService userService;
     private final MyPageService mypageService;
+    private final ReservationService reservationService;
 
     // 생성자를 통해 의존성 주입
-    public PaymentsController(PaymentsService paymentsService, UserService userService, MyPageService myPageService) {
+    public PaymentsController(PaymentsService paymentsService, UserService userService, MyPageService myPageService, ReservationService reservationService) {
         this.paymentsService = paymentsService;
         this.userService = userService;
         this.mypageService = myPageService;
+        this.reservationService = reservationService;
 
         // 가맹점 식별키와 비밀키 전달하여 api 인증
         this.api = new IamportClient("3360178750462177",
@@ -226,13 +229,18 @@ public class PaymentsController {
         }
         
         
-
         try {
             String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
             if ("Partial payment cancellation successful".equals(result)) {
-                // 부분 취소가 성공했을 때 예약 상태를 업데이트 (필요 시)
-                log.info("Partial payment cancelled successfully for payId: {}", payId);
-                return ResponseEntity.ok(result);
+                // 부분 취소가 성공했을 때 예약 상태를 업데이트
+                boolean updateSuccess = reservationService.updateReservationState(payId, 3);
+                if (updateSuccess) {
+                    log.info("Partial payment cancelled and reservation state updated successfully for payId: {}", payId);
+                    return ResponseEntity.ok("Partial payment cancellation and reservation update successful");
+                } else {
+                    log.warn("Partial payment cancelled but reservation state update failed for payId: {}", payId);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation successful but reservation update failed");
+                }
             } else {
                 log.warn("Partial cancellation failed: {}", result);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
