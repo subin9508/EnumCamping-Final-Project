@@ -20,10 +20,27 @@
     });
     
     
-    const btnApply = document.querySelector('button#btnApply');
-    const modifyForm = document.querySelector('#modifyForm');
-    
-    btnApply.addEventListener('click',()=>{
+	const btnApplyZones = document.querySelector('#btnApplyZones');
+	const btnApplyItems = document.querySelector('#btnApplyItems');
+  
+	    btnApplyZones.addEventListener('click', () => {
+	        const modifyForm = document.querySelector('#modifyFormZones');
+	        if (confirm('변경 내용을 저장할까요?')) {
+	            modifyForm.submit();
+	        }
+	    });
+
+	    btnApplyItems.addEventListener('click', () => {
+	        const modifyForm = document.querySelector('#modifyFormItems');
+	        if (confirm('변경 내용을 저장할까요?')) {
+	            modifyForm.submit();
+	        }
+	    });
+	});
+	  
+/*    
+const modifyForm = document.querySelector('#modifyForm');
+	btnApply.addEventListener('click',()=>{
         // 업데이트 내용 저장 확인
         const result = confirm('변경 내용을 저장할까요?');
         if (result){
@@ -37,4 +54,4 @@
     
     
     
- });
+ });*/

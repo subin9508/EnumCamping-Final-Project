@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,4 +39,12 @@ public class Items {
 	
 	@Basic(optional = false)
 	private String itemDesc; // 물품 설명
+	
+	@PrePersist
+    @PreUpdate
+    private void prepareData(){
+        if (itemDesc == null || itemDesc.trim().isEmpty()) {
+            itemDesc = "기본 설명";  // 기본값 설정
+        }
+    }
 }
