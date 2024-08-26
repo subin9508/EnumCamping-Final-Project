@@ -7,7 +7,7 @@
     
     
     
-    const inputs = document.querySelectorAll('#modifyForm input[type="text"]');
+    const inputs = document.querySelectorAll('form.modifyForm input[type="text"]');
     const modifiedInputs = new Set(); // 수정된 input 요소들을 저장하는 Set
 
     inputs.forEach(input => {
@@ -20,22 +20,14 @@
     });
     
     
-	const btnApplyZones = document.querySelector('#btnApplyZones');
-	const btnApplyItems = document.querySelector('#btnApplyItems');
-  
+	const btnApplyZones = document.querySelector('button#btnApplyZones');
 	    btnApplyZones.addEventListener('click', () => {
-	        const modifyForm = document.querySelector('#modifyFormZones');
+	        const modifyForm = document.querySelector('form#modifyFormZones');
 	        if (confirm('변경 내용을 저장할까요?')) {
 	            modifyForm.submit();
 	        }
 	    });
-
-	    btnApplyItems.addEventListener('click', () => {
-	        const modifyForm = document.querySelector('#modifyFormItems');
-	        if (confirm('변경 내용을 저장할까요?')) {
-	            modifyForm.submit();
-	        }
-	    });
+    
 	});
 	  
 /*    

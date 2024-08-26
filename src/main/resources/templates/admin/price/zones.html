@@ -17,16 +17,13 @@
             <div class="footer-main-content">
                 <th:block th:replace="~{/layout/fragments :: admin-sidebar}"></th:block>
                 <main>
-                
-                
                 <!-- 구역 테이블 -->
-                
                 <div class="card" id="zones-table">
                     <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
                         <h3><strong>구역 목록</strong></h3>
                     </div>
                     <div class=" justify-content-center">
-                    <form id="modifyForm" action="/enumcamping/admin/price/zones/update" method="post">
+                    <form id="modifyFormZones" class="modifyForm" action="/enumcamping/admin/price/zones/update" method="post">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -61,7 +58,7 @@
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
                             <input type="hidden" name="redirectUrl" value="/enumcamping/admin/price/zones/update">
-                            <button class="btn btn-outline-primary" id="btnApply" type="submit">적용</button>
+                            <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용</button>
                         </div>
                         </form>
                     </div>
@@ -76,7 +73,7 @@
             <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
         </div>
         
-      <script th:src="@{/js/price.js}"></script>
+      <script th:src="@{/js/price_zones.js}"></script>
       <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
       <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
     </body>

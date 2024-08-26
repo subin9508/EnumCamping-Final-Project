@@ -8,8 +8,12 @@ import java.time.LocalDateTime;
 import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.repository.ItemsRepository;
+
+import lombok.extern.slf4j.Slf4j;
+
 import com.itwill.finalproject.repository.ItemsHistoryRepository;
 
+@Slf4j
 @Service
 public class ItemsService {
 
@@ -110,15 +114,22 @@ public class ItemsService {
     // Items 업데이트 메서드 (기존에 있던 메서드)
     @Transactional
     public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc) {
+    	log.info("updateItemDetails");
         Items item = findById(itemId);
         if (item != null) {
             boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
             boolean descChanged = (newDesc != null && !newDesc.equals(item.getItemDesc()));
 
-            if (priceChanged || descChanged) {
+            if (priceChanged) {
+            	log.info("history insert");
                 updateItemHistory(item, newPrice.intValue());
                 item.setItemPrice(newPrice.intValue());
-                item.setItemDesc(newDesc);
+                log.info("item에 price update");
+                itemsRepository.save(item);
+            }
+            if (descChanged) { //설명만 변경시
+                log.info("item에 desc update");
+            	item.setItemDesc(newDesc);
                 itemsRepository.save(item);
             }
         }
@@ -127,6 +138,7 @@ public class ItemsService {
     // History 업데이트 메서드 (공통 사용)
     @Transactional
     private void updateItemHistory(Items item, int newPrice) {
+    	log.info("updateItemHistory");
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
             currentHistory.setEndDate(LocalDateTime.now());

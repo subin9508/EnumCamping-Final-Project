@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/enumcamping/admin")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 	
@@ -31,33 +31,23 @@ public class AdminController {
 	
 	
     @GetMapping("/price/zones")
-    public String zonePrice(Model model) {
+    public void zonePrice(Model model) {
         log.info("zonePrice");
         List<Items> items = reservationSvc.getAllZones();
         model.addAttribute("items", items);
-        return "zones";  // 확실히 경로를 반환하도록 수정
     }
     
     @GetMapping("/price/items")
-    public String itemPrice(Model model) {
+    public void itemPrice(Model model) {
         log.info("itemPrice");
         List<Items> items = reservationSvc.getAllItems();
         model.addAttribute("items", items);
-        return "items";  // 확실히 경로를 반환하도록 수정
     }
 	
 	
-//	@PostMapping("/price/update")
-//	public String priceUpdate(@RequestParam("redirectUrl") String redirectUrl) {
-//	    // Perform the necessary update logic here
-//
-//	    // Redirect to the URL passed as a parameter
-//	    return "redirect:" + redirectUrl;
-//	}
-
-
     @PostMapping("/price/zones/update")
     public String updateZones(@RequestParam Map<String, String> allParams) {
+    	log.info("updateZones : {}",allParams);
         allParams.forEach((key, value) -> {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
@@ -65,20 +55,22 @@ public class AdminController {
                 itemsService.updateZoneDetails(itemId, newPrice); // 가격만 업데이트
             }
         });
-        return "redirect:/enumcamping/admin/price/zones"; // 해당 페이지로 리다이렉트
+        return "redirect:/admin/price/zones"; // 해당 페이지로 리다이렉트
     }
 
     @PostMapping("/price/items/update")
     public String updateItems(@RequestParam Map<String, String> allParams) {
+    	log.info("updateItems : {}",allParams);
         allParams.forEach((key, value) -> {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
+                log.info("itemId = {}, newPrice = {}, newDesc = {}",itemId,newPrice, newDesc);
                 itemsService.updateItemDetails(itemId, newPrice, newDesc); // 가격과 설명 업데이트
             }
         });
-        return "redirect:/enumcamping/admin/price/items"; // 해당 페이지로 리다이렉트
+        return "redirect:/admin/price/items"; // 해당 페이지로 리다이렉트
     }
 	
 //    @PostMapping("/price/update")
