@@ -588,7 +588,7 @@ function updateQuantity(itemId, itemPrice) {
 
      // 합계를 표시할 요소를 업데이트
      var totalSumElement = document.getElementById('totalSum');
-     totalSumElement.textContent = '아이템 총 가격: ' + total + '원';
+     totalSumElement.textContent = total;
 
      // 전체 총 가격도 업데이트
      var totalAllItemsElement = document.getElementById('totalAllItems');

@@ -15,186 +15,202 @@
 		<div class="footer-main-content">
 			<!-- 사이드바 포함 -->
 			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
-				<main style="flex-grow: 1; margin-left: 5%;">
-					<div>
-						<input id="resId" name="resId" type="hidden" th:value="${resMaster.resId}">
-                        <input id="userId" name="userId" type="hidden" th:value="${resMaster.user.userId}">
-		                <table class="scriptCalendar">
-		                    <thead>
-		                        <tr id="trHead">
-		                            <td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
-		                            <td colspan="5"><span id="calYear">YYYY</span>년
-		                                <span id="calMonth">MM</span>월</td>
-		                            <td class="calendarBtn"
-		                                id="nextNextCalendar">&#62;&#62;</td>
-		                        </tr>
-		                        <tr id="weekDays">
-		                            <td>일</td>
-		                            <td>월</td>
-		                            <td>화</td>
-		                            <td>수</td>
-		                            <td>목</td>
-		                            <td>금</td>
-		                            <td>토</td>
-		                        </tr>
-		                    </thead>
-		                    <tbody></tbody>
-		                </table>
+			<main style="flex-grow: 1; margin-left: 5%;">
+				<div>
+					<input id="resId" name="resId" type="hidden"
+						th:value="${resMaster.resId}"> <input id="userId"
+						name="userId" type="hidden" th:value="${resMaster.user.userId}">
+					<table class="scriptCalendar">
+						<thead>
+							<tr id="trHead">
+								<td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
+								<td colspan="5"><span id="calYear">YYYY</span>년 <span
+									id="calMonth">MM</span>월</td>
+								<td class="calendarBtn" id="nextNextCalendar">&#62;&#62;</td>
+							</tr>
+							<tr id="weekDays">
+								<td>일</td>
+								<td>월</td>
+								<td>화</td>
+								<td>수</td>
+								<td>목</td>
+								<td>금</td>
+								<td>토</td>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
 
-						<span id="resCheckInDate" th:text="${resMaster.resCheckIn}" style="display: none;" data-checkin-date="${resMaster.resCheckIn}">resCheckIn</span>
-						<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}" style="display: none;" data-checkout-date="${resMaster.resCheckOut}">resCheckOut</span>
-				
+					<span id="resCheckInDate" th:text="${resMaster.resCheckIn}"
+						style="display: none;" data-checkin-date="${resMaster.resCheckIn}">resCheckIn</span>
+					<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}"
+						style="display: none;"
+						data-checkout-date="${resMaster.resCheckOut}">resCheckOut</span>
+
 					<div class="area-card">
-		                    <div class="card p-2" id="area1">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area1_radio" name="area" value="1"
-		                            th:checked="${resDetail[0].itemId >= 1 and resDetail[0].itemId <= 4}">
-		                            <span class="radio_icon"></span> 
-		                            <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-1</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area2">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area2_radio" name="area" value="2"
-		                            th:checked="${resDetail[0].itemId >= 5 and resDetail[0].itemId <= 8}">
-		                            <span class="radio_icon"></span> 
-		                            <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-2</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area3">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area3_radio" name="area" value="3"
-		                            th:checked="${resDetail[0].itemId >= 9 and resDetail[0].itemId <= 12}">
-		                            <span class="radio_icon"></span> 
-		                            <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-1</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area4">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area4_radio" name="area" value="4"
-		                            th:checked="${resDetail[0].itemId >= 13 and resDetail[0].itemId <= 16}">
-		                            <span class="radio_icon"></span> 
-		                            <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-2</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area5">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area5_radio" name="area" value="5"
-		                            th:checked="${resDetail[0].itemId >= 17 and resDetail[0].itemId <= 20}">
-		                            <span class="radio_icon"></span> 
-		                            <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 C</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                </div>
-		                
-		                <!-- 라디오 버튼으로 기간 선택 -->
-		                <div class="card mt-2 p-2" id="night-card">
-		                    <div class="night-radio_label"
-		                        id="night-radio_label">
-		                        <h3> <strong>이용 기간</strong> </h3>
-		                        <br/>
-		                        <br/>
-		                        <div class="radio-options" >
-		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="1" id="night1">
-		                                <span class="night-radio_text">1박 2일</span>
-		                            </label> 
-		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="2" id="night2">
-		                                <span class="night-radio_text">2박 3일</span>
-		                            </label>
-		                        </div>
-		                    </div>
-		                    <div class="m-3" id="price" style="text-align: right; color: #7C9C63; font-size: 25px;">
-		                        <span id="price-label">캠핑존 가격: </span> <span
-		                            id="price-value"></span>원
-		                    </div>
-		                </div>
-		                
-		        <!-- 아이템 테이블 -->
-                <div class="m-3" id="items-table">
-                    <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
-                        <h3><strong>대여 및 판매 물품</strong></h3>
-                    </div>
-                    <div class="container-fluid d-flex justify-content-center">
-                        <table class="table">
-                            <tbody>
-                                <tr th:each="i : ${items}">                                    
-                                    <td style="width: 20%; height: 10%; font-weight: normal;">
-                                        <h5 class="item-name" th:text="${i.itemName}"></h5>
-                                    </td>
-                                    <td style="width: 20%; height: 10%; font-weight: normal;"
-                                        class="item-description" th:text="${i.itemDesc}"></td>
-                                    <td style="width: 20%; height: 10%; text-align: center; font-weight: normal;"
-                                        class="item-price">
-                                         <span th:text="${i.itemPrice}"></span>원
-                                    </td>
-                                    <td class="narrow" style="width: 20%; height: 10%; text-align: center; font-weight: normal;">
-                                        <div class="quantity-controls">
-                                            <select th:id="'quantity-' + ${i.itemId}" th:onchange="updateQuantity([[${i.itemId}]], [[${i.itemPrice}]])" autocomplete="off">
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <!-- 필요한 경우 수량 옵션을 더 추가 -->
-                                            </select>
-                                        </div>
-                                        <p />
-                                        <div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+						<div class="card p-2" id="area1">
+							<label class="radio_label"
+								style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+								<input class="area-radio" type="radio" id="area1_radio"
+								name="area" value="1"
+								th:checked="${resDetail[0].itemId >= 1 and resDetail[0].itemId <= 4}">
+								<span class="radio_icon"></span> <span class="radio_text"
+								style="font-size: 18px; margin-right: auto;"><strong>캠핑존
+										A-1</strong></span> <span style="text-align: right;">40,000원~</span>
+							</label>
+						</div>
+						<div class="card p-2" id="area2">
+							<label class="radio_label"
+								style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+								<input class="area-radio" type="radio" id="area2_radio"
+								name="area" value="2"
+								th:checked="${resDetail[0].itemId >= 5 and resDetail[0].itemId <= 8}">
+								<span class="radio_icon"></span> <span class="radio_text"
+								style="font-size: 18px; margin-right: auto;"><strong>캠핑존
+										A-2</strong></span> <span style="text-align: right;">40,000원~</span>
+							</label>
+						</div>
+						<div class="card p-2" id="area3">
+							<label class="radio_label"
+								style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+								<input class="area-radio" type="radio" id="area3_radio"
+								name="area" value="3"
+								th:checked="${resDetail[0].itemId >= 9 and resDetail[0].itemId <= 12}">
+								<span class="radio_icon"></span> <span class="radio_text"
+								style="font-size: 18px; margin-right: auto;"><strong>캠핑존
+										B-1</strong></span> <span style="text-align: right;">40,000원~</span>
+							</label>
+						</div>
+						<div class="card p-2" id="area4">
+							<label class="radio_label"
+								style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+								<input class="area-radio" type="radio" id="area4_radio"
+								name="area" value="4"
+								th:checked="${resDetail[0].itemId >= 13 and resDetail[0].itemId <= 16}">
+								<span class="radio_icon"></span> <span class="radio_text"
+								style="font-size: 18px; margin-right: auto;"><strong>캠핑존
+										B-2</strong></span> <span style="text-align: right;">40,000원~</span>
+							</label>
+						</div>
+						<div class="card p-2" id="area5">
+							<label class="radio_label"
+								style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+								<input class="area-radio" type="radio" id="area5_radio"
+								name="area" value="5"
+								th:checked="${resDetail[0].itemId >= 17 and resDetail[0].itemId <= 20}">
+								<span class="radio_icon"></span> <span class="radio_text"
+								style="font-size: 18px; margin-right: auto;"><strong>캠핑존
+										C</strong></span> <span style="text-align: right;">40,000원~</span>
+							</label>
+						</div>
+					</div>
 
-                    <!-- 아이템 총 가격을 표시할 공간 -->
-                    <div class="card mt-2 p-2" style="border: none;">
-                        <div class="m-3" id="sumOfAllItems" style="text-align: right; color: #7C9C63; font-size: 25px;">
-                            <span id="totalSum">0원</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 요청사항 입력 -->
-                    <div class="container-fluid d-flex justify-content-center mt-3 row" id="requirement">
-                        <h3 class="col-2">요청사항</h3>
-                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"
-                        	th:text="${resMaster.requirement}"></textarea>
-                    </div>
+					<!-- 라디오 버튼으로 기간 선택 -->
+					<div class="card mt-2 p-2" id="night-card">
+						<div class="night-radio_label" id="night-radio_label">
+							<h3>
+								<strong>이용 기간</strong>
+							</h3>
+							<br /> <br />
+							<div class="radio-options">
+								<label> <input class="night-radio" type="radio"
+									name="night" value="1" id="night1"> <span
+									class="night-radio_text">1박 2일</span>
+								</label> <label> <input class="night-radio" type="radio"
+									name="night" value="2" id="night2"> <span
+									class="night-radio_text">2박 3일</span>
+								</label>
+							</div>
+						</div>
+						<div class="m-3" id="price"
+							style="text-align: right; color: #7C9C63; font-size: 25px;">
+							<span id="price-label">캠핑존 가격: </span> <span id="price-value"></span>원
+						</div>
+					</div>
 
-                    <!-- 전체 총 가격을 표시할 공간 -->
-                    <div class="m-3" id="totalAllItems" style="display: none; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; text-align: center;"></div>
-                </div>
-		                
-		             </div>
-		             <div class="d-flex justify-content-center">
-		             <input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요" value="100">		         
-		             <button id="btnPayRefund" class="btn btn-danger">부분환불</button>
-		             </div>
-				</main>
+					<!-- 아이템 테이블 -->
+					<div class="m-3" id="items-table">
+						<div class="container-fluid d-flex justify-content-center"
+							style="margin-bottom: 30px;">
+							<h3>
+								<strong>대여 및 판매 물품</strong>
+							</h3>
+						</div>
+						<div class="container-fluid d-flex justify-content-center">
+							<table class="table">
+								<tbody>
+									<tr th:each="i : ${items}">
+										<td style="width: 20%; height: 10%; font-weight: normal;">
+											<h5 class="item-name" th:text="${i.itemName}"></h5>
+										</td>
+										<td style="width: 20%; height: 10%; font-weight: normal;"
+											class="item-description" th:text="${i.itemDesc}"></td>
+										<td
+											style="width: 20%; height: 10%; text-align: center; font-weight: normal;"
+											class="item-price"><span th:text="${i.itemPrice}"></span>원
+										</td>
+										<td class="narrow"
+											style="width: 20%; height: 10%; text-align: center; font-weight: normal;">
+											<div class="quantity-controls">
+												<select th:id="'quantity-' + ${i.itemId}"
+													th:onchange="updateQuantity([[${i.itemId}]], [[${i.itemPrice}]])"
+													autocomplete="off">
+													
+													<option value="0" th:selected="${resDetail == null}">0</option>
+													<th:block th:if="${resDetail.itemId == i.itemId}" th:each="resDetail : ${resDetail}">
+														<option value="1" 
+															th:selected="${resDetail.itemId == i.itemId} and ${resDetail.itemQuantity == 1}">1</option>
+														<option value="2"
+															th:selected="${resDetail.itemId == i.itemId} and ${resDetail.itemQuantity == 2}">2</option>
+													</th:block>
+
+													<option value="1">1</option>
+													<option value="2">2</option>
+												</select>
+											</div>
+											<p />
+											<div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<!-- 아이템 총 가격을 표시할 공간 -->
+						<div class="card mt-2 p-2" style="border: none;">
+							<div class="m-3" id="sumOfAllItems"
+								style="text-align: right; color: #7C9C63; font-size: 25px;">
+								<span>물품 총 가격: </span><span id="totalSum"
+									th:text="${resMaster.resTotalPrice}">0원</span><span>원</span>
+							</div>
+						</div>
+
+						<!-- 요청사항 입력 -->
+						<div
+							class="container-fluid d-flex justify-content-center mt-3 row"
+							id="requirement">
+							<h3 class="col-2">요청사항</h3>
+							<textarea class="form-control col-10 m-3" id="special-requests"
+								rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"
+								th:text="${resMaster.requirement}"></textarea>
+						</div>
+
+						<!-- 전체 총 가격을 표시할 공간 -->
+						<div class="m-3" id="totalAllItems"
+							style="display: none; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; text-align: center;"></div>
+					</div>
+
+				</div>
+				<div class="d-flex justify-content-center">
+					<input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요"
+						value="100">
+					<button id="btnPayRefund" class="btn btn-danger">부분환불</button>
+				</div>
+
+				<div class="container-fluid d-flex justify-content-center mb-5">
+					<button onclick="addNextPageEventListeners()" class="btn btnNextPage">다음 단계</button>
+				</div>
+			</main>
 		</div>
 		<!-- 푸터 포함 -->
 		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
