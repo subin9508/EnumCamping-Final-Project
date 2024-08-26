@@ -11,10 +11,12 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
     selectedDate = null;
     selectedNight = null;
 	
-	 // resCheckIn 날짜 가져오기
-	 var resCheckInDate = document.getElementById('resCheckInDate').textContent;
-	 var resCheckOutDate = document.getElementById('resCheckOutDate').textContent;
+	 // resCheckIn 및 resCheckOut 날짜 가져오기
+	 var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
+	 var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
 
+	 checkNightRadio(resCheckInDate, resCheckOutDate);
+	 
 	 if (resCheckInDate) {
 		 // resCheckIn 날짜로 toDay 설정
 		 toDay = new Date(resCheckInDate);
@@ -29,10 +31,6 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
 		 highlightResCheckInDate(resCheckInDate);
 	 }
 
-	 // 체크인과 체크아웃 날짜 차이에 따라 라디오 버튼 체크
-	 if (resCheckInDate && resCheckOutDate) {
-		 checkNightRadio(resCheckInDate, resCheckOutDate);
-	 }
         
         document.getElementById("btnPrevCalendar").addEventListener("click", function(event) {
             prevCalendar();
@@ -49,18 +47,15 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
 		               
 });
 
-function checkNightRadio(checkInDate, checkOutDate) {
-    var checkIn = new Date(checkInDate);
-    var checkOut = new Date(checkOutDate);
-    
-    // 날짜 차이 계산 (밀리초 단위)
-    var diffTime = Math.abs(checkOut - checkIn);
-    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 1) {
-        document.getElementById('night1').checked = true;
-    } else if (diffDays === 2) {
-        document.getElementById('night2').checked = true;
+// 날짜 차이에 따른 라디오 버튼 자동 선택 함수
+function checkNightRadio(resCheckInDate, resCheckOutDate) {
+    var timeDiff = resCheckOutDate - resCheckInDate;
+    var dayDiff = timeDiff / (1000 * 3600 * 24);
+
+    if (dayDiff === 1) {
+        document.getElementById("night1").checked = true;
+    } else if (dayDiff === 2) {
+        document.getElementById("night2").checked = true;
     }
 }
 

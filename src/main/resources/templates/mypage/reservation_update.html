@@ -41,8 +41,8 @@
 		                    <tbody></tbody>
 		                </table>
 
-						<span id="resCheckInDate" th:text="${resMaster.resCheckIn}" style="display: none;">resCheckIn</span>
-						<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}" style="display: none;">resCheckOut</span>
+						<span id="resCheckInDate" th:text="${resMaster.resCheckIn}" style="display: none;" data-checkin-date="${resMaster.resCheckIn}">resCheckIn</span>
+						<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}" style="display: none;" data-checkout-date="${resMaster.resCheckOut}">resCheckOut</span>
 				
 					<div class="area-card">
 		                    <div class="card p-2" id="area1">
@@ -136,7 +136,7 @@
 		                    </div>
 		                </div>
 		                
-		                <!-- 아이템 테이블 -->
+		        <!-- 아이템 테이블 -->
                 <div class="m-3" id="items-table">
                     <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
                         <h3><strong>대여 및 판매 물품</strong></h3>
