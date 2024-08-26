@@ -10,7 +10,29 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
-        buildCalendar();
+	
+	 // resCheckIn 날짜 가져오기
+	 var resCheckInDate = document.getElementById('resCheckInDate').textContent;
+	 var resCheckOutDate = document.getElementById('resCheckOutDate').textContent;
+
+	 if (resCheckInDate) {
+		 // resCheckIn 날짜로 toDay 설정
+		 toDay = new Date(resCheckInDate);
+	 } else {
+		 toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
+	 }
+	    
+	buildCalendar();
+	
+	 // resCheckIn 날짜를 캘린더에 표시
+	 if (resCheckInDate) {
+		 highlightResCheckInDate(resCheckInDate);
+	 }
+
+	 // 체크인과 체크아웃 날짜 차이에 따라 라디오 버튼 체크
+	 if (resCheckInDate && resCheckOutDate) {
+		 checkNightRadio(resCheckInDate, resCheckOutDate);
+	 }
         
         document.getElementById("btnPrevCalendar").addEventListener("click", function(event) {
             prevCalendar();
@@ -22,9 +44,46 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
-        
-               
+		
+		
+		               
 });
+
+function checkNightRadio(checkInDate, checkOutDate) {
+    var checkIn = new Date(checkInDate);
+    var checkOut = new Date(checkOutDate);
+    
+    // 날짜 차이 계산 (밀리초 단위)
+    var diffTime = Math.abs(checkOut - checkIn);
+    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) {
+        document.getElementById('night1').checked = true;
+    } else if (diffDays === 2) {
+        document.getElementById('night2').checked = true;
+    }
+}
+
+function highlightResCheckInDate(dateString) {
+    var date = new Date(dateString);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    
+    // 현재 표시된 달력의 년도와 월
+    var currentYear = parseInt(document.getElementById("calYear").innerText);
+    var currentMonth = parseInt(document.getElementById("calMonth").innerText);
+    
+    // 만약 resCheckIn 날짜가 현재 표시된 달력의 월/년과 일치한다면
+    if (year === currentYear && month === currentMonth) {
+        var cells = document.querySelectorAll('.scriptCalendar td');
+        cells.forEach(function(cell) {
+            if (parseInt(cell.innerText) === day) {
+                calendarChoiceDay(cell);
+            }
+        });
+    }
+}
 
 var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
 var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정값
@@ -196,6 +255,12 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
 		}
 
         console.log('buildCalendar - current selectedDate:', selectedDate);
+		
+		// 달력 구성이 완료된 후 resCheckIn 날짜 하이라이트
+		    var resCheckInDate = document.getElementById('resCheckInDate').textContent;
+		    if (resCheckInDate) {
+		        highlightResCheckInDate(resCheckInDate);
+		    }
     }
 
     /**

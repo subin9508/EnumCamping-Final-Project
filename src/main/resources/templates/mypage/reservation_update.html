@@ -41,19 +41,16 @@
 		                    <tbody></tbody>
 		                </table>
 
-					<div id="date" style="display: none;"></div>
-					<div th:each="detail : ${resDetail}">
-    <span th:text="${detail.itemId}">itemId</span>
-    <span th:text="${detail.itemName}">itemName</span>
-</div>
-
+						<span id="resCheckInDate" th:text="${resMaster.resCheckIn}" style="display: none;">resCheckIn</span>
+						<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}" style="display: none;">resCheckOut</span>
+				
 					<div class="area-card">
 		                    <div class="card p-2" id="area1">
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
 		                            id="area1_radio" name="area" value="1"
-		                            >
+		                            th:checked="${resDetail[0].itemId >= 1 and resDetail[0].itemId <= 4}">
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -66,7 +63,7 @@
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
 		                            id="area2_radio" name="area" value="2"
-		                            >
+		                            th:checked="${resDetail[0].itemId >= 5 and resDetail[0].itemId <= 8}">
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -78,7 +75,8 @@
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
-		                            id="area3_radio" name="area" value="3">
+		                            id="area3_radio" name="area" value="3"
+		                            th:checked="${resDetail[0].itemId >= 9 and resDetail[0].itemId <= 12}">
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -90,7 +88,8 @@
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
-		                            id="area4_radio" name="area" value="4">
+		                            id="area4_radio" name="area" value="4"
+		                            th:checked="${resDetail[0].itemId >= 13 and resDetail[0].itemId <= 16}">
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -102,7 +101,8 @@
 		                        <label class="radio_label"
 		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 		                            <input class="area-radio" type="radio"
-		                            id="area5_radio" name="area" value="5">
+		                            id="area5_radio" name="area" value="5"
+		                            th:checked="${resDetail[0].itemId >= 17 and resDetail[0].itemId <= 20}">
 		                            <span class="radio_icon"></span> 
 		                            <span
 		                            class="radio_text"
@@ -119,13 +119,13 @@
 		                        <h3> <strong>이용 기간</strong> </h3>
 		                        <br/>
 		                        <br/>
-		                        <div class="radio-options">
+		                        <div class="radio-options" >
 		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="1">
+		                                type="radio" name="night" value="1" id="night1">
 		                                <span class="night-radio_text">1박 2일</span>
 		                            </label> 
 		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="2">
+		                                type="radio" name="night" value="2" id="night2">
 		                                <span class="night-radio_text">2박 3일</span>
 		                            </label>
 		                        </div>
@@ -181,7 +181,8 @@
                     <!-- 요청사항 입력 -->
                     <div class="container-fluid d-flex justify-content-center mt-3 row" id="requirement">
                         <h3 class="col-2">요청사항</h3>
-                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"></textarea>
+                        <textarea class="form-control col-10 m-3" id="special-requests" rows="3" placeholder="요청사항을 입력하세요" autocomplete="off"
+                        	th:text="${resMaster.requirement}"></textarea>
                     </div>
 
                     <!-- 전체 총 가격을 표시할 공간 -->
