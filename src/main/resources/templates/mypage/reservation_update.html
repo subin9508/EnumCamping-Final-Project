@@ -1,164 +1,142 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
-	<link th:href="@{/css/header.css}" rel="stylesheet" />
-	<link th:href="@{/css/footer.css}" rel="stylesheet" />
-	<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
-	<link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <link th:href="@{/css/header.css}" rel="stylesheet" />
+    <link th:href="@{/css/footer.css}" rel="stylesheet" />
+    <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/calendar.css}">
 </head>
 
 <body>
-	<div class="wrapper">
-		<!-- 헤더 포함 -->
-		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
-		<div class="footer-main-content">
-			<!-- 사이드바 포함 -->
-			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
-				<main style="flex-grow: 1; margin-left: 5%;">
-					<div>
-						<input id="resId" name="resId" type="hidden" th:value="${resMaster.resId}">
+    <div class="wrapper">
+        <!-- 헤더 포함 -->
+         <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <div class="footer-main-content">
+            <!-- 사이드바 포함 -->
+            <th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+                <main style="flex-grow: 1; margin-left: 5%;">
+                    <div>
+                        <input id="resId" name="resId" type="hidden" th:value="${resMaster.resId}">
                         <input id="userId" name="userId" type="hidden" th:value="${resMaster.user.userId}">
-		                <table class="scriptCalendar">
-		                    <thead>
-		                        <tr id="trHead">
-		                            <td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
-		                            <td colspan="5"><span id="calYear">YYYY</span>년
-		                                <span id="calMonth">MM</span>월</td>
-		                            <td class="calendarBtn"
-		                                id="nextNextCalendar">&#62;&#62;</td>
-		                        </tr>
-		                        <tr id="weekDays">
-		                            <td>일</td>
-		                            <td>월</td>
-		                            <td>화</td>
-		                            <td>수</td>
-		                            <td>목</td>
-		                            <td>금</td>
-		                            <td>토</td>
-		                        </tr>
-		                    </thead>
-		                    <tbody></tbody>
-		                </table>
-		
-		                <div id="date" style="display: none;"></div>
-		                
-		                <!-- 이미지 URL 사용 -->
-		                <div class="area-card" style="display: none;">
-		                    <div class="card p-2" id="area1">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area1_radio" name="area" value="1">
-		                            <span class="radio_icon"></span> <img
-		                            alt="campingzone1"
-		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
-		                            height="150px" width="200px"
-		                            style="margin: 0 10px;"> <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-1</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area2">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area2_radio" name="area" value="2">
-		                            <span class="radio_icon"></span> <img
-		                            alt="campingzone2"
-		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
-		                            height="150px" width="200px"
-		                            style="margin: 0 10px;"> <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 A-2</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area3">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area3_radio" name="area" value="3">
-		                            <span class="radio_icon"></span> <img
-		                            alt="campingzone3"
-		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
-		                            height="150px" width="200px"
-		                            style="margin: 0 10px;"> <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-1</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area4">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area4_radio" name="area" value="4">
-		                            <span class="radio_icon"></span> <img
-		                            alt="campingzone4"
-		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
-		                            height="150px" width="200px"
-		                            style="margin: 0 10px;"> <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 B-2</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                    <div class="card p-2" id="area5">
-		                        <label class="radio_label"
-		                            style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-		                            <input class="area-radio" type="radio"
-		                            id="area5_radio" name="area" value="5">
-		                            <span class="radio_icon"></span> <img
-		                            alt="campingzone5"
-		                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
-		                            height="150px" width="200px"
-		                            style="margin: 0 10px;"> <span
-		                            class="radio_text"
-		                            style="font-size: 18px; margin-right: auto;"><strong>캠핑존 C</strong></span>
-		                            <span style="text-align: right;">40,000원~</span>
-		                        </label>
-		                    </div>
-		                </div>
-		                
-		                <!-- 라디오 버튼으로 기간 선택 -->
-		                <div class="card mt-2 p-2" id="night-card"
-		                    style="display: none;">
-		                    <div class="night-radio_label"
-		                        id="night-radio_label">
-		                        <h3> <strong>이용 기간</strong> </h3>
-		                        <br/>
-		                        <br/>
-		                        <div class="radio-options">
-		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="1">
-		                                <span class="night-radio_text">1박 2일</span>
-		                            </label> 
-		                            <label> <input class="night-radio"
-		                                type="radio" name="night" value="2">
-		                                <span class="night-radio_text">2박 3일</span>
-		                            </label>
-		                        </div>
-		                    </div>
-		                    <div class="m-3" id="price" style="text-align: right; color: #7C9C63; font-size: 25px;">
-		                        <span id="price-label">캠핑존 가격: </span> <span
-		                            id="price-value"></span>원
-		                    </div>
-		                </div>
-		                
-		             </div>
-		             <div class="d-flex justify-content-center">
-		             <input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요" value="100">		         
-		             <button id="btnPayRefund" class="btn btn-danger">부분환불</button>
-		             </div>
-				</main>
-		</div>
-		<!-- 푸터 포함 -->
-		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
-	</div>
-	
-	<!-- 부트 스트랩 JS -->
+                        <table class="scriptCalendar">
+                            <thead>
+                                <tr id="trHead">
+                                    <td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
+                                    <td colspan="5"><span id="calYear">YYYY</span>년
+                                        <span id="calMonth">MM</span>월</td>
+                                    <td class="calendarBtn"
+                                        id="nextNextCalendar">&#62;&#62;</td>
+                                </tr>
+                                <tr id="weekDays">
+                                    <td>일</td>
+                                    <td>월</td>
+                                    <td>화</td>
+                                    <td>수</td>
+                                    <td>목</td>
+                                    <td>금</td>
+                                    <td>토</td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+        
+                        <div id="date" style="display: none;"></div>
+                        
+                        <!-- 캠핑존 -->
+                        <div class="area-card">
+                            <div class="card p-2" id="area1">
+                                <label class="radio_label"
+                                    style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <input class="area-radio" type="radio"
+                                    id="area1_radio" name="area" value="1">
+                                    <span class="radio_icon"></span> 
+                                    <span class="radio_text"
+                                    style="font-size: 18px; margin-right: auto;"><strong>달</strong></span>
+                                    <span style="text-align: right;"></span>
+                                </label>
+                            </div>
+                            <div class="card p-2" id="area2">
+                                <label class="radio_label"
+                                    style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <input class="area-radio" type="radio"
+                                    id="area2_radio" name="area" value="2">
+                                    <span class="radio_icon"></span>
+                                    <span class="radio_text"
+                                    style="font-size: 18px; margin-right: auto;"><strong>별</strong></span>
+                                    <span style="text-align: right;">40,000원~</span>
+                                </label>
+                            </div>
+                            <div class="card p-2" id="area3">
+                                <label class="radio_label"
+                                    style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <input class="area-radio" type="radio"
+                                    id="area3_radio" name="area" value="3">
+                                    <span class="radio_icon"></span>
+                                    <span class="radio_text"
+                                    style="font-size: 18px; margin-right: auto;"><strong>노을</strong></span>
+                                    <span style="text-align: right;">40,000원~</span>
+                                </label>
+                            </div>
+                            <div class="card p-2" id="area4">
+                                <label class="radio_label"
+                                    style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <input class="area-radio" type="radio"
+                                    id="area4_radio" name="area" value="4">
+                                    <span class="radio_icon"></span>
+                                    <span class="radio_text"
+                                    style="font-size: 18px; margin-right: auto;"><strong>바람</strong></span>
+                                    <span style="text-align: right;">40,000원~</span>
+                                </label>
+                            </div>
+                            <div class="card p-2" id="area5">
+                                <label class="radio_label"
+                                    style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                    <input class="area-radio" type="radio"
+                                    id="area5_radio" name="area" value="5">
+                                    <span class="radio_icon"></span>
+                                    <span class="radio_text"
+                                    style="font-size: 18px; margin-right: auto;"><strong>하늘</strong></span>
+                                    <span style="text-align: right;">40,000원~</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- 라디오 버튼으로 기간 선택 -->
+                        <div class="card mt-2 p-2" id="night-card">
+                            <div class="night-radio_label" id="night-radio_label">
+                                <h3><strong>이용 기간</strong></h3>
+                                <br/>
+                                <br/>
+                                <div class="radio-options">
+                                    <label> 
+                                        <input class="night-radio" type="radio" name="night" value="1">
+                                        <span class="night-radio_text">1박 2일</span>
+                                    </label> 
+                                    <label> 
+                                        <input class="night-radio" type="radio" name="night" value="2">
+                                        <span class="night-radio_text">2박 3일</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="m-3" id="price" style="text-align: right; color: #7C9C63; font-size: 25px;">
+                                <span id="price-label">캠핑존 가격: </span> <span
+                                    id="price-value"></span>원
+                            </div>
+                        </div>
+                        
+                     <div class="d-flex justify-content-center">
+                     <input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요" value="100">                
+                     <button id="btnPayRefund" class="btn btn-danger">부분환불</button>
+                     </div>
+                </main>
+        </div>
+        <!-- 푸터 포함 -->
+        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    </div>
+    
+    <!-- 부트 스트랩 JS -->
     <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
         
     <!-- Weather JS -->
@@ -209,8 +187,8 @@
             document.getElementById('special-requests').value = '';
         };
     </script>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<!-- paymentRefund JS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- paymentRefund JS -->
     <script th:src="@{/js/paymentRefund.js}"></script>
 </body>
 </html>
