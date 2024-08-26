@@ -23,7 +23,7 @@
                         <h3><strong>물품 목록</strong></h3>
                     </div>
                     <div class=" justify-content-center">
-                    <form id="modifyForm">
+                    <form id="modifyFormItems" class="modifyForm" action="/enumcamping/admin/price/items/update" method="post">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -34,16 +34,19 @@
                             </thead>
                             <tbody>
                                 <tr th:each="i : ${items}">
+                                <td class="item-id col-3 d-none" th:text="${i.itemId}"></td>
                                     <td class="item-name col-3" th:text="${i.itemName}">
                                     </td>
                                     <td class="item-description col-6">
                                     
-                                    <input class="form-control" type="text" style="width:100%; border: 0;" th:value="${i.itemDesc}" />
+                                    <input class="form-control" type="text" style="width:100%; border: 0;" 
+                                        th:name="'desc_' + ${i.itemId}"  th:value="${i.itemDesc}" />
                                         
                                     </td>
                                     <td class="item-price col-3">
                                         <div style="display: inline-flex; align-items: center; justify-content: center;">
-                                            <input class="form-control" type="text" style="width:80%; border: 0; text-align: right;" th:value="${i.itemPrice}" />
+                                            <input class="form-control" type="text" style="width:80%; border: 0; text-align: right;" 
+                                            	th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
                                             <span>원</span>
                                         </div>
                                     </td>
@@ -52,8 +55,8 @@
                             </tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
-                            <input type="hidden" name="redirectUrl" value="/admin/price/items">
-                            <button class="btn btn-outline-primary" id="btnApply">적용</button>
+                            <input type="hidden" name="redirectUrl" value="/admin/price/items/update">
+                            <button class="btn btn-outline-primary" id="btnApplyItems" type="button">적용</button>
                         </div>
                         </form>
                     </div>
@@ -68,7 +71,7 @@
             <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
         </div>
         
-      <script th:src="@{/js/price.js}"></script>
+      <script th:src="@{/js/price_items.js}"></script>
       <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
       <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 	</body>
