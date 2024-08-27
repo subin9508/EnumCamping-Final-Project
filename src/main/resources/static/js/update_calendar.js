@@ -27,9 +27,11 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
 	buildCalendar();
 	
 	 // resCheckIn 날짜를 캘린더에 표시
-	 if (resCheckInDate) {
-		 highlightResCheckInDate(resCheckInDate);
-	 }
+	 if (resCheckInDate && resCheckOutDate) {
+		 highlightResCheckInDate(resCheckInDate, resCheckOutDate);
+	 } else if (resCheckInDate) {
+        highlightResCheckInDate(resCheckInDate);
+    }
 
         
         document.getElementById("btnPrevCalendar").addEventListener("click", function(event) {
@@ -78,6 +80,27 @@ function highlightResCheckInDate(dateString) {
             }
         });
     }
+}
+
+// 날짜 구간을 하이라이트하는 함수 (체크인과 체크아웃 날짜 및 그 사이의 날짜)
+function highlightRangeDates(checkInDate, checkOutDate) {
+    var currentYear = parseInt(document.getElementById("calYear").innerText);
+    var currentMonth = parseInt(document.getElementById("calMonth").innerText);
+
+    var cells = document.querySelectorAll('.scriptCalendar td');
+    cells.forEach(function (cell) {
+        var cellDate = new Date(currentYear, currentMonth - 1, parseInt(cell.innerText));
+
+        if (cellDate >= checkInDate && cellDate <= checkOutDate) {
+            cell.style.backgroundColor = "#FFFFE6"; // 이 구간의 날짜를 하이라이트
+        }
+
+        if (cellDate.getTime() === checkInDate.getTime()) {
+            calendarChoiceDay(cell); // 체크인 날짜
+        } else if (cellDate.getTime() === checkOutDate.getTime()) {
+            cell.style.backgroundColor = "#FFE6E6"; // 체크아웃 날짜
+        }
+    });
 }
 
 var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
@@ -251,11 +274,15 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
 
         console.log('buildCalendar - current selectedDate:', selectedDate);
 		
-		// 달력 구성이 완료된 후 resCheckIn 날짜 하이라이트
-		    var resCheckInDate = document.getElementById('resCheckInDate').textContent;
-		    if (resCheckInDate) {
-		        highlightResCheckInDate(resCheckInDate);
-		    }
+		 // 달력 구성이 완료된 후 resCheckIn 및 resCheckOut 날짜 하이라이트
+	    var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent);
+	    var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent);
+	
+	    if (resCheckInDate && resCheckOutDate) {
+	        highlightRangeDates(resCheckInDate, resCheckOutDate);
+	    } else if (resCheckInDate) {
+	        highlightResCheckInDate(resCheckInDate);
+	    }
     }
 
     /**
