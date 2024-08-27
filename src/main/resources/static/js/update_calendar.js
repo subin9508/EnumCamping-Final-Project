@@ -489,48 +489,46 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     }
     
     // 구역 가격 업데이트
-   // 평일 + 주말 가격
     function updatePrice(year, month, day, selectedArea, selectedNight) {
-    const selectedDateObj = new Date(year, month - 1, day);
-
-    const startPeakSeason = new Date(year, 6, 1); // 7월 1일
-    const endPeakSeason = new Date(year, 7, 31); // 8월 31일
-    const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
-    const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
-
-    const baseItemId = (selectedArea - 1) * 4;
-
-    let pricePromises = [];
-
-    for (let i = 0; i < selectedNight; i++) {
-        const checkInDate = new Date(selectedDateObj);
-        checkInDate.setDate(selectedDateObj.getDate() + i);
-        const isWeekend = (checkInDate.getDay() === 0 || checkInDate.getDay() === 6); // 0: Sunday, 6: Saturday
+        const date = `${year}-${month}-${day}`;
+        const selectedDateObj = new Date(year, month - 1, day);
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
         
-        const itemId = baseItemId + (isPeakSeason ? 2 : 0) + (isWeekend ? 1 : 0) + 1;
+        // 성수기 기간 설정
+        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
+        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+
+        // 성수기 여부 결정
+        const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
+        const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
+
+        const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
+
+        const baseItemId = (selectedArea - 1) * 4;
+        const itemId = baseItemId + seasonFactor + weekendFactor + 1;
         
-        // 비동기 요청을 배열에 저장
-        pricePromises.push(
-            axios.get(`../reservation/itemPrice/${itemId}`).then(response => response.data)
-        );
+        const uri = `../reservation/itemPrice/${itemId}`;
+
+        console.log('updatePrice()', uri);
+
+        axios.get(uri)
+            .then(response => {
+                const price = (response.data) * selectedNight;
+                document.getElementById('price-value').innerText = price;
+                updateTotalAllItems();
+                
+                // 전역 변수 업데이트
+            finalYear = year;
+            finalMonth = month;
+            finalDay = day;
+            finalItemId = itemId;
+            finalSelectedNight = selectedNight;
+            
+            })
+            .catch(error => {
+                console.error("There was an error fetching the price!", error);
+            });
     }
-
-    // 모든 비동기 요청이 완료된 후에 총 가격 계산
-    Promise.all(pricePromises).then(prices => {
-        const totalPrice = prices.reduce((sum, price) => sum + price, 0);
-        document.getElementById('price-value').innerText = totalPrice;
-        updateTotalAllItems();
-
-        // 전역 변수 업데이트
-        finalYear = year;
-        finalMonth = month;
-        finalDay = day;
-        finalItemId = prices[prices.length - 1]; // 마지막 날짜의 아이템 ID
-        finalSelectedNight = selectedNight;
-    }).catch(error => {
-        console.error("There was an error fetching the price!", error);
-    });
-}
 
     
     // 체크아웃 날짜 계산
