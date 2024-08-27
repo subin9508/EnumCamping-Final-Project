@@ -511,13 +511,16 @@ public class MyPageController {
 		log.info("reservationUpdateCalendar");
 		List<Items> items = reservationSvc.getAllItems();
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
     	log.info("resMaster={}",resMaster);
-		
+        log.info("resDetail={}", resDetail); 
+        
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
 		model.addAttribute("items", items);
 		model.addAttribute("resMaster", resMaster.get());
+		model.addAttribute("resDetail", resDetail);
 	}
     
     @GetMapping("/reservation_update/{date}")

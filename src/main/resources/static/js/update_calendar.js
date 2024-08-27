@@ -1,5 +1,5 @@
  /**
-  *  /reservation/calendar.jsp에 포함
+  *  /mypage/reservation_update.jsp에 포함
   */
 var selectedDate = null;
 var selectedArea= null;
@@ -10,7 +10,27 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
-        buildCalendar();
+	
+	 // resCheckIn 및 resCheckOut 날짜 가져오기
+	 var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
+	 var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
+
+	 checkNightRadio(resCheckInDate, resCheckOutDate);
+	 
+	 if (resCheckInDate) {
+		 // resCheckIn 날짜로 toDay 설정
+		 toDay = new Date(resCheckInDate);
+	 } else {
+		 toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
+	 }
+	    
+	buildCalendar();
+	
+	 // resCheckIn 날짜를 캘린더에 표시
+	 if (resCheckInDate) {
+		 highlightResCheckInDate(resCheckInDate);
+	 }
+
         
         document.getElementById("btnPrevCalendar").addEventListener("click", function(event) {
             prevCalendar();
@@ -22,7 +42,43 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
+		
+		
+		               
 });
+
+// 날짜 차이에 따른 라디오 버튼 자동 선택 함수
+function checkNightRadio(resCheckInDate, resCheckOutDate) {
+    var timeDiff = resCheckOutDate - resCheckInDate;
+    var dayDiff = timeDiff / (1000 * 3600 * 24);
+
+    if (dayDiff === 1) {
+        document.getElementById("night1").checked = true;
+    } else if (dayDiff === 2) {
+        document.getElementById("night2").checked = true;
+    }
+}
+
+function highlightResCheckInDate(dateString) {
+    var date = new Date(dateString);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    
+    // 현재 표시된 달력의 년도와 월
+    var currentYear = parseInt(document.getElementById("calYear").innerText);
+    var currentMonth = parseInt(document.getElementById("calMonth").innerText);
+    
+    // 만약 resCheckIn 날짜가 현재 표시된 달력의 월/년과 일치한다면
+    if (year === currentYear && month === currentMonth) {
+        var cells = document.querySelectorAll('.scriptCalendar td');
+        cells.forEach(function(cell) {
+            if (parseInt(cell.innerText) === day) {
+                calendarChoiceDay(cell);
+            }
+        });
+    }
+}
 
 var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
 var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정값
@@ -194,6 +250,12 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         }
 
         console.log('buildCalendar - current selectedDate:', selectedDate);
+		
+		// 달력 구성이 완료된 후 resCheckIn 날짜 하이라이트
+		    var resCheckInDate = document.getElementById('resCheckInDate').textContent;
+		    if (resCheckInDate) {
+		        highlightResCheckInDate(resCheckInDate);
+		    }
     }
 
     /**
@@ -235,10 +297,6 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         selectedNight = null;
         console.log('calendarChoiceDay - selectedDate=', selectedDate);
         
-        // night 라디오 버튼 숨기기
-        const nightCard = document.getElementById('night-card');
-        nightCard.style.display = 'none';
-        
         // 선택한 날짜에 대한 예약 정보 가져오기
         getReservations(year, month, day);
         
@@ -255,10 +313,6 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         });
         
         selectedArea = null;
-        
-        // 아이템 테이블 숨기기
-        const itemsTable = document.getElementById('items-table');
-        itemsTable.style.display = 'none';
         
         
         // 두 가지 조건이 모두 만족되었는지 확인하여 함수 호출
@@ -537,7 +591,7 @@ function updateQuantity(itemId, itemPrice) {
 
      // 합계를 표시할 요소를 업데이트
      var totalSumElement = document.getElementById('totalSum');
-     totalSumElement.textContent = '아이템 총 가격: ' + total + '원';
+     totalSumElement.textContent = total;
 
      // 전체 총 가격도 업데이트
      var totalAllItemsElement = document.getElementById('totalAllItems');
@@ -648,7 +702,6 @@ function addNextPageEventListeners() {
         console.error("btnNextPage element not found");
     }
 }
-
     
 
     /**
