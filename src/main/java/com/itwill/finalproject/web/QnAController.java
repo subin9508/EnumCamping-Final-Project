@@ -291,7 +291,7 @@ public class QnAController {
     		@AuthenticationPrincipal UserDetails userDetails) {
         log.info("delete(id={})", id);
         
-        qnaSvc.delete(id);
+        qnaSvc.delete(id, userDetails.getUsername());
         
         return "redirect:/community/qna/list";
     }

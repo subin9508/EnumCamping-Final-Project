@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputConfirmpassword.addEventListener('input', checkPasswordMatch);
     
     const inputEmail = document.querySelector('input#user_email');
-    inputEmail.addEventListener('change', checkEmail);
+    inputEmail.addEventListener('input', checkEmail);
     
     const inputUsername = document.querySelector('input#user_name');
     inputUsername.addEventListener('change', checkUsername);
@@ -41,13 +41,29 @@ document.addEventListener('DOMContentLoaded', () => {
     inputPhone.addEventListener('change', checkPhone);
     
     const btnSignUp = document.querySelector('button#btnSignUp');
+    
+    // 엔터 키 입력 시 폼 제출을 방지
+	const form = document.querySelector('form');
+	
+	
+	form.addEventListener('keypress', function(event) {
+	    if (event.key === 'Enter') {
+	        event.preventDefault(); // 엔터 키로 폼이 제출되지 않도록 함
+	    }
+	});
 
     // 회원가입 버튼 클릭 시 최종 유효성 검사
-    btnSignUp.addEventListener('click', (event) => {
-        if (validateBeforeSignUp(event)) {
-            alert('회원가입을 축하합니다');
-        }
-    });
+	btnSignUp.addEventListener('click', (event) => {
+	    if (form.checkValidity()) {
+	        // 기본 폼 검증이 성공했을 때만 추가 검증 수행
+	        event.preventDefault(); // 기본 제출 방지
+	
+	        if (validateBeforeSignUp(event)) {
+	            alert('회원가입을 축하합니다');
+	            form.submit(); // 검증이 성공하면 폼을 수동으로 제출
+	        }
+	    }
+	});
 
     /* -------------------- 함수 선언 -------------------- */
     
@@ -207,29 +223,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // 이메일 입력 필드의 change 이벤트 리스너
     // 중복 이메일 체크 Ajax 요청을 보내고, 응답을 받았을 때 처리.
     function checkEmail(event) {
+		
         const userEmail = inputEmail.value;
-        console.log(userEmail);
-        const uri = `./checkemail?userEmail=${userEmail}`; // 이메일 중복 체크 REST API URI
+        const checkUserEmailResult = document.querySelector('div#checkUserEmailResult');
+        
+        if (!userEmail.includes('@')) {
+	        checkUserEmailResult.innerHTML = '유효한 이메일 주소를 입력하세요. "@"가 필요합니다.';
+	        checkUserEmailResult.classList.add('text-danger');
+	        //inputEmail.after(emailWarning);
+	    } else {
+	        const parts = userEmail.split('@');
+	        if (parts[1] === '' || !parts[1].includes('.')) {
+	            checkUserEmailResult.innerHTML = '유효한 이메일 주소를 입력하세요. "@" 뒤에 도메인 이름과 "."이 필요합니다.';
+	            checkUserEmailResult.classList.add('text-danger');
+	            //inputEmail.after(emailWarning);
+	        } else {
+	            
+		        const uri = `./checkemail?userEmail=${userEmail}`; // 이메일 중복 체크 REST API URI
+		        axios
+		            .get(uri)
+		            .then((response) => {
+		                if (response.data === 'Y') {
+		                    emailChecked = true;
+		                    checkUserEmailResult.innerHTML = '';
+		                    checkUserEmailResult.classList.add('text-success');
+		                    checkUserEmailResult.classList.remove('text-danger');
+		                } else {
+		                    emailChecked = false;
+		                    checkUserEmailResult.innerHTML = '이미 가입된 이메일입니다.';
+		                    checkUserEmailResult.classList.add('text-danger');
+		                    checkUserEmailResult.classList.remove('text-success');
+		                }
+		
+		                changeButtonState(); // 회원 가입 버튼 활성화 여부를 변경
+		            })
+		            .catch((error) => console.log(error));
 
-        axios
-            .get(uri)
-            .then((response) => {
-                const checkUserEmailResult = document.querySelector('div#checkUserEmailResult');
-                if (response.data === 'Y') {
-                    emailChecked = true;
-                    checkUserEmailResult.innerHTML = '';
-                    checkUserEmailResult.classList.add('text-success');
-                    checkUserEmailResult.classList.remove('text-danger');
-                } else {
-                    emailChecked = false;
-                    checkUserEmailResult.innerHTML = '이미 가입된 이메일입니다.';
-                    checkUserEmailResult.classList.add('text-danger');
-                    checkUserEmailResult.classList.remove('text-success');
-                }
-
-                changeButtonState(); // 회원 가입 버튼 활성화 여부를 변경
-            })
-            .catch((error) => console.log(error));
+	        }
+	    }
     }
 
     // 전화번호 입력 필드의 change 이벤트 리스너

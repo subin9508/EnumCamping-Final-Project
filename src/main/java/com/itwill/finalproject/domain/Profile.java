@@ -1,6 +1,7 @@
 package com.itwill.finalproject.domain;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,15 +39,18 @@ public class Profile {
 	
 	@CreationTimestamp
 	@Column(name = "create_date")
-	private Timestamp createDate;
+	private LocalDateTime createDate;
 	
 	@ToString.Exclude
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_key", nullable = false)
+	@JoinColumn(name = "user_key", referencedColumnName = "userKey")
 	private User user;
 	
 	public void setUser(User user) {
 		this.user = user;
+		if(user != null && user.getProfile() != this) {
+			user.setProfile(this);
+		}
 	}
 	
 	

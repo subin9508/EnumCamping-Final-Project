@@ -1,6 +1,5 @@
 package com.itwill.finalproject.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,16 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
-
 import com.itwill.finalproject.domain.UserRole;
-import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserCreateDto;
 import com.itwill.finalproject.dto.UserSignInDto;
-import com.itwill.finalproject.exception.UserAccountDeactivatedException;
-import com.itwill.finalproject.repository.ReservationDetailRepository;
-import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -210,7 +203,18 @@ public class UserService implements UserDetailsService {
 	// 이메일 중복 체크: true - 중복되지 않은 이메일(사용 가능한 이메일), false - 중복된 이메일.
 	public boolean checkEmail(String userEmail) {
 		log.info("checkUserEmail(email={})", userEmail);
-		return !userRepo.findByUserEmail(userEmail).isPresent();
+		
+		List<User> user = userRepo.findByUserEmailList(userEmail);
+		if (user.isEmpty()) {
+		    // 사용자가 존재하지 않는 경우에 대한 처리
+			log.info("사용가능이메일입니다.");
+			return true;
+		} 
+		log.info("user={}",user);
+		log.info("중복된 이메일입니다.");
+		return false;
+		
+//		return !userRepo.findByUserEmail(userEmail).isEnabled();
 	}
 
 	public User read(String userId) {

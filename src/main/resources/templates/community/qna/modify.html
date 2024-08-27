@@ -54,7 +54,7 @@
 						<div class="d-none">
                             <label class="form-label" for="qnaUserId">작성자</label>
                             <input type="text" class="form-control" id="qnaUserId"
-                                name="qnaUserId" th:value="${#authentication.principal.userId}" readonly />
+                                name="qnaUserId" th:value="${#authentication.principal.username}" readonly />
                         	</div>
 
 					</form>
