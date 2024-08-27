@@ -42,9 +42,7 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
-		
-		
-		               
+				               
 });
 
 // 날짜 차이에 따른 라디오 버튼 자동 선택 함수
