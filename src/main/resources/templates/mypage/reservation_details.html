@@ -42,19 +42,19 @@
                             <label for="resArea" class="form-label">예약 구역, 금액</label>
                             <th:block th:each="item : ${resDetail}">
                                 <th:block th:if="${1 <= item.itemId && item.itemId <= 4}">
-                                    <input readonly class="form-control" type="text" name="resArea" th:value="'캠핑존 A-1, ' + ${item.itemAmount} + '원'">
+                                    <input readonly class="form-control" type="text" name="resArea" th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
                                 </th:block>
                                 <th:block th:if="${5 <= item.itemId && item.itemId <= 8}">
-                                    <input readonly class="form-control" type="text" name="resArea" th:value="'캠핑존 A-2, ' + ${item.itemAmount} + '원'">
+                                    <input readonly class="form-control" type="text" name="resArea" th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
                                 </th:block>
                                 <th:block th:if="${9 <= item.itemId && item.itemId <= 12}">
-                                    <input readonly class="form-control" type="text" name="resArea" th:value="'캠핑존 B-1, ' + ${item.itemAmount} + '원'">
+                                    <input readonly class="form-control" type="text" name="resArea" th:value="'${item.itemName} + ', '  + ${item.itemAmount} + '원'">
                                 </th:block>
                                 <th:block th:if="${13 <= item.itemId && item.itemId <= 16}">
-                                    <input readonly class="form-control" type="text" name="resArea" th:value="'캠핑존 B-2, ' + ${item.itemAmount} + '원'">
+                                    <input readonly class="form-control" type="text" name="resArea" th:value="'${item.itemName} + ', '  + ${item.itemAmount} + '원'">
                                 </th:block>
                                 <th:block th:if="${17 <= item.itemId && item.itemId <= 20}">
-                                    <input readonly class="form-control" type="text" name="resArea" th:value="'캠핑존 C, ' + ${item.itemAmount} + '원'">
+                                    <input readonly class="form-control" type="text" name="resArea" th:value="'${item.itemName} + ', '  + ${item.itemAmount} + '원'">
                                 </th:block>
                             </th:block>
                         </div>
