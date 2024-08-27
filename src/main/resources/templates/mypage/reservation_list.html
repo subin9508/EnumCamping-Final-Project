@@ -49,11 +49,11 @@
 										
 										<td>
 											<span th:each="details : ${r.reservationDetails}">
-									            <span th:if="${1 <= details.item.itemId && details.item.itemId <= 4}">캠핑존 A-1</span>
-												<span th:if="${5 <= details.item.itemId && details.item.itemId <= 8}">캠핑존 A-2</span>
-												<span th:if="${9 <= details.item.itemId && details.item.itemId <= 12}">캠핑존 B-1</span>
-												<span th:if="${13 <= details.item.itemId && details.item.itemId <= 16}">캠핑존 B-2</span>
-												<span th:if="${17 <= details.item.itemId && details.item.itemId <= 20}">캠핑존 C</span>
+									            <span th:if="${1 <= details.item.itemId && details.item.itemId <= 4}" th:text="${details.item.itemName}"></span>
+												<span th:if="${5 <= details.item.itemId && details.item.itemId <= 8}" th:text="${details.item.itemName}"></span>
+												<span th:if="${9 <= details.item.itemId && details.item.itemId <= 12}" th:text="${details.item.itemName}"></span>
+												<span th:if="${13 <= details.item.itemId && details.item.itemId <= 16}" th:text="${details.item.itemName}"></span>
+												<span th:if="${17 <= details.item.itemId && details.item.itemId <= 20}" th:text="${details.item.itemName}"></span>
 									        </span>
 										</td>
 										<td th:text="${r.resCheckIn}"></td>
