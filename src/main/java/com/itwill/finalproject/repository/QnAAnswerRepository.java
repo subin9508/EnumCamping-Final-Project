@@ -18,5 +18,7 @@ public interface QnAAnswerRepository extends JpaRepository<QnAAnswers, Long> {
 		List<QnAAnswers> findByQna(QnA qna);
 		
 		List<QnAAnswers> findQnAAnsById(Long id);
-
+		
+		 // QnA 게시글 ID에 따른 댓글 수를 반환하는 메서드
+	    int countByQnaId(Long qnaId);
 }

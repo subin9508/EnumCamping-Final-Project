@@ -2,6 +2,7 @@ package com.itwill.finalproject.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,12 @@ public class ReservationService {
 	public List<Items> getAllItems() {
 		return itemsRepo.selectAllItems();
 	}
+	
+	// 전체 구역 리스트 가져오기
+		public List<Items> getAllZones() {
+			return itemsRepo.selectAllZones();
+		}
+	
 	
 	// 특정 아이템의 가격 조회
 	public Integer readItemPrice(int itemId) {
@@ -118,5 +125,26 @@ public class ReservationService {
     	
     	return result;
     }
+    
+    // res_state 업데이트
+    
+    @Transactional
+    public boolean updateReservationState(Integer resId, int newState) {
+        log.debug("Updating reservation state for resId: {} to newState: {}", resId, newState);
+        
+        Optional<ReservationMaster> optionalReservation = reservationMasterRepo.findById(resId);
+        
+        if (optionalReservation.isPresent()) {
+            ReservationMaster reservation = optionalReservation.get();
+            reservation.setResState(newState);
+            reservationMasterRepo.save(reservation);
+            log.info("Successfully updated reservation state for resId: {}", resId);
+            return true;
+        } else {
+            log.warn("Reservation not found for resId: {}", resId);
+            return false;
+        }
+    }
+    
 
 }

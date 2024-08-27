@@ -1,6 +1,5 @@
 package com.itwill.finalproject.web;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,20 +24,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-
-import org.springframework.web.bind.annotation.RequestBody;
-
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.itwill.finalproject.domain.ReservationMaster;
-import com.itwill.finalproject.dto.ReservationDetailDto;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itwill.finalproject.domain.Items;
+import com.itwill.finalproject.domain.Profile;
 import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
@@ -47,7 +43,7 @@ import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
-import com.itwill.finalproject.exception.CustomValidationException;
+import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
@@ -55,7 +51,6 @@ import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +67,13 @@ public class MyPageController {
     private final QnAAnswerService qnaanwserSvc;
     private final ProfileService profileService;
     private final ReservationService reservationSvc;
+    private final ProfileRepository profileRepo;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
     
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -87,6 +86,9 @@ public class MyPageController {
         if (userId != null) {
             User user = myPageService.read(userId);
             model.addAttribute("user", user);
+            if (user.getProfile() != null && user.getProfile().getProfileImageUrl() != null) {
+                model.addAttribute("profileImageUrl", "/profile/" + user.getProfile().getProfileImageUrl());
+            }
             log.debug("마이페이지에 표시될 사용자 정보: {}", user);
             return "mypage/myInfo";
         }
@@ -145,7 +147,7 @@ public class MyPageController {
         @RequestParam(value = "file", required = false) MultipartFile file,
         @RequestParam(value = "deleteProfileImage", required = false) String deleteProfileImage,
         @ModelAttribute UserUpdateDto dto,
-        @AuthenticationPrincipal UserDetails userDetails) {
+        @AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -203,12 +205,16 @@ public class MyPageController {
                     ProfileDto profileDto = new ProfileDto();
                     profileDto.setFile(file);
                     profileDto.setTitle(""); // 빈 문자열로 title 설정
-                    profileService.ProfileUpload(profileDto, existingUser);
-                }
+                    String imageFileName = profileService.ProfileUpload(profileDto, existingUser);
+                    existingUser.setProfile(profileRepo.findByUser(existingUser).orElse(new Profile()));
+                    
+                    // 성공적으로 업로드된 경우 처리
+                    log.info("프로필 이미지 업로드 성공: {}", imageFileName);                
+                  }
             } catch (Exception e) {
                 log.error("프로필 이미지 업로드 중 오류 발생: " + e.getMessage(), e);
                 result.put("success", false);
-                result.put("message", "프로필 이미지 업로드에 실패했습니다.");
+                result.put("message", "프로필 이미지 업로드에 실패했습니다: " + e.getMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
             }
 
@@ -227,16 +233,22 @@ public class MyPageController {
             // 사용자 정보 업데이트
             myPageService.update(dto);
 
-            // 성공 시 리디렉션 URL 포함하여 응답 반환
-            result.put("success", true);
-            result.put("message", "사용자 정보가 성공적으로 업데이트 되었습니다.");
-            result.put("redirectUrl", "/enumcamping/mypage/myInfo?userId=" + dto.getUserId());
-            return ResponseEntity.ok(result);
+         // 성공 시 JSON 문자열로 직접 변환하여 반환
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("success", true);
+            responseMap.put("message", "사용자 정보가 성공적으로 업데이트 되었습니다.");
+            responseMap.put("redirectUrl", "/enumcamping/mypage/myInfo?userId=" + dto.getUserId());
+            String jsonResponse = objectMapper.writeValueAsString(responseMap);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(jsonResponse);
         } catch (Exception e) {
             log.error("사용자 정보 업데이트 중 오류 발생: " + e.getMessage(), e);
-            result.put("success", false);
-            result.put("message", "사용자 정보 업데이트에 실패했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("success", false);
+            errorMap.put("message", "사용자 정보 업데이트에 실패했습니다: " + e.getMessage());
+            String jsonError = objectMapper.writeValueAsString(errorMap);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .contentType(MediaType.APPLICATION_JSON)
+                                 .body(jsonError);
         }
     }
 
@@ -443,7 +455,8 @@ public class MyPageController {
     
 //    @PreAuthorize("hasRole('USER')")
 	@GetMapping("/delete")
-	public String delete(@RequestParam("id") Long id, Model model, HttpSession session) {
+	public String delete(@RequestParam("id") Long id, Model model, HttpSession session,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("delete(id={})", id);
 
 		// 사용자 정보를 조회하여 세선에 저장
@@ -452,7 +465,7 @@ public class MyPageController {
 		User user = userService.read(userId);
 		session.setAttribute("user", user);
 
-		qnaService.delete(id);
+		qnaService.delete(id, userDetails.getUsername());
 
 		return "redirect:/mypage/qna_list?userId=" + userId;
 	}

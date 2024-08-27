@@ -84,13 +84,34 @@ public class QnAAnswerService {
     }
     
     @Transactional
-    public void delete(Long id) {
-        log.info("delete(id={})", id);
+//    public void delete(Long id) {
+//        log.info("delete(id={})", id);
+//
+//        QnAAnswers answer = qnaAnswerRepo.findById(id).orElseThrow();
+//        checkIfUserIsAuthorized(answer.getUserId());
+//
+//        qnaAnswerRepo.deleteById(id);
+//    }
+    public void delete(Long answerId) {
+        log.info("deleteAnswer(id={})", answerId);
 
-        QnAAnswers answer = qnaAnswerRepo.findById(id).orElseThrow();
-        checkIfUserIsAuthorized(answer.getUserId());
+        QnAAnswers answer = qnaAnswerRepo.findById(answerId)
+            .orElseThrow(() -> new IllegalArgumentException("Answer not found with id: " + answerId));
+        Long qnaId = answer.getQna().getId();  // 올바른 게시글 ID 참조
 
-        qnaAnswerRepo.deleteById(id);
+        // 댓글 삭제
+        qnaAnswerRepo.deleteById(answerId);
+
+        // 해당 게시글의 댓글 수 확인
+        int count = qnaAnswerRepo.countByQnaId(qnaId);
+        QnA qna = qnaRepo.findById(qnaId)
+            .orElseThrow(() -> new IllegalArgumentException("QnA not found with id: " + qnaId));
+
+        // 댓글이 없으면 게시글 상태를 '답변 대기'로 변경
+        if (count == 0) {
+            qna.setQnaState(0);  // 상태를 '답변 대기'로 설정
+            qnaRepo.save(qna);
+        }
     }
     
     @Transactional

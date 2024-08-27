@@ -1,5 +1,8 @@
 package com.itwill.finalproject.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,15 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.User;
 
-import java.util.Optional;
-
 public interface UserRepository extends JpaRepository<User, Integer> {
-
+	
+	//이메일 찾기
+	User findByUserEmail(String userEmail);
+		
+	//이메일 찾기(리스트)
+	@Query("SELECT u FROM User u WHERE u.userEmail = :userEmail")
+	 List<User> findByUserEmailList(@Param("userEmail") String userEmail);
+	
 	// 아이디 중복 체크
 	Optional<User> findByUserId(String userId);
 
+	// name 찾기 
+	User findByName(String name);
+	
+	
 	// 이메일 중복 체크
-	Optional<User> findByUserEmail(String userEmail);
+	//Optional<User> findByUserEmail(String userEmail);
 
 	// 로그인
 	Optional<User> findByUserIdAndUserPassword(String userId, String userPassword);
@@ -31,6 +43,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	// 사용자 ID로 사용자 정보 조회
 	Optional<User> findByUserKey(Integer userKey);
+	
+	 
 	
 	// 사용자 정보 업데이트
 	@Modifying

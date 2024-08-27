@@ -1,5 +1,7 @@
 package com.itwill.finalproject.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,11 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.QnA;
+import com.itwill.finalproject.domain.QnAAnswers;
+import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.QnACreateDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnASearchRequestDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
+import com.itwill.finalproject.repository.QnAAnswerRepository;
 import com.itwill.finalproject.repository.QnARepository;
+import com.itwill.finalproject.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 public class QnAService {
 	
 	private final QnARepository qnaRepo;
+	
+	private final UserRepository userRepo;
+	
+	private final QnAAnswerRepository qnaanswerRepo;
 	
     public Page<QnA> findAll(PageRequest pageRequest) {
         return qnaRepo.findAll(pageRequest);
@@ -110,17 +120,42 @@ public class QnAService {
 	}
 
     @Transactional
-    public void delete(Long id) {
-        String authenticatedUserId = getAuthenticatedUserId();
-        log.info("delete(id={}, authenticatedUserId={})", id, authenticatedUserId);
-        
-        QnA entity = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
+//    public void delete(Long id) {
+//        String authenticatedUserId = getAuthenticatedUserId();
+//        log.info("delete(id={}, authenticatedUserId={})", id, authenticatedUserId);
+//        
+//        QnA entity = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid QnA ID: " + id));
+//
+//        // 작성자만 삭제할 수 있도록 체크
+//        if (!entity.getQnaUserId().equals(authenticatedUserId)) {
+//            throw new SecurityException("You are not authorized to delete this QnA post.");
+//        }
+//
+//        qnaRepo.deleteById(id);
+//    }
+    
+    public void delete(Long id, String username) {
+        log.info("delete(id={})", id);
 
-        // 작성자만 삭제할 수 있도록 체크
-        if (!entity.getQnaUserId().equals(authenticatedUserId)) {
-            throw new SecurityException("You are not authorized to delete this QnA post.");
+        // 게시글 정보를 가져옴
+        QnA qna = qnaRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        // 권한 확인
+        if (!isAuthorizedToDelete(id, username)) {
+            throw new SecurityException("삭제 권한이 없습니다.");
         }
 
+        // 관련된 댓글들 삭제
+        List<QnAAnswers> answers = qnaanswerRepo.findByQnaId(id);
+        qnaanswerRepo.deleteAll(answers);
+
+        // 게시글 상태 업데이트
+        if (answers.isEmpty()) {
+            qna.setQnaState(0); // '답변 대기' 상태로 설정
+        }
+
+        // 게시글 삭제
+        qnaRepo.save(qna);  // 상태 업데이트
         qnaRepo.deleteById(id);
     }
     
@@ -193,6 +228,17 @@ public class QnAService {
     private boolean isAdmin() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
+    
+    public boolean isAuthorizedToDelete(Long qnaId, String username) {
+        QnA qna = qnaRepo.findById(qnaId).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+        return qna.getQnaUserId().equals(username) || checkAdminRole(username);
+    }
+
+    private boolean checkAdminRole(String name) {
+        User user = userRepo.findByName(name);
+        // user.getUserRole()이 0을 반환하면 true, 그 외에는 false
+        return user != null && user.getUserRole() == 0;
     }
     
 //    @Transactional

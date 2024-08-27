@@ -154,100 +154,100 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 column.style.color = "#A9A9A9";
             }
 
-			// @brief   전월, 명월 음영처리
-			// @details 현재년과 선택 년도가 같은경우
-			if (toDay.getFullYear() == nowDate.getFullYear()) {
+            // @brief   전월, 명월 음영처리
+            // @details 현재년과 선택 년도가 같은경우
+            if (toDay.getFullYear() == nowDate.getFullYear()) {
 
-				// @details 현재월과 선택월이 같은경우
-				if (toDay.getMonth() == nowDate.getMonth()) {
+                // @details 현재월과 선택월이 같은경우
+                if (toDay.getMonth() == nowDate.getMonth()) {
 
-					// @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
-					if (nowDate.getDate() > day && Math.sign(day) == 1) {
-						column.style.backgroundColor = "#F6F7F8";
-					}
+                    // @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
+                    if (nowDate.getDate() > day && Math.sign(day) == 1) {
+                        column.style.backgroundColor = "#F6F7F8";
+                    }
 
-					// @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
-					else if (nowDate.getDate() < day && lastDate.getDate() >= day) {
-						column.style.backgroundColor = "#FFFFFF";
-						column.style.cursor = "pointer";
-						column.onclick = function() { calendarChoiceDay(this); }
-					}
+                    // @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
+                    else if (nowDate.getDate() < day && lastDate.getDate() >= day) {
+                        column.style.backgroundColor = "#FFFFFF";
+                        column.style.cursor = "pointer";
+                        column.onclick = function() { calendarChoiceDay(this); }
+                    }
 
-					// @details 현재일인 경우
-					else if (nowDate.getDate() == day) {
-						column.style.backgroundColor = "#FFFFE6";
-						column.style.cursor = "pointer";
-						column.onclick = function() { calendarChoiceDay(this); }
-					}
+                    // @details 현재일인 경우
+                    else if (nowDate.getDate() == day) {
+                        column.style.backgroundColor = "#FFFFE6";
+                        column.style.cursor = "pointer";
+                        column.onclick = function() { calendarChoiceDay(this); }
+                    }
 
-					// @details 현재월보다 이전인경우
-				} else if (toDay.getMonth() < nowDate.getMonth()) {
-					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-						column.style.backgroundColor = "#E5E5E5";
-					}
-				}
+                    // @details 현재월보다 이전인경우
+                } else if (toDay.getMonth() < nowDate.getMonth()) {
+                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                        column.style.backgroundColor = "#E5E5E5";
+                    }
+                }
 
-				// @details 현재월보다 이후인경우
-				else {
-					// 현재 날짜로부터 3개월 후의 날짜를 계산
-					let threeMonthsLater = new Date(nowDate);
-					threeMonthsLater.setMonth(nowDate.getMonth() + 3);
+                // @details 현재월보다 이후인경우
+                else {
+                    // 현재 날짜로부터 3개월 후의 날짜를 계산
+                    let threeMonthsLater = new Date(nowDate);
+                    threeMonthsLater.setMonth(nowDate.getMonth() + 3);
 
-					// 만약 3개월 후의 날짜가 연도를 넘어갈 경우를 처리
-					if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
-						threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
-					}
+                    // 만약 3개월 후의 날짜가 연도를 넘어갈 경우를 처리
+                    if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
+                        threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
+                    }
 
-					// 현재 달력에서 표시된 날짜를 계산
-					let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
+                    // 현재 달력에서 표시된 날짜를 계산
+                    let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
 
-					// 3개월 이후의 날짜보다 currentDay가 이후라면 비활성화
-					if (currentDay >= threeMonthsLater) {
-						if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
-							column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
-						}
-					} else {
-						if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
-							column.style.backgroundColor = "#FFFFFF"; // 활성화
-							column.style.cursor = "pointer";
-							column.onclick = function() { calendarChoiceDay(this); }
-						}
-					}
-				}
-			}
+                    // 3개월 이후의 날짜보다 currentDay가 이후라면 비활성화
+                    if (currentDay >= threeMonthsLater) {
+                        if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
+                            column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
+                        }
+                    } else {
+                        if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
+                            column.style.backgroundColor = "#FFFFFF"; // 활성화
+                            column.style.cursor = "pointer";
+                            column.onclick = function() { calendarChoiceDay(this); }
+                        }
+                    }
+                }
+            }
 
-			// @details 선택한년도가 현재년도보다 작은경우
-			else if (toDay.getFullYear() < nowDate.getFullYear()) {
-				if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-					column.style.backgroundColor = "#E5E5E5";
-				}
-			}
+            // @details 선택한년도가 현재년도보다 작은경우
+            else if (toDay.getFullYear() < nowDate.getFullYear()) {
+                if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                    column.style.backgroundColor = "#E5E5E5";
+                }
+            }
 
-			// @details 선택한년도가 현재년도보다 큰경우
-			else {
-				let threeMonthsLater = new Date(nowDate);
-				threeMonthsLater.setMonth(nowDate.getMonth() + 3);
+            // @details 선택한년도가 현재년도보다 큰경우
+            else {
+                let threeMonthsLater = new Date(nowDate);
+                threeMonthsLater.setMonth(nowDate.getMonth() + 3);
 
-				if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
-					threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
-				}
+                if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
+                    threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
+                }
 
-				let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
+                let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
 
-				if (currentDay >= threeMonthsLater) {
-					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-						column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
-					}
-				} else {
-					if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-						column.style.backgroundColor = "#FFFFFF";
-						column.style.cursor = "pointer";
-						column.onclick = function() { calendarChoiceDay(this); }
-					}
-				}
-			}
-			dom++;
-		}
+                if (currentDay >= threeMonthsLater) {
+                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                        column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
+                    }
+                } else {
+                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                        column.style.backgroundColor = "#FFFFFF";
+                        column.style.cursor = "pointer";
+                        column.onclick = function() { calendarChoiceDay(this); }
+                    }
+                }
+            }
+            dom++;
+        }
 
         console.log('buildCalendar - current selectedDate:', selectedDate);
 		
@@ -489,46 +489,49 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     }
     
     // 구역 가격 업데이트
+   // 평일 + 주말 가격
     function updatePrice(year, month, day, selectedArea, selectedNight) {
-        const date = `${year}-${month}-${day}`;
-        const selectedDateObj = new Date(year, month - 1, day);
-        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
+    const selectedDateObj = new Date(year, month - 1, day);
+
+    const startPeakSeason = new Date(year, 6, 1); // 7월 1일
+    const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+    const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
+    const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
+
+    const baseItemId = (selectedArea - 1) * 4;
+
+    let pricePromises = [];
+
+    for (let i = 0; i < selectedNight; i++) {
+        const checkInDate = new Date(selectedDateObj);
+        checkInDate.setDate(selectedDateObj.getDate() + i);
+        const isWeekend = (checkInDate.getDay() === 0 || checkInDate.getDay() === 6); // 0: Sunday, 6: Saturday
         
-        // 성수기 기간 설정
-        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
-        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
-
-        // 성수기 여부 결정
-        const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
-        const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
-
-        const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
-
-        const baseItemId = (selectedArea - 1) * 4;
-        const itemId = baseItemId + seasonFactor + weekendFactor + 1;
+        const itemId = baseItemId + (isPeakSeason ? 2 : 0) + (isWeekend ? 1 : 0) + 1;
         
-        const uri = `../reservation/itemPrice/${itemId}`;
-
-        console.log('updatePrice()', uri);
-
-        axios.get(uri)
-            .then(response => {
-                const price = (response.data) * selectedNight;
-                document.getElementById('price-value').innerText = price;
-                updateTotalAllItems();
-                
-                // 전역 변수 업데이트
-            finalYear = year;
-            finalMonth = month;
-            finalDay = day;
-            finalItemId = itemId;
-            finalSelectedNight = selectedNight;
-            
-            })
-            .catch(error => {
-                console.error("There was an error fetching the price!", error);
-            });
+        // 비동기 요청을 배열에 저장
+        pricePromises.push(
+            axios.get(`../reservation/itemPrice/${itemId}`).then(response => response.data)
+        );
     }
+
+    // 모든 비동기 요청이 완료된 후에 총 가격 계산
+    Promise.all(pricePromises).then(prices => {
+        const totalPrice = prices.reduce((sum, price) => sum + price, 0);
+        document.getElementById('price-value').innerText = totalPrice;
+        updateTotalAllItems();
+
+        // 전역 변수 업데이트
+        finalYear = year;
+        finalMonth = month;
+        finalDay = day;
+        finalItemId = prices[prices.length - 1]; // 마지막 날짜의 아이템 ID
+        finalSelectedNight = selectedNight;
+    }).catch(error => {
+        console.error("There was an error fetching the price!", error);
+    });
+}
+
     
     // 체크아웃 날짜 계산
     function calculateCheckOutDate(checkInDate, nights) {
@@ -541,7 +544,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         return date.toISOString().split('T')[0];
     }
     
-	var selectedItems = [];
+    var selectedItems = [];
 
 function updateQuantity(itemId, itemPrice) {
     var quantity = document.getElementById('quantity-' + itemId).value;
@@ -625,8 +628,8 @@ function updateQuantity(itemId, itemPrice) {
     function handleNextPageClick(event) {
         console.log('handleNextPageClick');
      event.preventDefault();
-	
-	// 라디오박스 및 켈린더 체크 안되어 있는지 확인
+    
+    // 라디오박스 및 켈린더 체크 안되어 있는지 확인
     if (!validateForm()) {
         return;
     }

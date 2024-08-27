@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
-	<link th:href="@{/css/header.css}" rel="stylesheet" />
-	<link th:href="@{/css/footer.css}" rel="stylesheet" />
-	<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
-	<link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <link th:href="@{/css/header.css}" rel="stylesheet" />
+    <link th:href="@{/css/footer.css}" rel="stylesheet" />
+    <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/calendar.css}">
 </head>
 
 <body>
+
 	<div class="wrapper">
 		<!-- 헤더 포함 -->
 		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
@@ -266,8 +267,8 @@
             document.getElementById('special-requests').value = '';
         };
     </script>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<!-- paymentRefund JS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- paymentRefund JS -->
     <script th:src="@{/js/paymentRefund.js}"></script>
 </body>
 </html>
