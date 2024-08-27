@@ -40,7 +40,8 @@
 						</thead>
 						<tbody></tbody>
 					</table>
-
+					
+					<div id="date" style="display: none;"></div>
 					<span id="resCheckInDate" th:text="${resMaster.resCheckIn}"
 						style="display: none;" data-checkin-date="${resMaster.resCheckIn}">resCheckIn</span>
 					<span id="resCheckOutDate" th:text="${resMaster.resCheckOut}"
@@ -200,11 +201,7 @@
 					</div>
 
 				</div>
-				<div class="d-flex justify-content-center">
-					<input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요"
-						value="100">
-					<button id="btnPayRefund" class="btn btn-danger">부분환불</button>
-				</div>
+				
 
 				<div class="container-fluid d-flex justify-content-center mb-5">
 					<button onclick="addNextPageEventListeners()" class="btn btnNextPage">다음 단계</button>
