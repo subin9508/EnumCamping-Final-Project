@@ -72,6 +72,20 @@ public class AdminController {
         });
         return "redirect:/admin/price/items"; // 해당 페이지로 리다이렉트
     }
+    
+    
+    @GetMapping("/price/zones/percentupdate")
+    public void updateZonePercent(@RequestParam("percent") String percent) {
+    	log.info("update percent = {}",percent);
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
 	
 //    @PostMapping("/price/update")
 //    public String priceUpdate(@RequestParam Map<String, String> allParams) {
