@@ -6,8 +6,8 @@
  document.addEventListener('DOMContentLoaded',()=>{
     
     
-    
-    const inputs = document.querySelectorAll('form.modifyForm input[type="text"]');
+    const inputs = document.querySelectorAll('form.modifyForm input');
+    const priceInputs = document.querySelectorAll('form.modifyForm input[type="number"]');
     const modifiedInputs = new Set(); // 수정된 input 요소들을 저장하는 Set
 
     inputs.forEach(input => {
@@ -18,10 +18,49 @@
             event.target.style.backgroundColor = '#e0f7fa'; // 수정된 요소에 배경색을 추가 (체크용)
         });
     });
-    
-    
+
+
+
+
+    const btnApplyPlus = document.querySelector('button#btnApplyPlus');
+        btnApplyPlus.addEventListener('click', () => {
+            let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
+            percent = parseFloat(percent);
+            if (isNaN(percent)) {
+                alert("퍼센트 값을 입력해주세요.");
+            } else if (confirm(percent + '%를 인상할까요?')) {
+                console.log(percent+'인상');
+                priceInputs.forEach(input => {
+                    let currentValue = parseFloat(input.value);
+                    console.log(currentValue);
+                    if (!isNaN(currentValue)) {
+                        input.value =  Math.round(currentValue * (1+percent*0.01)); 
+                        input.dispatchEvent(new Event('input')); //없어도 잘 저장되긴 하는데 있으면 바뀐게 보여서 좋음
+                    }
+                });
+            }
+        });
+        
+    const btnApplyMinus = document.querySelector('button#btnApplyMinus');
+        btnApplyMinus.addEventListener('click', () => {
+            let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
+            percent = parseFloat(percent);
+            if (isNaN(percent)) {
+                alert("퍼센트 값을 입력해주세요.");
+            } else if (confirm(percent + '%를 인하할까요?')) {
+                console.log(percent+'인하');
+                priceInputs.forEach(input => {
+                    let currentValue = parseFloat(input.value);
+                    console.log(currentValue);
+                    if (!isNaN(currentValue)) {
+                        input.value =  Math.round(currentValue * (1-percent*0.01)); 
+                        input.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        });
+            
 	const btnApplyItems = document.querySelector('button#btnApplyItems');
-    
 	    btnApplyItems.addEventListener('click', () => {
             console.log('버튼 클릭됨');
 	        const modifyForm = document.querySelector('form#modifyFormItems');

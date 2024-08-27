@@ -21,20 +21,39 @@
     
     const btnApplyPlus = document.querySelector('button#btnApplyPlus');
     btnApplyPlus.addEventListener('click', () => {
-        const percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
-        if (percent === "") {
+        let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
+        percent = parseFloat(percent);
+        if (isNaN(percent)) {
             alert("퍼센트 값을 입력해주세요.");
         } else if (confirm(percent + '%를 인상할까요?')) {
-            // 사용자가 확인 버튼을 클릭한 경우, 해당 URL로 이동
-            window.location.href = `/admin/price/zones/percentupdate?percent=${encodeURIComponent(percent)}`;
+            console.log(percent+'인상');
+            inputs.forEach(input => {
+                let currentValue = parseFloat(input.value);
+                console.log(currentValue);
+                if (!isNaN(currentValue)) {
+                    input.value =  Math.round(currentValue * (1+percent*0.01)); 
+                    input.dispatchEvent(new Event('input')); //없어도 잘 저장되긴 하는데 있으면 바뀐게 보여서 좋음
+                }
+            });
         }
     });
         
     const btnApplyMinus = document.querySelector('button#btnApplyMinus');
         btnApplyMinus.addEventListener('click', () => {
-        const percent = document.querySelector('input#percent').value;
-            if (confirm(percent +'%를 인하할까요?')) {
+            let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
+            percent = parseFloat(percent);
+            if (isNaN(percent)) {
+                alert("퍼센트 값을 입력해주세요.");
+            } else if (confirm(percent + '%를 인하할까요?')) {
                 console.log(percent+'인하');
+                inputs.forEach(input => {
+                    let currentValue = parseFloat(input.value);
+                    console.log(currentValue);
+                    if (!isNaN(currentValue)) {
+                        input.value =  Math.round(currentValue * (1-percent*0.01)); 
+                        input.dispatchEvent(new Event('input'));
+                    }
+                });
             }
         });
     
