@@ -693,7 +693,7 @@ function updateQuantity(itemId, itemPrice) {
 
     console.log('Data to be sent:', JSON.stringify(data, null, 2)); // 전송할 데이터 로그
 
-    const uri = '../reservation/order';
+    const uri = '../mypage/reservation_order';
 
     axios.post(uri, data, {
         headers: {
