@@ -1,9 +1,11 @@
 package com.itwill.finalproject.web;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,12 +83,16 @@ public class AdminController {
     }
     
     
-    
-    
-    
-    
+    @PostMapping("/schedule-task")
+    public String scheduleTask(@RequestParam("scheduleTime") 
+                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+                               LocalDateTime scheduleTime) {
+        itemsService.insert(3, 500, scheduleTime);
+    	return "redirect:/admin/price/zones";
+    }
     
 	
+}
 //    @PostMapping("/price/update")
 //    public String priceUpdate(@RequestParam Map<String, String> allParams) {
 //        allParams.forEach((key, value) -> {
@@ -106,7 +112,6 @@ public class AdminController {
 //        });
 //        return "redirect:" + allParams.get("redirectUrl"); // 업데이트 후 리다이렉션
 //    }
-}
 
 	
 //	@PostMapping("/price/update")

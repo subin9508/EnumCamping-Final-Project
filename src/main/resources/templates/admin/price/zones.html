@@ -23,6 +23,13 @@
                         <h3><strong>구역 목록</strong></h3>
                     </div>
                     
+                    <form method="post" action="/enumcamping/admin/schedule-task">
+                        <label for="scheduleTime">작업 실행 시간 (yyyy-MM-dd HH:mm:ss):</label>
+                        <input type="text" id="scheduleTime" name="scheduleTime">
+                        <button type="submit">스케줄 설정</button>
+                    </form>
+                    
+                    
                     <!-- 퍼센트 적용 -->
                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
                         <input style="width: 10%;" id="percent" class="form-control" type="number" /><span>%</span>
