@@ -1,6 +1,7 @@
 package com.itwill.finalproject.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -50,6 +51,40 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
     
 //    // userId에 해당하는 예약 상세 정보 조회
 //    List<ReservationListDto> findByUserId(String userId);
-	
-	
+    
+    
+    //------- 예약 변경 -------
+    // ReservationMaster와 ItemId로 ReservationDetail 찾기
+    Optional<ReservationDetail> findByReservationMasterAndItem_ItemId(ReservationMaster reservationMaster, Integer itemId);
+
+    // 특정 ReservationMaster에 해당하는 모든 ReservationDetail 찾기
+    List<ReservationDetail> findByReservationMaster(ReservationMaster reservationMaster);
+
+    // ReservationMaster의 ID로 모든 ReservationDetail 찾기
+    @Query("SELECT rd FROM ReservationDetail rd WHERE rd.reservationMaster.resId = :resId")
+    List<ReservationDetail> findByReservationMasterId(@Param("resId") Integer resId);
+
+    // ReservationDetail의 총 금액 계산
+    @Query("SELECT SUM(rd.itemAmount) FROM ReservationDetail rd WHERE rd.reservationMaster.resId = :resId")
+    Integer calculateTotalAmount(@Param("resId") Integer resId);
+
+    // ReservationMaster와 ItemId로 ReservationDetail 찾기 (DTO 반환)
+    @Query("SELECT new com.itwill.finalproject.dto.ReservationDetailDto(rd.rdId, rd.item.itemId, rd.itemQuantity, rd.itemAmount, rd.item.itemName, rd.item.itemImg) " +
+           "FROM ReservationDetail rd " +
+           "WHERE rd.reservationMaster = :reservationMaster AND rd.item.itemId = :itemId")
+    Optional<ReservationDetailDto> findDtoByReservationMasterAndItemId(@Param("reservationMaster") ReservationMaster reservationMaster, @Param("itemId") Integer itemId);
+
+    // 특정 ReservationMaster에 해당하는 모든 ReservationDetail 찾기 (DTO 리스트 반환)
+    @Query("SELECT new com.itwill.finalproject.dto.ReservationDetailDto(rd.rdId, rd.item.itemId, rd.itemQuantity, rd.itemAmount, rd.item.itemName, rd.item.itemImg) " +
+           "FROM ReservationDetail rd " +
+           "WHERE rd.reservationMaster.resId = :resId")
+    List<ReservationDetailDto> findDtosByReservationMasterId(@Param("resId") Integer resId);
+
+    // 특정 ReservationMaster의 특정 Item에 대한 ReservationDetail 업데이트
+    @Modifying
+    @Query("UPDATE ReservationDetail rd SET rd.itemQuantity = :quantity, rd.itemAmount = :amount " +
+           "WHERE rd.reservationMaster.resId = :resId AND rd.item.itemId = :itemId")
+    int updateReservationDetail(@Param("resId") Integer resId, @Param("itemId") Integer itemId, 
+                                @Param("quantity") Integer quantity, @Param("amount") Integer amount);
 }
+	

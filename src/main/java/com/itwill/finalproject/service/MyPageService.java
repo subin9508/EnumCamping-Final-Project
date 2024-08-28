@@ -2,12 +2,15 @@ package com.itwill.finalproject.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.ReservationDetailDto;
+import com.itwill.finalproject.dto.ReservationMasterDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
 import com.itwill.finalproject.repository.QnARepository;
@@ -74,5 +77,38 @@ public class MyPageService {
         log.info("Found ReservationDetails: {}", resDetails);
         return resDetails;
     }
+    
+    
+    public ReservationMasterDto getReservationMasterDto(Integer resId) {
+        ReservationMaster master = reservationMasterRepo.findById(resId)
+            .orElseThrow(() -> new RuntimeException("Reservation not found"));
+        
+        ReservationMasterDto dto = new ReservationMasterDto();
+        dto.setResId(master.getResId());
+        dto.setUserId(master.getUser().getUserId());
+        dto.setRequirement(master.getRequirement());
+        dto.setResCreatedTime(master.getResCreatedTime());
+        dto.setResModifiedTime(master.getResModifiedTime());
+        dto.setResCheckIn(master.getResCheckIn());
+        dto.setResCheckOut(master.getResCheckOut());
+        dto.setResTotalPrice(master.getResTotalPrice());
+        dto.setResState(master.getResState());
+        
+        // ReservationDetail을 DTO로 변환
+        dto.setReservationDetails(
+            master.getReservationDetails().stream()
+                .map(detail -> new ReservationDetailDto(
+                    detail.getRdId(),
+                    detail.getReservationMaster().getResId(),
+                    detail.getItem().getItemId(),
+                    detail.getItemQuantity(),
+                    detail.getItemAmount(),
+                    detail.getItem().getItemName(),
+                    detail.getItem().getItemImg()
+                ))
+                .collect(Collectors.toList())
+        );
 
+        return dto;
+    }
 }
