@@ -39,5 +39,7 @@ public class ItemsHistory {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    
+    private int special;
 
 }

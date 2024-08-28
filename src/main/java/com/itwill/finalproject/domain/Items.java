@@ -40,6 +40,8 @@ public class Items {
 	@Basic(optional = false)
 	private String itemDesc; // 물품 설명
 	
+	private int special;
+	
 	@PrePersist
     @PreUpdate
     private void prepareData(){
