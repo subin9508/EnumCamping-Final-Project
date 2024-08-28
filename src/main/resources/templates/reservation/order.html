@@ -66,12 +66,12 @@
                 <tr th:each="item : ${reservationDetails}"
                     th:if="${item.itemId <= 20}">
                     <td style="font-size: 18px;"
-                        th:text="${'캠핑존 ' +
-                            (item.itemId >= 1 && item.itemId <= 4 ? 'A-1' :
-                            item.itemId >= 5 && item.itemId <= 8 ? 'A-2' :
-                            item.itemId >= 9 && item.itemId <= 12 ? 'B-1' :
-                            item.itemId >= 13 && item.itemId <= 16 ? 'B-2' :
-                            item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
+                        th:text="${
+                            (item.itemId >= 1 && item.itemId <= 4 ? item.itemName :
+                            item.itemId >= 5 && item.itemId <= 8 ? item.itemName :
+                            item.itemId >= 9 && item.itemId <= 12 ? item.itemName :
+                            item.itemId >= 13 && item.itemId <= 16 ? item.itemName :
+                            item.itemId >= 17 && item.itemId <= 20 ? item.itemName : '')	}">
                     </td>
                     <td style="font-size: 18px;" th:text="${reservationMaster.resCheckIn} + ' ~ ' + ${reservationMaster.resCheckOut} ">
                         
