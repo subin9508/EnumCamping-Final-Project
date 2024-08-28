@@ -1,15 +1,13 @@
 package com.itwill.finalproject.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 public class ReservationDetailDto {
-	
-	private Integer resId;
+	 private Integer rdId;
+	 private Integer resId;
 	 private Integer itemId;
 	 private Integer itemQuantity;
 	 private Integer itemAmount;
@@ -24,4 +22,16 @@ public class ReservationDetailDto {
 		 this.itemName = itemName;
 		 this.itemImg = itemImg;
 	 }
+	 
+	 // 새로운 생성자 추가 (rdId 포함)
+	    public ReservationDetailDto(Integer rdId, Integer resId, Integer itemId, Integer itemQuantity, Integer itemAmount, String itemName, String itemImg) {
+	        this.rdId = rdId;
+	        this.resId = resId;
+	        this.itemId = itemId;
+	        this.itemQuantity = itemQuantity;
+	        this.itemAmount = itemAmount;
+	        this.itemName = itemName;
+	        this.itemImg = itemImg;
+	    }
+	 
 }
