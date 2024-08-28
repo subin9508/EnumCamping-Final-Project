@@ -28,84 +28,23 @@ public class ItemsService {
         return itemsRepository.findById(itemId).orElse(null);  // Optional을 사용하여 null 처리
     }
     
-//    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc) {
-//        Items item = findById(itemId);
-//        if (item != null) {
-//            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-//            boolean descChanged = !item.getItemDesc().equals(newDesc);
-//
-//            if (priceChanged || descChanged) {
-//                updateItemHistory(item, newPrice.intValue());
-//                item.setItemPrice(newPrice.intValue());
-//                item.setItemDesc(newDesc);
-//                itemsRepository.save(item);
-//            }
-//        }
-//    }
-//
-//    private void updateItemHistory(Items item, int newPrice) {
-//        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-//        if (currentHistory != null) {
-//            currentHistory.setEndDate(LocalDateTime.now());
-//            itemsHistoryRepository.save(currentHistory);
-//        }
-//
-//        ItemsHistory newHistory = new ItemsHistory();
-//        newHistory.setItems(item);
-//        newHistory.setItemPrice(newPrice);
-//        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
-//        newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-//        itemsHistoryRepository.save(newHistory);
-//    }
-    
-//    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc) {
-//        Items item = findById(itemId);
-//        if (item != null) {
-//            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-//            boolean descChanged = !item.getItemDesc().equals(newDesc);
-//
-//            if (priceChanged || descChanged) {
-//                if (priceChanged) {
-//                    updateItemHistory(item, "price", newPrice.intValue());
-//                }
-//                if (descChanged) {
-//                    updateItemHistory(item, "description", newDesc);
-//                }
-//
-//                item.setItemPrice(newPrice.intValue());
-//                item.setItemDesc(newDesc);
-//                itemsRepository.save(item);
-//            }
-//        }
-//    }
-//
-//    private void updateItemHistory(Items item, String fieldChanged, Object newValue) {
-//        ItemsHistory lastHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-//        if (lastHistory != null) {
-//            lastHistory.setEndDate(LocalDateTime.now());
-//            itemsHistoryRepository.save(lastHistory);
-//        }
-//
-//        ItemsHistory newHistory = new ItemsHistory();
-//        newHistory.setItems(item);
-//        if (fieldChanged.equals("price")) {
-//            newHistory.setItemPrice((Integer) newValue);
-//        } 
-//        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
-//        newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-//        itemsHistoryRepository.save(newHistory);
-//    }
-    
  // Zones 업데이트 전용 메서드
     @Transactional
-    public void updateZoneDetails(Integer itemId, BigDecimal newPrice) {
+    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
+    	log.info("updateZoneDetails");
         Items item = findById(itemId);
         if (item != null) {
             boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
 
             if (priceChanged) {
-                updateItemHistory(item, newPrice.intValue());
-                item.setItemPrice(newPrice.intValue());
+            	updateItemHistory(item, newPrice.intValue(),newCheck);
+            	item.setItemPrice(newPrice.intValue());
+            	if ("on".equals(newCheck)) {
+                	item.setSpecial(1);
+                } else {
+                	item.setSpecial(0);
+                }
+                
                 itemsRepository.save(item);
             }
         }
@@ -113,7 +52,7 @@ public class ItemsService {
 
     // Items 업데이트 메서드 (기존에 있던 메서드)
     @Transactional
-    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc) {
+    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String newCheck) {
     	log.info("updateItemDetails");
         Items item = findById(itemId);
         if (item != null) {
@@ -122,8 +61,13 @@ public class ItemsService {
 
             if (priceChanged) {
             	log.info("history insert");
-                updateItemHistory(item, newPrice.intValue());
+                updateItemHistory(item, newPrice.intValue(),newCheck);
                 item.setItemPrice(newPrice.intValue());
+                if ("on".equals(newCheck)) {
+                	item.setSpecial(1);
+                } else {
+                	item.setSpecial(0);
+                }
                 log.info("item에 price update");
                 itemsRepository.save(item);
             }
@@ -137,7 +81,7 @@ public class ItemsService {
 
     // History 업데이트 메서드 (공통 사용)
     @Transactional
-    private void updateItemHistory(Items item, int newPrice) {
+    private void updateItemHistory(Items item, int newPrice, String newCheck) {
     	log.info("updateItemHistory");
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
@@ -150,6 +94,10 @@ public class ItemsService {
         newHistory.setItemPrice(newPrice);
         newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
         newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+        
+        if("on".equals(newCheck)) {
+        	newHistory.setSpecial(1);
+        }
         itemsHistoryRepository.save(newHistory);
     }
 

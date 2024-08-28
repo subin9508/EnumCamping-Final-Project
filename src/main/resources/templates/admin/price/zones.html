@@ -6,9 +6,6 @@
       <link rel="stylesheet" th:href="@{/css/footer.css}">
       <link rel="stylesheet" th:href="@{/css/price.css}">
       <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-      
-      
-      
     </head>
     <body>
     
@@ -40,6 +37,7 @@
                                     <th>비/성수기</th>
                                     <th>평일/주말</th>
                                     <th>가격</th>
+                                    <th>특가 유무</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,7 +59,9 @@
                                             <span>원</span>
                                         </div>
                                     </td>
-
+                                    <td class="item-select col-1">
+                                        <input type="checkbox" th:name="'select_' + ${i.itemId}" />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
