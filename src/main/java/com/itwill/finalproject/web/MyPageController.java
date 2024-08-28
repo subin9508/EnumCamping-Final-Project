@@ -552,7 +552,7 @@ public class MyPageController {
 
 	// 예약변경 결제 페이지
 	@GetMapping("/reservation_order")
-	public String showOrderPage(HttpSession session, Model model) {
+	public String showOrderPage(@RequestParam(name = "resId") int resId, HttpSession session, Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName();
 // 			    String userId = (String) session.getAttribute("signedInUser");
@@ -563,8 +563,9 @@ public class MyPageController {
 		List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
 		model.addAttribute("user", user);
-		model.addAttribute("reservationMaster", reservationMaster);
-		model.addAttribute("reservationDetails", reservationDetails);
+		model.addAttribute("resMaster", reservationMaster);
+		model.addAttribute("resDetails", reservationDetails);
+		model.addAttribute("resId", resId);
 
 		return "/mypage/reservation_order";
 	}
@@ -572,6 +573,7 @@ public class MyPageController {
 
 	@PostMapping("/reservation_order")
 	public String getReservationList(
+			@RequestParam(name = "resId") int resId,
 	        @RequestBody Map<String, Object> requestData, 
 	        HttpSession session, 
 	        Model model) {
@@ -659,8 +661,8 @@ public class MyPageController {
 	    List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 	    
 	    // 모델에 데이터 추가
-	    model.addAttribute("reservationMaster", reservationMaster);
-	    model.addAttribute("reservationDetails", updatedReservationDetails);
+	    model.addAttribute("resMaster", reservationMaster);
+	    model.addAttribute("resDetails", updatedReservationDetails);
 	    
 	    return "/mypage/reservation_order";
 	}

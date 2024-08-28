@@ -14,12 +14,12 @@
 		<!-- 헤더 포함 -->
 		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
 		<div class="footer-main-content">
-			<!-- 사이드바 포함 -->
-			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+
 			<main style="flex-grow: 1; margin-left: 5%;">
 				<div>
-					<input id="resId" name="resId" type="hidden"
-						th:value="${resMaster.resId}"> <input id="userId"
+					<input id="resId" name="resId" type="text"
+						th:value="${resMaster.resId}"> 
+					<input id="userId"
 						name="userId" type="hidden" th:value="${resMaster.user.userId}">
 					<table class="scriptCalendar">
 						<thead>
