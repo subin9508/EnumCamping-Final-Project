@@ -24,6 +24,9 @@ public class ReservationChangeResultDto {
     private ReservationMaster updatedReservation;
     private User user;
     
+ // 새로 추가된 필드
+    private List<ReservationDetailDto> updatedReservationDetails;
+    
     // 기존 필드들에 대한 getter와 setter는 @Data 어노테이션으로 자동 생성됩니다.
     
     // updatedReservation과 user에 대한 getter와 setter
@@ -42,5 +45,22 @@ public class ReservationChangeResultDto {
     public void setUser(User user) {
         this.user = user;
     }
+    
+    public void setUpdatedReservationDetails(List<ReservationDetailDto> updatedReservationDetails) {
+        this.updatedReservationDetails = updatedReservationDetails;
+    }
+
+    public List<ReservationDetailDto> getUpdatedReservationDetails() {
+        return updatedReservationDetails;
+    }
+    
+    public Integer getPriceDifference() {
+        return priceDifference;
+    }
+
+    public void setPriceDifference(Integer priceDifference) {
+        this.priceDifference = priceDifference;
+    }
+    
     
 }

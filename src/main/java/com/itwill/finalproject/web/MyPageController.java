@@ -605,8 +605,8 @@ public class MyPageController {
 	        return "/reservation/order";
 	    }
 	    
+	   
 	    // requestData에서 reservationMaster와 reservationDetail 추출
-	 // requestData에서 reservationMaster와 reservationDetail 추출
 	    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
 	    List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData.get("reservationDetail");
 
@@ -666,7 +666,7 @@ public class MyPageController {
 	}
 
     // 예약 변경 페이지 로드
-    @GetMapping("/reservation_update/{resId}")
+	@GetMapping("/reservation_update/{resId}")
     public String reservationUpdateForm(@PathVariable int resId, Model model) {
         log.info("reservationUpdateForm for resId: {}", resId);
         
@@ -685,22 +685,19 @@ public class MyPageController {
         return "/mypage/reservation_update_form";
     }
 
-    // 예약 변경 요청 처리
     @PostMapping("/reservation_update")
     public String processReservationUpdate(@RequestBody ReservationUpdateDto updateDto, Model model) {
         log.info("Processing reservation update: {}", updateDto);
         
-        // 여기서 예약 변경 로직을 구현합니다.
         ReservationChangeResultDto changeResult = reservationSvc.updateReservation(updateDto);
         
         model.addAttribute("changeResult", changeResult);
         
-        return "/mypage/reservation_update_confirmation";
+        return "mypage/reservation_update_confirmation";
     }
 
-    // 예약 변경 확인 및 결제 페이지
-    @GetMapping("/reservation_order/{resId}")
-    public String reservationOrder(@PathVariable int resId, Model model) {
+    @GetMapping("/reservation_update_payment/{resId}")
+    public String reservationUpdatePayment(@PathVariable int resId, Model model) {
         log.info("Reservation update payment for resId: {}", resId);
         
         ReservationChangeResultDto changeResult = reservationSvc.getReservationChangeResult(resId);
@@ -708,11 +705,25 @@ public class MyPageController {
         model.addAttribute("changeResult", changeResult);
         model.addAttribute("resMaster", changeResult.getUpdatedReservation());
         model.addAttribute("user", changeResult.getUser());
+        model.addAttribute("reservationDetails", changeResult.getUpdatedReservationDetails());
         
-        return "/mypage/reservation_update_payment";
+        return "mypage/reservation_update_payment";
     }
 
-    // 추가 결제 처리
+    @PostMapping("/complete_reservation_update")
+    @ResponseBody
+    public ResponseEntity<?> completeReservationUpdate(@RequestBody ReservationUpdateDto updateDto) {
+        log.info("Completing reservation update: {}", updateDto);
+        
+        try {
+            ReservationChangeResultDto result = reservationSvc.finalizeReservationUpdate(updateDto);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("Error completing reservation update", e);
+            return ResponseEntity.badRequest().body("예약 변경 처리 중 오류가 발생했습니다.");
+        }
+    }
+
     @PostMapping("/additional_payment")
     @ResponseBody
     public ResponseEntity<?> processAdditionalPayment(@RequestBody AdditionalPaymentDto paymentDto) {
@@ -727,7 +738,6 @@ public class MyPageController {
         }
     }
 
-    // 환불 요청 처리
     @PostMapping("/refund_request")
     @ResponseBody
     public ResponseEntity<?> processRefundRequest(@RequestBody RefundRequestDto refundDto) {
@@ -741,6 +751,5 @@ public class MyPageController {
             return ResponseEntity.badRequest().body("환불 요청 처리 중 오류가 발생했습니다.");
         }
     }
-    
 
 }

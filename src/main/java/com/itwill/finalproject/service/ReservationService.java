@@ -154,6 +154,7 @@ public class ReservationService {
             return false;
         }
     }
+    // updateReservation 메서드 수정
     @Transactional
     public ReservationChangeResultDto updateReservation(ReservationUpdateDto updateDto) {
         log.info("Updating reservation: {}", updateDto);
@@ -184,11 +185,36 @@ public class ReservationService {
         result.setNewTotalPrice(newTotalPrice);
         result.setPriceDifference(newTotalPrice - result.getOldTotalPrice());
 
-        reservationMasterRepo.save(reservationMaster);
+        // 변경된 예약 정보 저장
+        reservationMaster = reservationMasterRepo.save(reservationMaster);
+
+        // 결과에 업데이트된 예약 정보와 사용자 정보 추가
+        result.setUpdatedReservation(reservationMaster);
+        result.setUser(reservationMaster.getUser());
 
         return result;
     }
+    
+	// 새로운 메서드 추가 (변경 결과 확인)
+	public ReservationChangeResultDto getReservationChangeResult(Integer resId) {
+		ReservationMaster reservation = reservationMasterRepo.findById(resId)
+				.orElseThrow(() -> new RuntimeException("Reservation not found"));
 
+		ReservationChangeResultDto result = new ReservationChangeResultDto();
+		result.setResId(reservation.getResId());
+		result.setOldCheckIn(reservation.getResCheckIn());
+		result.setOldCheckOut(reservation.getResCheckOut());
+		result.setOldTotalPrice(reservation.getResTotalPrice());
+		result.setUpdatedReservation(reservation);
+		result.setUser(reservation.getUser());
+
+		// 여기에 변경된 예약 상세 정보를 설정하는 로직 추가
+		List<ReservationDetailDto> updatedDetails = reservationDetailRepo.findDetailsByResId(resId);
+		result.setUpdatedReservationDetails(updatedDetails);
+
+		return result;
+    }
+    
     private List<ItemChangeDto> updateReservationDetails(ReservationMaster reservationMaster, List<ReservationItemUpdateDto> updatedItems) {
         return updatedItems.stream().map(updateItem -> {
             ReservationDetail detail = reservationDetailRepo.findByReservationMasterAndItem_ItemId(reservationMaster, updateItem.getItemId())
@@ -252,15 +278,30 @@ public class ReservationService {
         return true; // 환불 요청 성공 시 true 반환
     }
 
-    public ReservationChangeResultDto getReservationChangeResult(Integer resId) {
-        ReservationMaster reservation = reservationMasterRepo.findById(resId)
-            .orElseThrow(() -> new RuntimeException("Reservation not found"));
+	// 새로운 메서드 추가
+	@Transactional
+	public ReservationChangeResultDto finalizeReservationUpdate(ReservationUpdateDto updateDto) {
+		log.info("Finalizing reservation update: {}", updateDto);
 
-        ReservationChangeResultDto result = new ReservationChangeResultDto();
-        // result 객체에 필요한 정보 설정
-        // ...
+		ReservationChangeResultDto changeResult = updateReservation(updateDto);
 
-        return result;
-    }
-    
+		// 결제 처리 (추가 결제 또는 환불)
+		processPaymentChange(changeResult);
+
+		return changeResult;
+	}
+
+	// 새로운 메서드 추가
+	private void processPaymentChange(ReservationChangeResultDto changeResult) {
+		if (changeResult.getPriceDifference() > 0) {
+			// 추가 결제 처리
+			processAdditionalPayment(
+					new AdditionalPaymentDto(changeResult.getResId(), changeResult.getPriceDifference()));
+		} else if (changeResult.getPriceDifference() < 0) {
+			// 환불 처리
+			processRefundRequest(
+					new RefundRequestDto(changeResult.getResId(), Math.abs(changeResult.getPriceDifference())));
+		}
+	}
+
 }
