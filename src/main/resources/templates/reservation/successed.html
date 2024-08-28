@@ -44,11 +44,11 @@
 									<div th:if="${item.itemId >= 1 && item.itemId <= 20}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemId >= 1 && item.itemId <= 4 ? '달' : 
-                           item.itemId >= 5 && item.itemId <= 8 ? '별' :
-                           item.itemId >= 9 && item.itemId <= 12 ? '노을' :
-                           item.itemId >= 13 && item.itemId <= 16 ? '하늘' :
-                           item.itemId >= 17 && item.itemId <= 20 ? '바람' : ''}" />
+											th:value="${item.itemId >= 1 && item.itemId <= 4 ? item.itemName : 
+                           item.itemId >= 5 && item.itemId <= 8 ? item.itemName :
+                           item.itemId >= 9 && item.itemId <= 12 ? item.itemName :
+                           item.itemId >= 13 && item.itemId <= 16 ? item.itemName :
+                           item.itemId >= 17 && item.itemId <= 20 ? item.itemName : ''}" />
 									</div>
 								</div>
 							</div>
