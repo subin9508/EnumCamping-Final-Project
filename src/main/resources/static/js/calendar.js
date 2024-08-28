@@ -324,7 +324,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     // 구역 가격 업데이트
     function findPrice(year, month, day,areaIndex) {
         const selectedDateObj = new Date(year, month - 1, day);
-        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
     
         // 성수기 기간 설정
         const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
@@ -471,7 +471,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     function updatePrice(year, month, day, selectedArea, selectedNight) {
         const date = `${year}-${month}-${day}`;
         const selectedDateObj = new Date(year, month - 1, day);
-        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
         
         // 성수기 기간 설정
         const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
