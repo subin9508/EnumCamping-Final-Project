@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,10 +39,14 @@ import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+import com.itwill.finalproject.dto.AdditionalPaymentDto;
 import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
+import com.itwill.finalproject.dto.RefundRequestDto;
+import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
+import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.service.MyPageService;
@@ -541,5 +546,82 @@ public class MyPageController {
 		
 		return new ResponseEntity<>(reservations, HttpStatus.OK);
 	}
+    
+    // 예약 변경 페이지 로드
+    @GetMapping("/reservation_update/{resId}")
+    public String reservationUpdateForm(@PathVariable int resId, Model model) {
+        log.info("reservationUpdateForm for resId: {}", resId);
+        
+        Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+        List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
+        List<Items> items = reservationSvc.getAllItems();
+        
+        if (!resMaster.isPresent()) {
+            return "error/reservation-not-found";
+        }
+        
+        model.addAttribute("resMaster", resMaster.get());
+        model.addAttribute("resDetail", resDetail);
+        model.addAttribute("items", items);
+        
+        return "/mypage/reservation_update_form";
+    }
+
+    // 예약 변경 요청 처리
+    @PostMapping("/reservation_update")
+    public String processReservationUpdate(@RequestBody ReservationUpdateDto updateDto, Model model) {
+        log.info("Processing reservation update: {}", updateDto);
+        
+        // 여기서 예약 변경 로직을 구현합니다.
+        ReservationChangeResultDto changeResult = reservationSvc.updateReservation(updateDto);
+        
+        model.addAttribute("changeResult", changeResult);
+        
+        return "/mypage/reservation_update_confirmation";
+    }
+
+    // 예약 변경 확인 및 결제 페이지
+    @GetMapping("/reservation_order/{resId}")
+    public String reservationOrder(@PathVariable int resId, Model model) {
+        log.info("Reservation update payment for resId: {}", resId);
+        
+        ReservationChangeResultDto changeResult = reservationSvc.getReservationChangeResult(resId);
+        
+        model.addAttribute("changeResult", changeResult);
+        model.addAttribute("resMaster", changeResult.getUpdatedReservation());
+        model.addAttribute("user", changeResult.getUser());
+        
+        return "/mypage/reservation_update_payment";
+    }
+
+    // 추가 결제 처리
+    @PostMapping("/additional_payment")
+    @ResponseBody
+    public ResponseEntity<?> processAdditionalPayment(@RequestBody AdditionalPaymentDto paymentDto) {
+        log.info("Processing additional payment: {}", paymentDto);
+        
+        boolean paymentSuccess = reservationSvc.processAdditionalPayment(paymentDto);
+        
+        if (paymentSuccess) {
+            return ResponseEntity.ok().body("추가 결제가 성공적으로 처리되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("추가 결제 처리 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 환불 요청 처리
+    @PostMapping("/refund_request")
+    @ResponseBody
+    public ResponseEntity<?> processRefundRequest(@RequestBody RefundRequestDto refundDto) {
+        log.info("Processing refund request: {}", refundDto);
+        
+        boolean refundRequestSuccess = reservationSvc.processRefundRequest(refundDto);
+        
+        if (refundRequestSuccess) {
+            return ResponseEntity.ok().body("환불 요청이 성공적으로 처리되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("환불 요청 처리 중 오류가 발생했습니다.");
+        }
+    }
     
 }

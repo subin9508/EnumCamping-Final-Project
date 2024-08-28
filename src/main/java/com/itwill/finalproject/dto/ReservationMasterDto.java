@@ -2,15 +2,20 @@ package com.itwill.finalproject.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReservationMasterDto {
     private Integer resId; // 예약 ID
     private String userId; // 사용자 ID
@@ -23,6 +28,7 @@ public class ReservationMasterDto {
     private LocalDate resCheckOut; // 체크아웃 날짜 
     private Integer resTotalPrice; // 예약 총 가격
     private Integer resState; // 예약 상태
+    private List<ReservationDetailDto> reservationDetails;
     
     public ReservationMaster toEntity(User user) {
 		return ReservationMaster.builder().resId(resId).user(user).requirement(requirement).resCreatedTime(resCreatedTime)
