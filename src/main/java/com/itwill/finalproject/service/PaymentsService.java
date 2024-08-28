@@ -14,12 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwill.finalproject.dto.ReservationMasterDto;
 import com.itwill.finalproject.dto.PaymentsDto;
 import com.itwill.finalproject.exception.ServiceException;
-import com.itwill.finalproject.repository.PaymentsCancelRepository;
 import com.itwill.finalproject.repository.PaymentsRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.domain.Payments;
-import com.itwill.finalproject.domain.PaymentsCancel;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.siot.IamportRestClient.IamportClient;
@@ -38,9 +36,6 @@ public class PaymentsService {
     @Autowired
     private PaymentsRepository paymentsRepo;
     
-    @Autowired
-    private PaymentsCancelRepository paymentsCancelRepo;
-
     @Autowired
     private ReservationMasterRepository reservationMasterRepo;
 
@@ -185,19 +180,7 @@ public class PaymentsService {
 
 	               // 결제 상태를 CANCEL로 업데이트
 	               payment.setPayStatus("CANCEL");
-	               paymentsRepo.save(payment);
-
-	               // 취소 내역을 PaymentsCancel 엔티티로 저장
-	               PaymentsCancel paymentsCancel = PaymentsCancel.builder()
-	                       .payId(payId)
-	                       .impUid(payment.getImpUid())
-	                       .resId(payment.getResId())
-	                       .canAmount(payment.getResTotalPrice())
-	                       .canDate(LocalDateTime.now())
-	                       .canRole("구매자")
-	                       .build();
-
-	               paymentsCancelRepo.save(paymentsCancel);
+	               paymentsRepo.save(payment);               
 	               	
 	               // 예약 상태를 취소로 업데이트
 	               Integer resId = payment.getResId();
@@ -278,18 +261,6 @@ public class PaymentsService {
 	                payment.setPayStatus("PARTIAL_CANCEL"); // 부분 취소 상태로 업데이트
 	                payment.setResTotalPrice(payment.getResTotalPrice() - cancelAmount);
 	                paymentsRepo.save(payment);
-
-	                // 취소 내역을 PaymentsCancel 엔티티로 저장
-	                PaymentsCancel paymentsCancel = PaymentsCancel.builder()
-	                        .payId(payId)
-	                        .impUid(payment.getImpUid())
-	                        .resId(payment.getResId())
-	                        .canAmount(cancelAmount)
-	                        .canDate(LocalDateTime.now())
-	                        .canRole("구매자")
-	                        .build();
-
-	                paymentsCancelRepo.save(paymentsCancel);
 
 	                // 예약 상태 업데이트
 	                boolean updateSuccess = reservationService.updateReservationState(payment.getResId(), 3);
