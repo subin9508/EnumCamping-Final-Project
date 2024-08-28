@@ -44,9 +44,7 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
-		
-		
-		               
+				               
 });
 
 // 날짜 차이에 따른 라디오 버튼 자동 선택 함수
@@ -695,7 +693,7 @@ function updateQuantity(itemId, itemPrice) {
 
     console.log('Data to be sent:', JSON.stringify(data, null, 2)); // 전송할 데이터 로그
 
-    const uri = '../reservation/order';
+    const uri = '../mypage/reservation_order';
 
     axios.post(uri, data, {
         headers: {

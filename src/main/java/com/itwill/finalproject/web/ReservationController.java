@@ -88,23 +88,23 @@ public class ReservationController {
 	}
 	
 	// 예약확인 페이지
-		@GetMapping("/order")
-		public String showOrderPage(HttpSession session, Model model) {
-			 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		     String userId = authentication.getName();
-//		    String userId = (String) session.getAttribute("signedInUser");
-		    User user = userSvc.read(userId);
-		    Integer userKey = user.getUserKey();
-		    log.info("user={}",user);
-		    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		    List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+			@GetMapping("/order")
+			public String showOrderPage(HttpSession session, Model model) {
+				 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			     String userId = authentication.getName();
+//			    String userId = (String) session.getAttribute("signedInUser");
+			    User user = userSvc.read(userId);
+			    Integer userKey = user.getUserKey();
+			    log.info("user={}",user);
+			    ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
+			    List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
-		    model.addAttribute("user", user);
-		    model.addAttribute("reservationMaster", reservationMaster);
-		    model.addAttribute("reservationDetails", reservationDetails);
+			    model.addAttribute("user", user);
+			    model.addAttribute("reservationMaster", reservationMaster);
+			    model.addAttribute("reservationDetails", reservationDetails);
 
-		    return "/reservation/order";
-		}
+			    return "/reservation/order";
+			}
 		
 		@PostMapping("/order")
 		public String getReservationList(
