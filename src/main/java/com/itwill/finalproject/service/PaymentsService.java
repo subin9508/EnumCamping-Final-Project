@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,7 +110,16 @@ public class PaymentsService {
         }
     }
 
-    
+    /**
+     * resId를 사용하여 결제 정보를 조회하는 메서드
+     * @param resId 예약 ID
+     * @return Payments 객체를 반환하거나, 존재하지 않으면 예외를 던짐
+     * @throws ServiceException 결제 정보가 존재하지 않을 경우 예외 발생
+     */
+    public Payments getPaymentByResId(Integer resId) throws ServiceException {
+        Optional<Payments> payment = paymentsRepo.findByResId(resId);
+        return payment.orElseThrow(() -> new ServiceException("결제 정보를 찾을 수 없습니다."));
+    }
     
     // --------------------------- 결제 취소 부분
     /**
@@ -165,6 +175,7 @@ public class PaymentsService {
 	           log.info("Payment already cancelled for payId: {}", payId);
 	           return "Payment already cancelled";
 	       }
+	       
 
 	       try {
 	           String impUid = payment.getImpUid();
@@ -232,11 +243,17 @@ public class PaymentsService {
 
 	        log.debug("Retrieved payment: {}", payment);
 	        log.debug("impuid={}", payment.getImpUid());
-
-	        if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
-	            log.info("Payment already cancelled for payId: {}", payId);
-	            return "Payment already cancelled";
+	        
+	     // Payment method가 point인 경우 결제창을 띄워야 함
+	        if ("point".equalsIgnoreCase(payment.getPayMethod())) {
+	            log.info("Payment method is point for payId: {}, requiring user interaction", payId);
+	            return "Payment method requires confirmation on UI";
 	        }
+	        
+			if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
+				log.info("Payment already cancelled for payId: {}", payId);
+				return "Payment already cancelled";
+			}
 
 	        try {
 	            String impUid = payment.getImpUid();
