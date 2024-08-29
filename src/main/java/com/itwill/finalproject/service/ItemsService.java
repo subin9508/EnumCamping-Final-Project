@@ -1,17 +1,18 @@
 package com.itwill.finalproject.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
 import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.ItemsHistory;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 
 import lombok.extern.slf4j.Slf4j;
-
-import com.itwill.finalproject.repository.ItemsHistoryRepository;
 
 @Slf4j
 @Service
@@ -86,6 +87,7 @@ public class ItemsService {
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
             currentHistory.setEndDate(LocalDateTime.now());
+            currentHistory.setSpecial(0);
             itemsHistoryRepository.save(currentHistory);
         }
 
