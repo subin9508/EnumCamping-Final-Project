@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationListDto;
 import com.itwill.finalproject.exception.ControllerException;
 import com.itwill.finalproject.exception.ServiceException;
+import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.service.MyPageService;
 import com.itwill.finalproject.domain.User;
@@ -214,6 +216,36 @@ public class PaymentsController {
     }
     
     //------------------- 부분 취소 ----------------------
+    /**
+     * resId를 통해 결제 정보를 조회하는 메서드 (결제 취소 시 사용)
+     * @param resId
+     * @return 결제 정보 객체를 반환하거나 에러 메시지 반환
+     */
+    @GetMapping("/mypage/reservation_update/getPaymentInfo/{resId}")
+    public ResponseEntity<?> getPartialPaymentInfo(@PathVariable("resId") Integer resId) {
+        try {
+        	Payments payment = paymentsService.getPaymentByResId(resId); // 결제 정보를 조회
+
+            if (payment == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("결제 정보를 찾을 수 없습니다.");
+            }
+
+            // 필요한 결제 정보를 Map에 담아 반환
+            Map<String, Object> paymentInfo = new HashMap<>();
+            paymentInfo.put("payId", payment.getPayId());
+            paymentInfo.put("payMethod", payment.getPayMethod());
+            log.debug("payId={}, payMethod={}", payment.getPayId(), payment.getPayMethod());
+
+            return ResponseEntity.ok(paymentInfo); // 조회된 결제 정보를 반환
+        } catch (ServiceException e) {
+            log.error("Error retrieving payment information for resId: {}", resId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 예외 발생 시 에러 메시지를 반환
+        }
+    }
+
+    
+    
+    
     @ResponseBody
     @PostMapping("/mypage/reservation_update/refund/{payId}")
     public ResponseEntity<String> cancelPartialPayment(

@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		e.preventDefault(); // 기본 버튼 동작(폼 제출 등)을 방지
 		
         const resId = document.querySelector("input[name=resId]").value; // 예약 ID 입력값 가져오기
+        console.log('resId=', resId);
         const userId = document.querySelector("input[name=userId]").value; // userId 입력값 가져오기
 		refundAmount = document.querySelector("input[name=refundAmount]").value; // 부분 환불 금액 입력값 가져오기
 		
@@ -45,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 		// 예약 ID로 결제 ID를 조회하는 함수 호출
         getPayIdByResId(resId).then(payId => {
+            console.log("부분 환불 시도: payId=" + payId);
+
             console.log("부분 환불 시도: payId=" + payId);
 
             if (!payId) {
@@ -75,11 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error("서버 응답 오류: ", error);
                     alert('부분 취소 중 오류가 발생했습니다: ' + error.message);
                 });
+              
         })
         .catch(error => {
             console.error("결제 ID 조회 과정에서 오류 발생:", error);
             alert('결제 ID 조회 중 오류가 발생했습니다: ' + error.message);
         });
+       
     });
    
 });
