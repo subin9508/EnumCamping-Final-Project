@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name="ITEMSHISTORY")
+@Table(name="itemshistory")
 public class ItemsHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

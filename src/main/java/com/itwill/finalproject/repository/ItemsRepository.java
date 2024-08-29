@@ -1,5 +1,6 @@
 package com.itwill.finalproject.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,8 @@ public interface ItemsRepository extends JpaRepository<Items, Integer>{
 	@Query("select i.itemPrice from Items i "
 			+ "where i.itemId = :itemId")
 	Integer selectItemPrice(@Param("itemId") int itemId);
+	
+
+
+	
 }
