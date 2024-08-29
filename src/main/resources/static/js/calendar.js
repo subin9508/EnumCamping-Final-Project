@@ -321,6 +321,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         }
     }
     
+    
+    
     // 구역 가격 업데이트
     function findPrice(year, month, day,areaIndex) {
         const selectedDateObj = new Date(year, month - 1, day);

@@ -1,6 +1,7 @@
 package com.itwill.finalproject.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationItemUpdateDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
@@ -32,9 +34,27 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationService {
 	private final ReservationMasterRepository reservationMasterRepo;
 	private final ItemsRepository itemsRepo;
+	private final ItemsHistoryRepository itemsHistoryRepo;
 	private final ReservationDetailRepository reservationDetailRepo;
 	private final UserRepository userRepo;
 
+	//특가 예매 여부 체크
+	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
+		return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime);
+	}
+	
+    // 가장 최근의 start_date를 조회하는 메소드
+    public LocalDateTime getLatestStartDate(int itemId) {
+    	log.info("itemId = {}",itemId);
+    	log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
+        return itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId);
+    }
+
+    // 특정 조건에 따른 item_price를 조회하는 메소드
+    public Integer getItemPriceByAdjustedEndDate(int itemId, LocalDateTime date) {
+        return itemsHistoryRepo.findItemPriceByItemIdAndAdjustedEndDate(itemId, date);
+    }
+	
 	// 특정 날짜에 예약된 지역을 읽기
 	public List<Integer> readReservedAreas(LocalDate date) {
 	    LocalDate minusCheckIn = date.minusDays(1);
