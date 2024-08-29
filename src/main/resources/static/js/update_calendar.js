@@ -692,6 +692,8 @@ function updateQuantity(itemId, itemPrice) {
     console.log('Button clicked'); // 버튼 클릭 로그
     const date = `${finalYear}-${finalMonth}-${finalDay}`;
     const requirement = document.getElementById("special-requests").value;
+    const resId = document.querySelector("input#resId").value; // 예약 ID 입력값 가져오기
+    console.log('resId=', resId);
     const reservationMaster = {
         resCheckIn: date,
         resCheckOut: calculateCheckOutDate(date, finalSelectedNight),
@@ -725,7 +727,7 @@ function updateQuantity(itemId, itemPrice) {
 
     console.log('Data to be sent:', JSON.stringify(data, null, 2)); // 전송할 데이터 로그
 
-    const uri = '../mypage/reservation_order';
+    const uri = `../mypage/reservation_order?resId=${resId}`;
 
     axios.post(uri, data, {
         headers: {
