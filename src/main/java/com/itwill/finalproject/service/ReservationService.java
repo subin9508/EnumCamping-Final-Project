@@ -52,6 +52,7 @@ public class ReservationService {
 
     // 특정 조건에 따른 item_price를 조회하는 메소드
     public Integer getItemPriceByAdjustedEndDate(int itemId, LocalDateTime date) {
+    	log.info("id={}, date={}",itemId,date);
         return itemsHistoryRepo.findItemPriceByItemIdAndAdjustedEndDate(itemId, date);
     }
 	
