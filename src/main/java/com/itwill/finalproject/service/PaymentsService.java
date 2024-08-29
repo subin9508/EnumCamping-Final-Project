@@ -250,6 +250,11 @@ public class PaymentsService {
 //	            return "Payment method requires confirmation on UI";
 //	        }
 	        
+	        log.debug("Retrieved payment with resId: {}", payment.getResId());
+	        // Ensure the resId here is what you expect
+	        Integer resId = payment.getResId();
+	        log.debug("Related resId: {}", resId);
+	        
 			if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
 				log.info("Payment already cancelled for payId: {}", payId);
 				return "Payment already cancelled";

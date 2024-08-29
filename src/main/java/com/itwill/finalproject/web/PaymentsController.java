@@ -169,6 +169,7 @@ public class PaymentsController {
     @GetMapping("/mypage/reservation_details/getPayId/{resId}")
     public ResponseEntity<?> getPayId(@PathVariable("resId") Integer resId) {
         try {
+        	log.debug("resId={}", resId);
             Integer payId = paymentsService.getPayIdByResId(resId); // 결제 ID를 조회
             return ResponseEntity.ok(payId); // 조회된 결제 ID를 반환
         } catch (ServiceException e) {
@@ -265,10 +266,11 @@ public class PaymentsController {
             String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
             if ("Partial payment cancellation successful".equals(result)) {
                 // 부분 취소가 성공했을 때 예약 상태를 업데이트
-                boolean updateSuccess = reservationService.updateReservationState(payId, 3);
-                if (updateSuccess) {
-                    log.info("Partial payment cancelled and reservation state updated successfully for payId: {}", payId);
-                    return ResponseEntity.ok("Partial payment cancellation and reservation update successful");
+            	Integer resId = paymentsService.getResIdByPayId(payId);
+                if (resId != null) {
+                	paymentsService.updateReservationState(resId, 3); // 3은 부분취소
+                    log.info("Reservation state updated to cancelled for resId: {}", resId);
+                    return ResponseEntity.ok(result);
                 } else {
                     log.warn("Partial payment cancelled but reservation state update failed for payId: {}", payId);
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation successful but reservation update failed");
