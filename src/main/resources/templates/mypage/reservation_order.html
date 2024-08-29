@@ -87,7 +87,7 @@
                             item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
 								</td>
 								<td style="font-size: 18px;"
-									th:text="${resMaster.resCheckIn} + ' ~ ' + ${resMaster.resCheckOut} ">
+									th:text="${resMaster.resCheckIn + ' ~ ' + resMaster.resCheckOut} ">
 
 
 								</td>
@@ -134,7 +134,7 @@
 							style="font-size: 18px;">요청사항</label>
 						<textarea id="requirement" class="form-control" rows="5"
 							style="font-size: 18px;" readonly
-							th:text="${resMaster.requirement ?: '요청없음'}"></textarea>
+							th:text="${resMaster != null ? resMaster.requirement : '요청없음'}"></textarea>
 					</div>
 					<br>
 					<br>

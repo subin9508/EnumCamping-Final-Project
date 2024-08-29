@@ -628,6 +628,7 @@ public class MyPageController {
 	    reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
 	    reservationMaster.setRequirement((String)reservationMasterMap.get("requirement"));
 	    
+	    session.setAttribute("resMaster", reservationMaster);
 	    // ReservationDetailDto 객체 리스트 생성 및 설정
 	    List<ReservationDetailDto> reservationDetails = new ArrayList<>();
 
@@ -650,19 +651,18 @@ public class MyPageController {
 	        reservationDetails.add(reservationDetail);
 	    }
 	    
-	    // 서비스 레이어를 통해 예약 생성
-	    log.debug("Before calling makeReservation method");
-	    reservationSvc.makeReservation(reservationMaster, reservationDetails);
-	    log.debug("After calling makeReservation method");
+	    session.setAttribute("resDetails", reservationDetails);
 	    
-	    // 예약정보 가져오기
-	    reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-	    // 예약 상세정보 가져오기
-	    List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+	    // 데이터가 세션에 저장된 후, 세션에서 데이터를 가져오는 로그 추가
+	    log.debug("Session resMaster={}", session.getAttribute("resMaster"));
+	    log.debug("Session resDetails={}", session.getAttribute("resDetails"));
 	    
-	    // 모델에 데이터 추가
-	    model.addAttribute("resMaster", reservationMaster);
-	    model.addAttribute("resDetails", updatedReservationDetails);
+	    // 세션에서 데이터 가져와서 모델에 추가
+	    model.addAttribute("resMaster", session.getAttribute("resMaster"));
+	    model.addAttribute("resDetails", session.getAttribute("resDetails"));
+	    
+	    log.debug("Model resMaster={}", model.getAttribute("resMaster"));
+	    log.debug("Model resDetails={}", model.getAttribute("resDetails"));
 	    
 	    return "/mypage/reservation_order";
 	}
