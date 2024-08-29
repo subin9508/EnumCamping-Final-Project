@@ -661,8 +661,8 @@ public class MyPageController {
 		List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
 
 		// 모델에 데이터 추가
-		model.addAttribute("reservationMaster", reservationMaster);
-		model.addAttribute("reservationDetails", updatedReservationDetails);
+		model.addAttribute("resMaster", reservationMaster);
+		model.addAttribute("resDetails", updatedReservationDetails);
 
 		return "/mypage/reservation_order";
 
