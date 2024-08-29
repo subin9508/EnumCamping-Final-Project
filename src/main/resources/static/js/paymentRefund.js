@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// 서버에서 결제 ID를 가져오는 함수, axios를 사용하여 get 요청을 보냄
     const getPayIdByResId = (resId) => {
-        return axios.get(`/enumcamping/mypage/reservation_update/getPayId/${resId}`)
+        return axios.get(`/enumcamping/mypage/reservation_details/getPayId/${resId}`)
             .then(response => response.data) // 응답 데이터 반환
             .catch(error => {
                 console.error("결제 ID 조회 실패:", error);
@@ -45,18 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 	
 		// 예약 ID로 결제 ID를 조회하는 함수 호출
-        getPayIdByResId(resId).then(paymentInfo => {
-            const payId = paymentInfo.payId;
-            const paymentPayMethod = paymentInfo.payMethod;
+        getPayIdByResId(resId).then(payId => {
+            console.log("부분 환불 시도: payId=" + payId);
 
             console.log("부분 환불 시도: payId=" + payId);
-            console.log("결제 방법: paymentPayMethod=" + paymentPayMethod);
 
             if (!payId) {
                 alert("결제 아이디가 필요합니다.");
                 return;
             }
-			if(paymentPayMethod === 'card') {
+			
 			// 부분 환불 확인 팝업
 			if (!confirm("정말로 이 금액을 환불하시겠습니까? 금액: " + refundAmount + "원")) {
 				console.log("부분 환불 확인 단계에서 사용자가 취소함");
@@ -80,12 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error("서버 응답 오류: ", error);
                     alert('부분 취소 중 오류가 발생했습니다: ' + error.message);
                 });
-              } else if(paymentPayMethod === 'point') {
-				if (!confirm("포인트 결제를 취소하시겠습니까? 금액: " + refundAmount + "원")) {
-                    console.log("포인트 결제 취소 확인 단계에서 사용자가 취소함");
-                    return; // 사용자가 취소를 확인하지 않은 경우, 함수 실행을 중지
-                }
-			  }
+              
         })
         .catch(error => {
             console.error("결제 ID 조회 과정에서 오류 발생:", error);

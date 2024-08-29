@@ -244,11 +244,11 @@ public class PaymentsService {
 	        log.debug("Retrieved payment: {}", payment);
 	        log.debug("impuid={}", payment.getImpUid());
 	        
-	     // Payment method가 point인 경우 결제창을 띄워야 함
-	        if ("point".equalsIgnoreCase(payment.getPayMethod())) {
-	            log.info("Payment method is point for payId: {}, requiring user interaction", payId);
-	            return "Payment method requires confirmation on UI";
-	        }
+//	     // Payment method가 point인 경우 결제창을 띄워야 함
+//	        if ("point".equalsIgnoreCase(payment.getPayMethod())) {
+//	            log.info("Payment method is point for payId: {}, requiring user interaction", payId);
+//	            return "Payment method requires confirmation on UI";
+//	        }
 	        
 			if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
 				log.info("Payment already cancelled for payId: {}", payId);

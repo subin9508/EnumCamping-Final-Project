@@ -247,7 +247,6 @@ public class PaymentsController {
     
     
     @ResponseBody
-    @GetMapping("/mypage/reservation_update/refund/{payId}")
     @PostMapping("/mypage/reservation_update/refund/{payId}")
     public ResponseEntity<String> cancelPartialPayment(
             @PathVariable("payId") Integer payId,
