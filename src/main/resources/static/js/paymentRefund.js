@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 		// 예약 ID로 결제 ID를 조회하는 함수 호출
         getPayIdByResId(resId).then(payId => {
-            console.log("부분 환불 시도: payId=" + payId);
+            console.log("부분 환불 시도: resId=" + resId);
 
             console.log("부분 환불 시도: payId=" + payId);
 
