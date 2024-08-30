@@ -86,8 +86,11 @@ public class ItemsService {
     	log.info("updateItemHistory");
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
+        	if ("on".equals(newCheck)) {
+        		currentHistory.setSpecial(0);
+        		
+        	}
             currentHistory.setEndDate(LocalDateTime.now());
-            currentHistory.setSpecial(0);
             itemsHistoryRepository.save(currentHistory);
         }
 
