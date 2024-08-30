@@ -193,10 +193,13 @@ public class PaymentsService {
 
 	               // 새로운 결제 정보 생성 및 저장
 	               Payments newPayment = new Payments();
+	               newPayment.setResId(payment.getResId());
 	               newPayment.setImpUid(impUid);
+	               newPayment.setPgTid(payment.getPgTid());;
 	               newPayment.setPayStatus("cancel");
 	               newPayment.setResTotalPrice(payment.getResTotalPrice());
 	               newPayment.setPayMethod(payment.getPayMethod());
+	               newPayment.setBuyerEmail(payment.getBuyerEmail());
 	               newPayment.setPayDate(LocalDateTime.now());
 	               paymentsRepo.save(newPayment);             
 	               	
