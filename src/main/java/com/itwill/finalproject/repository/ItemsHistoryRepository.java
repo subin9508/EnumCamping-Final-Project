@@ -34,9 +34,9 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
 //     List<ItemsHistory> findLatestPricesWithSpecialZero();
     
     
-    @Query("SELECT ih FROM itemshistory ih WHERE ih.start_date = " +
-    	       "(SELECT MAX(ih2.start_date) FROM itemshistory ih2 WHERE ih2.special = 0 AND ih2.item_id = ih.item_id) " +
-    	       "AND ih.special = 0")
-    	List<ItemsHistory> findLatestPricesWithSpecialZero();
-    
+//    @Query("SELECT ih FROM itemshistory ih WHERE ih.start_date = " +
+//    	       "(SELECT MAX(ih2.start_date) FROM itemshistory ih2 WHERE ih2.special = 0 AND ih2.item_id = ih.item_id) " +
+//    	       "AND ih.special = 0")
+//    	List<ItemsHistory> findLatestPricesWithSpecialZero();
+//    
 }

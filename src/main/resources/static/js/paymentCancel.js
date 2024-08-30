@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	
     // 결제 취소 버튼 이벤트 리스너
-    btnPayCancel?.addEventListener('click', (e) => {
+     btnPayCancel?.addEventListener('click', (e) => {
 		e.preventDefault(); // 기본 버튼 동작(폼 제출 등)을 방지
 		
         const resId = document.querySelector("input[name=resId]").value; // 예약 ID 입력값 가져오기
@@ -62,5 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('결제 ID 조회 중 오류가 발생했습니다: ' + error.message);
         });
     });
+		
    
 });

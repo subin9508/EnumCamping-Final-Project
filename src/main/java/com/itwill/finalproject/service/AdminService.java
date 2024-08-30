@@ -25,9 +25,9 @@ public class AdminService {
     @Autowired
     private ItemsHistoryRepository itemsHistoryRepository;
     
-    public List<ItemsHistory> getLatestPricesWithSpecialZero() {
-        return itemsHistoryRepository.findLatestPricesWithSpecialZero();
-    }
+//    public List<ItemsHistory> getLatestPricesWithSpecialZero() {
+//        return itemsHistoryRepository.findLatestPricesWithSpecialZero();
+//    }
     
     // Items 엔티티를 ID로 조회하는 메서드
     public Items findById(Integer itemId) {

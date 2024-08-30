@@ -82,10 +82,10 @@ public class AdminController {
     	
     }
     
-    @GetMapping("/getLatestPriceWithSpecialZero")
-    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
-        return adminSvc.getLatestPricesWithSpecialZero();
-    }
+//    @GetMapping("/getLatestPriceWithSpecialZero")
+//    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
+//        return adminSvc.getLatestPricesWithSpecialZero();
+//    }
     
 	
 }
