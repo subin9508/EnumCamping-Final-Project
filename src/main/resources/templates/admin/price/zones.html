@@ -32,38 +32,37 @@
                     <form id="modifyFormZones" class="modifyForm" action="/enumcamping/admin/price/zones/update" method="post">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>이름</th>
-                                    <th>비/성수기</th>
-                                    <th>평일/주말</th>
-                                    <th>가격</th>
-                                    <th>특가 유무</th>
-                                </tr>
-                            </thead>
+								<tr style="border-bottom: 2px solid black;">
+									<th>이름</th>
+									<th>비/성수기</th>
+									<th>평일/주말</th>
+									<th>가격</th>
+									<th>특가 유무</th>
+								</tr>
+							</thead>
                             <tbody>
-                                <tr th:each="i : ${items}">
-                               		<td class="item-id col-3 d-none" th:text="${i.itemId}"></td>
-                                    <td class="item-name col-3" th:text="${i.itemName}">
-                                    </td>
-                                    <td class="item-time col-3" th:text="${i.itemTime}"
-                                        th:classappend="${i.itemTime == '비수기'} ? 'text-success' : (${i.itemTime == '성수기'} ? 'text-danger' : '')">>
-                                    </td>
-                                    <td class="item-weekday col-3" th:text="${i.itemWeekday}"
-                                        th:classappend="${i.itemWeekday == '평일'} ? 'text-success' : (${i.itemWeekday == '주말'} ? 'text-danger' : '')">
-                                    </td>
-                                    
-                                    <td class="item-price col-3" >
-                                        <div style="display: inline-flex; align-items: center; justify-content: center;">
-                                            <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
-                                            	th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
-                                            <span>원</span>
-                                        </div>
-                                    </td>
-                                    <td class="item-select col-1">
-                                        <input type="checkbox" th:name="'select_' + ${i.itemId}" />
-                                    </td>
-                                </tr>
-                            </tbody>
+							    <tr th:each="i, iterStat : ${items}"
+							        th:classappend="${iterStat.index % 4 == 3} ? 'border-bottom border-dark' : ''">
+							        <td class="item-id col-3 d-none" th:text="${i.itemId}"></td>
+							        <td class="item-name col-3" th:text="${i.itemName}"></td>
+							        <td class="item-time col-3" th:text="${i.itemTime}"
+							            th:classappend="${i.itemTime == '비수기'} ? 'text-success' : (${i.itemTime == '성수기'} ? 'text-danger' : '')">
+							        </td>
+							        <td class="item-weekday col-3" th:text="${i.itemWeekday}"
+							            th:classappend="${i.itemWeekday == '평일'} ? 'text-success' : (${i.itemWeekday == '주말'} ? 'text-danger' : '')">
+							        </td>
+							        <td class="item-price col-3">
+							            <div style="display: inline-flex; align-items: center; justify-content: center;">
+							                <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
+							                    th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
+							                <span>원</span>
+							            </div>
+							        </td>
+							        <td class="item-select col-1">
+							            <input type="checkbox" th:name="'select_' + ${i.itemId}" />
+							        </td>
+							    </tr>
+							</tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
                             <input type="hidden" name="redirectUrl" value="/enumcamping/admin/price/zones/update">
