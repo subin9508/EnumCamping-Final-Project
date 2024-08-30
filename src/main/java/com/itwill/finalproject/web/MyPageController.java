@@ -622,7 +622,8 @@ public class MyPageController {
 		reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
 		reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
 		reservationMaster.setRequirement((String) reservationMasterMap.get("requirement"));
-
+		
+		log.info("new reservationMaster = {}",reservationMaster);
 		// ReservationDetailDto 객체 리스트 생성 및 설정
 		List<ReservationDetailDto> reservationDetails = new ArrayList<>();
 
@@ -657,13 +658,14 @@ public class MyPageController {
 
 		// 예약정보 가져오기
 		reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
+		log.info("1");
 		// 예약 상세정보 가져오기
 		List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
-
+		log.info("2");
 		// 모델에 데이터 추가
 		model.addAttribute("resMaster", reservationMaster);
 		model.addAttribute("resDetails", updatedReservationDetails);
-
+		log.info("3");
 		return "/mypage/reservation_order";
 
 	}
