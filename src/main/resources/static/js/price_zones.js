@@ -82,6 +82,21 @@
 	        checkbox.checked = false; // 체크박스의 선택을 해제
 	    });
 	});
+	
+	
+	$('#btnApplyCallPrice').on('click', function() {
+	    $.ajax({
+	        url: '/enumcamping/admin/getLatestPriceWithSpecialZero',
+	        type: 'GET',
+	        success: function(data) {
+	            console.log(data); // 결과 로깅
+	            // 필요에 따라 결과를 DOM에 반영
+	        },
+	        error: function(error) {
+	            console.log('Error:', error);
+	        }
+	    });
+	});
 	  
 /*    
 const modifyForm = document.querySelector('#modifyForm');

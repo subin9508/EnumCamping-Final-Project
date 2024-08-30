@@ -25,4 +25,18 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
     // 특정 조건에 맞는 item_price 조회
     @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 0 AND :date = ih.end_date", nativeQuery = true)
     Integer findItemPriceByItemIdAndAdjustedEndDate(@Param("itemId") int itemId, @Param("date") LocalDateTime date);
+    
+    // item_id 별로 최신 시간의 special이 0인 가격을 가져오기
+//    @Query("SELECT ih FROM itemshistory ih "
+//    		+ "WHERE ih.item_id = :itemId AND ih.start_date = " 
+//    		+ "(SELECT MAX(ih2.start_date) FROM itemshistory ih2 WHERE ih2.item_id = ih.item_id AND ih2.special = 0) " +
+//            "AND ih.special = 0")
+//     List<ItemsHistory> findLatestPricesWithSpecialZero();
+    
+    
+    @Query("SELECT ih FROM itemshistory ih WHERE ih.start_date = " +
+    	       "(SELECT MAX(ih2.start_date) FROM itemshistory ih2 WHERE ih2.special = 0 AND ih2.item_id = ih.item_id) " +
+    	       "AND ih.special = 0")
+    	List<ItemsHistory> findLatestPricesWithSpecialZero();
+    
 }

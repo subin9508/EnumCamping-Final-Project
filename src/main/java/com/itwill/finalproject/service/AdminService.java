@@ -2,6 +2,7 @@ package com.itwill.finalproject.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class AdminService {
 
     @Autowired
     private ItemsHistoryRepository itemsHistoryRepository;
+    
+    public List<ItemsHistory> getLatestPricesWithSpecialZero() {
+        return itemsHistoryRepository.findLatestPricesWithSpecialZero();
+    }
     
     // Items 엔티티를 ID로 조회하는 메서드
     public Items findById(Integer itemId) {

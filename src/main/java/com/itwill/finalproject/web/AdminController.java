@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.finalproject.domain.Items;
+import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.service.AdminService;
 import com.itwill.finalproject.service.ReservationService;
 
@@ -79,6 +80,11 @@ public class AdminController {
     public void updateZonePercent(@RequestParam("percent") String percent) {
     	log.info("update percent = {}",percent);
     	
+    }
+    
+    @GetMapping("/getLatestPriceWithSpecialZero")
+    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
+        return adminSvc.getLatestPricesWithSpecialZero();
     }
     
 	
