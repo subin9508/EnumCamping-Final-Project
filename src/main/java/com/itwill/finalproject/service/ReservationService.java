@@ -83,7 +83,15 @@ public class ReservationService {
 	
 	// 특정 아이템의 가격 조회
 	public Integer readItemPrice(int itemId) {
+		if (itemsRepo.selectItemPrice(itemId) == null) {
+			return -1;
+		}
 		return itemsRepo.selectItemPrice(itemId);
+	}
+	
+	
+	public Integer readSpecialPrice(int itemId) {
+		return itemsHistoryRepo.findSpecialPrice(itemId);
 	}
 	
 

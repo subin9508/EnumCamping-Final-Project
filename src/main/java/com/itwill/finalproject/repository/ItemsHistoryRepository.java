@@ -25,4 +25,8 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
     // 특정 조건에 맞는 item_price 조회
     @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 0 AND :date = ih.end_date", nativeQuery = true)
     Integer findItemPriceByItemIdAndAdjustedEndDate(@Param("itemId") int itemId, @Param("date") LocalDateTime date);
+    
+    @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 1", nativeQuery = true)
+    Integer findSpecialPrice(@Param("itemId") int itemId);
+
 }
