@@ -112,6 +112,11 @@ public class ReservationController {
 			log.info("특가 예약 안함");
 			log.info("No special reservation found for user: {}", userId);
 			Integer itemPrice = reservationSvc.readItemPrice(itemId);
+			//item table에 정상가로 들어가 있는 애들 특가 찾기 
+			if (itemPrice == -1) {
+				itemPrice = reservationSvc.readSpecialPrice(itemId);
+			}
+			
 			 log.debug("Fetched regular item price: {}", itemPrice);
 			if (itemPrice != null) {
 				log.debug("Returning item price: {}", itemPrice);
