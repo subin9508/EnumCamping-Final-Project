@@ -67,6 +67,21 @@
 	    });
     
 	});
+	
+	
+	document.getElementById('btnApplyAllCheck').addEventListener('click', function() {
+	    // 'name' 속성이 'select_'로 시작하는 모든 체크박스를 찾아서 반복문으로 처리
+	    document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function(checkbox) {
+	        checkbox.checked = true; // 체크박스를 선택
+	    });
+	});
+	
+	document.getElementById('btnApplyAllUnCheck').addEventListener('click', function() {
+	    // 'name' 속성이 'select_'로 시작하는 모든 체크박스를 찾아서 반복문으로 처리
+	    document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function(checkbox) {
+	        checkbox.checked = false; // 체크박스의 선택을 해제
+	    });
+	});
 	  
 /*    
 const modifyForm = document.querySelector('#modifyForm');
