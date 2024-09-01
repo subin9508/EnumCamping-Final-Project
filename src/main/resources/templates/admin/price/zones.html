@@ -17,7 +17,7 @@
                 <!-- 구역 테이블 -->
                 <div class="card" id="zones-table">
                     <div class="container-fluid d-flex justify-content-center" >
-                        <h3><strong>구역 목록</strong></h3>
+                        <h3><strong>구역 목록 (원가격)</strong></h3>
                     </div>
                     <br>
                     
@@ -26,10 +26,7 @@
                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
                         <input style="width: 10%;" id="percent" class="form-control" type="number" /><span>%</span>
                         <button class="btn btn-outline-primary" id="btnApplyPlus">인상</button>
-                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button> |
-                        <button class="btn btn-outline-success" id="btnApplyAllCheck">특가 전체선택</button>
-                        <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button> |
-                        <button class="btn btn-outline-info" id="btnApplyCallPrice">이전가격불러오기</button>
+                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button>
                     </div>
                     
                     
@@ -42,7 +39,6 @@
 									<th>비/성수기</th>
 									<th>평일/주말</th>
 									<th>가격</th>
-									<th>특가 유무</th>
 								</tr>
 							</thead>
                             <tbody>
@@ -62,9 +58,6 @@
 							                    th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
 							                <span>원</span>
 							            </div>
-							        </td>
-							        <td class="item-select col-1">
-							            <input type="checkbox" th:name="'select_' + ${i.itemId}" />
 							        </td>
 							    </tr>
 							</tbody>

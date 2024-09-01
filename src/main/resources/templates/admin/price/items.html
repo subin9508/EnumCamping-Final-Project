@@ -20,7 +20,7 @@
                 <!-- 아이템 테이블 -->
                 <div class="card" id="items-table">
                     <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
-                        <h3><strong>물품 목록</strong></h3>
+                        <h3><strong>물품 목록 (원가격)</strong></h3>
                     </div>
                     <!-- 퍼센트 적용 
                     <div style="display: flex; align-items: center; gap: 5px; justify-content: flex-end;">
@@ -35,9 +35,7 @@
                         <input style="width: 10%;" id="percent" class="form-control" type="number" />
                         <span style="font-size: 1.2em; line-height: 1.5;">%</span>
                         <button class="btn btn-outline-primary" id="btnApplyPlus">인상</button>
-                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button> |
-                        <button class="btn btn-outline-success" id="btnApplyAllCheck">특가 전체선택</button>
-                        <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button>
+                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button>
                     </div> 
                     <div class=" justify-content-center">
                     <form id="modifyFormItems" class="modifyForm" action="/enumcamping/admin/price/items/update" method="post">
@@ -47,7 +45,6 @@
                                     <th>이름</th>
                                     <th>설명</th>
                                     <th>가격</th>
-                                    <th>특가 유무</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -67,9 +64,6 @@
                                             	th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
                                             <span>원</span>
                                         </div>
-                                    </td>
-                                    <td class="item-select col-1">
-                                        <input type="checkbox" th:name="'select_' + ${i.itemId}" />
                                     </td>
                                 </tr>
                             </tbody>

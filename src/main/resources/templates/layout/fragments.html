@@ -353,12 +353,16 @@
                     <a th:href="@{|/mypage/myInfo?userId=${#authentication.name}|}">관리자 정보</a>        
                 </li>
                 <li class="sidebar-item">
-                    <a th:href="@{../price/zones}">구역 가격 관리</a>
+                    <a th:href="@{../price/zones}">구역 원가격</a>
                 </li>
                 <li class="sidebar-item">
-                    <a th:href="@{../price/items}">물품 가격 관리</a>
+                    <a th:href="@{../price/items}">물품 원가격</a>
                 </li>
-                <li class="sidebar-item d-none">
+				<li class="sidebar-item">
+					<a th:href="@{../price/zonesSpecial}">구역 특가</a></li>
+				<li class="sidebar-item">
+					<a th:href="@{../price/itemsSpecial}">물품 특가</a></li>
+				<li class="sidebar-item d-none">
                    <a th:href="@{../faq}" >예약 관리</a> 
                 </li>
             </ul>
