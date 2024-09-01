@@ -10,26 +10,26 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
-	
-	 // resCheckIn 및 resCheckOut 날짜 가져오기
-	 var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
-	 var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
+    
+     // resCheckIn 및 resCheckOut 날짜 가져오기
+     var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
+     var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
 
-	 checkNightRadio(resCheckInDate, resCheckOutDate);
-	 
-	 if (resCheckInDate) {
-		 // resCheckIn 날짜로 toDay 설정
-		 toDay = new Date(resCheckInDate);
-	 } else {
-		 toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
-	 }
-	    
-	buildCalendar();
-	
-	 // resCheckIn 날짜를 캘린더에 표시
-	 if (resCheckInDate && resCheckOutDate) {
-		 highlightResCheckInDate(resCheckInDate, resCheckOutDate);
-	 } else if (resCheckInDate) {
+     checkNightRadio(resCheckInDate, resCheckOutDate);
+     
+     if (resCheckInDate) {
+         // resCheckIn 날짜로 toDay 설정
+         toDay = new Date(resCheckInDate);
+     } else {
+         toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
+     }
+        
+    buildCalendar();
+    
+     // resCheckIn 날짜를 캘린더에 표시
+     if (resCheckInDate && resCheckOutDate) {
+         highlightResCheckInDate(resCheckInDate, resCheckOutDate);
+     } else if (resCheckInDate) {
         highlightResCheckInDate(resCheckInDate);
     }
 
@@ -44,7 +44,7 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
-				               
+                               
 });
 
 // 날짜 차이에 따른 라디오 버튼 자동 선택 함수
@@ -187,7 +187,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
             }
         } else {
             let exceptDay = new Date(doMonth.getFullYear(), doMonth.getMonth(), day);
-            column.innerText = autoLeftPad(exceptDay.getDate(), 2);
+            column.innerText = "";
             column.style.color = "#A9A9A9";
         }
 

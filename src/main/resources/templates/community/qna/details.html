@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 <link rel="stylesheet" th:href="@{/css/header.css}">
 <link rel="stylesheet" th:href="@{/css/footer.css}">
 <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -80,10 +80,10 @@
 
 	<div class="wrapper">
 		<!-- 상단 메뉴바 -->
-		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<th:block th:replace="~{layout/fragments :: header}"></th:block>
 
 		<div class="footer-main-content">
-			<th:block th:replace="~{/layout/fragments :: community-sidebar}"></th:block>
+			<th:block th:replace="~{layout/fragments :: community-sidebar}"></th:block>
 
 			<div class="container-fluid">
 				<main>
@@ -231,16 +231,16 @@
 				</main>
 			</div>
 				<!-- 푸터 -->
-				<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+				<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 		</div>
 	</div>
 
 
 	<!-- 부트 스트랩 JS -->
-	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
 	<!-- Weather JS -->
-	<th:block th:fragment="~{/layout/fragments :: weatherJS}"></th:block>
+	<th:block th:fragment="~{layout/fragments :: weatherJS}"></th:block>
 
 	<!-- Ajax를 사용하기 위한 Axios 자바스크립트 라이브러리 -->
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

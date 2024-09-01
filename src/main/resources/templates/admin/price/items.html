@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-      <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+      <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
       <link rel="stylesheet" th:href="@{/css/header.css}">
       <link rel="stylesheet" th:href="@{/css/footer.css}">
       <link rel="stylesheet" th:href="@{/css/price.css}">
@@ -13,9 +13,9 @@
 	<body>
     
         <div class="wrapper">
-            <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+            <th:block th:replace="~{layout/fragments :: header}"></th:block>
             <div class="footer-main-content">
-                <th:block th:replace="~{/layout/fragments :: admin-sidebar}"></th:block>
+                <th:block th:replace="~{layout/fragments :: admin-sidebar}"></th:block>
                 <main>
                 <!-- 아이템 테이블 -->
                 <div class="card" id="items-table">
@@ -88,11 +88,11 @@
                 
                 </main>
             </div>
-            <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+            <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         </div>
         
       <script th:src="@{/js/price_items.js}"></script>
-      <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
-      <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+      <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
+      <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 	</body>
 </html>

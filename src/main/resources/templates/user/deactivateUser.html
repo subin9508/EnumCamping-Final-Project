@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
@@ -34,11 +34,11 @@
 <body>
 	<div class="wrapper">
 		<!-- Header Fragment -->
-		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<th:block th:replace="~{layout/fragments :: header}"></th:block>
 
 		<div class="footer-main-content">
 			<!-- Sidebar Fragment -->
-			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+			<th:block th:replace="~{layout/fragments :: mypage-sidebar}"></th:block>
 
 			<div class="content">
 				<main class="main-content">
@@ -123,14 +123,14 @@
 
 		<!-- Footer Fragment -->
 		<!-- 푸터 -->
-		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 
 	</div>
 	<!-- 부트 스트랩 JS -->
-	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
 	<!-- Weather JS -->
-	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 	<script th:src="@{/js/deactivateUser.js}"></script>
 </body>
 </html>

@@ -94,7 +94,7 @@ public class ReservationController {
 	    String userId = authentication.getName();
 	    log.debug("Authenticated userId: {}", userId);
 	    
-	    String dateTimeString = "2024-08-29 17:05:00";
+	    String dateTimeString = "2024-08-30 20:00:00";
 	    log.debug("Using fixed dateTimeString: {}", dateTimeString);
 	    
         // 패턴에 맞는 DateTimeFormatter 생성

@@ -26,7 +26,7 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
     @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 0 AND :date = ih.end_date", nativeQuery = true)
     Integer findItemPriceByItemIdAndAdjustedEndDate(@Param("itemId") int itemId, @Param("date") LocalDateTime date);
     
-    @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 1", nativeQuery = true)
+    @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 1 ORDER BY ih.start_date DESC LIMIT 1", nativeQuery = true)
     Integer findSpecialPrice(@Param("itemId") int itemId);
 
 }
