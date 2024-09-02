@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 
 public interface ReservationMasterRepository extends JpaRepository<ReservationMaster, Integer> {
@@ -45,5 +46,9 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 			+ "where rm.user.userId = :userId "
 			+ "order by id desc" )
 	List<ReservationMaster> selectMasterByUserId(@Param("userId") String userId);
+	
+	// resId로 reservationMaster 찾기
+    @Query("SELECT rm FROM ReservationMaster rm WHERE rm.resId = :resId")
+    ReservationMaster findByResId(@Param("resId") Integer resId);
 
 }
