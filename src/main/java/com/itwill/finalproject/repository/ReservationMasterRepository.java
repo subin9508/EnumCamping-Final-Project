@@ -1,6 +1,7 @@
 package com.itwill.finalproject.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -50,5 +51,12 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	// resId로 reservationMaster 찾기
     @Query("SELECT rm FROM ReservationMaster rm WHERE rm.resId = :resId")
     ReservationMaster findByResId(@Param("resId") Integer resId);
+
+	//특가 예약 여부 체크
+	@Query("select rm from ReservationMaster rm "
+			+ "where rm.user.userId = :userId and rm.resCreatedTime >= :createdTime "
+			+ "and rm.resState in (1, 3)")
+	ReservationMaster selectSpecialPriceReservations(@Param("userId") String userId, @Param("createdTime") LocalDateTime createdTime);
+
 
 }

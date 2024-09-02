@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -171,13 +172,14 @@ public class PaymentsService {
 
 	       log.debug("Retrieved payment: {}", payment);
 
-	       if ("CANCEL".equalsIgnoreCase(payment.getPayStatus())) {
+	       if ("cancel".equalsIgnoreCase(payment.getPayStatus())) {
 	           log.info("Payment already cancelled for payId: {}", payId);
 	           return "Payment already cancelled";
 	       }
 	       
 
 	       try {
+	    	   // 결제 취소 요청 
 	           String impUid = payment.getImpUid();
 	           log.debug("impUid={}", impUid);
 
@@ -189,9 +191,17 @@ public class PaymentsService {
 	           if (response != null && response.getResponse() != null 
 	               && "cancelled".equalsIgnoreCase(response.getResponse().getStatus())) {
 
-	               // 결제 상태를 CANCEL로 업데이트
-	               payment.setPayStatus("CANCEL");
-	               paymentsRepo.save(payment);               
+	               // 새로운 결제 정보 생성 및 저장
+	               Payments newPayment = new Payments();
+	               newPayment.setResId(payment.getResId());
+	               newPayment.setImpUid(impUid);
+	               newPayment.setPgTid(payment.getPgTid());;
+	               newPayment.setPayStatus("cancel");
+	               newPayment.setResTotalPrice(payment.getResTotalPrice());
+	               newPayment.setPayMethod(payment.getPayMethod());
+	               newPayment.setBuyerEmail(payment.getBuyerEmail());
+	               newPayment.setPayDate(LocalDateTime.now());
+	               paymentsRepo.save(newPayment);             
 	               	
 	               // 예약 상태를 취소로 업데이트
 	               Integer resId = payment.getResId();

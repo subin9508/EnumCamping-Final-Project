@@ -1,9 +1,12 @@
 package com.itwill.finalproject.web;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,10 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.domain.Items;
+import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.ReservationDetailDto;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ReservationService;
@@ -44,11 +49,17 @@ public class ReservationController {
 	private final UserService userSvc;
 	private final UserRepository userRepo;
 	private final ItemsRepository itemsRepo;
+	private final ItemsHistoryRepository itemsHistoryRepo;
 	
 	@GetMapping("/calendar")
-	public void reservationCalendar(Model model) {
+	public void reservationCalendar(HttpSession session,Model model) {
 		log.info("reservationCalendar");
 		List<Items> items = reservationSvc.getAllItems();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
+		User user = userSvc.read(userId);
+		Integer userKey = user.getUserKey();
+	    log.debug("userKey={}", userKey);
 		
 		for (Items item : items) {
 			log.info("Item: {}", item);
@@ -79,12 +90,60 @@ public class ReservationController {
 	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId) {
 		log.debug("GET: itemPrice with itemId {}", itemId);
 		
-		Integer itemPrice = reservationSvc.readItemPrice(itemId);
-		if (itemPrice != null) {
-			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName();
+	    log.debug("Authenticated userId: {}", userId);
+	    
+	    String dateTimeString = "2024-08-30 20:00:00";
+	    log.debug("Using fixed dateTimeString: {}", dateTimeString);
+	    
+        // 패턴에 맞는 DateTimeFormatter 생성
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        
+        // 문자열을 LocalDateTime으로 변환
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
+        log.debug("Parsed LocalDateTime from dateTimeString: {}", localDateTime);
+        
+        // 특가 예약 조회
+		ReservationMaster rm = reservationSvc.findSpecial(userId, localDateTime);
+		log.info("rm = {}",rm);
+		
+		if (rm == null) {
+			log.info("특가 예약 안함");
+			log.info("No special reservation found for user: {}", userId);
+			Integer itemPrice = reservationSvc.readItemPrice(itemId);
+			//item table에 정상가로 들어가 있는 애들 특가 찾기 
+			if (itemPrice == -1) {
+				itemPrice = reservationSvc.readSpecialPrice(itemId);
+			}
+			
+			 log.debug("Fetched regular item price: {}", itemPrice);
+			if (itemPrice != null) {
+				log.debug("Returning item price: {}", itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			} else {
+				 log.warn("Item price not found for itemId: {}", itemId);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+            log.info("특가 예약 함");
+            log.info("Special reservation found for user: {}, fetching latest start date", userId);
+            LocalDateTime latestStartDate = reservationSvc.getLatestStartDate(itemId);
+            log.info("latestStartDate={}", latestStartDate);
+            if (latestStartDate == null) {
+            	log.warn("No item history found for itemId: {}", itemId);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            LocalDateTime targetDateTime = latestStartDate.minusSeconds(1);
+            log.debug("Computed targetDateTime by subtracting one second: {}", targetDateTime);
+            
+            Integer itemPrice = reservationSvc.getItemPriceByAdjustedEndDate(itemId, targetDateTime);
+            log.debug("Fetched item price for adjusted end date: {}", itemPrice);
+
+            return itemPrice != null ? new ResponseEntity<>(itemPrice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    
 	}
 	
 	// 예약확인 페이지

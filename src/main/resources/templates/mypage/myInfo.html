@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 <link th:href="@{/css/myInfo.css}" rel="stylesheet" />
 <link th:href="@{/css/header.css}" rel="stylesheet" />
 <link th:href="@{/css/footer.css}" rel="stylesheet" />
@@ -57,12 +57,12 @@ footer {
 </head>
 <body>
 	<div class="wrapper">
-		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<th:block th:replace="~{layout/fragments :: header}"></th:block>
 		<div class="container-fluid content">
 			<main>
 				<div class="row">
 					<div class="col-md-3 mypage-sidebar">
-						<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
+						<th:block th:replace="~{layout/fragments :: mypage-sidebar}"></th:block>
 					</div>
 					<div class="col-md-9 main-content">
 						<div class="card card-reservation mt-2">
@@ -133,7 +133,7 @@ footer {
 			</main>
 		</div>
 
-		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"
 		type="text/javascript"></script>
@@ -141,9 +141,9 @@ footer {
 		var contextPath = /*[[@{/}]]*/'';
 	</script>
 	<!-- 부트 스트랩 JS -->
-	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+	<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
 	<!-- Weather JS -->
-	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>

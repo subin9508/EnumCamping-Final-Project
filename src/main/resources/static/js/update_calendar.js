@@ -10,26 +10,26 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
  document.addEventListener("DOMContentLoaded", function() {
     selectedDate = null;
     selectedNight = null;
-	
-	 // resCheckIn 및 resCheckOut 날짜 가져오기
-	 var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
-	 var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
+    
+     // resCheckIn 및 resCheckOut 날짜 가져오기
+     var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent.trim());
+     var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent.trim());
 
-	 checkNightRadio(resCheckInDate, resCheckOutDate);
-	 
-	 if (resCheckInDate) {
-		 // resCheckIn 날짜로 toDay 설정
-		 toDay = new Date(resCheckInDate);
-	 } else {
-		 toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
-	 }
-	    
-	buildCalendar();
-	
-	 // resCheckIn 날짜를 캘린더에 표시
-	 if (resCheckInDate && resCheckOutDate) {
-		 highlightResCheckInDate(resCheckInDate, resCheckOutDate);
-	 } else if (resCheckInDate) {
+     checkNightRadio(resCheckInDate, resCheckOutDate);
+     
+     if (resCheckInDate) {
+         // resCheckIn 날짜로 toDay 설정
+         toDay = new Date(resCheckInDate);
+     } else {
+         toDay = new Date(); // resCheckIn 날짜가 없으면 현재 날짜 사용
+     }
+        
+    buildCalendar();
+    
+     // resCheckIn 날짜를 캘린더에 표시
+     if (resCheckInDate && resCheckOutDate) {
+         highlightResCheckInDate(resCheckInDate, resCheckOutDate);
+     } else if (resCheckInDate) {
         highlightResCheckInDate(resCheckInDate);
     }
 
@@ -44,7 +44,7 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
-				               
+                               
 });
 
 // 날짜 차이에 따른 라디오 버튼 자동 선택 함수
@@ -118,170 +118,93 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     console.log('Initial selectedDate:', selectedDate);
 
     function buildCalendar() {
+    let doMonth = new Date(toDay.getFullYear(), toDay.getMonth(), 1);
+    let lastDate = new Date(toDay.getFullYear(), toDay.getMonth() + 1, 0);
 
-        let doMonth = new Date(toDay.getFullYear(), toDay.getMonth(), 1);
-        let lastDate = new Date(toDay.getFullYear(), toDay.getMonth() + 1, 0);
+    let tbCalendar = document.querySelector(".scriptCalendar > tbody");
 
-        let tbCalendar = document.querySelector(".scriptCalendar > tbody");
+    document.getElementById("calYear").innerText = toDay.getFullYear();
+    document.getElementById("calMonth").innerText = autoLeftPad((toDay.getMonth() + 1), 2);
 
-        document.getElementById("calYear").innerText = toDay.getFullYear();                       // @param YYYY월
-        document.getElementById("calMonth").innerText = autoLeftPad((toDay.getMonth() + 1), 2);   // @param MM월
-        
-
-        // @details 이전 캘린더의 출력결과가 남아있다면, 이전 캘린더를 삭제한다.
-        while(tbCalendar.rows.length > 0) {
-            tbCalendar.deleteRow(tbCalendar.rows.length - 1);
-        }
-
-        // @param 첫번째 개행
-        let row = tbCalendar.insertRow();
-
-        // @param 날짜가 표기될 열의 증가값
-        let dom = 1;
-
-        // @details 시작일의 요일값( doMonth.getDay() ) + 해당월의 전체일( lastDate.getDate())을  더해준 값에서
-        //               7로 나눈값을 올림( Math.ceil() )하고 다시 시작일의 요일값( doMonth.getDay() )을 빼준다.
-        let daysLength = (Math.ceil((doMonth.getDay() + lastDate.getDate()) / 7) * 7) - doMonth.getDay();
-
-        // @param 달력 출력
-        // @details 시작값은 1일을 직접 지정하고 요일값( doMonth.getDay() )를 빼서 마이너스( - )로 for문을 시작한다.
-        for(let day = 1 - doMonth.getDay(); daysLength >= day; day++) {
-
-            let column = row.insertCell();
-
-            // @param 평일( 전월일과 익월일의 데이터 제외 )
-            if(Math.sign(day) == 1 && lastDate.getDate() >= day) {
-
-                // @param 평일 날짜 데이터 삽입
-                column.innerText = autoLeftPad(day, 2);
-
-                // @param 일요일인 경우
-                if(dom % 7 == 1) {
-                    column.style.color = "#FF4D4D";
-                }
-
-                // @param 토요일인 경우
-                if(dom % 7 == 0) {
-                    column.style.color = "#4D4DFF";
-                    row = tbCalendar.insertRow();   // @param 토요일이 지나면 다시 가로 행을 한줄 추가한다.
-                }
-
-            }
-
-            // @param 평일 전월일과 익월일의 데이터 날짜변경
-            else {
-                let exceptDay = new Date(doMonth.getFullYear(), doMonth.getMonth(), day);
-                column.innerText = autoLeftPad(exceptDay.getDate(), 2);
-                column.style.color = "#A9A9A9";
-            }
-
-            // @brief   전월, 명월 음영처리
-            // @details 현재년과 선택 년도가 같은경우
-            if (toDay.getFullYear() == nowDate.getFullYear()) {
-
-                // @details 현재월과 선택월이 같은경우
-                if (toDay.getMonth() == nowDate.getMonth()) {
-
-                    // @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
-                    if (nowDate.getDate() > day && Math.sign(day) == 1) {
-                        column.style.backgroundColor = "#F6F7F8";
-                    }
-
-                    // @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
-                    else if (nowDate.getDate() < day && lastDate.getDate() >= day) {
-                        column.style.backgroundColor = "#FFFFFF";
-                        column.style.cursor = "pointer";
-                        column.onclick = function() { calendarChoiceDay(this); }
-                    }
-
-                    // @details 현재일인 경우
-                    else if (nowDate.getDate() == day) {
-                        column.style.backgroundColor = "#FFFFE6";
-                        column.style.cursor = "pointer";
-                        column.onclick = function() { calendarChoiceDay(this); }
-                    }
-
-                    // @details 현재월보다 이전인경우
-                } else if (toDay.getMonth() < nowDate.getMonth()) {
-                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                        column.style.backgroundColor = "#E5E5E5";
-                    }
-                }
-
-                // @details 현재월보다 이후인경우
-                else {
-                    // 현재 날짜로부터 3개월 후의 날짜를 계산
-                    let threeMonthsLater = new Date(nowDate);
-                    threeMonthsLater.setMonth(nowDate.getMonth() + 3);
-
-                    // 만약 3개월 후의 날짜가 연도를 넘어갈 경우를 처리
-                    if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
-                        threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
-                    }
-
-                    // 현재 달력에서 표시된 날짜를 계산
-                    let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
-
-                    // 3개월 이후의 날짜보다 currentDay가 이후라면 비활성화
-                    if (currentDay >= threeMonthsLater) {
-                        if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
-                            column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
-                        }
-                    } else {
-                        if (Math.sign(day) === 1 && day <= lastDate.getDate()) {
-                            column.style.backgroundColor = "#FFFFFF"; // 활성화
-                            column.style.cursor = "pointer";
-                            column.onclick = function() { calendarChoiceDay(this); }
-                        }
-                    }
-                }
-            }
-
-            // @details 선택한년도가 현재년도보다 작은경우
-            else if (toDay.getFullYear() < nowDate.getFullYear()) {
-                if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                    column.style.backgroundColor = "#E5E5E5";
-                }
-            }
-
-            // @details 선택한년도가 현재년도보다 큰경우
-            else {
-                let threeMonthsLater = new Date(nowDate);
-                threeMonthsLater.setMonth(nowDate.getMonth() + 3);
-
-                if (threeMonthsLater.getMonth() < nowDate.getMonth()) {
-                    threeMonthsLater.setFullYear(threeMonthsLater.getFullYear() + 1);
-                }
-
-                let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
-
-                if (currentDay >= threeMonthsLater) {
-                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                        column.style.backgroundColor = "#E5E5E5"; // 3개월 이후 날짜 비활성화
-                    }
-                } else {
-                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
-                        column.style.backgroundColor = "#FFFFFF";
-                        column.style.cursor = "pointer";
-                        column.onclick = function() { calendarChoiceDay(this); }
-                    }
-                }
-            }
-            dom++;
-        }
-
-        console.log('buildCalendar - current selectedDate:', selectedDate);
-		
-		 // 달력 구성이 완료된 후 resCheckIn 및 resCheckOut 날짜 하이라이트
-	    var resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent);
-	    var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent);
-	
-	    if (resCheckInDate && resCheckOutDate) {
-	        highlightRangeDates(resCheckInDate, resCheckOutDate);
-	    } else if (resCheckInDate) {
-	        highlightResCheckInDate(resCheckInDate);
-	    }
+    while(tbCalendar.rows.length > 0) {
+        tbCalendar.deleteRow(tbCalendar.rows.length - 1);
     }
+
+    let row = tbCalendar.insertRow();
+
+    let dom = 1;
+
+    let daysLength = (Math.ceil((doMonth.getDay() + lastDate.getDate()) / 7) * 7) - doMonth.getDay();
+
+    // resCheckIn 날짜 가져오기
+    let resCheckInDate = new Date(document.getElementById('resCheckInDate').textContent);
+    
+    // resCheckIn으로부터 14일 후의 날짜 계산
+    let fourteenDaysLater = new Date(resCheckInDate);
+    fourteenDaysLater.setDate(resCheckInDate.getDate() + 14);
+
+    for(let day = 1 - doMonth.getDay(); daysLength >= day; day++) {
+        let column = row.insertCell();
+
+        if(Math.sign(day) == 1 && lastDate.getDate() >= day) {
+            column.innerText = autoLeftPad(day, 2);
+
+            if(dom % 7 == 1) {
+                column.style.color = "#FF4D4D";
+            }
+
+            if(dom % 7 == 0) {
+                column.style.color = "#4D4DFF";
+                row = tbCalendar.insertRow();
+            }
+
+            let currentDay = new Date(toDay.getFullYear(), toDay.getMonth(), day);
+
+            if (currentDay < nowDate && currentDay < resCheckInDate) {
+                column.style.backgroundColor = "#E5E5E5";
+                column.style.cursor = "default";
+            } else if (currentDay > fourteenDaysLater) {
+                column.style.backgroundColor = "#E5E5E5";
+                column.style.cursor = "default";
+            } else {
+                column.style.backgroundColor = "#FFFFFF";
+                column.style.cursor = "pointer";
+                column.onclick = function() { calendarChoiceDay(this); }
+            }
+
+            // 오늘 날짜인 경우
+            if (currentDay.toDateString() === nowDate.toDateString()) {
+                column.style.backgroundColor = "#FFFFE6";
+                column.style.cursor = "pointer";
+                column.onclick = function() { calendarChoiceDay(this); }
+            }
+
+            // resCheckIn 날짜인 경우
+            if (currentDay.toDateString() === resCheckInDate.toDateString()) {
+                column.style.backgroundColor = "#A4C392";
+                column.style.cursor = "pointer";
+                column.onclick = function() { calendarChoiceDay(this); }
+            }
+        } else {
+            let exceptDay = new Date(doMonth.getFullYear(), doMonth.getMonth(), day);
+            column.innerText = "";
+            column.style.color = "#A9A9A9";
+        }
+
+        dom++;
+    }
+
+    console.log('buildCalendar - current selectedDate:', selectedDate);
+        
+    // 달력 구성이 완료된 후 resCheckIn 및 resCheckOut 날짜 하이라이트
+    var resCheckOutDate = new Date(document.getElementById('resCheckOutDate').textContent);
+
+    if (resCheckInDate && resCheckOutDate) {
+        highlightRangeDates(resCheckInDate, resCheckOutDate);
+    } else if (resCheckInDate) {
+        highlightResCheckInDate(resCheckInDate);
+    }
+}
 
     /**
      * @brief   날짜 선택
@@ -332,10 +255,10 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         });
         
         // 모든 라디오 버튼 체크 해제
-        const radios = document.querySelectorAll('.area-radio');
+        /*const radios = document.querySelectorAll('.area-radio');
         radios.forEach(radio => {
             radio.checked = false;
-        });
+        });*/
         
         selectedArea = null;
         
@@ -360,7 +283,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
             .then(response => {
                 console.log(response.data);
                 const reservedAreas = response.data || [];
-                updateRadioButtons(reservedAreas);
+                updateRadioButtons(year, month, day,reservedAreas);
             })
             .catch(error => {
                 console.error("There was an error fetching the reservations!", error);
@@ -369,7 +292,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     
     
     // 예약된 날짜 있으면 해당 구역 display = none;
-    function updateRadioButtons(reservedAreas) {
+    function updateRadioButtons(year, month, day,reservedAreas) {
         const totalAreas = 20; // 총 구역 수
         console.log(reservedAreas);
         
@@ -394,11 +317,43 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                     card.style.display = "none";
                 } else {
                     card.style.display = "block";
+                    findPrice(year, month, day, areaIndex);
                 }
             }
         }
     }
     
+    // 구역 가격 업데이트
+    function findPrice(year, month, day,areaIndex) {
+        const selectedDateObj = new Date(year, month - 1, day);
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
+    
+        // 성수기 기간 설정
+        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
+        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+    
+        // 성수기 여부 결정
+        const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
+        const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
+    
+        const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
+    
+        const itemId = (areaIndex - 1) * 4 + seasonFactor + weekendFactor + 1;
+    
+        const uri = `../reservation/itemPrice/${itemId}`;
+    
+        console.log('updatePrice()', uri);
+    
+        axios.get(uri)
+            .then(response => {
+                const price = (response.data) 
+                document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
+    
+            })
+            .catch(error => {
+                console.error("There was an error fetching the price!", error);
+            });
+    }
     
     // 구역 클릭 시 nightCard 뜨게 
     function addAreaRadioEventListeners() {
@@ -517,7 +472,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     function updatePrice(year, month, day, selectedArea, selectedNight) {
         const date = `${year}-${month}-${day}`;
         const selectedDateObj = new Date(year, month - 1, day);
-        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
         
         // 성수기 기간 설정
         const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
@@ -660,8 +615,6 @@ function updateQuantity(itemId, itemPrice) {
     console.log('Button clicked'); // 버튼 클릭 로그
     const date = `${finalYear}-${finalMonth}-${finalDay}`;
     const requirement = document.getElementById("special-requests").value;
-    const resId = document.querySelector("input#resId").value; // 예약 ID 입력값 가져오기
-    console.log('resId=', resId);
     const reservationMaster = {
         resCheckIn: date,
         resCheckOut: calculateCheckOutDate(date, finalSelectedNight),
@@ -695,7 +648,7 @@ function updateQuantity(itemId, itemPrice) {
 
     console.log('Data to be sent:', JSON.stringify(data, null, 2)); // 전송할 데이터 로그
 
-    const uri = `../mypage/reservation_order?resId=${resId}`;
+    const uri = '../mypage/reservation_order';
 
     axios.post(uri, data, {
         headers: {

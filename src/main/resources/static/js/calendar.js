@@ -281,7 +281,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
             .then(response => {
                 console.log(response.data);
                 const reservedAreas = response.data || [];
-                updateRadioButtons(reservedAreas);
+                updateRadioButtons(year, month, day,reservedAreas);
             })
             .catch(error => {
                 console.error("There was an error fetching the reservations!", error);
@@ -290,15 +290,15 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     
     
     // 예약된 날짜 있으면 해당 구역 display = none;
-    function updateRadioButtons(reservedAreas) {
+    function updateRadioButtons(year, month, day,reservedAreas) {
         const totalAreas = 20; // 총 구역 수
         console.log(reservedAreas);
         
         for (let i = 1; i <= totalAreas; i++) {
             const areaIndex = Math.ceil(i / 4); // 각 구역의 인덱스 계산
-            console.log(`area${areaIndex} 처리 시작`)
+            //console.log(`area${areaIndex} 처리 시작`)
             const area = document.getElementById(`area${areaIndex}_radio`);
-            console.log(`area${areaIndex}`, area);
+            //console.log(`area${areaIndex}`, area);
 
             if (area) {
                 const card = document.getElementById(`area${areaIndex}`);
@@ -315,11 +315,46 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                     card.style.display = "none";
                 } else {
                     card.style.display = "block";
+                    findPrice(year, month, day, areaIndex);
                 }
             }
         }
     }
     
+    
+    
+    // 구역 가격 업데이트
+    function findPrice(year, month, day,areaIndex) {
+        const selectedDateObj = new Date(year, month - 1, day);
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
+    
+        // 성수기 기간 설정
+        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
+        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+    
+        // 성수기 여부 결정
+        const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
+        const seasonFactor = isPeakSeason ? 2 : 0; // 성수기면 2, 비수기면 0
+    
+        const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
+    
+        const itemId = (areaIndex - 1) * 4 + seasonFactor + weekendFactor + 1;
+    
+        const uri = `../reservation/itemPrice/${itemId}`;
+    
+        console.log('updatePrice()', uri);
+    
+        axios.get(uri)
+            .then(response => {
+                const price = (response.data) 
+                document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
+    
+            })
+            .catch(error => {
+                console.error("There was an error fetching the price!", error);
+            });
+    }
+
     
     // 구역 클릭 시 nightCard 뜨게 
     function addAreaRadioEventListeners() {
@@ -438,7 +473,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     function updatePrice(year, month, day, selectedArea, selectedNight) {
         const date = `${year}-${month}-${day}`;
         const selectedDateObj = new Date(year, month - 1, day);
-        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6); // 0: Sunday, 6: Saturday
+        const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
         
         // 성수기 기간 설정
         const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
@@ -451,14 +486,16 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
 
         const baseItemId = (selectedArea - 1) * 4;
+        console.log('baseItemId = '+baseItemId);
         const itemId = baseItemId + seasonFactor + weekendFactor + 1;
-        
+        console.log('itemId = '+itemId);
         const uri = `../reservation/itemPrice/${itemId}`;
 
         console.log('updatePrice()', uri);
 
         axios.get(uri)
             .then(response => {
+                //console.log(response.data);
                 const price = (response.data) * selectedNight;
                 document.getElementById('price-value').innerText = price;
                 updateTotalAllItems();

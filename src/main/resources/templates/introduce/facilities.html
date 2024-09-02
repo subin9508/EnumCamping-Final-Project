@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
@@ -12,9 +12,9 @@
 </head>
 <body>
 <div class="wrapper">
-    <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+    <th:block th:replace="~{layout/fragments :: header}"></th:block>
 	<div class="footer-main-content">
-    <th:block th:replace="~{/layout/fragments :: intro-sidebar}"
+    <th:block th:replace="~{layout/fragments :: intro-sidebar}"
     	th:attr="class='intro-sidebar'"></th:block>
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content-1 text-left mt-5">
@@ -129,11 +129,11 @@
     </div>
 
     <!-- 푸터 -->
-    <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+    <th:block th:replace="~{layout/fragments :: footer}"></th:block>
 </div>
 
 <!-- 부트 스트랩 JS -->
-<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
 <script th:src="@{/js/facilities.js}"></script>
 
@@ -178,6 +178,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 </script>
 
 <!-- Weather JS -->
-<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>

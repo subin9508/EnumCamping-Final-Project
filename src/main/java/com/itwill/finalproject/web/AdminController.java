@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwill.finalproject.domain.Items;
+import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.service.AdminService;
-import com.itwill.finalproject.service.ItemsService;
 import com.itwill.finalproject.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,6 @@ public class AdminController {
 	
 	private final ReservationService reservationSvc;
 	private final AdminService adminSvc;
-	private final ItemsService itemsService;
 	
 	
     @GetMapping("/price/zones")
@@ -52,7 +51,9 @@ public class AdminController {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
-                itemsService.updateZoneDetails(itemId, newPrice); // 가격만 업데이트
+                String newCheck = allParams.get("select_" + itemId);
+                log.info("itemId = {}, newPrice = {}, newCheck={}",itemId,newPrice,newCheck);
+                adminSvc.updateZoneDetails(itemId, newPrice,newCheck); // 가격 + 특가 여부 업데이트
             }
         });
         return "redirect:/admin/price/zones"; // 해당 페이지로 리다이렉트
@@ -66,8 +67,9 @@ public class AdminController {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-                log.info("itemId = {}, newPrice = {}, newDesc = {}",itemId,newPrice, newDesc);
-                itemsService.updateItemDetails(itemId, newPrice, newDesc); // 가격과 설명 업데이트
+                String newCheck = allParams.get("select_" + itemId);
+                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}",itemId,newPrice, newDesc,newCheck);
+                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
             }
         });
         return "redirect:/admin/price/items"; // 해당 페이지로 리다이렉트
@@ -80,51 +82,10 @@ public class AdminController {
     	
     }
     
-    
-    
-    
-    
-    
-    
-	
-//    @PostMapping("/price/update")
-//    public String priceUpdate(@RequestParam Map<String, String> allParams) {
-//        allParams.forEach((key, value) -> {
-//            if (key.startsWith("price_")) {
-//                try {
-//                    Integer itemId = Integer.parseInt(key.substring(6)); // 키에서 아이템 ID 추출
-//                    BigDecimal newPrice = new BigDecimal(value); // 새 가격을 BigDecimal로 파싱
-//                    String newDesc = allParams.get("desc_" + itemId); // 키를 사용하여 설명 데이터 추출
-//
-//                    // ItemsService를 사용하여 아이템 상세 정보 업데이트
-//                    itemsService.updateItemDetails(itemId, newPrice, newDesc != null ? newDesc : "기본 설명");
-//
-//                } catch (NumberFormatException e) {
-//                    log.error("Invalid item ID: " + key.substring(6), e);
-//                }
-//            }
-//        });
-//        return "redirect:" + allParams.get("redirectUrl"); // 업데이트 후 리다이렉션
+//    @GetMapping("/getLatestPriceWithSpecialZero")
+//    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
+//        return adminSvc.getLatestPricesWithSpecialZero();
 //    }
-}
-
+    
 	
-//	@PostMapping("/price/update")
-//	public String priceUpdate(@RequestParam Map<String, String> allParams) {
-//	    allParams.forEach((key, value) -> {
-//	        if (key.startsWith("price_")) {
-//	            try {
-//	                Integer itemId = Integer.parseInt(key.substring(6));
-//	                BigDecimal newPrice = new BigDecimal(value);
-//	                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 코드 추가
-//	                Items item = itemsService.findById(itemId);
-//	                if (item != null) {
-//	                    itemsService.updateItemDetails(itemId, newPrice, newDesc);
-//	                }
-//	            } catch (NumberFormatException e) {
-//	                log.error("Invalid item ID: " + key.substring(6), e);
-//	            }
-//	        }
-//	    });
-//	    return "redirect:" + allParams.get("redirectUrl");
-//	}
+}

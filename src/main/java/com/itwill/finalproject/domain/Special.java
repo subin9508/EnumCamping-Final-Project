@@ -1,6 +1,9 @@
 package com.itwill.finalproject.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,9 +25,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name="itemshistory")
-public class ItemsHistory {
+@Table(name="special")
+public class Special {
     @Id
+    @Column(name = "spcl_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
@@ -38,8 +40,7 @@ public class ItemsHistory {
     private Integer itemPrice;
 
     private LocalDateTime startDate;
+    
     private LocalDateTime endDate;
     
-    private int special;
-
 }
