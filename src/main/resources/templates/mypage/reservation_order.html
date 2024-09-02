@@ -176,13 +176,15 @@
 				<br>
 				<div th:if="${isPositiveAmount}">
 				<div class="container-fluid d-flex justify-content-center mt-3">
-					<input type="hidden" name="resId" id="resId" th:value="${resId}" />
+					<input type="text" name="resId" id="resId" th:value="${resId}" />
 					<button id="btnPayment" class="btn btn-payment" disabled
 						onclick="processPayment()">추가 결제하기</button>
 				</div>
 				</div>
 				<div th:if="${isNegativeAmount}">
 				<div class="d-flex justify-content-center">
+					<input type="hidden" name="resId" id="resId" th:value="${resId}" />
+					<input type="hidden" name="refundAmount" id="refundAmount" readonly>
 					<button id="btnPayRefund" class="btn btn-danger" disabled>부분환불</button>
 				</div>
 				</div>
@@ -257,7 +259,19 @@
 		// 체크 박스 상태 변화 감지
 		document.getElementById('agreeCollect').addEventListener('change', checkAgreements);
 		document.getElementById('agreeProvide').addEventListener('change', checkAgreements);
+		
+		
+			function updateTotalAmount() {
+				let totalAmount = parseInt(document
+						.getElementById('totalAmount').textContent.trim(), 10);
 
-  		</script>
-</body>
+				// 절대값으로 변환
+				totalAmount = Math.abs(totalAmount);
+
+				document.getElementById('refundAmount').value = totalAmount;
+			}
+
+			document.addEventListener('DOMContentLoaded', updateTotalAmount);
+		</script>
+	</body>
 </html>

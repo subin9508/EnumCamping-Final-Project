@@ -568,6 +568,7 @@ public class MyPageController {
 		model.addAttribute("resMaster", resMaster);
 	    model.addAttribute("resDetails", resDetails);
 	    model.addAttribute("resId", resId);
+	    log.debug("resId={}", resId);
 	    
 	    // 이전 예약 내역 가져오기
 	    Integer oldTotalAmount = (Integer)session.getAttribute("oldTotalAmount");
