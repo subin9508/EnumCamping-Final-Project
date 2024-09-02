@@ -559,13 +559,14 @@ public class MyPageController {
 		User user = userService.read(userId);
 		Integer userKey = user.getUserKey();
 		log.info("user={}", user);
-		ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+		// 세션에서 데이터 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    List<ReservationDetailDto> resDetails = (List<ReservationDetailDto>) session.getAttribute("resDetails");
 
 		model.addAttribute("user", user);
-		model.addAttribute("resMaster", reservationMaster);
-		model.addAttribute("resDetails", reservationDetails);
-		model.addAttribute("resId", resId);
+		model.addAttribute("resMaster", resMaster);
+	    model.addAttribute("resDetails", resDetails);
+	    model.addAttribute("resId", resId);
 
 		return "/mypage/reservation_order";
 	}
