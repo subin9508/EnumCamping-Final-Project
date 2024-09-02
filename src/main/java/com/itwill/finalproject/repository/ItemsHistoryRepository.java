@@ -28,5 +28,8 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
     
     @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 1 ORDER BY ih.start_date DESC LIMIT 1", nativeQuery = true)
     Integer findSpecialPrice(@Param("itemId") int itemId);
+    
+    @Query(value = "SELECT ih.item_price FROM itemshistory ih WHERE ih.item_id = :itemId AND ih.special = 0 ORDER BY ih.start_date DESC LIMIT 1", nativeQuery = true)
+    Integer findNewestNormalPrice(@Param("itemId") int itemId);
 
 }
