@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 
 public interface ReservationMasterRepository extends JpaRepository<ReservationMaster, Integer> {
@@ -47,10 +48,15 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 			+ "order by id desc" )
 	List<ReservationMaster> selectMasterByUserId(@Param("userId") String userId);
 	
+	// resId로 reservationMaster 찾기
+    @Query("SELECT rm FROM ReservationMaster rm WHERE rm.resId = :resId")
+    ReservationMaster findByResId(@Param("resId") Integer resId);
+
 	//특가 예약 여부 체크
 	@Query("select rm from ReservationMaster rm "
 			+ "where rm.user.userId = :userId and rm.resCreatedTime >= :createdTime "
 			+ "and rm.resState in (1, 3)")
 	ReservationMaster selectSpecialPriceReservations(@Param("userId") String userId, @Param("createdTime") LocalDateTime createdTime);
+
 
 }
