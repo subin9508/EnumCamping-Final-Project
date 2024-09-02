@@ -84,7 +84,7 @@ public class ReservationService {
 	// 특정 아이템의 가격 조회
 	public Integer readItemPrice(int itemId) {
 		if (itemsRepo.selectItemPrice(itemId) == null) {
-			return -1;
+			return -1; //item 테이블에서 special이 0인 경우
 		}
 		return itemsRepo.selectItemPrice(itemId);
 	}

@@ -560,19 +560,41 @@ public class MyPageController {
 		User user = userService.read(userId);
 		Integer userKey = user.getUserKey();
 		log.info("user={}", user);
-		ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+
+		// 세션에서 데이터 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    List<ReservationDetailDto> resDetails = (List<ReservationDetailDto>) session.getAttribute("resDetails");
 
 		model.addAttribute("user", user);
-		model.addAttribute("resMaster", reservationMaster);
-		model.addAttribute("resDetails", reservationDetails);
-		model.addAttribute("resId", resId);
-
+		model.addAttribute("resMaster", resMaster);
+	    model.addAttribute("resDetails", resDetails);
+	    model.addAttribute("resId", resId);
+	    log.debug("resId={}", resId);
+	    
+	    // 이전 예약 내역 가져오기
+	    Integer oldTotalAmount = (Integer)session.getAttribute("oldTotalAmount");
+	    
+	    log.debug("oldTotalAmount={}", oldTotalAmount);
+	    
+	    model.addAttribute("oldTotalAmount", oldTotalAmount);
+	    log.debug("model-oldTotalAmount={}", model.getAttribute("oldTotalAmount"));
+	    
+	    // 총 결제금액(차액) 가져오기
+	    Integer newTotalAmount = (Integer)session.getAttribute("newTotalAmount");
+	    model.addAttribute("newTotalAmount", newTotalAmount);
+	    
+	    // isPositiveAmount, isNegativeAmount 플래그 설정
+	    boolean isPositiveAmount = (boolean)session.getAttribute("isPositiveAmount");
+	    model.addAttribute("isPositiveAmount", isPositiveAmount);
+	    
+	    boolean isNegativeAmount = (boolean)session.getAttribute("isNegativeAmount");
+	    model.addAttribute("isNegativeAmount", isNegativeAmount);
+	    
 		return "/mypage/reservation_order";
 	}
 
 	@PostMapping("/reservation_order")
-	public String getReservationList(@RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+	public String getReservationList(@RequestParam(name = "resId") int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
 
 		log.debug("reservationList(requestData={})", requestData);
 
@@ -582,92 +604,132 @@ public class MyPageController {
 		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
 		// 인증된 사용자에 대한 처리
 //	    String userId = (String) session.getAttribute("signedInUser");
+	    
+	    log.debug("userId={}", userId);
+	    User user = userService.read(userId);
+	    model.addAttribute("user", user);
+	    log.debug("user={}", user);
+	    // User 객체에서 userKey 가져오기
+	    Integer userKey = user.getUserKey();
+	    log.debug("userKey={}", userKey);
+	    model.addAttribute("userKey", userKey);
+	    
+	    // 기존 예약 상세 정보와 마스터 정보 삭제
+	    try {
+	        log.debug("Attempting to delete reservation master for userId: {}", userId);
+	        reservationSvc.deleteReservationMaster(userKey);
+	        log.info("Successfully deleted reservation master for userId: {}", userId);
+	    } catch (Exception e) {
+	        log.error("Failed to delete reservation master for userId: {}", userId, e);
+	        return "/reservation/order";
+	    }	    
+	   
+	    // requestData에서 reservationMaster와 reservationDetail 추출
+	    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
+	    List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData.get("reservationDetail");
 
-		log.debug("userId={}", userId);
-		User user = userService.read(userId);
-		model.addAttribute("user", user);
-		log.debug("user={}", user);
-		// User 객체에서 userKey 가져오기
-		Integer userKey = user.getUserKey();
-		log.debug("userKey={}", userKey);
-		model.addAttribute("userKey", userKey);
+	    log.debug("reservationMasterMap={}", reservationMasterMap);
+	    log.debug("reservationDetailMap={}", reservationDetailList);
+	    
+	    if (reservationMasterMap == null || reservationDetailList == null) {
+	        log.error("reservationMasterMap or reservationDetailList is null");
+	        return "reservation/order";
+	    }
+	    
+	    // ReservationMaster 객체 생성 및 설정
+	    ReservationMaster reservationMaster = new ReservationMaster();
+	    reservationMaster.setUserById(userId, userRepo);
+	    reservationMaster.setResCheckIn(LocalDate.parse((String) reservationMasterMap.get("resCheckIn")));
+	    reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
+	    reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
+	    reservationMaster.setRequirement((String)reservationMasterMap.get("requirement"));
+	    
+	    // 이전 예약 내역 가져오기
+	    ReservationMaster oldReservationMaster = myPageService.readReservationMaster(resId);
+	    
+	    // 이전 예약 내역 resTotalPrice
+	    Integer oldTotalAmount = oldReservationMaster.getResTotalPrice();
+	   
+	    log.debug("oldTotalAmount={}", oldTotalAmount);
+	    
+	    session.setAttribute("oldTotalAmount", oldTotalAmount);
+	    
+	    model.addAttribute("oldTotalAmount", oldTotalAmount);
+	    log.debug("model-oldTotalAmount={}", model.getAttribute("oldTotalAmount"));
+	    
+	    // 차액 계산
+	    Integer newTotalAmount = (reservationMaster.getResTotalPrice()) - oldTotalAmount;
+	    
+	    log.debug("newTotalAmount={}", newTotalAmount);
+	    
+	    session.setAttribute("newTotalAmount", newTotalAmount);
+	    model.addAttribute("newTotalAmount", newTotalAmount);
+	    
+	    // isPositiveAmount, isNegativeAmount 플래그 설정
+	    boolean isPositiveAmount = newTotalAmount > 0;
+	    session.setAttribute("isPositiveAmount", isPositiveAmount);
+	    model.addAttribute("isPositiveAmount", isPositiveAmount);
+	    
+	    boolean isNegativeAmount = newTotalAmount < 0;
+	    session.setAttribute("isNegativeAmount", isNegativeAmount);
+	    model.addAttribute("isNegativeAmount", isNegativeAmount);
+	    
+	    session.setAttribute("resMaster", reservationMaster);
+	    // ReservationDetailDto 객체 리스트 생성 및 설정
+	    List<ReservationDetailDto> reservationDetails = new ArrayList<>();
 
-		// 기존 예약 상세 정보와 마스터 정보 삭제
-		try {
-			log.debug("Attempting to delete reservation master for userId: {}", userId);
-			reservationSvc.deleteReservationMaster(userKey);
-			log.info("Successfully deleted reservation master for userId: {}", userId);
-		} catch (Exception e) {
-			log.error("Failed to delete reservation master for userId: {}", userId, e);
-			return "/reservation/order";
-		}
+	    for (Map<String, Object> detailMap : reservationDetailList) {
+	        Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString()) : null;
+	        Integer itemQuantity = (detailMap.get("itemQuantity") != null) ? Integer.parseInt(detailMap.get("itemQuantity").toString()) : null;
+	        Integer itemAmount = (detailMap.get("itemAmount") != null) ? Integer.parseInt(detailMap.get("itemAmount").toString()) : null;
+//	        List<Items> items = reservationSvc.getAllItems();
+	        
+	        log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
 
-		// requestData에서 reservationMaster와 reservationDetail 추출
-		Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
-		List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData
-				.get("reservationDetail");
+	        if (itemId == null || itemAmount == null || itemQuantity == null) {
+	            log.error("itemId, itemAmount, or itemQuantity is null");
+	            return "/reservation/order";
+	        }
+	        
+	     // Items 리스트에서 itemId에 해당하는 Items 객체를 찾음
+	        Items matchingItem = null;
+	        List<Items> items = reservationSvc.getAllItems(); // 이 부분에서 모든 Items 가져오기
+	        for (Items item : items) {
+	            if (item.getItemId().equals(itemId)) {
+	                matchingItem = item;
+	                break;
+	            }
+	        }
 
-		log.debug("reservationMasterMap={}", reservationMasterMap);
-		log.debug("reservationDetailMap={}", reservationDetailList);
-
-		if (reservationMasterMap == null || reservationDetailList == null) {
-			log.error("reservationMasterMap or reservationDetailList is null");
-			return "reservation/order";
-		}
-
-		// ReservationMaster 객체 생성 및 설정
-		ReservationMaster reservationMaster = new ReservationMaster();
-		reservationMaster.setUserById(userId, userRepo);
-		reservationMaster.setResCheckIn(LocalDate.parse((String) reservationMasterMap.get("resCheckIn")));
-		reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
-		reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
-		reservationMaster.setRequirement((String) reservationMasterMap.get("requirement"));
-		
-		log.info("new reservationMaster = {}",reservationMaster);
-		// ReservationDetailDto 객체 리스트 생성 및 설정
-		List<ReservationDetailDto> reservationDetails = new ArrayList<>();
-
-		for (Map<String, Object> detailMap : reservationDetailList) {
-			Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString())
-					: null;
-			Integer itemQuantity = (detailMap.get("itemQuantity") != null)
-					? Integer.parseInt(detailMap.get("itemQuantity").toString())
-					: null;
-			Integer itemAmount = (detailMap.get("itemAmount") != null)
-					? Integer.parseInt(detailMap.get("itemAmount").toString())
-					: null;
-
-			log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
-
-			if (itemId == null || itemAmount == null || itemQuantity == null) {
-				log.error("itemId, itemAmount, or itemQuantity is null");
-				return "/reservation/order";
-			}
-
-			ReservationDetailDto reservationDetail = new ReservationDetailDto();
-			reservationDetail.setItemId(itemId);
-			reservationDetail.setItemQuantity(itemQuantity);
-			reservationDetail.setItemAmount(itemAmount);
-			reservationDetails.add(reservationDetail);
-		}
-
-		// 서비스 레이어를 통해 예약 생성
-		log.debug("Before calling makeReservation method");
-		reservationSvc.makeReservation(reservationMaster, reservationDetails);
-		log.debug("After calling makeReservation method");
-
-		// 예약정보 가져오기
-		reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		log.info("1");
-		// 예약 상세정보 가져오기
-		List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
-		log.info("2");
-		// 모델에 데이터 추가
-		model.addAttribute("resMaster", reservationMaster);
-		model.addAttribute("resDetails", updatedReservationDetails);
-		log.info("3");
-		return "/mypage/reservation_order";
-
+	        ReservationDetailDto reservationDetail = new ReservationDetailDto();
+	        reservationDetail.setItemId(itemId);
+	        reservationDetail.setItemQuantity(itemQuantity);
+	        reservationDetail.setItemAmount(itemAmount);
+	        
+	        if (matchingItem != null) {
+	            reservationDetail.setItemName(matchingItem.getItemName());
+	            reservationDetail.setItemImg(matchingItem.getItemImg());
+	        } else {
+	            log.error("No matching item found for itemId={}", itemId);
+	        }
+	        
+	        reservationDetails.add(reservationDetail);
+	    }
+	    
+	    session.setAttribute("resDetails", reservationDetails);
+	    
+	    // 데이터가 세션에 저장된 후, 세션에서 데이터를 가져오는 로그 추가
+	    log.debug("Session resMaster={}", session.getAttribute("resMaster"));
+	    log.debug("Session resDetails={}", session.getAttribute("resDetails"));
+	    
+	    // 세션에서 데이터 가져와서 모델에 추가
+	    model.addAttribute("resMaster", session.getAttribute("resMaster"));
+	    model.addAttribute("resDetails", session.getAttribute("resDetails"));
+	    
+	    log.debug("Model resMaster={}", model.getAttribute("resMaster"));
+	    log.debug("Model resDetails={}", model.getAttribute("resDetails"));
+	    
+	    return "/mypage/reservation_order";
 	}
 
 	// 예약 변경 페이지 로드
