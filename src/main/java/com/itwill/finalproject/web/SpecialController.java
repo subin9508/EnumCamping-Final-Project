@@ -27,105 +27,98 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class SpecialController {
-	
-	private final ReservationService reservationSvc;
-	private final AdminService adminSvc;
-	private final SpecialService specialSvc;
-	
-	
+
+    private final ReservationService reservationSvc;
+    private final AdminService adminSvc;
+    private final SpecialService specialSvc;
+
     @GetMapping("/price/zonesSpecial")
     public String zonePrice(Model model) {
         log.info("zonePrice");
-        
-        // 모든 아이템을 가져옴
-        List<Items> items = reservationSvc.getAllZones();
-        model.addAttribute("items", items);
-        
-        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
-        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
+
+        // 모든 구역 리스트 가져오기
+        List<Items> zones = reservationSvc.getAllZones();
+        model.addAttribute("items", zones);
+
+        // 최신 정상 가격 맵 가져오기
+        Map<Integer, Integer> latestPricesWithSpecialZero = specialSvc.getLatestPricesWithSpecialZeroForZones();
         model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
 
-        
-        // 최신 특가 가격 가져오기
-        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPrices(); // List<Integer> 타입
-        
-        // 특가 가격을 아이템 ID와 연결할 수 있는 맵을 만듦
+        // 최신 특가 가격 리스트 가져오기
+        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPricesForZones();
+
+        // 특가 가격을 구역 ID와 연결할 수 있는 맵 만들기
         Map<Integer, Integer> latestSpecialPrices = new HashMap<>();
-        for (int i = 0; i < latestSpecialPricesList.size(); i++) {
-            latestSpecialPrices.put(items.get(i).getItemId(), latestSpecialPricesList.get(i));
+        for (int i = 0; i < Math.min(zones.size(), latestSpecialPricesList.size()); i++) {
+            latestSpecialPrices.put(zones.get(i).getItemId(), latestSpecialPricesList.get(i));
         }
-        
-        // 정상 가격과 특가 가격을 같이 매핑하는 로직 추가
+
+        // 정상 가격과 특가 가격을 같이 매핑하는 로직
         Map<Integer, Integer> combinedPrices = new HashMap<>();
-        for (int i = 0; i < items.size(); i++) {
-            Integer itemId = items.get(i).getItemId();
+        for (Items zone : zones) {
+            Integer itemId = zone.getItemId();
             if (latestSpecialPrices.containsKey(itemId)) {
                 // 특가가 존재하면 특가 가격을 사용
                 combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
             } else {
                 // 특가가 없으면 정상 가격을 사용
-                combinedPrices.put(itemId, latestPricesWithSpecialZero.get(i));
+                combinedPrices.put(itemId, latestPricesWithSpecialZero.getOrDefault(itemId, 0));
             }
         }
 
         model.addAttribute("combinedPrices", combinedPrices); // 모델에 추가
-
-        
         return "admin/price/zonesSpecial";
     }
     
     @GetMapping("/price/itemsSpecial")
     public String itemPrice(Model model) {
         log.info("itemPrice");
-        
-        // 모든 아이템을 가져옴
+
+        // 모든 아이템 리스트 가져오기
         List<Items> items = reservationSvc.getAllItems();
         model.addAttribute("items", items);
-        
-        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
-        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
+
+        // 최신 정상 가격 맵 가져오기
+        Map<Integer, Integer> latestPricesWithSpecialZero = specialSvc.getLatestPricesWithSpecialZeroForItems();
         model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
 
-        
-        // 최신 특가 가격 가져오기
-        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPrices(); // List<Integer> 타입
-        
-        // 특가 가격을 아이템 ID와 연결할 수 있는 맵을 만듦
+        // 최신 특가 가격 리스트 가져오기
+        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPricesForItems();
+
+        // 특가 가격을 아이템 ID와 연결할 수 있는 맵 만들기
         Map<Integer, Integer> latestSpecialPrices = new HashMap<>();
-        for (int i = 0; i < latestSpecialPricesList.size(); i++) {
+        for (int i = 0; i < Math.min(items.size(), latestSpecialPricesList.size()); i++) {
             latestSpecialPrices.put(items.get(i).getItemId(), latestSpecialPricesList.get(i));
         }
-        
-        // 정상 가격과 특가 가격을 같이 매핑하는 로직 추가
+
+        // 정상 가격과 특가 가격을 같이 매핑하는 로직
         Map<Integer, Integer> combinedPrices = new HashMap<>();
-        for (int i = 0; i < items.size(); i++) {
-            Integer itemId = items.get(i).getItemId();
+        for (Items item : items) {
+            Integer itemId = item.getItemId();
             if (latestSpecialPrices.containsKey(itemId)) {
                 // 특가가 존재하면 특가 가격을 사용
                 combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
             } else {
                 // 특가가 없으면 정상 가격을 사용
-                combinedPrices.put(itemId, latestPricesWithSpecialZero.get(i));
+                combinedPrices.put(itemId, latestPricesWithSpecialZero.getOrDefault(itemId, 0));
             }
         }
 
         model.addAttribute("combinedPrices", combinedPrices); // 모델에 추가
-
-        
         return "admin/price/itemsSpecial";
     }
-	
-	
+
     @PostMapping("/price/zonesSpecial/update")
     public String updateZones(@RequestParam Map<String, String> allParams) {
-    	log.info("updateZones : {}",allParams);
+        log.info("updateZones : {}", allParams);
         allParams.forEach((key, value) -> {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 String newCheck = allParams.get("select_" + itemId);
-                log.info("itemId = {}, newPrice = {}, newCheck={}",itemId,newPrice,newCheck);
-                adminSvc.updateZoneDetails(itemId, newPrice,newCheck); // 가격 + 특가 여부 업데이트
+                log.info("itemId = {}, newPrice = {}, newCheck={}", itemId, newPrice, newCheck);
+                
+                adminSvc.updateZoneDetails(itemId, newPrice, newCheck); // 가격 + 특가 여부 업데이트
             }
         });
         return "redirect:/admin/price/zonesSpecial"; // 해당 페이지로 리다이렉트
@@ -133,19 +126,21 @@ public class SpecialController {
 
     @PostMapping("/price/itemsSpecial/update")
     public String updateItems(@RequestParam Map<String, String> allParams) {
-    	log.info("updateItems : {}",allParams);
+        log.info("updateItems : {}", allParams);
         allParams.forEach((key, value) -> {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
                 String newCheck = allParams.get("select_" + itemId);
-                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}",itemId,newPrice, newDesc,newCheck);
+                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
+                
                 adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
             }
         });
         return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
     }
+
     
     
 //    @GetMapping("/price/zones/percentupdate")

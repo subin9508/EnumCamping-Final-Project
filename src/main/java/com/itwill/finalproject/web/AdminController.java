@@ -33,14 +33,14 @@ public class AdminController {
     public String zonePrice(Model model) {
         log.info("zonePrice");
         
-        // 모든 zones를 가져옴
-        List<Items> items = reservationSvc.getAllZones();
+        List<Items> items = adminSvc.getAllZonesWithLatestPrice(); // 최신 가격이 포함된 zones 리스트 가져오기
         model.addAttribute("items", items);
         
-        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
-        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
-        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
-
+        // 아이템 데이터 확인 
+        for (Items item : items) {
+            log.info("Item ID: {}, Name: {}, Price: {}", item.getItemId(), item.getItemName(), item.getItemPrice());
+        }
+        
         return "admin/price/zones";  // 해당 뷰로 리턴
     }
     
@@ -48,13 +48,14 @@ public class AdminController {
     public String itemPrice(Model model) {
         log.info("itemPrice");
         
-        List<Items> items = reservationSvc.getAllItems();
+        List<Items> items = adminSvc.getAllItemsWithLatestPrice(); // 최신 가격이 포함된 items 리스트 가져오기
         model.addAttribute("items", items);
         
-        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
-        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
-        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
-
+        // 아이템 데이터 확인 
+        for (Items item : items) {
+            log.info("Item ID: {}, Name: {}, Price: {}", item.getItemId(), item.getItemName(), item.getItemPrice());
+        }
+        
         return "admin/price/items";  // 해당 뷰로 리턴
         
     }
@@ -101,6 +102,32 @@ public class AdminController {
 //        return "redirect:/admin/price/items"; // 해당 페이지로 리다이렉트
 //    }
     
+//    @PostMapping("/price/items/update")
+//    public String updateItems(@RequestParam Map<String, String> allParams, Model model) {
+//        log.info("updateItems : {}", allParams);
+//        allParams.forEach((key, value) -> {
+//            if (key.startsWith("price_")) {
+//                Integer itemId = Integer.parseInt(key.substring(6));
+//                BigDecimal newPrice = new BigDecimal(value);
+//
+//                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
+//                String newCheck = allParams.getOrDefault("select_" + itemId, "off");
+//                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
+//
+//                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
+//            }
+//        });
+//
+//        // 업데이트 후 최신 데이터를 다시 가져와서 모델에 추가
+//        List<Items> updatedItems = reservationSvc.getAllItems();
+//        model.addAttribute("items", updatedItems);
+//
+//        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
+//        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
+//
+//        return "admin/price/items"; // 해당 페이지로 리다이렉트
+//    }
+    
     @PostMapping("/price/items/update")
     public String updateItems(@RequestParam Map<String, String> allParams, Model model) {
         log.info("updateItems : {}", allParams);
@@ -124,7 +151,7 @@ public class AdminController {
         List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
         model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
 
-        return "admin/price/items"; // 해당 페이지로 리다이렉트
+        return "admin/price/items"; // 뷰로 리턴하여 갱신된 데이터를 보여줌
     }
     
     

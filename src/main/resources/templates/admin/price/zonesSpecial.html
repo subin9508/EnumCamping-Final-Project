@@ -21,7 +21,6 @@
                     </div>
                     <br>
                     
-                    
                     <!-- 퍼센트 적용 -->
                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
                         <input style="width: 10%;" id="percent" class="form-control" type="number" /><span>%</span>
@@ -29,70 +28,66 @@
                         <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button> |
                         <button class="btn btn-outline-success" id="btnApplyAllCheck">특가 전체선택</button>
                         <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button> |
-                        <button class="btn btn-outline-info" id="btnApplyCallPrice">원래가격으로 되돌리기</button>
+                        <button class="btn btn-outline-info" id="btnApplyCallPrice">정상가격으로 되돌리기</button>
                     </div>
-                    
                     
                     <div class=" justify-content-center">
-                    <form id="modifyFormZones" class="modifyForm" action="/enumcamping/admin/price/zones/update" method="post">
+                    <form id="modifyFormZones" class="modifyForm" action="/enumcamping/admin/price/zonesSpecial/update" method="post">
                         <table class="table">
                             <thead>
-								<tr style="border-bottom: 2px solid black;">
-									<th>이름</th>
-									<th>비/성수기</th>
-									<th>평일/주말</th>
-									<th>원래 가격</th>
-									<th>특가 가격</th>
-									<th>특가 유무</th>
-								</tr>
-							</thead>
-							
-<tbody>
-        <!-- items 리스트를 순회하며 테이블 행을 생성 -->
-        <tr th:each="i, iterStat : ${items}" th:classappend="${iterStat.index % 4 == 3} ? 'border-bottom border-dark' : ''">
-            <td class="item-id col-1 d-none" th:text="${i.itemId}"></td>
-            <td class="item-name col-2" th:text="${i.itemName}"></td>
-            <td class="item-time col-2" th:text="${i.itemTime}"
-                th:classappend="${i.itemTime == '비수기'} ? 'text-success' : (${i.itemTime == '성수기'} ? 'text-danger' : '')">
-            </td>
-            <td class="item-weekday col-2" th:text="${i.itemWeekday}"
-                th:classappend="${i.itemWeekday == '평일'} ? 'text-success' : (${i.itemWeekday == '주말'} ? 'text-danger' : '')">
-            </td>
-            <td class="item-price col-3">
-                <div style="display: inline-flex; align-items: center; justify-content: center;">
-                    <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
-                        th:name="'price_' + ${i.itemId}" 
-                        th:value="${latestPricesWithSpecialZero != null && latestPricesWithSpecialZero.size() > iterStat.index ? latestPricesWithSpecialZero[iterStat.index] : ''}" 
-                        readonly />
-                    <span>원</span>
-                </div>
-            </td>
-			<td class="item-special-price col-3">
-			    <div style="display: inline-flex; align-items: center; justify-content: center;">
-			        <!-- combinedPrices에서 가격 가져오기 -->
-			        <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;"
-			            th:name="'specialPrice_' + ${i.itemId}"
-			            th:value="${combinedPrices != null and combinedPrices.containsKey(i.itemId) ? combinedPrices[i.itemId] : latestPricesWithSpecialZero[iterStat.index]}" />
-			        <span>원</span>
-			    </div>
-			</td>
-            <td class="item-select col-1">
-                <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1} ? 'checked' : null" />
-            </td>
-        </tr>
-    </tbody>
+                                <tr style="border-bottom: 2px solid black;">
+                                    <th>이름</th>
+                                    <th>비/성수기</th>
+                                    <th>평일/주말</th>
+                                    <th>정상 가격</th>
+                                    <th>특가 가격</th>
+                                    <th>특가 유무</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <!-- items 리스트를 순회하며 테이블 행을 생성 -->
+                                <tr th:each="i, iterStat : ${items}" th:classappend="${iterStat.index % 4 == 3} ? 'border-bottom border-dark' : ''">
+                                    <td class="item-id col-1 d-none" th:text="${i.itemId}"></td>
+                                    <td class="item-name col-2" th:text="${i.itemName}"></td>
+                                    <td class="item-time col-2" th:text="${i.itemTime}"
+                                        th:classappend="${i.itemTime == '비수기'} ? 'text-success' : (${i.itemTime == '성수기'} ? 'text-danger' : '')">
+                                    </td>
+                                    <td class="item-weekday col-2" th:text="${i.itemWeekday}"
+                                        th:classappend="${i.itemWeekday == '평일'} ? 'text-success' : (${i.itemWeekday == '주말'} ? 'text-danger' : '')">
+                                    </td>
+                                    <td class="item-price col-3">
+                                        <div style="display: inline-flex; align-items: center; justify-content: center;">
+                                            <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
+                                                th:name="'price_' + ${i.itemId}" 
+                                                th:value="${latestPricesWithSpecialZero != null ? latestPricesWithSpecialZero[i.itemId] : ''}" 
+                                                readonly />
+                                            <span>원</span>
+                                        </div>
+                                    </td>
+                                    <td class="item-special-price col-3">
+                                        <div style="display: inline-flex; align-items: center; justify-content: center;">
+                                            <!-- combinedPrices에서 가격 가져오기 -->
+                                            <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;"
+                                                th:name="'specialPrice_' + ${i.itemId}"
+                                                th:value="${combinedPrices != null ? combinedPrices[i.itemId] : ''}" />
+                                            <span>원</span>
+                                        </div>
+                                    </td>
+                                    <td class="item-select col-1">
+                                        <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1} ? 'checked' : null" />
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
-                            <input type="hidden" name="redirectUrl" value="/enumcamping/admin/price/zones/update">
+                            <input type="hidden" name="redirectUrl" value="/admin/price/zones/update">
                             <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용</button>
                         </div>
-                        </form>
+                    </form>
                     </div>
-                    
                 
                 </div>
-                
-                
                 
                 </main>
             </div>

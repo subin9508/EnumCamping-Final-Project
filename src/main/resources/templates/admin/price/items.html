@@ -20,7 +20,7 @@
                 <!-- 아이템 테이블 -->
                 <div class="card" id="items-table">
                     <div class="container-fluid d-flex justify-content-center" style="margin-bottom: 30px;">
-                        <h3><strong>물품 목록 (원가격)</strong></h3>
+                        <h3><strong>물품 목록 (정상 가격)</strong></h3>
                     </div>
                     <!-- 퍼센트 적용 
                     <div style="display: flex; align-items: center; gap: 5px; justify-content: flex-end;">
@@ -47,26 +47,26 @@
                                     <th>가격</th>
                                 </tr>
                             </thead>
-							<tbody>
-				            <!-- iterStat 변수를 추가하여 반복 상태를 추적 -->
-				            <tr th:each="i, iterStat : ${items}" 
-				                th:classappend="${iterStat.index % 4 == 3} ? 'border-bottom border-dark' : ''">
-				                <td class="item-id col-3 d-none" th:text="${i.itemId}"></td>
-				                <td class="item-name col-3" th:text="${i.itemName}">
-				                </td>
-				                <td class="item-description col-6">
-				                    <input class="form-control" type="text" style="width:100%; border: 0;" 
-				                        th:name="'desc_' + ${i.itemId}" th:value="${i.itemDesc}" />
-				                </td>
-				                <td class="item-price col-3">
-				                    <div style="display: inline-flex; align-items: center; justify-content: center;">
-				                        <input class="form-control price" type="number" style="width:80%; border: 0; text-align: right;" 
-				                            th:name="'price_' + ${i.itemId}" th:value="${latestPricesWithSpecialZero[iterStat.index]}" />
-				                        <span>원</span>
-				                    </div>
-				                </td>
-				            </tr>
-				        </tbody>
+<tbody>
+    <tr th:each="i, iterStat : ${items}" 
+        th:classappend="${iterStat.index % 4 == 3} ? 'border-bottom border-dark' : ''">
+        <td class="item-id col-3 d-none" th:text="${i.itemId}"></td>
+        <td class="item-name col-3" th:text="${i.itemName}">
+        </td>
+        <td class="item-description col-6">
+            <input class="form-control" type="text" style="width:100%; border: 0;" 
+                th:name="'desc_' + ${i.itemId}" th:value="${i.itemDesc}" />
+        </td>
+        <td class="item-price col-3">
+            <div style="display: inline-flex; align-items: center; justify-content: center;">
+                <input class="form-control price" type="number" style="width:80%; border: 0; text-align: right;" 
+                    th:name="'price_' + ${i.itemId}" 
+                    th:value="${i.itemPrice}" />
+                <span>원</span>
+            </div>
+        </td>
+    </tr>
+</tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
                             <input type="hidden" name="redirectUrl" value="/admin/price/items/update">

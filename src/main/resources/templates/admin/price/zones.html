@@ -17,7 +17,7 @@
                 <!-- 구역 테이블 -->
                 <div class="card" id="zones-table">
                     <div class="container-fluid d-flex justify-content-center" >
-                        <h3><strong>구역 목록 (원가격)</strong></h3>
+                        <h3><strong>구역 목록 (정상 가격)</strong></h3>
                     </div>
                     <br>
                     
@@ -56,7 +56,8 @@
 							            <div style="display: inline-flex; align-items: center; justify-content: center;">
 							            <!-- latestPricesWithSpecialZero[iterStat.index]를 사용하여 최신 가격을 표시 -->
 							                <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
-							                    th:name="'price_' + ${i.itemId}" th:value="${latestPricesWithSpecialZero[iterStat.index]}" />
+							                    th:name="'price_' + ${i.itemId}" 
+							                    th:value="${i.itemPrice}" />
 							                <span>원</span>
 							            </div>
 							        </td>
