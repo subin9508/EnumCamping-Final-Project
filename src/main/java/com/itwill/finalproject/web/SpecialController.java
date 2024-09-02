@@ -1,8 +1,10 @@
 package com.itwill.finalproject.web;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.service.AdminService;
 import com.itwill.finalproject.service.ReservationService;
+import com.itwill.finalproject.service.SpecialService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,20 +30,89 @@ public class SpecialController {
 	
 	private final ReservationService reservationSvc;
 	private final AdminService adminSvc;
+	private final SpecialService specialSvc;
 	
 	
     @GetMapping("/price/zonesSpecial")
-    public void zonePrice(Model model) {
+    public String zonePrice(Model model) {
         log.info("zonePrice");
+        
+        // 모든 아이템을 가져옴
         List<Items> items = reservationSvc.getAllZones();
         model.addAttribute("items", items);
+        
+        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
+        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
+        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
+
+        
+        // 최신 특가 가격 가져오기
+        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPrices(); // List<Integer> 타입
+        
+        // 특가 가격을 아이템 ID와 연결할 수 있는 맵을 만듦
+        Map<Integer, Integer> latestSpecialPrices = new HashMap<>();
+        for (int i = 0; i < latestSpecialPricesList.size(); i++) {
+            latestSpecialPrices.put(items.get(i).getItemId(), latestSpecialPricesList.get(i));
+        }
+        
+        // 정상 가격과 특가 가격을 같이 매핑하는 로직 추가
+        Map<Integer, Integer> combinedPrices = new HashMap<>();
+        for (int i = 0; i < items.size(); i++) {
+            Integer itemId = items.get(i).getItemId();
+            if (latestSpecialPrices.containsKey(itemId)) {
+                // 특가가 존재하면 특가 가격을 사용
+                combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
+            } else {
+                // 특가가 없으면 정상 가격을 사용
+                combinedPrices.put(itemId, latestPricesWithSpecialZero.get(i));
+            }
+        }
+
+        model.addAttribute("combinedPrices", combinedPrices); // 모델에 추가
+
+        
+        return "admin/price/zonesSpecial";
     }
     
     @GetMapping("/price/itemsSpecial")
-    public void itemPrice(Model model) {
+    public String itemPrice(Model model) {
         log.info("itemPrice");
+        
+        // 모든 아이템을 가져옴
         List<Items> items = reservationSvc.getAllItems();
         model.addAttribute("items", items);
+        
+        // 특가가 없는 상태에서 가장 최신 가격을 가져옴
+        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
+        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
+
+        
+        // 최신 특가 가격 가져오기
+        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPrices(); // List<Integer> 타입
+        
+        // 특가 가격을 아이템 ID와 연결할 수 있는 맵을 만듦
+        Map<Integer, Integer> latestSpecialPrices = new HashMap<>();
+        for (int i = 0; i < latestSpecialPricesList.size(); i++) {
+            latestSpecialPrices.put(items.get(i).getItemId(), latestSpecialPricesList.get(i));
+        }
+        
+        // 정상 가격과 특가 가격을 같이 매핑하는 로직 추가
+        Map<Integer, Integer> combinedPrices = new HashMap<>();
+        for (int i = 0; i < items.size(); i++) {
+            Integer itemId = items.get(i).getItemId();
+            if (latestSpecialPrices.containsKey(itemId)) {
+                // 특가가 존재하면 특가 가격을 사용
+                combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
+            } else {
+                // 특가가 없으면 정상 가격을 사용
+                combinedPrices.put(itemId, latestPricesWithSpecialZero.get(i));
+            }
+        }
+
+        model.addAttribute("combinedPrices", combinedPrices); // 모델에 추가
+
+        
+        return "admin/price/itemsSpecial";
     }
 	
 	

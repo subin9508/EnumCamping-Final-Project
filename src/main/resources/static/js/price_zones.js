@@ -97,6 +97,17 @@
 	        }
 	    });
 	});
+	
+	    // 체크박스 상태를 저장하고 복원하기 위한 로직
+	    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="select_"]');
+	    checkboxes.forEach(function (checkbox) {
+	        const storedState = localStorage.getItem(checkbox.name);
+	        checkbox.checked = storedState === "true"; // 로컬 스토리지에서 체크 상태 복원
+
+	        checkbox.addEventListener('change', function () {
+	            localStorage.setItem(checkbox.name, checkbox.checked); // 체크박스 상태를 로컬 스토리지에 저장
+	        });
+	    });
 	  
 /*    
 const modifyForm = document.querySelector('#modifyForm');

@@ -2,7 +2,11 @@ package com.itwill.finalproject.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +29,10 @@ public class SpecialService {
     @Autowired
     private ItemsHistoryRepository itemsHistoryRepository;
     
-//    public List<ItemsHistory> getLatestPricesWithSpecialZero() {
-//        return itemsHistoryRepository.findLatestPricesWithSpecialZero();
-//    }
-    
     // Items 엔티티를 ID로 조회하는 메서드
     public Items findById(Integer itemId) {
         return itemsRepository.findById(itemId).orElse(null);  // Optional을 사용하여 null 처리
-    }
+    }   
     
  // Zones 업데이트 전용 메서드
     @Transactional
@@ -106,6 +106,11 @@ public class SpecialService {
         	newHistory.setSpecial(1);
         }
         itemsHistoryRepository.save(newHistory);
+    }
+    
+    public List<Integer> getLatestSpecialPrices() {
+        // 특가 가격 리스트 가져오기
+        return itemsHistoryRepository.findLatestSpecialPrices();
     }
 
 }

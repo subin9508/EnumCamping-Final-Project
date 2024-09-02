@@ -36,16 +36,17 @@ public class AdminService {
     
  // Zones 업데이트 전용 메서드
     @Transactional
-    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
+    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String special) {
     	log.info("updateZoneDetails");
         Items item = findById(itemId);
         if (item != null) {
             boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
 
             if (priceChanged) {
-            	updateItemHistory(item, newPrice.intValue(),newCheck);
+            	updateItemHistory(item, newPrice.intValue(),special);
+            	
             	item.setItemPrice(newPrice.intValue());
-            	if ("on".equals(newCheck)) {
+            	if ("1".equals(special)) {
                 	item.setSpecial(1);
                 } else {
                 	item.setSpecial(0);
@@ -58,7 +59,7 @@ public class AdminService {
 
     // Items 업데이트 메서드 (기존에 있던 메서드)
     @Transactional
-    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String newCheck) {
+    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String special) {
     	log.info("updateItemDetails");
         Items item = findById(itemId);
         if (item != null) {
@@ -67,9 +68,9 @@ public class AdminService {
 
             if (priceChanged) {
             	log.info("history insert");
-                updateItemHistory(item, newPrice.intValue(),newCheck);
+                updateItemHistory(item, newPrice.intValue(),special);
                 item.setItemPrice(newPrice.intValue());
-                if ("on".equals(newCheck)) {
+                if ("1".equals(special)) {
                 	item.setSpecial(1);
                 } else {
                 	item.setSpecial(0);
@@ -87,7 +88,7 @@ public class AdminService {
 
     // History 업데이트 메서드 (공통 사용)
     @Transactional
-    private void updateItemHistory(Items item, int newPrice, String newCheck) {
+    private void updateItemHistory(Items item, int newPrice, String special) {
     	log.info("updateItemHistory");
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
@@ -102,10 +103,16 @@ public class AdminService {
         newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
         newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
         
-        if("on".equals(newCheck)) {
+        if("1".equals(special)) {
         	newHistory.setSpecial(1);
         }
         itemsHistoryRepository.save(newHistory);
     }
+    
+    @Transactional
+    public List<Integer> getLatestPricesWithSpecialZero() {
+        return itemsHistoryRepository.findLatestPricesWithSpecialZero();
+    }
+    
 
 }
