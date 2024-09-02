@@ -594,7 +594,7 @@ public class MyPageController {
 	}
 
 	@PostMapping("/reservation_order")
-	public String getReservationList(@RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+	public String getReservationList(@RequestParam(name = "resId") int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
 
 		log.debug("reservationList(requestData={})", requestData);
 
