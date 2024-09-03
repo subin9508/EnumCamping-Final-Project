@@ -1,5 +1,6 @@
 package com.itwill.finalproject.web;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -50,14 +51,21 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
+import com.itwill.finalproject.exception.ControllerException;
+import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.MyPageService;
+import com.itwill.finalproject.service.PaymentsService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.Payment;
+import com.itwill.finalproject.exception.ServiceException;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +76,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/mypage")
 public class MyPageController {
+	
+	// 아임포트 API와 상호작용하기 위한 클라이언트 객체를 정의
+    private IamportClient api;
 
 	private final MyPageService myPageService;
 	private final UserService userService;
@@ -77,6 +88,7 @@ public class MyPageController {
 	private final ReservationService reservationSvc;
 	private final ProfileRepository profileRepo;
 	private final UserRepository userRepo;
+	private final PaymentsService paymentsService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -791,21 +803,7 @@ public class MyPageController {
 		}
 	}
 
-	@PostMapping("/additional_payment")
-	@ResponseBody
-	public ResponseEntity<?> processAdditionalPayment(@RequestBody AdditionalPaymentDto paymentDto) {
-		log.info("Processing additional payment: {}", paymentDto);
-
-		boolean paymentSuccess = reservationSvc.processAdditionalPayment(paymentDto);
-
-		if (paymentSuccess) {
-			return ResponseEntity.ok().body("추가 결제가 성공적으로 처리되었습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("추가 결제 처리 중 오류가 발생했습니다.");
-		}
-	}
-
-	@PostMapping("/refund_request")
+	@PostMapping("/refund_rquest")
 	@ResponseBody
 	public ResponseEntity<?> processRefundRequest(@RequestBody RefundRequestDto refundDto) {
 		log.info("Processing refund request: {}", refundDto);

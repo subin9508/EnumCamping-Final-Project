@@ -319,7 +319,25 @@ public class PaymentsService {
 	            throw new ServiceException("Error during partial cancellation: " + e.getMessage(), e);
 	        }
 	    }
+	  	  
+	    // 추가결제 메서드
+	    public String saveAdditionalPayment(Payment payment, Integer resId) throws ServiceException {
+//	        // 기존 예약 정보를 조회
+//	        Reservation reservation = reservationRepository.findById(resId)
+//	                .orElseThrow(() -> new ServiceException("Reservation not found"));
+//
+//	        // 기존 결제 금액에 추가 결제 금액을 합산
+//	        reservation.setTotalAmount(reservation.getTotalAmount() + payment.getAmount());
+//	        
+//	        // 또는 새로운 결제 기록을 생성
+//	        PaymentRecord newPayment = new PaymentRecord(payment, resId);
+//	        paymentRepository.save(newPayment);
+//
+//	        // 예약 정보를 업데이트
+//	        reservationRepository.save(reservation);
 
-		        		    
+	        return "추가 결제가 성공적으로 저장되었습니다.";
+	    }
+
     
 }
