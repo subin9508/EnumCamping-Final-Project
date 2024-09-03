@@ -118,7 +118,7 @@ public class SpecialService {
     
     // Zones 업데이트 전용 메서드
     @Transactional
-    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
+    public void updateSpecialZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
         log.info("updateZoneDetails 시작 for itemId: {}, newPrice: {}, newCheck: {}", itemId, newPrice, newCheck);
         Items item = findById(itemId);
 
@@ -127,29 +127,23 @@ public class SpecialService {
             
             // 가격이 변경되었는지 확인
             boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-            boolean specialChanged = ("on".equals(newCheck) && item.getSpecial() != 1) || (!"on".equals(newCheck) && item.getSpecial() != 0); // 특가 상태가 'on'으로 변경된 경우
+            boolean specialChanged = item.getSpecial() != ("on".equals(newCheck) ? 1 : 0);
             log.info("Price changed: {}, Special changed: {}", priceChanged, specialChanged);
             
          // 가격이 변경되었거나, 특가 상태가 변경된 경우에만 업데이트 진행
             if (priceChanged || specialChanged) {
                 log.info("Updating item history and item details...");
 
-                updateItemHistory(item, newPrice.intValue(), newCheck);
-
                 item.setItemPrice(newPrice.intValue());
                 item.setSpecial("on".equals(newCheck) ? 1 : 0);
-                
-                // 업데이트 전 로그 추가
-                log.info("Before saving item: itemId = {}, newPrice = {}, special = {}", item.getItemId(), item.getItemPrice(), item.getSpecial());
-                
                 itemsRepository.save(item);
                 
-                // 업데이트 후 로그 추가
-                log.info("After saving Item updated: itemId = {}, newPrice = {}, special = {}", item.getItemId(), item.getItemPrice(), item.getSpecial());
-
+                // 특가 상태가 'on'인 경우만 특가 로그를 추가
                 if ("on".equals(newCheck)) {
-                    log.info("Special status is 'on'. Inserting into Special table...");
+                    updateSpecialItemHistory(item, newPrice.intValue(), 1);  // '1'은 특가 상태를 나타냄
                     insertIntoSpecialTable(item, newPrice.intValue());
+                } else {
+                    updateSpecialItemHistory(item, newPrice.intValue(), 0);
                 }
             }
         }
@@ -158,7 +152,7 @@ public class SpecialService {
 
     // Items 업데이트 메서드
     @Transactional
-    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String newCheck) {
+    public void updateSpecialItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String newCheck) {
     	log.info("updateItemDetails 시작 for itemId: {}, newPrice: {}, newDesc: {}, newCheck: {}", itemId, newPrice, newDesc, newCheck);
         Items item = findById(itemId);
         if (item != null) {
@@ -174,7 +168,7 @@ public class SpecialService {
             // 가격 변경된 경우 업데이트 진행
             if (priceChanged) {
             	log.info("Price changed. Inserting history and updating item...");
-                updateItemHistory(item, newPrice.intValue(), newCheck); // itemshistory에 기록 추가
+                // updateItemHistory(item, newPrice.intValue(), newCheck); // itemshistory에 기록 추가
 
                 //items테이블의 가격과 특가여부 업데이트
                 item.setItemPrice(newPrice.intValue());
@@ -204,30 +198,14 @@ public class SpecialService {
 
     // itemshistory 테이블에 기록 추가
     @Transactional
-    private void updateItemHistory(Items item, int newPrice, String newCheck) {
-    	 log.info("updateItemHistory 시작 for itemId: {}, newPrice: {}, newCheck: {}", item.getItemId(), newPrice, newCheck);
-    	// 가장 최신의 itemsHistory 객체를 가져옴
-        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-        
-        if (currentHistory != null) {
-        	log.info("Existing history found: itemId = {}, currentPrice = {}, special = {}", item.getItemId(), currentHistory.getItemPrice(), currentHistory.getSpecial());
-            currentHistory.setEndDate(LocalDateTime.now()); // 기존 기록의 종료일자를 현재 시간으로 설정하여 기록 마감
-            currentHistory.setSpecial(0); // 기존 기록의 특가 상태 해제
-            itemsHistoryRepository.save(currentHistory);
-            log.info("Existing history updated to end at current time.");
-        }
-        
-        // 새로운 기록 생성해서 itemshistory 테이블에 삽입
+    private void updateSpecialItemHistory(Items item, int newPrice, int specialStatus) {
         ItemsHistory newHistory = new ItemsHistory();
         newHistory.setItems(item);
         newHistory.setItemPrice(newPrice);
-        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
+        newHistory.setSpecial(specialStatus); // 특가 여부를 반영
+        newHistory.setStartDate(LocalDateTime.now());
         newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-        newHistory.setSpecial("on".equals(newCheck) ? 1 : 0); // 특가 여부 설정
-        
         itemsHistoryRepository.save(newHistory);
-        log.info("New history record created for itemId: {} with newPrice: {} and special: {}", item.getItemId(), newPrice, newHistory.getSpecial());
-        log.info("updateItemHistory 끝 for itemId: {}", item.getItemId());
     }
     
     // 특가 테이블에 데이터 삽입

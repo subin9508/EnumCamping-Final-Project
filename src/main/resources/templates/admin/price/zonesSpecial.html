@@ -68,9 +68,10 @@
                                     <td class="item-special-price col-3">
                                         <div style="display: inline-flex; align-items: center; justify-content: center;">
                                             <!-- combinedPrices에서 가격 가져오기 -->
-                                            <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;"
-                                                th:name="'specialPrice_' + ${i.itemId}"
-                                                th:value="${combinedPrices != null ? combinedPrices[i.itemId] : ''}" />
+									<input class="form-control" type="text" style="width:40%; border: 0; text-align: right;"
+									    th:name="'specialPrice_' + ${i.itemId}"
+									    th:value="${i.special == 1 ? combinedPrices[i.itemId] : ''}" 
+									    placeholder="특가 입력" />
                                             <span>원</span>
                                         </div>
                                     </td>

@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 specialPriceInput.style.backgroundColor = '#e0f7fa';
             } else {
                 specialPriceInput.style.backgroundColor = ''; // 원래대로 복원
+				// 입력 필드를 빈칸으로 설정
+				specialPriceInput.value = '';
             }
         });
     });
@@ -73,15 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		
         const modifyForm = document.querySelector('form#modifyFormZones');
 		
-		// 폼 제출 전에 체크되지 않은 체크박스에 대한 기본값 설정
-		checkboxes.forEach(checkbox => {
-		    if (!checkbox.checked) {
-		        const hiddenInput = document.createElement('input');
-		        hiddenInput.type = 'hidden';
-		        hiddenInput.name = checkbox.name;
-		        hiddenInput.value = 'off'; // 기본값 설정
-		        modifyForm.appendChild(hiddenInput);
-		    }
+		// 모든 체크박스를 순회하면서 hidden input 설정
+		document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+		    const hiddenInput = document.createElement('input');
+		    hiddenInput.type = 'hidden';
+		    hiddenInput.name = checkbox.name;
+		    hiddenInput.value = checkbox.checked ? '1' : '0';  // 체크 상태에 따라 값 설정
+		    modifyForm.appendChild(hiddenInput);
 		});
 
         if (confirm('변경 내용을 저장할까요?')) {
@@ -103,20 +103,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 서버에서 최신 가격 정보를 가져오는 버튼
-    $('#btnApplyCallPrice').on('click', function () {
-        $.ajax({
-            url: '/enumcamping/admin/getLatestPriceWithSpecialZero',
-            type: 'GET',
-            success: function (data) {
-                console.log(data); // 결과 로깅
-                // 필요에 따라 결과를 DOM에 반영
-            },
-            error: function (error) {
-                console.log('Error:', error);
-            }
-        });
-    });
+	// 서버에서 최신 가격 정보를 가져오는 버튼
+	document.getElementById('btnApplyCallPrice').addEventListener('click', function () {
+	    fetch('/enumcamping/admin/getLatestPriceWithSpecialZero')
+	    .then(response => response.json())
+	    .then(data => {
+	        console.log(data); // 결과 로깅
+	        // 필요에 따라 결과를 DOM에 반영
+	    })
+	    .catch(error => {
+	        console.error('Error:', error);
+	    });
+	});
 
     // 체크박스 상태를 로컬 스토리지에 저장 및 복원
     checkboxes.forEach(function (checkbox) {

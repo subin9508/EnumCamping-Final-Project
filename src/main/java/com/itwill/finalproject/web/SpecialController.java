@@ -57,7 +57,7 @@ public class SpecialController {
         Map<Integer, Integer> combinedPrices = new HashMap<>();
         for (Items zone : zones) {
             Integer itemId = zone.getItemId();
-            if (latestSpecialPrices.containsKey(itemId)) {
+            if (latestSpecialPrices.containsKey(itemId) && zone.getSpecial() == 1) {
                 // 특가가 존재하면 특가 가격을 사용
                 combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
             } else {
@@ -112,23 +112,46 @@ public class SpecialController {
     public String updateZones(@RequestParam Map<String, String> allParams) {
         log.info("updateZones : {}", allParams);
         allParams.forEach((key, value) -> {
-            if (key.startsWith("price_")) {
-                Integer itemId = Integer.parseInt(key.substring(6));
-                BigDecimal newPrice = new BigDecimal(value); // 정상 가격
-                BigDecimal specialPrice = new BigDecimal(allParams.getOrDefault("specialPrice_" + itemId, value)); // 특가 가격
-                String newCheck = allParams.get("select_" + itemId);   // 특가 여부
-                
-                log.info("itemId = {}, newPrice = {}, specialPrice = {}, newCheck={}", itemId, newPrice, specialPrice, newCheck);
-                
-             	// 특가 가격으로 업데이트
-                if ("on".equals(newCheck)) {
-                    adminSvc.updateZoneDetails(itemId, specialPrice, newCheck); // 특가 가격을 사용
-                } else {
-                    adminSvc.updateZoneDetails(itemId, newPrice, newCheck); // 정상 가격을 사용
+            try {
+                if (key.startsWith("price_")) {
+                    Integer itemId = Integer.parseInt(key.substring(6));
+                    if (value != null && !value.isEmpty()) {
+                        BigDecimal newPrice = new BigDecimal(value); // 정상 가격
+                        
+                        // 특가 가격에 대한 더 안전한 처리
+                        String specialPriceStr = allParams.getOrDefault("specialPrice_" + itemId, value);
+                        BigDecimal specialPrice = isNumeric(specialPriceStr) ? new BigDecimal(specialPriceStr) : newPrice;
+                        
+                        String newCheck = allParams.getOrDefault("select_" + itemId, "off");   // 특가 여부
+                        
+                        log.info("itemId = {}, newPrice = {}, specialPrice = {}, newCheck={}", itemId, newPrice, specialPrice, newCheck);
+                        
+                        if ("on".equals(newCheck)) {
+                        	specialSvc.updateSpecialZoneDetails(itemId, specialPrice, "on"); // 특가 가격을 사용
+                        } else {
+                        	specialSvc.updateSpecialZoneDetails(itemId, newPrice, "off"); // 정상 가격을 사용
+                        }
+                    } else {
+                        log.warn("Invalid price value for itemId: {}", itemId);
+                    }
                 }
+            } catch (NumberFormatException ex) {
+                log.error("Invalid number format for key: {}, value: {}", key, value, ex);
             }
         });
         return "redirect:/admin/price/zonesSpecial"; // 해당 페이지로 리다이렉트
+    }
+    
+    private boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            new BigDecimal(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     @PostMapping("/price/itemsSpecial/update")
@@ -142,7 +165,7 @@ public class SpecialController {
                 String newCheck = allParams.getOrDefault("select_" + itemId, "off"); // 기본값 'off' 설정
                 log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
                 
-                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
+                specialSvc.updateSpecialItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
             }
         });
         return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
