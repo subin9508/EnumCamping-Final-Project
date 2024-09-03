@@ -178,8 +178,7 @@
 				<div th:if="${isPositiveAmount}">
 				<div class="container-fluid d-flex justify-content-center mt-3">
 					<input type="text" name="resId" id="resId" th:value="${resId}" />
-					<button id="btnPayment" class="btn btn-payment" disabled
-						onclick="processPayment()">추가 결제하기</button>
+					<button id="btnPayment" class="btn btn-payment" disabled>추가 결제하기</button>
 				</div>
 				</div>
 				<div th:if="${isNegativeAmount}">
@@ -213,13 +212,13 @@
 			src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 		<script type="text/javascript"
 			src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-
-		<!-- payment JS -->
-		<script th:src="@{/js/payments.js}"></script>
+		
 		<!-- paymentRefund JS -->
 		<script th:src="@{/js/paymentRefund.js}"></script>
 
 		<script th:src="@{/js/update_calendar.js}"></script>
+		
+		<script th:src="@{/js/additionalPayment.js}"></script>
 
 		<!-- JavaScript 부분 수정 -->
 		<script>
@@ -273,6 +272,8 @@
 			}
 
 			document.addEventListener('DOMContentLoaded', updateTotalAmount);
+			
+			
 		</script>
 	</body>
 </html>

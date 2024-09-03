@@ -285,6 +285,45 @@ public class PaymentsController {
         }
     }
 
+    
+  //------------------- 추가 결제 ----------------------
+    @ResponseBody
+    @PostMapping("/additional_payment/verifyIamport/{imp_uid}")
+    public ResponseEntity<?> additionalPaymentByImpUid(
+            @PathVariable(value = "imp_uid") String imp_uid,
+            @RequestParam("resId") Integer resId
+    ) throws IamportResponseException, IOException, ControllerException {
+        log.trace("paymentByImpUid({}, {}) invoked.", imp_uid, resId);
+
+        try {
+            // 아임포트 API를 통해 결제 정보를 조회
+            Payment payment = this.api.paymentByImpUid(imp_uid).getResponse();
+            log.debug("Received payment status: {}", payment.getStatus());
+
+            if ("paid".equals(payment.getStatus())) {
+                // 결제 상태가 1인 경우에도 추가 결제를 허용하도록 수정
+                String result = this.paymentsService.saveAdditionalPayment(payment, resId);
+                log.info("Additional payment saved successfully: {}", result);
+                
+                // 예약 상태는 이미 1이므로 추가 업데이트는 생략할 수 있음
+                return ResponseEntity.ok(Map.of(
+                        "status", payment.getStatus(),
+                        "merchant_uid", payment.getMerchantUid(),
+                        "payment", payment
+                    ));
+            } else if ("failed".equals(payment.getStatus())) { // 결제가 실패한 경우
+                return ResponseEntity.badRequest().body("결제 실패: " + payment.getFailReason());
+            } else { // 알 수 없는 결제 상태인 경우
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알 수 없는 결제 상태");
+            }
+        } catch (IamportResponseException | IOException e) { // 예외 처리
+            log.error("결제 검증 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 검증 실패: " + e.getMessage());
+        } catch (ServiceException e) {
+            log.error("결제 정보 저장 중 오류 발생", e);
+            throw new ControllerException(e); // 예외를 다시 던져서 처리
+        }
+    }
 
     
     //------------------- 내 예약 목록 조회 ----------------------
