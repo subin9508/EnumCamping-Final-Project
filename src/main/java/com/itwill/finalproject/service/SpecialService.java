@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.ItemsHistory;
 import com.itwill.finalproject.domain.Special;
+import com.itwill.finalproject.dto.ItemPriceDto;
 import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.SpecialRepository;
@@ -199,12 +200,26 @@ public class SpecialService {
     // itemshistory 테이블에 기록 추가
     @Transactional
     private void updateSpecialItemHistory(Items item, int newPrice, int specialStatus) {
+    	log.info("updateItemHistory");
+    	
+        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
+        if (currentHistory != null) {
+            // 기존의 special = 1 레코드의 end_date만 업데이트하고, special 값을 변경하지 않습니다.
+            currentHistory.setEndDate(LocalDateTime.now());
+            itemsHistoryRepository.save(currentHistory);
+        }
+    	
         ItemsHistory newHistory = new ItemsHistory();
         newHistory.setItems(item);
         newHistory.setItemPrice(newPrice);
         newHistory.setSpecial(specialStatus); // 특가 여부를 반영
-        newHistory.setStartDate(LocalDateTime.now());
+        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
         newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+        
+        if("1".equals(specialStatus)) {
+        	newHistory.setSpecial(1);
+        }
+        
         itemsHistoryRepository.save(newHistory);
     }
     
@@ -224,8 +239,57 @@ public class SpecialService {
         log.info("insertIntoSpecialTable 끝 for itemId: {}", item.getItemId());
     }
     
+    // 특가 여부 해제 시 end_date를 업데이트하고 새로운 레코드를 추가하는 메서드
+    @Transactional
+    public void updateSpecialEndDateAndInsertRecord(Integer itemId) {
+    	log.info("특가 여부 해제 itemId={}", itemId);
+    	
+//    	LocalDateTime endDate = LocalDateTime.now().minusSeconds(1); // 현재 시간에서 1초 전으로 설정
+//        log.info("endDate={}", endDate);
+//        
+//        // itemsHistory 테이블의 특가 레코드의 end_date 업데이트 (special=1인 레코드만 수정)
+//        itemsHistoryRepository.updateItemsHistoryEndDateByItemId(itemId, endDate);
+        
+        // 새로운 레코드 (special = 0) 삽입
+        Items item = itemsRepository.findById(itemId)
+        		.orElseThrow(() -> new IllegalArgumentException("Invalid item ID: " + itemId));
+
+        if (item != null) {        	
+            // 새로운 특가 종료 레코드를 추가
+            ItemsHistory newHistory = new ItemsHistory();
+            newHistory.setItems(item);
+            newHistory.setItemPrice(item.getItemPrice());
+            newHistory.setSpecial(0); // 특가 해제
+            newHistory.setStartDate(LocalDateTime.now());
+            newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+            
+            itemsHistoryRepository.save(newHistory);
+            
+            // 방금 삽입된 special = 0 레코드의 start_date 가져오기
+            LocalDateTime latestStartDate = newHistory.getStartDate();
+            log.info("방금 삽입 latestStartDate={}", latestStartDate);
+            
+            // special 테이블의 end_date를 최신 start_date의 1초 전으로 설정
+            LocalDateTime endDate = latestStartDate.minusSeconds(1);
+            log.info("endDate to set for special table = {}", endDate);
+            
+            // 기본 end date 값
+            LocalDateTime defaultEndDate = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+
+//            // special 테이블의 end_date 업데이트
+//            specialRepository.updateEndDateByItemId(itemId, endDate, defaultEndDate);
+        
+            // special 테이블의 end_date 업데이트
+            int updatedCount = specialRepository.updateEndDateByItemId(itemId, endDate, defaultEndDate);
+            log.info("Special table updated rows count: {}", updatedCount);
+
+            if (updatedCount == 0) {
+                log.warn("No rows updated in Special table. Check if the itemId and defaultEndDate match the conditions.");
+            }
+        }
+    }
     
-    
+        
     
     // Items에 대한 최신 특가 가격 가져오기
     public List<Integer> getLatestSpecialPricesForItems() {
@@ -237,15 +301,23 @@ public class SpecialService {
         }
     }
 
-    // Zones에 대한 최신 특가 가격 가져오기
-    public List<Integer> getLatestSpecialPricesForZones() {
-        List<Integer> specialPrices = itemsHistoryRepository.findLatestSpecialPrices();
-        if (specialPrices.size() >= 20) {
-            return specialPrices.subList(0, 20);  // Zone ID가 1~20인 특가 가격만 가져오기
-        } else {
-            return new ArrayList<>();  // 비어있는 리스트를 반환하여 오류를 방지
-        }
+ // Zones에 대한 최신 특가 가격을 Map 형태로 가져오기
+    public Map<Integer, Integer> getLatestSpecialPricesForZones() {
+        List<ItemPriceDto> specialPricesDto = itemsHistoryRepository.findLatestSpecialPricesDto();
+        return specialPricesDto.stream()
+                               .collect(Collectors.toMap(ItemPriceDto::getItemId, ItemPriceDto::getItemPrice));
     }
+    
+    // Zones에 대한 최신 특가 가격 가져오기
+//    public List<Integer> getLatestSpecialPricesForZones() {
+//        List<Integer> specialPrices = itemsHistoryRepository.findLatestSpecialPrices();
+//        log.info("specialPrices={}", specialPrices);
+//        if (specialPrices.size() >= 20) {
+//            return specialPrices.subList(0, 20);  // Zone ID가 1~20인 특가 가격만 가져오기
+//        } else {
+//            return new ArrayList<>();  // 비어있는 리스트를 반환하여 오류를 방지
+//        }
+//    }
 
     // Items에 대한 최신 정상 가격 가져오기
     public Map<Integer, Integer> getLatestPricesWithSpecialZeroForItems() {

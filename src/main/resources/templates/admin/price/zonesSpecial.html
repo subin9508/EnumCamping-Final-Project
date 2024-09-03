@@ -27,8 +27,7 @@
                         <button class="btn btn-outline-primary" id="btnApplyPlus">인상</button>
                         <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button> |
                         <button class="btn btn-outline-success" id="btnApplyAllCheck">특가 전체선택</button>
-                        <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button> |
-                        <button class="btn btn-outline-info" id="btnApplyCallPrice">정상가격으로 되돌리기</button>
+                        <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button>
                     </div>
                     
                     <div class=" justify-content-center">
@@ -70,20 +69,20 @@
                                             <!-- combinedPrices에서 가격 가져오기 -->
 									<input class="form-control" type="text" style="width:40%; border: 0; text-align: right;"
 									    th:name="'specialPrice_' + ${i.itemId}"
-									    th:value="${i.special == 1 ? combinedPrices[i.itemId] : ''}" 
+									    th:value="${i.special == 1 ? combinedPrices[i.itemId] : ''}"
 									    placeholder="특가 입력" />
                                             <span>원</span>
                                         </div>
                                     </td>
                             <td class="item-select col-1">
-							    <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1}" />
+							    <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1 ? 'checked' : null}" />
                             </td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
                             <input type="hidden" name="redirectUrl" value="/admin/price/zones/update">
-                            <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용</button>
+                            <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용 하기</button>
                         </div>
                     </form>
                     </div>
