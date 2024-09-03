@@ -111,7 +111,7 @@ public class ReservationController {
 		        @RequestBody Map<String, Object> requestData, 
 		        HttpSession session, 
 		        Model model) {
-
+			
 		    log.debug("reservationList(requestData={})", requestData);
 		    
 		    // 세션에서 사용자 정보 가져오기

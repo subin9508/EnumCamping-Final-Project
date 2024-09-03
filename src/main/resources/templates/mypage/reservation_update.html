@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
-    <link th:href="@{/css/header.css}" rel="stylesheet" />
-    <link th:href="@{/css/footer.css}" rel="stylesheet" />
-    <link th:href="@{/css/sidebar.css}" rel="stylesheet" />
-    <link rel="stylesheet" th:href="@{/css/calendar.css}">
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link th:href="@{/css/header.css}" rel="stylesheet" />
+<link th:href="@{/css/footer.css}" rel="stylesheet" />
+<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/css/calendar.css}">
 </head>
 
 <body>
-
 	<div class="wrapper">
 		<!-- 헤더 포함 -->
-		 <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
 		<div class="footer-main-content">
 			<!-- 사이드바 포함 -->
 			<th:block th:replace="~{/layout/fragments :: mypage-sidebar}"></th:block>
@@ -41,10 +40,10 @@
 						</thead>
 						<tbody></tbody>
 					</table>
-					
+
 					<div id="date" style="display: none;"></div>
 
-						<span th:text="${resDetail[0].itemId}" style="display: none;"></span>
+					<span th:text="${resDetail[0].itemId}" style="display: none;"></span>
 
 					<span id="resCheckInDate" th:text="${resMaster.resCheckIn}"
 						style="display: none;" data-checkin-date="${resMaster.resCheckIn}">resCheckIn</span>
@@ -60,7 +59,8 @@
 								name="area" value="1"
 								th:checked="${resDetail[0].itemId >= 1 and resDetail[0].itemId <= 4}">
 								<span class="radio_icon"></span> <span class="radio_text"
-								style="font-size: 18px; margin-right: auto;"><strong>달</strong></span> <span style="text-align: right;" id="price_1">가격</span>
+								style="font-size: 18px; margin-right: auto;"><strong>달</strong></span>
+								<span style="text-align: right;" id="price_1">가격</span>
 							</label>
 						</div>
 						<div class="card p-2" id="area2">
@@ -70,7 +70,8 @@
 								name="area" value="2"
 								th:checked="${resDetail[0].itemId >= 5 and resDetail[0].itemId <= 8}">
 								<span class="radio_icon"></span> <span class="radio_text"
-								style="font-size: 18px; margin-right: auto;"><strong>별</strong></span> <span style="text-align: right;" id="price_2">가격</span>
+								style="font-size: 18px; margin-right: auto;"><strong>별</strong></span>
+								<span style="text-align: right;" id="price_2">가격</span>
 							</label>
 						</div>
 						<div class="card p-2" id="area3">
@@ -80,7 +81,8 @@
 								name="area" value="3"
 								th:checked="${resDetail[0].itemId >= 9 and resDetail[0].itemId <= 12}">
 								<span class="radio_icon"></span> <span class="radio_text"
-								style="font-size: 18px; margin-right: auto;"><strong>노을</strong></span> <span style="text-align: right;" id="price_3">가격</span>
+								style="font-size: 18px; margin-right: auto;"><strong>노을</strong></span>
+								<span style="text-align: right;" id="price_3">가격</span>
 							</label>
 						</div>
 						<div class="card p-2" id="area4">
@@ -90,7 +92,8 @@
 								name="area" value="4"
 								th:checked="${resDetail[0].itemId >= 13 and resDetail[0].itemId <= 16}">
 								<span class="radio_icon"></span> <span class="radio_text"
-								style="font-size: 18px; margin-right: auto;"><strong>바람</strong></span> <span style="text-align: right;" id="price_4">가격</span>
+								style="font-size: 18px; margin-right: auto;"><strong>바람</strong></span>
+								<span style="text-align: right;" id="price_4">가격</span>
 							</label>
 						</div>
 						<div class="card p-2" id="area5">
@@ -100,7 +103,7 @@
 								name="area" value="5"
 								th:checked="${resDetail[0].itemId >= 17 and resDetail[0].itemId <= 20}">
 								<span class="radio_icon"></span> <span class="radio_text"
-								style="font-size: 18px; margin-right: auto;"><strong>하늘</strong></span> 
+								style="font-size: 18px; margin-right: auto;"><strong>하늘</strong></span>
 								<span style="text-align: right;" id="price_5">가격</span>
 
 							</label>
@@ -157,16 +160,17 @@
 												<select th:id="'quantity-' + ${i.itemId}"
 													th:onchange="updateQuantity([[${i.itemId}]], [[${i.itemPrice}]])"
 													autocomplete="off">
-													
+
 													<option value="0" th:selected="${resDetail == null}">0</option>
-													<th:block th:if="${resDetail.itemId == i.itemId}" th:each="resDetail : ${resDetail}">
-														<option value="1" 
+													<th:block th:if="${resDetail.itemId == i.itemId}"
+														th:each="resDetail : ${resDetail}">
+														<option value="1"
 															th:selected="${resDetail.itemId == i.itemId} and ${resDetail.itemQuantity == 1}">1</option>
 														<option value="2"
 															th:selected="${resDetail.itemId == i.itemId} and ${resDetail.itemQuantity == 2}">2</option>
 													</th:block>
 
-													
+
 												</select>
 											</div>
 											<p />
@@ -202,70 +206,54 @@
 					</div>
 
 				</div>
-				
+
 
 				<div class="container-fluid d-flex justify-content-center mb-5">
-					<button onclick="addNextPageEventListeners()" class="btn btnNextPage">다음 단계</button>
+					<button onclick="addNextPageEventListeners()"
+						class="btn btnNextPage">다음 단계</button>
 				</div>
 			</main>
 		</div>
 		<!-- 푸터 포함 -->
 		<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
 	</div>
-	
+
 	<!-- 부트 스트랩 JS -->
-    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
-        
-    <!-- Weather JS -->
-    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
-    
-    <!-- 캘린더 JS -->
-    <script th:src="@{/js/update_calendar.js}"></script>
-    
-    <script>
-        // JavaScript를 사용하여 날짜 입력 형식 제어
-        document.getElementById('reservationForm').addEventListener('submit', function(event) {
-            // Prevent form submission if validation fails
-            if (!validateDateInput('resCheckIn') || !validateDateInput('resCheckOut')) {
-                event.preventDefault();
-            }
-        });
+	<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
-        function validateDateInput(inputId) {
-            var input = document.getElementById(inputId);
-            var pattern = /^\d{4}-\d{2}-\d{2}$/;
-            var isValid = pattern.test(input.value);
-            if (!isValid) {
-                input.setCustomValidity('Please enter a date in yyyy-mm-dd format.');
-            } else {
-                input.setCustomValidity('');
-            }
-            return isValid;
-        }
+	<!-- Weather JS -->
+	<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
-        // 페이지가 로드될 때 콤보박스 초기화
-        window.onload = function() {
-            // 모든 콤보박스를 초기화합니다.
-            var quantitySelects = document.querySelectorAll('select[id^="quantity-"]');
-            quantitySelects.forEach(function(select) {
-                select.selectedIndex = 0; // 첫 번째 옵션을 선택(값이 0인 옵션)
-            });
+	<!-- 캘린더 JS -->
+	<script th:src="@{/js/update_calendar.js}"></script>
+	
+	<script>
+		// JavaScript를 사용하여 날짜 입력 형식 제어
+		document.getElementById('reservationForm').addEventListener(
+				'submit',
+				function(event) {
+					// Prevent form submission if validation fails
+					if (!validateDateInput('resCheckIn')
+							|| !validateDateInput('resCheckOut')) {
+						event.preventDefault();
+					}
+				});
 
-            // 각 아이템의 총 가격도 0원으로 초기화
-            var totalPrices = document.querySelectorAll('.total-price');
-            totalPrices.forEach(function(totalPrice) {
-                totalPrice.textContent = '0원';
-            });
-
-            // 전체 총 가격도 초기화
-            document.getElementById('totalSum').textContent = '0원';
-            
-            // 요청사항 텍스트 영역 초기화
-            document.getElementById('special-requests').value = '';
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- paymentRefund JS -->
-    <script th:src="@{/js/paymentRefund.js}"></script>
+		function validateDateInput(inputId) {
+			var input = document.getElementById(inputId);
+			var pattern = /^\d{4}-\d{2}-\d{2}$/;
+			var isValid = pattern.test(input.value);
+			if (!isValid) {
+				input
+						.setCustomValidity('Please enter a date in yyyy-mm-dd format.');
+			} else {
+				input.setCustomValidity('');
+			}
+			return isValid;
+		}
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<!-- paymentRefund JS -->
+	<script th:src="@{/js/paymentRefund.js}"></script>
 </body>
 </html>
