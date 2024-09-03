@@ -17,11 +17,11 @@ public class ClaimMaster {
     // 첫 번째 PK: clm_id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // 자동 증가 설정
-    private int clmId;
+    private Integer clmId;
 
     // 두 번째 PK: res_id
     @Id
-    private int resId;
+    private Integer resId;
 
     @Column(length = 100)  // varchar(100) 대응
     private String reason;

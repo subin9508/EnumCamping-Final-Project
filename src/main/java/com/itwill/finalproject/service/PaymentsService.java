@@ -322,21 +322,30 @@ public class PaymentsService {
 	  	  
 	    // 추가결제 메서드
 	    public String saveAdditionalPayment(Payment payment, Integer resId) throws ServiceException {
-//	        // 기존 예약 정보를 조회
-//	        Reservation reservation = reservationRepository.findById(resId)
-//	                .orElseThrow(() -> new ServiceException("Reservation not found"));
-//
-//	        // 기존 결제 금액에 추가 결제 금액을 합산
-//	        reservation.setTotalAmount(reservation.getTotalAmount() + payment.getAmount());
-//	        
-//	        // 또는 새로운 결제 기록을 생성
-//	        PaymentRecord newPayment = new PaymentRecord(payment, resId);
-//	        paymentRepository.save(newPayment);
+
+//	        // 새로운 결제 기록을 생성
+	    	PaymentsDto dto = new PaymentsDto();
+	    	dto.setImpUid(payment.getImpUid());
+	    	dto.setPgTid(payment.getPgTid());
+	    	dto.setResId(resId);
+	    	dto.setResTotalPrice(payment.getAmount().intValue());
+	    	
+	    	if (payment.getPaidAt() != null) {
+	            dto.setPayDate(payment.getPaidAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+	        }
+	        
+	        dto.setPayMethod(payment.getPayMethod());
+	        dto.setPayStatus(payment.getStatus());
+	        dto.setBuyerEmail(payment.getBuyerEmail());
 //
 //	        // 예약 정보를 업데이트
-//	        reservationRepository.save(reservation);
-
-	        return "추가 결제가 성공적으로 저장되었습니다.";
+	        try {
+	            Payments savedPayment = paymentsRepo.save(dto.toEntity());
+	            return savedPayment != null ? "SUCCESS" : "FAIL:01";
+	        } catch (Exception e) {
+	            log.error("Error saving payment", e);
+	            throw new ServiceException("Failed to save payment", e);
+	        }
 	    }
 
     
