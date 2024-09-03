@@ -101,7 +101,7 @@ public class NoticeController {
     	//검색 결과를 notice로 다시 model에 추가하므로 redirect 필요 X
     	model.addAttribute("notices",list);
     	
-    	return "/community/notice/list";
+    	return "community/notice/list";
     }
 	
 	

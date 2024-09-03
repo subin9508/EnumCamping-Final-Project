@@ -319,7 +319,7 @@ public class MyPageController {
 		model.addAttribute("signedInUser", signedInUser);
 		model.addAttribute("userRole", isAdmin ? 0 : 1);
 
-		return "/mypage/qna_modify"; // 수정 페이지로 이동
+		return "mypage/qna_modify"; // 수정 페이지로 이동
 	}
 
 	// QnA 게시글 상세 조회
@@ -447,7 +447,7 @@ public class MyPageController {
 		model.addAttribute("userRole", userRole);
 		model.addAttribute("pageNo", pageNo);
 
-		return "/mypage/qna_details";
+		return "mypage/qna_details";
 	}
 
 //    @PreAuthorize("hasRole('USER')")
@@ -484,7 +484,7 @@ public class MyPageController {
 		List<ReservationMaster> list = myPageService.readAllReservation(userId);
 		log.debug("list=({})", list);
 		model.addAttribute("reservations", list);
-		return "/mypage/reservation_list"; // 반환할 뷰의 이름
+		return "mypage/reservation_list"; // 반환할 뷰의 이름
 	}
 
 	// 마이페이지 - 예약 상세
@@ -509,7 +509,7 @@ public class MyPageController {
 		model.addAttribute("resMaster", resMaster.orElse(null));
 		model.addAttribute("resDetail", resDetail);
 
-		return "/mypage/reservation_details";
+		return "mypage/reservation_details";
 	}
 
 	// 마이페이지 - 예약 변경
@@ -590,7 +590,7 @@ public class MyPageController {
 	    boolean isNegativeAmount = (boolean)session.getAttribute("isNegativeAmount");
 	    model.addAttribute("isNegativeAmount", isNegativeAmount);
 	    
-		return "/mypage/reservation_order";
+		return "mypage/reservation_order";
 	}
 
 	@PostMapping("/reservation_order")
@@ -621,7 +621,7 @@ public class MyPageController {
 	        log.info("Successfully deleted reservation master for userId: {}", userId);
 	    } catch (Exception e) {
 	        log.error("Failed to delete reservation master for userId: {}", userId, e);
-	        return "/reservation/order";
+	        return "reservation/order";
 	    }	    
 	   
 	    // requestData에서 reservationMaster와 reservationDetail 추출
@@ -688,7 +688,7 @@ public class MyPageController {
 
 	        if (itemId == null || itemAmount == null || itemQuantity == null) {
 	            log.error("itemId, itemAmount, or itemQuantity is null");
-	            return "/reservation/order";
+	            return "reservation/order";
 	        }
 	        
 	     // Items 리스트에서 itemId에 해당하는 Items 객체를 찾음
@@ -729,7 +729,7 @@ public class MyPageController {
 	    log.debug("Model resMaster={}", model.getAttribute("resMaster"));
 	    log.debug("Model resDetails={}", model.getAttribute("resDetails"));
 	    
-	    return "/mypage/reservation_order";
+	    return "mypage/reservation_order";
 	}
 
 	// 예약 변경 페이지 로드
@@ -749,7 +749,7 @@ public class MyPageController {
 		model.addAttribute("resDetail", resDetail);
 		model.addAttribute("items", items);
 
-		return "/mypage/reservation_update_form";
+		return "mypage/reservation_update_form";
 	}
 
 	@PostMapping("/reservation_update")

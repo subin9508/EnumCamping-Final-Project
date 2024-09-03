@@ -173,7 +173,7 @@ public class ReservationController {
 			    model.addAttribute("reservationMaster", reservationMaster);
 			    model.addAttribute("reservationDetails", reservationDetails);
 
-			    return "/reservation/order";
+			    return "reservation/order";
 			}
 		
 		@PostMapping("/order")
@@ -208,7 +208,7 @@ public class ReservationController {
 		        log.info("Successfully deleted reservation master for userId: {}", userId);
 		    } catch (Exception e) {
 		        log.error("Failed to delete reservation master for userId: {}", userId, e);
-		        return "/reservation/order";
+		        return "reservation/order";
 		    }
 		    
 		    // requestData에서 reservationMaster와 reservationDetail 추출
@@ -244,7 +244,7 @@ public class ReservationController {
 
 		        if (itemId == null || itemAmount == null || itemQuantity == null) {
 		            log.error("itemId, itemAmount, or itemQuantity is null");
-		            return "/reservation/order";
+		            return "reservation/order";
 		        }
 
 		        ReservationDetailDto reservationDetail = new ReservationDetailDto();
