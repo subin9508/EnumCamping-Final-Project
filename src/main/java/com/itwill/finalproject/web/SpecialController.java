@@ -114,11 +114,18 @@ public class SpecialController {
         allParams.forEach((key, value) -> {
             if (key.startsWith("price_")) {
                 Integer itemId = Integer.parseInt(key.substring(6));
-                BigDecimal newPrice = new BigDecimal(value);
-                String newCheck = allParams.get("select_" + itemId);
-                log.info("itemId = {}, newPrice = {}, newCheck={}", itemId, newPrice, newCheck);
+                BigDecimal newPrice = new BigDecimal(value); // 정상 가격
+                BigDecimal specialPrice = new BigDecimal(allParams.getOrDefault("specialPrice_" + itemId, value)); // 특가 가격
+                String newCheck = allParams.get("select_" + itemId);   // 특가 여부
                 
-                adminSvc.updateZoneDetails(itemId, newPrice, newCheck); // 가격 + 특가 여부 업데이트
+                log.info("itemId = {}, newPrice = {}, specialPrice = {}, newCheck={}", itemId, newPrice, specialPrice, newCheck);
+                
+             	// 특가 가격으로 업데이트
+                if ("on".equals(newCheck)) {
+                    adminSvc.updateZoneDetails(itemId, specialPrice, newCheck); // 특가 가격을 사용
+                } else {
+                    adminSvc.updateZoneDetails(itemId, newPrice, newCheck); // 정상 가격을 사용
+                }
             }
         });
         return "redirect:/admin/price/zonesSpecial"; // 해당 페이지로 리다이렉트
@@ -132,7 +139,7 @@ public class SpecialController {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-                String newCheck = allParams.get("select_" + itemId);
+                String newCheck = allParams.getOrDefault("select_" + itemId, "off"); // 기본값 'off' 설정
                 log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
                 
                 adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트

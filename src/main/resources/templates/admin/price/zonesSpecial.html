@@ -74,9 +74,9 @@
                                             <span>원</span>
                                         </div>
                                     </td>
-                                    <td class="item-select col-1">
-                                        <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1} ? 'checked' : null" />
-                                    </td>
+                            <td class="item-select col-1">
+							    <input type="checkbox" th:name="'select_' + ${i.itemId}" th:checked="${i.special == 1}" />
+                            </td>
                                 </tr>
                             </tbody>
                         </table>

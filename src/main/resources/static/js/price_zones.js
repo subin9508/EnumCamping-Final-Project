@@ -3,111 +3,133 @@
  */
 
 
- document.addEventListener('DOMContentLoaded',()=>{
-    
-    
-    const inputs = document.querySelectorAll('form.modifyForm input[type="text"]');
-    const modifiedInputs = new Set(); // 수정된 input 요소들을 저장하는 Set
+document.addEventListener('DOMContentLoaded', () => {
+    const specialPriceInputs = document.querySelectorAll('form.modifyForm input[name^="specialPrice_"]');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="select_"]');
 
-
-    inputs.forEach(input => {
+    // 특가 가격 필드에 변화가 있을 때마다 배경색을 변경하고 체크박스 상태를 동기화
+    specialPriceInputs.forEach(input => {
         input.addEventListener('input', (event) => {
-            //change는// 사용자가 input을 수정한 경우, 포커스 이동을 해야 적용됨
-            // 사용자가 input을 수정하는 즉시 호출됨
-            modifiedInputs.add(event.target);
-            event.target.style.backgroundColor = '#e0f7fa'; // 수정된 요소에 배경색을 추가 (체크용)
+            const itemId = event.target.name.split('_')[1];
+            const checkbox = document.querySelector(`input[name='select_${itemId}']`);
+            event.target.style.backgroundColor = '#e0f7fa';
+            checkbox.checked = true; // 특가 가격이 변경되면 체크박스를 자동으로 체크
         });
     });
-    
+
+    // 체크박스의 상태에 따라 특가 가격 필드의 스타일 변경
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const itemId = this.name.split('_')[1];
+            const specialPriceInput = document.querySelector(`input[name='specialPrice_${itemId}']`);
+            if (this.checked) {
+                specialPriceInput.style.backgroundColor = '#e0f7fa';
+            } else {
+                specialPriceInput.style.backgroundColor = ''; // 원래대로 복원
+            }
+        });
+    });
+
+    // 퍼센트 인상 버튼
     const btnApplyPlus = document.querySelector('button#btnApplyPlus');
     btnApplyPlus.addEventListener('click', () => {
-        let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
-        percent = parseFloat(percent);
+        let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
         if (isNaN(percent)) {
             alert("퍼센트 값을 입력해주세요.");
         } else if (confirm(percent + '%를 인상할까요?')) {
-            console.log(percent+'인상');
-            inputs.forEach(input => {
+            console.log(percent + ' 인상');
+            specialPriceInputs.forEach(input => {
                 let currentValue = parseFloat(input.value);
-                console.log(currentValue);
                 if (!isNaN(currentValue)) {
-                    input.value =  Math.round(currentValue * (1+percent*0.01)); 
-                    input.dispatchEvent(new Event('input')); //없어도 잘 저장되긴 하는데 있으면 바뀐게 보여서 좋음
+                    input.value = Math.round(currentValue * (1 + percent * 0.01));
+                    input.dispatchEvent(new Event('input')); // 변경된 내용을 보여주기 위해 이벤트 트리거
                 }
             });
         }
     });
-        
+
+    // 퍼센트 인하 버튼
     const btnApplyMinus = document.querySelector('button#btnApplyMinus');
-        btnApplyMinus.addEventListener('click', () => {
-            let percent = document.querySelector('input#percent').value.trim(); // 입력된 퍼센트 값 가져오기
-            percent = parseFloat(percent);
-            if (isNaN(percent)) {
-                alert("퍼센트 값을 입력해주세요.");
-            } else if (confirm(percent + '%를 인하할까요?')) {
-                console.log(percent+'인하');
-                inputs.forEach(input => {
-                    let currentValue = parseFloat(input.value);
-                    console.log(currentValue);
-                    if (!isNaN(currentValue)) {
-                        input.value =  Math.round(currentValue * (1-percent*0.01)); 
-                        input.dispatchEvent(new Event('input'));
-                    }
-                });
+    btnApplyMinus.addEventListener('click', () => {
+        let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
+        if (isNaN(percent)) {
+            alert("퍼센트 값을 입력해주세요.");
+        } else if (confirm(percent + '%를 인하할까요?')) {
+            console.log(percent + ' 인하');
+            specialPriceInputs.forEach(input => {
+                let currentValue = parseFloat(input.value);
+                if (!isNaN(currentValue)) {
+                    input.value = Math.round(currentValue * (1 - percent * 0.01));
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+    });
+
+    // 특가 적용 버튼
+    const btnApplyZones = document.querySelector('button#btnApplyZones');
+    btnApplyZones.addEventListener('click', () => {
+		console.log('Apply Zones button clicked'); // 버튼 클릭 이벤트 확인
+		
+        const modifyForm = document.querySelector('form#modifyFormZones');
+		
+		// 폼 제출 전에 체크되지 않은 체크박스에 대한 기본값 설정
+		checkboxes.forEach(checkbox => {
+		    if (!checkbox.checked) {
+		        const hiddenInput = document.createElement('input');
+		        hiddenInput.type = 'hidden';
+		        hiddenInput.name = checkbox.name;
+		        hiddenInput.value = 'off'; // 기본값 설정
+		        modifyForm.appendChild(hiddenInput);
+		    }
+		});
+
+        if (confirm('변경 내용을 저장할까요?')) {
+            modifyForm.submit();
+        }
+    });
+
+    // 모든 체크박스를 체크
+    document.getElementById('btnApplyAllCheck').addEventListener('click', function () {
+        document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function (checkbox) {
+            checkbox.checked = true;
+        });
+    });
+
+    // 모든 체크박스 체크 해제
+    document.getElementById('btnApplyAllUnCheck').addEventListener('click', function () {
+        document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+    });
+
+    // 서버에서 최신 가격 정보를 가져오는 버튼
+    $('#btnApplyCallPrice').on('click', function () {
+        $.ajax({
+            url: '/enumcamping/admin/getLatestPriceWithSpecialZero',
+            type: 'GET',
+            success: function (data) {
+                console.log(data); // 결과 로깅
+                // 필요에 따라 결과를 DOM에 반영
+            },
+            error: function (error) {
+                console.log('Error:', error);
             }
         });
-    
-    
-	const btnApplyZones = document.querySelector('button#btnApplyZones');
-	    btnApplyZones.addEventListener('click', () => {
-	        const modifyForm = document.querySelector('form#modifyFormZones');
-	        if (confirm('변경 내용을 저장할까요?')) {
-	            modifyForm.submit();
-	        }
-	    });
-    
-	});
-	
-	
-	document.getElementById('btnApplyAllCheck').addEventListener('click', function() {
-	    // 'name' 속성이 'select_'로 시작하는 모든 체크박스를 찾아서 반복문으로 처리
-	    document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function(checkbox) {
-	        checkbox.checked = true; // 체크박스를 선택
-	    });
-	});
-	
-	document.getElementById('btnApplyAllUnCheck').addEventListener('click', function() {
-	    // 'name' 속성이 'select_'로 시작하는 모든 체크박스를 찾아서 반복문으로 처리
-	    document.querySelectorAll('input[type="checkbox"][name^="select_"]').forEach(function(checkbox) {
-	        checkbox.checked = false; // 체크박스의 선택을 해제
-	    });
-	});
-	
-	
-	$('#btnApplyCallPrice').on('click', function() {
-	    $.ajax({
-	        url: '/enumcamping/admin/getLatestPriceWithSpecialZero',
-	        type: 'GET',
-	        success: function(data) {
-	            console.log(data); // 결과 로깅
-	            // 필요에 따라 결과를 DOM에 반영
-	        },
-	        error: function(error) {
-	            console.log('Error:', error);
-	        }
-	    });
-	});
-	
-	    // 체크박스 상태를 저장하고 복원하기 위한 로직
-	    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="select_"]');
-	    checkboxes.forEach(function (checkbox) {
-	        const storedState = localStorage.getItem(checkbox.name);
-	        checkbox.checked = storedState === "true"; // 로컬 스토리지에서 체크 상태 복원
+    });
 
-	        checkbox.addEventListener('change', function () {
-	            localStorage.setItem(checkbox.name, checkbox.checked); // 체크박스 상태를 로컬 스토리지에 저장
-	        });
-	    });
+    // 체크박스 상태를 로컬 스토리지에 저장 및 복원
+    checkboxes.forEach(function (checkbox) {
+        const storedState = localStorage.getItem(checkbox.name);
+        checkbox.checked = storedState === "true";
+
+        checkbox.addEventListener('change', function () {
+            localStorage.setItem(checkbox.name, checkbox.checked);
+        });
+    });
+});
+
+
 	  
 /*    
 const modifyForm = document.querySelector('#modifyForm');
