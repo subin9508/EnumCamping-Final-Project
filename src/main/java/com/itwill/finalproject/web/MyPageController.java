@@ -816,5 +816,28 @@ public class MyPageController {
 			return ResponseEntity.badRequest().body("환불 요청 처리 중 오류가 발생했습니다.");
 		}
 	}
+	
+	@GetMapping("/reservation_update_successed/{resId}")
+    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
+    	
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName();
+    	
+//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
+        Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+
+        List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
+        
+        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
+        
+        
+//        String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
+        model.addAttribute("res_id", resId); // 모델에 resId 추가
+        model.addAttribute("resMaster", resMaster);
+        model.addAttribute("resDetail", resDetail);
+        model.addAttribute("userId", userId); // 모델에 userId 추가
+
+        return "reservation/successed"; // succeeded.html 파일을 가리킴
+    }
 
 }
