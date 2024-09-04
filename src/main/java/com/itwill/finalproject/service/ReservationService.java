@@ -19,6 +19,7 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationItemUpdateDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
+import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
@@ -339,5 +340,13 @@ public class ReservationService {
         // Repository에서 JPQL을 실행하는 메서드를 호출합니다.
         reservationMasterRepo.updateResModifiedTime(resId);
     }
+    
+    // 예약 ID로 체크인 날짜를 가져오는 메서드
+    public LocalDate getCheckinDateByResId(Integer resId) throws ServiceException {
+        return reservationMasterRepo.findById(resId)
+                .map(ReservationMaster::getResCheckIn) // ReservationMaster에서 체크인 날짜 가져오기
+                .orElseThrow(() -> new ServiceException("예약 정보를 찾을 수 없습니다. resId: " + resId));
+    }
+    
 
 }
