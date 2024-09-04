@@ -332,5 +332,12 @@ public class ReservationService {
 					new RefundRequestDto(changeResult.getResId(), Math.abs(changeResult.getPriceDifference())));
 		}
 	}
+	
+
+    @Transactional // 트랜잭션을 관리합니다. 메서드가 DB 변경을 포함하기 때문에 필요합니다.
+    public void updateResModifiedTime(Integer resId) {
+        // Repository에서 JPQL을 실행하는 메서드를 호출합니다.
+        reservationMasterRepo.updateResModifiedTime(resId);
+    }
 
 }

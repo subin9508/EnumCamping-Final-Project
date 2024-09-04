@@ -24,15 +24,15 @@
                         <br />
                         <form>
                             <div class="d-flex">
-                                <div class="mt-2 flex-fill me-2">
+                                <div class="mt-2 flex-fill me-2" th:if="${resMaster != null}">
                                     <label  class="form-label" style="font-size: 21px; font-weight: bold;" for="resCheckIn">체크인 날짜</label>
-                                    <input class="form-control" type="text"  id="resCheckIn"  th:value="${resMaster.isPresent()} ? ${resMaster.get().resCheckIn} : 'No Check-In Date'" readonly />
+                                    <input class="form-control" type="text"  id="resCheckIn"  th:value="${resMaster.resCheckIn}" readonly />
                                 </div>
-                                <br /> <br />~
+                                <br /> <br />
                                 <div></div>
                                 <div class="mt-2 flex-fill ms-2">
                                     <label for="resCheckOut" class="form-label" style="font-size: 21px; font-weight: bold;">체크아웃 날짜</label>
-                                    <input id="resCheckOut" class="form-control" type="text"  th:value="${resMaster.isPresent()} ? ${resMaster.get().resCheckOut} : 'No Check-out Date'" readonly />
+                                    <input id="resCheckOut" class="form-control" type="text"  th:value="${resMaster != null} ? ${resMaster.resCheckOut} : 'No Check-out Date'" readonly />
                                 </div>
                             </div>
                             <br />
@@ -44,11 +44,11 @@
 									<div th:if="${item.itemId >= 1 && item.itemId <= 20}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemId >= 1 && item.itemId <= 4 ? 'A-1' : 
-                           item.itemId >= 5 && item.itemId <= 8 ? 'A-2' :
-                           item.itemId >= 9 && item.itemId <= 12 ? 'B-1' :
-                           item.itemId >= 13 && item.itemId <= 16 ? 'B-2' :
-                           item.itemId >= 17 && item.itemId <= 20 ? 'C' : ''}" />
+											th:value="${item.itemId >= 1 && item.itemId <= 4 ? '달' : 
+                           item.itemId >= 5 && item.itemId <= 8 ? '별' :
+                           item.itemId >= 9 && item.itemId <= 12 ? '노을' :
+                           item.itemId >= 13 && item.itemId <= 16 ? '바람' :
+                           item.itemId >= 17 && item.itemId <= 20 ? '하늘' : ''}" />
 									</div>
 								</div>
 							</div>
@@ -80,14 +80,14 @@
 
                             <div class="mt-2">
                                 <label for="resTotalPrice" class="form-label" style="font-size: 21px; font-weight: bold;">총 가격</label>
-                                <input id="resTotalPrice" class="form-control" type="text" th:value="${resMaster.isPresent()} ? ${resMaster.get().resTotalPrice + '원'} : 0" readonly />
+                                <input id="resTotalPrice" class="form-control" type="text" th:value="${resMaster != null} ? ${resMaster.resTotalPrice + '원'} : 0" readonly />
                             </div>
                             <br />
 
 							<div class="mt-2">
 								<label for="resCreatedTime" class="form-label"
 									style="font-size: 21px; font-weight: bold;">예약 일시</label> 
-								<input id="resCreatedTime" class="form-control" type="text"  th:value="${resMaster.get().resCreatedTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss'))}" readonly />
+								<input id="resCreatedTime" class="form-control" type="text"  th:value="${resMaster != null && resMaster.resCreatedTime != null ? resMaster.resCreatedTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')) : 'Not Available'}" readonly />
 							</div>
 						</form>
                     </div>

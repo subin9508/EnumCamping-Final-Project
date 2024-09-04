@@ -2,7 +2,6 @@ package com.itwill.finalproject.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import lombok.Data;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,25 +11,20 @@ import jakarta.persistence.Column;
 
 @Data
 @Entity
-@IdClass(ClaimDetailId.class)
 public class ClaimDetail {
 
     // 첫 번째 PK: cd_id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // 자동 증가 설정
-    private int cdId;
+    private Integer cdId;
 
     // 두 번째 PK: clm_id
-    @Id
+    @Column(nullable = false)
     private int clmId;
 
     // 세 번째 PK: res_id
-    @Id
+    @Column(nullable = false)
     private int resId;
-
-    // 네 번째 PK: rd_id
-    @Id
-    private int rdId;
 
     private int itemId;
     private int itemQuantity;
@@ -43,11 +37,10 @@ public class ClaimDetail {
     public ClaimDetail() {}
 
     // 모든 필드를 포함한 생성자
-    public ClaimDetail(int cdId, int clmId, int resId, int rdId, int itemId, int itemQuantity, int itemAmount, String itemChange) {
+    public ClaimDetail(int cdId, int clmId, int resId, int itemId, int itemQuantity, int itemAmount, String itemChange) {
         this.cdId = cdId;
         this.clmId = clmId;
         this.resId = resId;
-        this.rdId = rdId;
         this.itemId = itemId;
         this.itemQuantity = itemQuantity;
         this.itemAmount = itemAmount;
