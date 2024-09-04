@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,25 +264,29 @@ public class PaymentsController {
         
         
         try {
-            String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
+        	
+        	// 예약 ID로부터 체크인 날짜를 가져옴
+            Integer resId = paymentsService.getResIdByPayId(payId);
+            LocalDate checkinDate = reservationService.getCheckinDateByResId(resId); // 체크인 날짜 조회
+        	
+            // 환불 처리
+            String result = paymentsService.cancelPartialPayment(payId, cancelAmount, checkinDate);
             if ("Partial payment cancellation successful".equals(result)) {
-                // 부분 취소가 성공했을 때 예약 상태를 업데이트
-            	Integer resId = paymentsService.getResIdByPayId(payId);
+                // 예약 상태를 업데이트
                 if (resId != null) {
-                	paymentsService.updateReservationState(resId, 3); // 3은 부분취소
+                    paymentsService.updateReservationState(resId, 3); // 3은 부분 취소
                     log.info("Reservation state updated to cancelled for resId: {}", resId);
-                    return ResponseEntity.ok(result);
+                    return ResponseEntity.ok("부분 취소가 성공적으로 처리되었습니다. 예약 상태도 업데이트되었습니다.");
                 } else {
-                    log.warn("Partial payment cancelled but reservation state update failed for payId: {}", payId);
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation successful but reservation update failed");
+                    log.warn("부분 취소는 성공했으나 예약 상태 업데이트에 실패했습니다. payId: {}", payId);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 성공, 예약 상태 업데이트 실패");
                 }
             } else {
-                log.warn("Partial cancellation failed: {}", result);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }
         } catch (ServiceException e) {
-            log.error("Error during partial payment cancellation for payId: {}", payId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation failed: " + e.getMessage());
+            log.error("부분 취소 중 에러 발생: payId: {}", payId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 처리 실패: " + e.getMessage());
         }
     }
 
