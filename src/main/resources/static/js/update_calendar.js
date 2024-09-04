@@ -346,7 +346,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     
         axios.get(uri)
             .then(response => {
-                const price = (response.data) 
+                const price = (response.data.price) 
                 document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
     
             })
