@@ -121,6 +121,11 @@ public class ReservationController {
             return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 //        	return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
         } else { //특가
+        	
+        	//오늘이랑 비교를 해야하는데???
+//        	start가 아니라 end를 비교해야할거같음
+        	
+        	
         	log.info("아이템 {}는 특가 기간입니다.",itemId);
         	// 특가 예약 조회
         	ReservationMaster rm = reservationSvc.findSpecial(userId, startDate);
