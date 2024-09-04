@@ -1,18 +1,41 @@
 package com.itwill.finalproject.domain;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class ClaimMasterId implements Serializable {
-
-    private int clmId;
-    private int resId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer clmId;
+	
+    private Integer resId;
 
     // 기본 생성자
     public ClaimMasterId() {}
 
-    public ClaimMasterId(int clmId, int resId) {
+    public ClaimMasterId(Integer clmId, Integer resId) {
         this.clmId = clmId;
+        this.resId = resId;
+    }
+
+    // Getters and Setters
+    public Integer getClmId() {
+        return clmId;
+    }
+
+    public void setClmId(Integer clmId) {
+        this.clmId = clmId;
+    }
+
+    public Integer getResId() {
+        return resId;
+    }
+
+    public void setResId(Integer resId) {
         this.resId = resId;
     }
 
@@ -22,7 +45,7 @@ public class ClaimMasterId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClaimMasterId that = (ClaimMasterId) o;
-        return clmId == that.clmId && resId == that.resId;
+        return Objects.equals(clmId, that.clmId) && Objects.equals(resId, that.resId);
     }
 
     @Override

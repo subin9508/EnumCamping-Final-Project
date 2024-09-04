@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log("부분 환불 성공: ", response.data);
                     alert('부분환불이 성공적으로 처리되었습니다.');
                     // 결제 취소 후 예약 내역 페이지로 리다이렉트
-                    window.location.href = `/enumcamping/mypage/reservation_list?userId=${encodeURIComponent(userId)}`; 
+                    window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`; // 결제 성공 페이지로 이동
                     //window.location.reload(); // 페이지를 새로고침하여 최신 상태를 반영.
                 })
                 .catch(error => {
