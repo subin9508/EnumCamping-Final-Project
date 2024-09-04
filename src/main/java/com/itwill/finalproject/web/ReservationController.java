@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,13 +86,13 @@ public class ReservationController {
 	}
 	
 	@GetMapping("/itemPrice/{itemId}") 
-	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId) {
+	public ResponseEntity<Map<String, Object>> getItemPrice(@PathVariable("itemId") int itemId) {
 		log.debug("GET: itemPrice with itemId {}", itemId);
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String userId = authentication.getName();
 	    log.debug("Authenticated userId: {}", userId);
-	    
+	    Map<String, Object> responseMap = new HashMap<>();
 	    
 		//특가기간인지 먼저 체크
 		//아이템에 적힌 특가 기간이랑 현재 날짜를 비교하면되려나?
@@ -114,7 +115,11 @@ public class ReservationController {
         if(startDate == null) {
         	log.info("아이템 {}는 특가 기간이 아닙니다.",itemId);
         	Integer itemPrice =itemsHistoryRepo.findNewestNormalPrice(itemId);
-        	return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+        	log.info("정상 price = {}",itemPrice);
+        	responseMap.put("price", itemPrice);
+            responseMap.put("special", 0); // 정상가이므로 특가 아님
+            return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
+//        	return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
         } else { //특가
         	log.info("아이템 {}는 특가 기간입니다.",itemId);
         	// 특가 예약 조회
@@ -128,11 +133,14 @@ public class ReservationController {
         		if (itemPrice == -1) { //item 테이블에서 special이 0인 경우
         			itemPrice = reservationSvc.readSpecialPrice(itemId); //그 경우는 history에서 특가 찾기
         		}
-        		log.debug("item price: {}", itemPrice);
+        		log.debug("item price 특가: {}", itemPrice);
         		
         		//에러잡는용도
         		if (itemPrice != null) {
-        			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+        			responseMap.put("price", itemPrice);
+                    responseMap.put("special", 1); // 특가 적용
+                    return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
+//        			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
         		} else {
         			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         		}
@@ -150,9 +158,11 @@ public class ReservationController {
         		log.debug("Computed targetDateTime by subtracting one second: {}", targetDateTime);
         		
         		Integer itemPrice = reservationSvc.getItemPriceByAdjustedEndDate(itemId, targetDateTime);
-        		log.debug("Fetched item price for adjusted end date: {}", itemPrice);
-        		
-        		return itemPrice != null ? new ResponseEntity<>(itemPrice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        		log.info("정상 price = {}",itemPrice);
+            	responseMap.put("price", itemPrice);
+                responseMap.put("special", 0); // 정상가이므로 특가 아님
+                return itemPrice != null ? new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        		return itemPrice != null ? new ResponseEntity<>(itemPrice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         	}
         }
 	}
@@ -231,6 +241,7 @@ public class ReservationController {
 		    reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
 		    reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
 		    reservationMaster.setRequirement((String)reservationMasterMap.get("requirement"));
+		    reservationMaster.setResSpecial((Integer)reservationMasterMap.get("resSpecial"));
 		    
 		    // ReservationDetailDto 객체 리스트 생성 및 설정
 		    List<ReservationDetailDto> reservationDetails = new ArrayList<>();
