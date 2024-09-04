@@ -227,8 +227,11 @@ public class PaymentsController {
     public ResponseEntity<?> getPartialPaymentInfo(@PathVariable("resId") Integer resId) {
         try {
         	Payments payment = paymentsService.getPaymentByResId(resId); // 결제 정보를 조회
-
+        	
+        	log.debug("payment={}", payment);
+        	
             if (payment == null) {
+            	log.error("Payment not found for resId: {}", resId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("결제 정보를 찾을 수 없습니다.");
             }
 
@@ -243,9 +246,7 @@ public class PaymentsController {
             log.error("Error retrieving payment information for resId: {}", resId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 예외 발생 시 에러 메시지를 반환
         }
-    }
-
-    
+    }   
     
     
     @ResponseBody

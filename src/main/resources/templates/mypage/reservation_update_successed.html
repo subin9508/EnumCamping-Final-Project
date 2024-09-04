@@ -115,27 +115,6 @@
   
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const paymentResponse = localStorage.getItem('paymentResponse');
-                if (paymentResponse) {
-                    const parsedResponse = JSON.parse(paymentResponse);
-                    console.log('Retrieved Payment Response: ', parsedResponse);
-
-                    document.getElementById('responseDisplay').innerText = JSON.stringify(parsedResponse, null, 2);
-                }
-                
-                
-            });
-
-            // parseResponse 함수 정의 (필요한 경우)
-            function parseResponse(response) {
-                // 필요한 파싱 로직
-                return JSON.parse(response);
-            }
-        </script>
         
      
 </body>
