@@ -17,20 +17,19 @@
                 <!-- 구역 테이블 -->
                 <div class="card" id="zones-table">
                     <div class="container-fluid d-flex justify-content-center" >
-                        <h3><strong>구역 목록</strong></h3>
+                        <h3><strong>구역 목록 (정상 가격)</strong></h3>
                     </div>
                     <br>
-                    
+                    <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                    	<h6>*가격 수정 가능</h6>
+                    </div>
                     
                     <!-- 퍼센트 적용 -->
-                    <div style="display: flex; gap: 15px; justify-content: flex-end;">
+<!--                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
                         <input style="width: 10%;" id="percent" class="form-control" type="number" /><span>%</span>
                         <button class="btn btn-outline-primary" id="btnApplyPlus">인상</button>
-                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button> |
-                        <button class="btn btn-outline-success" id="btnApplyAllCheck">특가 전체선택</button>
-                        <button class="btn btn-outline-secondary" id="btnApplyAllUnCheck">특가 전체해제</button> |
-                        <button class="btn btn-outline-info" id="btnApplyCallPrice">이전가격불러오기</button>
-                    </div>
+                        <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button>
+                    </div> -->
                     
                     
                     <div class=" justify-content-center">
@@ -42,7 +41,6 @@
 									<th>비/성수기</th>
 									<th>평일/주말</th>
 									<th>가격</th>
-									<th>특가 유무</th>
 								</tr>
 							</thead>
                             <tbody>
@@ -58,20 +56,19 @@
 							        </td>
 							        <td class="item-price col-3">
 							            <div style="display: inline-flex; align-items: center; justify-content: center;">
+							            <!-- latestPricesWithSpecialZero[iterStat.index]를 사용하여 최신 가격을 표시 -->
 							                <input class="form-control" type="text" style="width:40%; border: 0; text-align: right;" 
-							                    th:name="'price_' + ${i.itemId}" th:value="${i.itemPrice}" />
+							                    th:name="'price_' + ${i.itemId}" 
+							                    th:value="${i.itemPrice}" />
 							                <span>원</span>
 							            </div>
-							        </td>
-							        <td class="item-select col-1">
-							            <input type="checkbox" th:name="'select_' + ${i.itemId}" />
 							        </td>
 							    </tr>
 							</tbody>
                         </table>
                         <div class="card-footer" style="background-color: white; display: flex; justify-content: flex-end;">
                             <input type="hidden" name="redirectUrl" value="/enumcamping/admin/price/zones/update">
-                            <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용</button>
+                            <button class="btn btn-outline-primary" id="btnApplyZones" type="button">적용 하기</button>
                         </div>
                         </form>
                     </div>
