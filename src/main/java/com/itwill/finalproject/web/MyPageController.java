@@ -846,6 +846,8 @@ public class MyPageController {
         
      // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
         claimService.saveClaim(resMaster, resDetail, resId);
+        // reservationMaster modifiedTime 업데이트
+        reservationSvc.updateResModifiedTime(resId);
         
 //      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가

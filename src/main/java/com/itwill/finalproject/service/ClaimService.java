@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itwill.finalproject.domain.ClaimDetail;
 import com.itwill.finalproject.domain.ClaimMaster;
-import com.itwill.finalproject.domain.ClaimMasterId;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.repository.ClaimDetailRepository;
