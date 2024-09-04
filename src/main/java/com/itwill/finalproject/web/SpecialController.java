@@ -79,25 +79,21 @@ public class SpecialController {
         Map<Integer, Integer> latestPricesWithSpecialZero = specialSvc.getLatestPricesWithSpecialZeroForItems();
         model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
 
-        // 최신 특가 가격 리스트 가져오기
-        List<Integer> latestSpecialPricesList = specialSvc.getLatestSpecialPricesForItems();
-
         // 특가 가격을 아이템 ID와 연결할 수 있는 맵 만들기
-        Map<Integer, Integer> latestSpecialPrices = new HashMap<>();
-        for (int i = 0; i < Math.min(items.size(), latestSpecialPricesList.size()); i++) {
-            latestSpecialPrices.put(items.get(i).getItemId(), latestSpecialPricesList.get(i));
-        }
-
-        // 정상 가격과 특가 가격을 같이 매핑하는 로직
+        Map<Integer, Integer> latestSpecialPrices = specialSvc.getLatestSpecialPricesForItems();
         Map<Integer, Integer> combinedPrices = new HashMap<>();
+
         for (Items item : items) {
             Integer itemId = item.getItemId();
-            if (latestSpecialPrices.containsKey(itemId)) {
-                // 특가가 존재하면 특가 가격을 사용
-                combinedPrices.put(itemId, latestSpecialPrices.get(itemId));
+            Integer specialPrice = latestSpecialPrices.get(itemId);
+            Integer normalPrice = latestPricesWithSpecialZero.getOrDefault(itemId, 0);
+            
+            log.info("Item ID: {}, Special Price: {}, Normal Price: {}", itemId, specialPrice, normalPrice);
+            
+            if (item.getSpecial() == 1 && specialPrice != null) {
+                combinedPrices.put(itemId, specialPrice);
             } else {
-                // 특가가 없으면 정상 가격을 사용
-                combinedPrices.put(itemId, latestPricesWithSpecialZero.getOrDefault(itemId, 0));
+                combinedPrices.put(itemId, normalPrice);
             }
         }
 
@@ -139,6 +135,59 @@ public class SpecialController {
         return "redirect:/admin/price/zonesSpecial"; // 해당 페이지로 리다이렉트
     }
     
+    @PostMapping("/price/itemsSpecial/update")
+    public String updateItems(@RequestParam Map<String, String> allParams) {
+        log.info("updateItems : {}", allParams);
+        allParams.forEach((key, value) -> {
+            try {
+                if (key.startsWith("price_")) {
+                    Integer itemId = Integer.parseInt(key.substring(6));
+                    if (value != null && !value.isEmpty()) {
+                        BigDecimal newPrice = new BigDecimal(value); // 정상 가격
+                        
+                        // 특가 가격에 대한 더 안전한 처리
+                        String specialPriceStr = allParams.getOrDefault("specialPrice_" + itemId, value);
+                        BigDecimal specialPrice = isNumeric(specialPriceStr) ? new BigDecimal(specialPriceStr) : newPrice;
+                        
+                        String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
+                        String newCheck = allParams.getOrDefault("select_" + itemId, "off");   // 특가 여부
+                        
+                        log.info("itemId = {}, newPrice = {}, specialPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, specialPrice, newDesc, newCheck);
+                        
+                        if ("on".equals(newCheck)) {
+                        	specialSvc.updateSpecialZoneDetails(itemId, specialPrice, "on"); // 특가 가격을 사용
+                        } else {
+                        	specialSvc.updateSpecialZoneDetails(itemId, newPrice, "off"); // 정상 가격을 사용
+                        }
+                    } else {
+                        log.warn("Invalid price value for itemId: {}", itemId);
+                    }
+                }
+            } catch (NumberFormatException ex) {
+                log.error("Invalid number format for key: {}, value: {}", key, value, ex);
+            }
+        });
+        return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
+    }
+    
+
+//    @PostMapping("/price/itemsSpecial/update")
+//    public String updateItems(@RequestParam Map<String, String> allParams) {
+//        log.info("updateItems : {}", allParams);
+//        allParams.forEach((key, value) -> {
+//            if (key.startsWith("price_")) {
+//                Integer itemId = Integer.parseInt(key.substring(6));
+//                BigDecimal newPrice = new BigDecimal(value);
+//                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
+//                String newCheck = allParams.getOrDefault("select_" + itemId, "off"); // 기본값 'off' 설정
+//                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
+//                
+//                specialSvc.updateSpecialItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
+//            }
+//        });
+//        return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
+//    }
+
     private boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -150,24 +199,7 @@ public class SpecialController {
         }
         return true;
     }
-
-    @PostMapping("/price/itemsSpecial/update")
-    public String updateItems(@RequestParam Map<String, String> allParams) {
-        log.info("updateItems : {}", allParams);
-        allParams.forEach((key, value) -> {
-            if (key.startsWith("price_")) {
-                Integer itemId = Integer.parseInt(key.substring(6));
-                BigDecimal newPrice = new BigDecimal(value);
-                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-                String newCheck = allParams.getOrDefault("select_" + itemId, "off"); // 기본값 'off' 설정
-                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
-                
-                specialSvc.updateSpecialItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
-            }
-        });
-        return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
-    }
-
+    
     @PostMapping("/updateSpecialAndInsertRecord")
     public ResponseEntity<?> updateSpecialAndInsertRecord(@RequestBody Map<String, Object> payload) {
         try {

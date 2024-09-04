@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 	// 서버에서 최신 가격 정보를 가져오는 버튼
-	document.getElementById('btnApplyCallPrice').addEventListener('click', function () {
+/*	document.getElementById('btnApplyCallPrice').addEventListener('click', function () {
 	    fetch('/enumcamping/admin/getLatestPriceWithSpecialZero')
 	    .then(response => response.json())
 	    .then(data => {
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    .catch(error => {
 	        console.error('Error:', error);
 	    });
-	});
+	});*/
 
 
 // 모든 체크박스를 체크
