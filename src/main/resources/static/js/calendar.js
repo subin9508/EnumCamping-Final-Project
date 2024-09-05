@@ -22,6 +22,9 @@ var finalYear, finalMonth, finalDay, finalItemId, finalSelectedNight;
         
         addAreaRadioEventListeners();
         addNextPageEventListeners();
+        
+        // 페이지 로드 시 특가 기간 확인 함수 호출
+        checkSpecialPeriod();
 });
 
 var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
@@ -689,6 +692,18 @@ function addNextPageEventListeners() {
     }
 }
 
+    // 특가 기간 확인 함수
+function checkSpecialPeriod() {
+    axios.get(`../reservation/checkSpecialPeriod`)
+        .then(response => {
+            if (response.data) {  // 특가 기간이면
+                alert('예약 전 안내드립니다. 현재 "달" 구역 평일 100원 특가 기간이오니 예약시 참고바랍니다 ^^');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking special period:', error);
+        });
+}
     
 
     /**
