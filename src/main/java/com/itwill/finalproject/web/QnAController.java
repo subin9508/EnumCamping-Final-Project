@@ -148,7 +148,7 @@ public class QnAController {
         model.addAttribute("signedInUser", signedInUser);
         model.addAttribute("userRole", isAdmin ? 0 : 1);
 
-        return "/community/qna/modify"; // 수정 페이지로 이동
+        return "community/qna/modify"; // 수정 페이지로 이동
     }
 
     // QnA 게시글 상세 조회
@@ -281,7 +281,7 @@ public class QnAController {
         model.addAttribute("userRole", userRole);
         model.addAttribute("pageNo", pageNo);
 
-        return "/community/qna/details";
+        return "community/qna/details";
     }
     
     

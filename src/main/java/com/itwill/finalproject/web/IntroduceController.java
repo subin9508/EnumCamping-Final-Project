@@ -14,7 +14,7 @@ public class IntroduceController {
 	@GetMapping("/map")
 	public String map() {
 		log.debug("map()");
-		return "/introduce/map";
+		return "introduce/map";
 	
 	}
 	
@@ -22,27 +22,27 @@ public class IntroduceController {
 	public String enumIntro() {
 		log.debug("enumIntro()");
 		
-		return "/introduce/enumIntro";
+		return "introduce/enumIntro";
 	}
 	
 	@GetMapping("/facilityLayout")
 	public String facilityLayout() {
 		log.debug("facilityLayout()");
 		
-		return "/introduce/facilityLayout";
+		return "introduce/facilityLayout";
 	}
 		
 	@GetMapping("/facilities")
 	public String facilities() {
 		log.debug("facilities()");
-		return "/introduce/facilities";
+		return "introduce/facilities";
 	
 	}
 	
 	@GetMapping("/travel")
 	public String travel() {
 		log.debug("travel()");
-		return "/introduce/travel";
+		return "introduce/travel";
 	
 	}
 

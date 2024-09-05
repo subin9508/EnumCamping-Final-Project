@@ -1,29 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
 
-  <link rel="stylesheet" th:href="@{/css/header.css}">
-  <link rel="stylesheet" th:href="@{/css/footer.css}">
-  <link rel="stylesheet" th:href="@{/css/order.css}">
-
+<th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link rel="stylesheet" th:href="@{/css/order.css}">
 </head>
 <body>
-<div class="wrapper">
-  <!-- 상단 메뉴바 -->
-  <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+	<div class="wrapper">
+		<!-- 상단 메뉴바 -->
+		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
-  <div class="footer-main-content">
-
+		<div class="footer-main-content">
 			<main style="width: 70%; margin: 5% auto;">
 				<div class="container">
 					<div class="container-fluid d-flex justify-content-center">
 						<h1>예약 및 주문</h1>
 					</div>
-					<br>
-					<br>
-					
-					
+					<br> <br>
 
 					<div class="form-container">
 						<form class="custom-form">
@@ -34,33 +29,28 @@
 										예약자 정보</td>
 								</tr>
 								<tr>
-								
 									<td colspan="2" style="text-align: center;"><label
 										for="userName" style="font-size: 18px;">이름</label></td>
-
 									<td colspan="5" style="font-size: 18px;" th:text="${user.name}"></td>
 								</tr>
 								<tr>
 									<td colspan="2" style="text-align: center;"><label
-										for="userEmail" style="font-size: 18px;" class="text-left">이메일</label>
-									</td>
+										for="userEmail" style="font-size: 18px;">이메일</label></td>
 									<td colspan="5" style="font-size: 18px;"
 										th:text="${user.userEmail}"></td>
 								</tr>
 								<tr>
 									<td colspan="2" style="text-align: center;"><label
-										for="userPhone" style="font-size: 18px;" class="text-left">휴대폰
-											번호</label></td>
+										for="userPhone" style="font-size: 18px;">휴대폰 번호</label></td>
 									<td colspan="5" style="font-size: 18px;"
 										th:text="${user.userPhone}"></td>
 								</tr>
 							</table>
 						</form>
 					</div>
-					
-					
-					 <input id="userId"
-						name="userId" type="hidden" th:value="${user.userId}">
+
+					<input id="userId" name="userId" type="hidden"
+						th:value="${user.userId}">
 
 					<table class="table">
 						<thead>
@@ -76,28 +66,17 @@
 							</tr>
 						</thead>
 						<tbody id="areaOrder">
-							<tr th:each="item : ${resDetails}"
-								th:if="${item.itemId <= 20}">
+							<tr th:each="item : ${resDetails}" th:if="${item.itemId <= 20}">
 								<td style="font-size: 18px;"
-									th:text="${'캠핑존 ' +
-                            (item.itemId >= 1 && item.itemId <= 4 ? 'A-1' :
-                            item.itemId >= 5 && item.itemId <= 8 ? 'A-2' :
-                            item.itemId >= 9 && item.itemId <= 12 ? 'B-1' :
-                            item.itemId >= 13 && item.itemId <= 16 ? 'B-2' :
-                            item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
+									th:text="${'캠핑존 ' + (item.itemId >= 1 && item.itemId <= 4 ? 'A-1' : item.itemId >= 5 && item.itemId <= 8 ? 'A-2' : item.itemId >= 9 && item.itemId <= 12 ? 'B-1' : item.itemId >= 13 && item.itemId <= 16 ? 'B-2' : item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
 								</td>
 								<td style="font-size: 18px;"
-									th:text="${resMaster.resCheckIn} + ' ~ ' + ${resMaster.resCheckOut} ">
-
-
-								</td>
-								<td style="font-size: 18px;" th:text="${item.itemAmount + '원'}">
-								</td>
+									th:text="${resMaster.resCheckIn} + ' ~ ' + ${resMaster.resCheckOut}"></td>
+								<td style="font-size: 18px;" th:text="${item.itemAmount + '원'}"></td>
 							</tr>
 						</tbody>
 					</table>
-					<br>
-					<br>
+					<br> <br>
 
 					<table class="table">
 						<thead>
@@ -115,8 +94,7 @@
 							</tr>
 						</thead>
 						<tbody id="orderDetails">
-							<tr th:each="rs : ${resDetails}"
-								th:if="${rs.itemId > 20}">
+							<tr th:each="rs : ${resDetails}" th:if="${rs.itemId > 20}">
 								<td th:text="${rs.itemName}"></td>
 								<td class="img-container" style="width: 20%;"><img
 									th:src="@{${rs.itemImg}}" th:alt="${rs.itemName}" class="img"
@@ -124,11 +102,12 @@
 								<td th:text="${rs.itemQuantity}"></td>
 								<td th:text="${rs.itemAmount} + '원'"></td>
 							<tr th:if="${resDetails.?[itemId > 20].isEmpty()}">
-								<td colspan="4" style="text-align: center; font-size: 18px;">
-									선택하신 구매/대여물품이 없습니다.</td>
+								<td colspan="4" style="text-align: center; font-size: 18px;">선택하신
+									구매/대여물품이 없습니다.</td>
 							</tr>
 						</tbody>
 					</table>
+
 					<div class="mt-2">
 						<label for="requirement" class="form-label"
 							style="font-size: 18px;">요청사항</label>
@@ -136,8 +115,7 @@
 							style="font-size: 18px;" readonly
 							th:text="${resMaster.requirement ?: '요청없음'}"></textarea>
 					</div>
-					<br>
-					<br>
+					<br> <br>
 				</div>
 
 				<div class="container">
@@ -178,110 +156,124 @@
 					</div>
 				</div>
 
+				<!-- HTML 부분 수정 -->
 				<div class="container-fluid d-flex justify-content-center mt-3">
 					<h3>
-						총 결제 금액: <span id="totalAmount">0</span>
+						총 결제 금액: <span id="totalAmount" th:text="${newTotalAmount}">0</span>원
 					</h3>
+					<h3>
+						/ 이전 결제 금액: <span id="oldTotalAmount" th:text="${oldTotalAmount}">0</span>원
+					</h3>
+
 				</div>
+
+				<!-- 누락된 필드 추가 -->
+				<input type="hidden" id="newCheckIn"
+					th:value="${resMaster.resCheckIn}"> <input type="hidden"
+					id="newCheckOut" th:value="${resMaster.resCheckOut}">
+				<textarea id="newRequirement" style="display: none;"
+					th:text="${resMaster.requirement}"></textarea>
+
 				<br>
+				<div th:if="${isPositiveAmount}">
 				<div class="container-fluid d-flex justify-content-center mt-3">
-					<input type="hidden" name="resId" id="resId"
-						th:value="${resId}" />
-					<button id="btnPayment" class="btn btn-payment" disabled>결제하기</button>
+					<input type="text" name="resId" id="resId" th:value="${resId}" />
+					<button id="btnPayment" class="btn btn-payment" disabled>추가 결제하기</button>
 				</div>
+				</div>
+				<div th:if="${isNegativeAmount}">
 				<div class="d-flex justify-content-center">
-					<input type="number" name="refundAmount" placeholder="환불 금액을 입력하세요"
-						value="100">
-					<button id="btnPayRefund" class="btn btn-danger">부분환불</button>
+					<input type="hidden" name="resId" id="resId" th:value="${resId}" />
+					<input type="hidden" name="refundAmount" id="refundAmount" readonly>
+					<button id="btnPayRefund" class="btn btn-danger" disabled>부분환불</button>
+				</div>
+				</div>
+				<div th:if="${newTotalAmount == 0}">
+				<div class="d-flex justify-content-center">
+					<button id="btnSuccess" class="btn btn-success" disabled
+						onclick="">예약 변경 완료</button>
+				</div>
 				</div>
 			</main>
 
 			<!-- 푸터 -->
-    <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
-  </div>
+			<th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+		</div>
 
-  <!-- 부트 스트랩 JS -->
-  <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+		<!-- 부트 스트랩 JS -->
+		<th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
 
-  <!-- Weather JS -->
-  <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
-  
+		<!-- Weather JS -->
+		<th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-
-    <!-- payment JS -->
-    <script th:src="@{/js/payments.js}"></script>
-    <!-- paymentRefund JS -->
-    <script th:src="@{/js/paymentRefund.js}"></script>
-
-
- <script>
-                    // 페이지 로딩 시 초기 버튼 상태 설정
-                    document.addEventListener('DOMContentLoaded', function() {
-                        checkAgreements(); // 초기 버튼 상태 설정을 위해 함수 호출
-                    });
-
-                    // 체크 박스 상태 변경 시 호출될 함수
-                    function checkAgreements() {
-                        const agreeCollect = document
-                                .getElementById('agreeCollect').checked;
-                        const agreeProvide = document
-                                .getElementById('agreeProvide').checked;
-
-                        // 모든 체크 박스가 선택되었을 때 버튼 활성화
-                        if (agreeCollect && agreeProvide) {
-                            document.getElementById('btnPayment')
-                                    .removeAttribute('disabled');
-                        } else {
-                            document.getElementById('btnPayment').setAttribute(
-                                    'disabled', 'disabled');
-                        }
-                    }
-
-                    // 체크 박스 상태 변화 감지
-                    document.getElementById('agreeCollect').addEventListener(
-                            'change', checkAgreements);
-                    document.getElementById('agreeProvide').addEventListener(
-                            'change', checkAgreements);
-
-                    // 페이지 로딩 시 주문 상세 항목들의 총 금액 계산하여 표시
-                    document.addEventListener('DOMContentLoaded', function() {
-                        calculateTotalAmount(); // 초기화시 총 금액 계산 함수 호출
-                    });
-
-                    // 총 결제 금액 계산 함수
-		function calculateTotalAmount() {
-			let totalAmount = 0;
-
-			// 각 주문 상세 항목의 금액을 모두 합산
-			const itemAmountElements = document
-					.querySelectorAll('#orderDetails td:nth-child(4)');
-			const areaPriceElements = document
-					.querySelectorAll('#areaOrder td:nth-child(3)'); // 수정된 부분
-
-			itemAmountElements.forEach(function(element) {
-				const amount = parseInt(element.textContent.replace('원', '')
-						.trim(), 10);
-				if (!isNaN(amount))
-					totalAmount += amount;
-			});
-
-			areaPriceElements.forEach(function(element) {
-				const amount = parseInt(element.textContent.replace('원', '')
-						.trim(), 10);
-				if (!isNaN(amount))
-					totalAmount += amount;
-			});
-
-			// 총 결제 금액을 화면에 반영
-			const totalAmountElement = document.getElementById('totalAmount');
-			totalAmountElement.textContent = totalAmount + '원';
-		}
-	</script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<script type="text/javascript"
+			src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript"
+			src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 		
-</body>
+		<!-- paymentRefund JS -->
+		<script th:src="@{/js/paymentRefund.js}"></script>
+
+		<script th:src="@{/js/update_calendar.js}"></script>
+		
+		<script th:src="@{/js/additionalPayment.js}"></script>
+
+		<!-- JavaScript 부분 수정 -->
+		<script>
+		// 페이지 로딩 시 초기 버튼 상태 설정
+		document.addEventListener('DOMContentLoaded', function() {
+		    checkAgreements(); // 초기 버튼 상태 설정을 위해 함수 호출
+		});
+
+		// 체크 박스 상태 변경 시 호출될 함수
+		function checkAgreements() {
+		    const agreeCollect = document.getElementById('agreeCollect').checked;
+		    const agreeProvide = document.getElementById('agreeProvide').checked;
+
+		    // 모든 체크 박스가 선택되었을 때 각각의 버튼 활성화
+		    if (agreeCollect && agreeProvide) {
+		        if (document.getElementById('btnPayment')) {
+		            document.getElementById('btnPayment').removeAttribute('disabled');
+		        }
+		        if (document.getElementById('btnPayRefund')) {
+		            document.getElementById('btnPayRefund').removeAttribute('disabled');
+		        }
+		        if (document.getElementById('btnSuccess')) {
+		            document.getElementById('btnSuccess').removeAttribute('disabled');
+		        }
+		    } else {
+		        if (document.getElementById('btnPayment')) {
+		            document.getElementById('btnPayment').setAttribute('disabled', 'disabled');
+		        }
+		        if (document.getElementById('btnPayRefund')) {
+		            document.getElementById('btnPayRefund').setAttribute('disabled', 'disabled');
+		        }
+		        if (document.getElementById('btnPaySuccess')) {
+		            document.getElementById('btnPaSuccess').setAttribute('disabled', 'disabled');
+		        }
+		    }
+		}
+
+		// 체크 박스 상태 변화 감지
+		document.getElementById('agreeCollect').addEventListener('change', checkAgreements);
+		document.getElementById('agreeProvide').addEventListener('change', checkAgreements);
+		
+		
+			function updateTotalAmount() {
+				let totalAmount = parseInt(document
+						.getElementById('totalAmount').textContent.trim(), 10);
+
+				// 절대값으로 변환
+				totalAmount = Math.abs(totalAmount);
+
+				document.getElementById('refundAmount').value = totalAmount;
+			}
+
+			document.addEventListener('DOMContentLoaded', updateTotalAmount);
+			
+			
+		</script>
+	</body>
 </html>

@@ -14,17 +14,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw error; // 오류를 다시 던져서 호출자에게 전달
             });
     };
+	
+	
+	
+	    // 체크인 날짜와 현재 날짜를 비교하여 환불 비율을 결정하는 함수
+    	const getRefundRate = (checkinDateStr) => {
+        const checkinDate = new Date(checkinDateStr); // 체크인 날짜를 Date 객체로 변환
+        const today = new Date(); // 현재 날짜
 
+        // 체크인 날짜와 현재 날짜의 차이 계산 (밀리초 -> 일수로 변환)
+        const timeDifference = checkinDate.getTime() - today.getTime();
+        const daysBeforeCheckin = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+        // 환불 비율 결정
+        if (daysBeforeCheckin >= 7) {
+            return { rate: 1.0, message: '예약 금액의 100%가 환불됩니다.' };
+        } else if (daysBeforeCheckin >= 4 && daysBeforeCheckin <= 6) {
+            return { rate: 0.5, message: '체크인 날짜 4일 전 ~ 6일 전이므로 예약 금액의 50%만 환불됩니다.' };
+        } else {
+            return { rate: 0.0, message: '체크인 날짜가 임박하여 환불이 불가능합니다.' };
+        }
+    };
 	
     // 결제 취소 버튼 이벤트 리스너
-    btnPayCancel?.addEventListener('click', (e) => {
+     btnPayCancel?.addEventListener('click', (e) => {
 		e.preventDefault(); // 기본 버튼 동작(폼 제출 등)을 방지
 		
         const resId = document.querySelector("input[name=resId]").value; // 예약 ID 입력값 가져오기
         const userId = document.querySelector("input[name=userId]").value; // userId 입력값 가져오기
+		const checkinDate = document.querySelector("input#resCheckIn").value; // 체크인 날짜 가져오기
 
+	
         if (!resId) {
             alert("예약 아이디가 필요합니다."); // 예약 ID 없는 경우 알림
+            return;
+        }
+        
+        
+        // 체크인 날짜에 따른 환불 비율 및 메시지 결정
+        const { rate, message } = getRefundRate(checkinDate);
+
+        // 환불 비율이 0인 경우 알림만 띄우고 취소 처리 중지
+        if (rate === 0.0) {
+            alert(message);
             return;
         }
 	
@@ -38,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 			
 			// 결제 취소 확인 팝업
-            if (!confirm("정말로 결제를 취소하시겠습니까?")) {
+            if (!confirm(message + " 계속하시겠습니까?")) {
                 console.log("결제 취소 확인 단계에서 사용자가 취소함");
                 return; // 사용자가 취소를 확인하지 않은 경우, 함수 실행을 중지
             }
@@ -62,5 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('결제 ID 조회 중 오류가 발생했습니다: ' + error.message);
         });
     });
+		
    
 });

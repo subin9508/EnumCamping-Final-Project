@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,6 +170,7 @@ public class PaymentsController {
     @GetMapping("/mypage/reservation_details/getPayId/{resId}")
     public ResponseEntity<?> getPayId(@PathVariable("resId") Integer resId) {
         try {
+        	log.debug("resId={}", resId);
             Integer payId = paymentsService.getPayIdByResId(resId); // 결제 ID를 조회
             return ResponseEntity.ok(payId); // 조회된 결제 ID를 반환
         } catch (ServiceException e) {
@@ -225,8 +227,11 @@ public class PaymentsController {
     public ResponseEntity<?> getPartialPaymentInfo(@PathVariable("resId") Integer resId) {
         try {
         	Payments payment = paymentsService.getPaymentByResId(resId); // 결제 정보를 조회
-
+        	
+        	log.debug("payment={}", payment);
+        	
             if (payment == null) {
+            	log.error("Payment not found for resId: {}", resId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("결제 정보를 찾을 수 없습니다.");
             }
 
@@ -241,9 +246,7 @@ public class PaymentsController {
             log.error("Error retrieving payment information for resId: {}", resId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 예외 발생 시 에러 메시지를 반환
         }
-    }
-
-    
+    }   
     
     
     @ResponseBody
@@ -262,27 +265,71 @@ public class PaymentsController {
         
         
         try {
-            String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
+        	
+        	// 예약 ID로부터 체크인 날짜를 가져옴
+            Integer resId = paymentsService.getResIdByPayId(payId);
+            LocalDate checkinDate = reservationService.getCheckinDateByResId(resId); // 체크인 날짜 조회
+        	
+            // 환불 처리
+            String result = paymentsService.cancelPartialPayment(payId, cancelAmount, checkinDate);
             if ("Partial payment cancellation successful".equals(result)) {
-                // 부분 취소가 성공했을 때 예약 상태를 업데이트
-                boolean updateSuccess = reservationService.updateReservationState(payId, 3);
-                if (updateSuccess) {
-                    log.info("Partial payment cancelled and reservation state updated successfully for payId: {}", payId);
-                    return ResponseEntity.ok("Partial payment cancellation and reservation update successful");
+                // 예약 상태를 업데이트
+                if (resId != null) {
+                    paymentsService.updateReservationState(resId, 3); // 3은 부분 취소
+                    log.info("Reservation state updated to cancelled for resId: {}", resId);
+                    return ResponseEntity.ok("부분 취소가 성공적으로 처리되었습니다. 예약 상태도 업데이트되었습니다.");
                 } else {
-                    log.warn("Partial payment cancelled but reservation state update failed for payId: {}", payId);
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation successful but reservation update failed");
+                    log.warn("부분 취소는 성공했으나 예약 상태 업데이트에 실패했습니다. payId: {}", payId);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 성공, 예약 상태 업데이트 실패");
                 }
             } else {
-                log.warn("Partial cancellation failed: {}", result);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }
         } catch (ServiceException e) {
-            log.error("Error during partial payment cancellation for payId: {}", payId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation failed: " + e.getMessage());
+            log.error("부분 취소 중 에러 발생: payId: {}", payId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 처리 실패: " + e.getMessage());
         }
     }
 
+    
+  //------------------- 추가 결제 ----------------------
+    @ResponseBody
+    @PostMapping("/additional_payment/verifyIamport/{imp_uid}")
+    public ResponseEntity<?> additionalPaymentByImpUid(
+            @PathVariable(value = "imp_uid") String imp_uid,
+            @RequestParam("resId") Integer resId
+    ) throws IamportResponseException, IOException, ControllerException {
+        log.trace("paymentByImpUid({}, {}) invoked.", imp_uid, resId);
+
+        try {
+            // 아임포트 API를 통해 결제 정보를 조회
+            Payment payment = this.api.paymentByImpUid(imp_uid).getResponse();
+            log.debug("Received payment status: {}", payment.getStatus());
+
+            if ("paid".equals(payment.getStatus())) {
+                // 결제 상태가 1인 경우에도 추가 결제를 허용하도록 수정
+                String result = this.paymentsService.saveAdditionalPayment(payment, resId);
+                log.info("Additional payment saved successfully: {}", result);
+                
+                // 예약 상태는 이미 1이므로 추가 업데이트는 생략할 수 있음
+                return ResponseEntity.ok(Map.of(
+                        "status", payment.getStatus(),
+                        "merchant_uid", payment.getMerchantUid(),
+                        "payment", payment
+                    ));
+            } else if ("failed".equals(payment.getStatus())) { // 결제가 실패한 경우
+                return ResponseEntity.badRequest().body("결제 실패: " + payment.getFailReason());
+            } else { // 알 수 없는 결제 상태인 경우
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알 수 없는 결제 상태");
+            }
+        } catch (IamportResponseException | IOException e) { // 예외 처리
+            log.error("결제 검증 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 검증 실패: " + e.getMessage());
+        } catch (ServiceException e) {
+            log.error("결제 정보 저장 중 오류 발생", e);
+            throw new ControllerException(e); // 예외를 다시 던져서 처리
+        }
+    }
 
     
     //------------------- 내 예약 목록 조회 ----------------------

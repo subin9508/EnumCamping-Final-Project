@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" th:href="@{/css/introduce.css}">
@@ -11,11 +11,11 @@
 </head>
 <body>
     <div class="wrapper">
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
         
         <div class="content">
             <!--  사이드바 -->
-            <th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
+            <th:block th:replace="~{layout/fragments :: intro-sidebar}"></th:block>
         
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="content-1 text-left mt-5">
@@ -55,15 +55,15 @@
             </main>
         </div>
         <!-- 푸터 -->
-        <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+        <th:block th:replace="~{layout/fragments :: footer}"></th:block>
     </div>
 
     <!-- jQuery 추가 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 부트 스트랩 JS -->
-    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
     <!-- Weather JS -->
-    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
     <!-- 슬라이더 동작을 위한 JavaScript -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{/layout/fragments :: documentHeader}"></th:block>
+    <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
 
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
@@ -17,9 +17,9 @@
         <th:block th:with="pageTitle='ENUM CAMPING'"></th:block>
         
         <!-- 헤더 포함 -->
-        <th:block th:replace="~{/layout/fragments :: header}"></th:block>
+        <th:block th:replace="~{layout/fragments :: header}"></th:block>
         <!--  사이드바 -->
-        <th:block th:replace="~{/layout/fragments :: intro-sidebar}"></th:block>
+        <th:block th:replace="~{layout/fragments :: intro-sidebar}"></th:block>
 
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content-1 text-left mt-5">
@@ -58,14 +58,14 @@
         
         <!-- 푸터 포함 -->
         <div class="footer-main-content">
-            <th:block th:replace="~{/layout/fragments :: footer}"></th:block>
+            <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         </div>
     </div>
     
     <!-- 부트 스트랩 JS -->
-    <th:block th:replace="~{/layout/fragments :: bootstrapJS}"></th:block>
+    <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
     <!-- Weather JS -->
-    <th:block th:replace="~{/layout/fragments :: weatherJS}"></th:block>
+    <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>

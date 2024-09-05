@@ -321,6 +321,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         }
     }
     
+    
+    
     // 구역 가격 업데이트
     function findPrice(year, month, day,areaIndex) {
         const selectedDateObj = new Date(year, month - 1, day);
@@ -344,8 +346,11 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
     
         axios.get(uri)
             .then(response => {
-                const price = (response.data) 
+                const price = (response.data.price) 
+                //특가 여부 기록
+                const special = response.data.special
                 document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
+                document.getElementById(`special_${areaIndex}`).value =special;
     
             })
             .catch(error => {
@@ -494,7 +499,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         axios.get(uri)
             .then(response => {
                 //console.log(response.data);
-                const price = (response.data) * selectedNight;
+                const price = (response.data.price) * selectedNight;
                 document.getElementById('price-value').innerText = price;
                 updateTotalAllItems();
                 
@@ -619,13 +624,16 @@ function updateQuantity(itemId, itemPrice) {
         resCheckIn: date,
         resCheckOut: calculateCheckOutDate(date, finalSelectedNight),
         resTotalPrice: parseInt(document.getElementById('totalAllItems').innerText.replace(/[^0-9]/g, '')),
-        requirement: requirement || '요청없음'
+        requirement: requirement || '요청없음',
+        resSpecial: parseInt(document.getElementById(`special_${finalItemId}`).value)
+        //TODO
+        //특가면 resSpecial = 1
     };
     console.log('reservationMaster: {}', reservationMaster);
 
     const mainReservationDetail = {
         itemId: finalItemId,
-        itemQuantity: 1,
+        itemQuantity: 1, 
         itemAmount: document.getElementById('price-value').innerText
     };
 

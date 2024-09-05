@@ -23,11 +23,15 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -59,6 +63,9 @@ public class ReservationMaster {
 	
 	@Builder.Default
 	private Integer resState = 0;  // JPA 엔티티에 기본값 설정
+	
+	@Builder.Default
+	private Integer resSpecial= 0;
 	
 	@OneToMany(mappedBy = "reservationMaster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationDetail> reservationDetails;

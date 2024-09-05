@@ -1,7 +1,9 @@
 package com.itwill.finalproject.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,8 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationItemUpdateDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
+import com.itwill.finalproject.exception.ServiceException;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.ReservationDetailRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
@@ -32,9 +36,33 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationService {
 	private final ReservationMasterRepository reservationMasterRepo;
 	private final ItemsRepository itemsRepo;
+	private final ItemsHistoryRepository itemsHistoryRepo;
 	private final ReservationDetailRepository reservationDetailRepo;
 	private final UserRepository userRepo;
 
+	//특가 예매 여부 체크
+	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
+		return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime);
+	}
+//	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
+//	    return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime)
+//	                                .orElseThrow(() -> new NoSuchElementException("특가 예매가 존재하지 않습니다."));
+//	}
+	
+	
+    // 가장 최근의 start_date를 조회하는 메소드
+    public LocalDateTime getLatestStartDate(int itemId) {
+    	log.info("itemId = {}",itemId);
+    	log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
+        return itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId);
+    }
+
+    // 특정 조건에 따른 item_price를 조회하는 메소드
+    public Integer getItemPriceByAdjustedEndDate(int itemId, LocalDateTime date) {
+    	log.info("id={}, date={}",itemId,date);
+        return itemsHistoryRepo.findItemPriceByItemIdAndAdjustedEndDate(itemId, date);
+    }
+	
 	// 특정 날짜에 예약된 지역을 읽기
 	public List<Integer> readReservedAreas(LocalDate date) {
 	    LocalDate minusCheckIn = date.minusDays(1);
@@ -62,7 +90,15 @@ public class ReservationService {
 	
 	// 특정 아이템의 가격 조회
 	public Integer readItemPrice(int itemId) {
+		if (itemsRepo.selectItemPrice(itemId) == null) {
+			return -1; //item 테이블에서 special이 0인 경우
+		}
 		return itemsRepo.selectItemPrice(itemId);
+	}
+	
+	
+	public Integer readSpecialPrice(int itemId) {
+		return itemsHistoryRepo.findSpecialPrice(itemId);
 	}
 	
 
@@ -303,5 +339,20 @@ public class ReservationService {
 					new RefundRequestDto(changeResult.getResId(), Math.abs(changeResult.getPriceDifference())));
 		}
 	}
+	
+
+    @Transactional // 트랜잭션을 관리합니다. 메서드가 DB 변경을 포함하기 때문에 필요합니다.
+    public void updateResModifiedTime(Integer resId) {
+        // Repository에서 JPQL을 실행하는 메서드를 호출합니다.
+        reservationMasterRepo.updateResModifiedTime(resId);
+    }
+    
+    // 예약 ID로 체크인 날짜를 가져오는 메서드
+    public LocalDate getCheckinDateByResId(Integer resId) throws ServiceException {
+        return reservationMasterRepo.findById(resId)
+                .map(ReservationMaster::getResCheckIn) // ReservationMaster에서 체크인 날짜 가져오기
+                .orElseThrow(() -> new ServiceException("예약 정보를 찾을 수 없습니다. resId: " + resId));
+    }
+    
 
 }

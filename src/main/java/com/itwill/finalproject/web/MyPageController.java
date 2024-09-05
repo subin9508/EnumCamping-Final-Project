@@ -1,5 +1,6 @@
 package com.itwill.finalproject.web;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -50,14 +51,22 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
+import com.itwill.finalproject.exception.ControllerException;
+import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.repository.UserRepository;
+import com.itwill.finalproject.service.ClaimService;
 import com.itwill.finalproject.service.MyPageService;
+import com.itwill.finalproject.service.PaymentsService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.Payment;
+import com.itwill.finalproject.exception.ServiceException;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +77,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/mypage")
 public class MyPageController {
+	
+	// 아임포트 API와 상호작용하기 위한 클라이언트 객체를 정의
+    private IamportClient api;
 
 	private final MyPageService myPageService;
 	private final UserService userService;
@@ -77,6 +89,8 @@ public class MyPageController {
 	private final ReservationService reservationSvc;
 	private final ProfileRepository profileRepo;
 	private final UserRepository userRepo;
+	private final PaymentsService paymentsService;
+	private final ClaimService claimService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -319,7 +333,7 @@ public class MyPageController {
 		model.addAttribute("signedInUser", signedInUser);
 		model.addAttribute("userRole", isAdmin ? 0 : 1);
 
-		return "/mypage/qna_modify"; // 수정 페이지로 이동
+		return "mypage/qna_modify"; // 수정 페이지로 이동
 	}
 
 	// QnA 게시글 상세 조회
@@ -447,7 +461,7 @@ public class MyPageController {
 		model.addAttribute("userRole", userRole);
 		model.addAttribute("pageNo", pageNo);
 
-		return "/mypage/qna_details";
+		return "mypage/qna_details";
 	}
 
 //    @PreAuthorize("hasRole('USER')")
@@ -484,7 +498,7 @@ public class MyPageController {
 		List<ReservationMaster> list = myPageService.readAllReservation(userId);
 		log.debug("list=({})", list);
 		model.addAttribute("reservations", list);
-		return "/mypage/reservation_list"; // 반환할 뷰의 이름
+		return "mypage/reservation_list"; // 반환할 뷰의 이름
 	}
 
 	// 마이페이지 - 예약 상세
@@ -509,7 +523,7 @@ public class MyPageController {
 		model.addAttribute("resMaster", resMaster.orElse(null));
 		model.addAttribute("resDetail", resDetail);
 
-		return "/mypage/reservation_details";
+		return "mypage/reservation_details";
 	}
 
 	// 마이페이지 - 예약 변경
@@ -525,9 +539,30 @@ public class MyPageController {
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
+		
+		// itemId가 20 이하인 itemAmount의 총합 계산
+	    int totalAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() <= 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	 // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalItemAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() > 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalAllAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() >= 1)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    
 		model.addAttribute("items", items);
 		model.addAttribute("resMaster", resMaster.get());
 		model.addAttribute("resDetail", resDetail);
+		model.addAttribute("totalAmount", totalAmount); // 계산된 금액을 모델에 추가
+		log.info("Total Amount: {}", totalAmount);
+		model.addAttribute("totalItemAmount", totalItemAmount);
+		model.addAttribute("totalAllAmount", totalAllAmount);
 	}
 
 	@GetMapping("/reservation_update/{date}")
@@ -560,19 +595,41 @@ public class MyPageController {
 		User user = userService.read(userId);
 		Integer userKey = user.getUserKey();
 		log.info("user={}", user);
-		ReservationMaster reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		List<ReservationDetailDto> reservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
+
+		// 세션에서 데이터 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    List<ReservationDetailDto> resDetails = (List<ReservationDetailDto>) session.getAttribute("resDetails");
 
 		model.addAttribute("user", user);
-		model.addAttribute("resMaster", reservationMaster);
-		model.addAttribute("resDetails", reservationDetails);
-		model.addAttribute("resId", resId);
-
-		return "/mypage/reservation_order";
+		model.addAttribute("resMaster", resMaster);
+	    model.addAttribute("resDetails", resDetails);
+	    model.addAttribute("resId", resId);
+	    log.debug("resId={}", resId);
+	    
+	    // 이전 예약 내역 가져오기
+	    Integer oldTotalAmount = (Integer)session.getAttribute("oldTotalAmount");
+	    
+	    log.debug("oldTotalAmount={}", oldTotalAmount);
+	    
+	    model.addAttribute("oldTotalAmount", oldTotalAmount);
+	    log.debug("model-oldTotalAmount={}", model.getAttribute("oldTotalAmount"));
+	    
+	    // 총 결제금액(차액) 가져오기
+	    Integer newTotalAmount = (Integer)session.getAttribute("newTotalAmount");
+	    model.addAttribute("newTotalAmount", newTotalAmount);
+	    
+	    // isPositiveAmount, isNegativeAmount 플래그 설정
+	    boolean isPositiveAmount = (boolean)session.getAttribute("isPositiveAmount");
+	    model.addAttribute("isPositiveAmount", isPositiveAmount);
+	    
+	    boolean isNegativeAmount = (boolean)session.getAttribute("isNegativeAmount");
+	    model.addAttribute("isNegativeAmount", isNegativeAmount);
+	    
+		return "mypage/reservation_order";
 	}
 
 	@PostMapping("/reservation_order")
-	public String getReservationList(@RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+	public String getReservationList(@RequestParam(name = "resId") int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
 
 		log.debug("reservationList(requestData={})", requestData);
 
@@ -582,177 +639,172 @@ public class MyPageController {
 		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
 		// 인증된 사용자에 대한 처리
 //	    String userId = (String) session.getAttribute("signedInUser");
+	    
+	    log.debug("userId={}", userId);
+	    User user = userService.read(userId);
+	    model.addAttribute("user", user);
+	    log.debug("user={}", user);
+	    // User 객체에서 userKey 가져오기
+	    Integer userKey = user.getUserKey();
+	    log.debug("userKey={}", userKey);
+	    model.addAttribute("userKey", userKey);
+	    
+	    // 기존 예약 상세 정보와 마스터 정보 삭제
+	    try {
+	        log.debug("Attempting to delete reservation master for userId: {}", userId);
+	        reservationSvc.deleteReservationMaster(userKey);
+	        log.info("Successfully deleted reservation master for userId: {}", userId);
+	    } catch (Exception e) {
+	        log.error("Failed to delete reservation master for userId: {}", userId, e);
+	        return "reservation/order";
+	    }	    
+	   
+	    // requestData에서 reservationMaster와 reservationDetail 추출
+	    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
+	    List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData.get("reservationDetail");
 
-		log.debug("userId={}", userId);
-		User user = userService.read(userId);
-		model.addAttribute("user", user);
-		log.debug("user={}", user);
-		// User 객체에서 userKey 가져오기
-		Integer userKey = user.getUserKey();
-		log.debug("userKey={}", userKey);
-		model.addAttribute("userKey", userKey);
+	    log.debug("reservationMasterMap={}", reservationMasterMap);
+	    log.debug("reservationDetailMap={}", reservationDetailList);
+	    
+	    if (reservationMasterMap == null || reservationDetailList == null) {
+	        log.error("reservationMasterMap or reservationDetailList is null");
+	        return "reservation/order";
+	    }
+	    
+	    // ReservationMaster 객체 생성 및 설정
+	    ReservationMaster reservationMaster = new ReservationMaster();
+	    reservationMaster.setUserById(userId, userRepo);
+	    reservationMaster.setResCheckIn(LocalDate.parse((String) reservationMasterMap.get("resCheckIn")));
+	    reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
+	    reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
+	    reservationMaster.setRequirement((String)reservationMasterMap.get("requirement"));
+	    
+	    // 이전 예약 내역 가져오기
+	    ReservationMaster oldReservationMaster = myPageService.readReservationMaster(resId);
+	    
+	    // 이전 예약 내역 resTotalPrice
+	    Integer oldTotalAmount = oldReservationMaster.getResTotalPrice();
+	   
+	    log.debug("oldTotalAmount={}", oldTotalAmount);
+	    
+	    session.setAttribute("oldTotalAmount", oldTotalAmount);
+	    
+	    model.addAttribute("oldTotalAmount", oldTotalAmount);
+	    log.debug("model-oldTotalAmount={}", model.getAttribute("oldTotalAmount"));
+	    
+	    // 차액 계산
+	    Integer newTotalAmount = (reservationMaster.getResTotalPrice()) - oldTotalAmount;
+	    
+	    log.debug("newTotalAmount={}", newTotalAmount);
+	    
+	    session.setAttribute("newTotalAmount", newTotalAmount);
+	    model.addAttribute("newTotalAmount", newTotalAmount);
+	    
+	    // isPositiveAmount, isNegativeAmount 플래그 설정
+	    boolean isPositiveAmount = newTotalAmount > 0;
+	    session.setAttribute("isPositiveAmount", isPositiveAmount);
+	    model.addAttribute("isPositiveAmount", isPositiveAmount);
+	    
+	    boolean isNegativeAmount = newTotalAmount < 0;
+	    session.setAttribute("isNegativeAmount", isNegativeAmount);
+	    model.addAttribute("isNegativeAmount", isNegativeAmount);
+	    
+	    session.setAttribute("resMaster", reservationMaster);
+	    // ReservationDetailDto 객체 리스트 생성 및 설정
+	    List<ReservationDetailDto> reservationDetails = new ArrayList<>();
 
-		// 기존 예약 상세 정보와 마스터 정보 삭제
-		try {
-			log.debug("Attempting to delete reservation master for userId: {}", userId);
-			reservationSvc.deleteReservationMaster(userKey);
-			log.info("Successfully deleted reservation master for userId: {}", userId);
-		} catch (Exception e) {
-			log.error("Failed to delete reservation master for userId: {}", userId, e);
-			return "/reservation/order";
-		}
+	    for (Map<String, Object> detailMap : reservationDetailList) {
+	        Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString()) : null;
+	        Integer itemQuantity = (detailMap.get("itemQuantity") != null) ? Integer.parseInt(detailMap.get("itemQuantity").toString()) : null;
+	        Integer itemAmount = (detailMap.get("itemAmount") != null) ? Integer.parseInt(detailMap.get("itemAmount").toString()) : null;
+//	        List<Items> items = reservationSvc.getAllItems();
+	        
+	        log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
 
-		// requestData에서 reservationMaster와 reservationDetail 추출
-		Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
-		List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData
-				.get("reservationDetail");
+	        if (itemId == null || itemAmount == null || itemQuantity == null) {
+	            log.error("itemId, itemAmount, or itemQuantity is null");
+	            return "reservation/order";
+	        }
+	        
+	     // Items 리스트에서 itemId에 해당하는 Items 객체를 찾음
+	        Items matchingItem = null;
+	        List<Items> items = reservationSvc.getAllItems(); // 이 부분에서 모든 Items 가져오기
+	        for (Items item : items) {
+	            if (item.getItemId().equals(itemId)) {
+	                matchingItem = item;
+	                break;
+	            }
+	        }
 
-		log.debug("reservationMasterMap={}", reservationMasterMap);
-		log.debug("reservationDetailMap={}", reservationDetailList);
-
-		if (reservationMasterMap == null || reservationDetailList == null) {
-			log.error("reservationMasterMap or reservationDetailList is null");
-			return "reservation/order";
-		}
-
-		// ReservationMaster 객체 생성 및 설정
-		ReservationMaster reservationMaster = new ReservationMaster();
-		reservationMaster.setUserById(userId, userRepo);
-		reservationMaster.setResCheckIn(LocalDate.parse((String) reservationMasterMap.get("resCheckIn")));
-		reservationMaster.setResCheckOut(LocalDate.parse((String) reservationMasterMap.get("resCheckOut")));
-		reservationMaster.setResTotalPrice((Integer) reservationMasterMap.get("resTotalPrice"));
-		reservationMaster.setRequirement((String) reservationMasterMap.get("requirement"));
-
-		// ReservationDetailDto 객체 리스트 생성 및 설정
-		List<ReservationDetailDto> reservationDetails = new ArrayList<>();
-
-		for (Map<String, Object> detailMap : reservationDetailList) {
-			Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString())
-					: null;
-			Integer itemQuantity = (detailMap.get("itemQuantity") != null)
-					? Integer.parseInt(detailMap.get("itemQuantity").toString())
-					: null;
-			Integer itemAmount = (detailMap.get("itemAmount") != null)
-					? Integer.parseInt(detailMap.get("itemAmount").toString())
-					: null;
-
-			log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
-
-			if (itemId == null || itemAmount == null || itemQuantity == null) {
-				log.error("itemId, itemAmount, or itemQuantity is null");
-				return "/reservation/order";
-			}
-
-			ReservationDetailDto reservationDetail = new ReservationDetailDto();
-			reservationDetail.setItemId(itemId);
-			reservationDetail.setItemQuantity(itemQuantity);
-			reservationDetail.setItemAmount(itemAmount);
-			reservationDetails.add(reservationDetail);
-		}
-
-		// 서비스 레이어를 통해 예약 생성
-		log.debug("Before calling makeReservation method");
-		reservationSvc.makeReservation(reservationMaster, reservationDetails);
-		log.debug("After calling makeReservation method");
-
-		// 예약정보 가져오기
-		reservationMaster = reservationSvc.getReservationMasterByUserKey(userKey);
-		// 예약 상세정보 가져오기
-		List<ReservationDetailDto> updatedReservationDetails = reservationSvc.getReservationDetailsByUserId(userKey);
-
-		// 모델에 데이터 추가
-		model.addAttribute("reservationMaster", reservationMaster);
-		model.addAttribute("reservationDetails", updatedReservationDetails);
-
-		return "/mypage/reservation_order";
-
+	        ReservationDetailDto reservationDetail = new ReservationDetailDto();
+	        reservationDetail.setItemId(itemId);
+	        reservationDetail.setItemQuantity(itemQuantity);
+	        reservationDetail.setItemAmount(itemAmount);
+	        
+	        if (matchingItem != null) {
+	            reservationDetail.setItemName(matchingItem.getItemName());
+	            reservationDetail.setItemImg(matchingItem.getItemImg());
+	        } else {
+	            log.error("No matching item found for itemId={}", itemId);
+	        }
+	        
+	        reservationDetails.add(reservationDetail);
+	    }
+	    
+	    session.setAttribute("resDetails", reservationDetails);
+	    
+	    // 데이터가 세션에 저장된 후, 세션에서 데이터를 가져오는 로그 추가
+	    log.debug("Session resMaster={}", session.getAttribute("resMaster"));
+	    log.debug("Session resDetails={}", session.getAttribute("resDetails"));
+	    
+	    // 세션에서 데이터 가져와서 모델에 추가
+	    model.addAttribute("resMaster", session.getAttribute("resMaster"));
+	    model.addAttribute("resDetails", session.getAttribute("resDetails"));
+	    
+	    log.debug("Model resMaster={}", model.getAttribute("resMaster"));
+	    log.debug("Model resDetails={}", model.getAttribute("resDetails"));
+	    
+	    return "mypage/reservation_order";
 	}
 
-	// 예약 변경 페이지 로드
-	@GetMapping("/reservation_update/{resId}")
-	public String reservationUpdateForm(@PathVariable int resId, Model model) {
-		log.info("reservationUpdateForm for resId: {}", resId);
 
-		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
-		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
-		List<Items> items = reservationSvc.getAllItems();
+	@GetMapping("/reservation_update_successed/{resId}")
+    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
+    	
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName();
+    	
+//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
+        ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+        
+        if (resMaster == null) {
+            // resMaster가 없을 경우에 대한 처리 로직 추가
+            model.addAttribute("error", "Reservation data not found in session");
+            return "errorPage"; // 에러 페이지로 리다이렉트하거나 에러 메시지를 표시하는 페이지로 이동
+        }
+        
+        // resMaster에 resId가 null로 설정되어 있으면, PathVariable에서 받은 resId를 설정
+        if (resMaster.getResId() == null) {
+            resMaster.setResId(resId);
+        }
+        
+        List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");        
+        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
+        log.debug("session.resDetail={}", session.getAttribute("resDetails"));        
 
-		if (!resMaster.isPresent()) {
-			return "error/reservation-not-found";
-		}
+        
+     // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
+        claimService.saveClaim(resMaster, resDetail, resId);
+        // reservationMaster modifiedTime 업데이트
+        reservationSvc.updateResModifiedTime(resId);
+        
+//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
+        model.addAttribute("res_id", resId); // 모델에 resId 추가
+        model.addAttribute("resMaster", resMaster);
+        model.addAttribute("resDetail", resDetail);
+        model.addAttribute("userId", userId); // 모델에 userId 추가
 
-		model.addAttribute("resMaster", resMaster.get());
-		model.addAttribute("resDetail", resDetail);
-		model.addAttribute("items", items);
-
-		return "/mypage/reservation_update_form";
-	}
-
-	@PostMapping("/reservation_update")
-	public String processReservationUpdate(@RequestBody ReservationUpdateDto updateDto, Model model) {
-		log.info("Processing reservation update: {}", updateDto);
-
-		ReservationChangeResultDto changeResult = reservationSvc.updateReservation(updateDto);
-
-		model.addAttribute("changeResult", changeResult);
-
-		return "mypage/reservation_update_confirmation";
-	}
-
-	@GetMapping("/reservation_update_payment/{resId}")
-	public String reservationUpdatePayment(@PathVariable int resId, Model model) {
-		log.info("Reservation update payment for resId: {}", resId);
-
-		ReservationChangeResultDto changeResult = reservationSvc.getReservationChangeResult(resId);
-
-		model.addAttribute("changeResult", changeResult);
-		model.addAttribute("resMaster", changeResult.getUpdatedReservation());
-		model.addAttribute("user", changeResult.getUser());
-		model.addAttribute("reservationDetails", changeResult.getUpdatedReservationDetails());
-
-		return "mypage/reservation_update_payment";
-	}
-
-	@PostMapping("/complete_reservation_update")
-	@ResponseBody
-	public ResponseEntity<?> completeReservationUpdate(@RequestBody ReservationUpdateDto updateDto) {
-		log.info("Completing reservation update: {}", updateDto);
-
-		try {
-			ReservationChangeResultDto result = reservationSvc.finalizeReservationUpdate(updateDto);
-			return ResponseEntity.ok(result);
-		} catch (Exception e) {
-			log.error("Error completing reservation update", e);
-			return ResponseEntity.badRequest().body("예약 변경 처리 중 오류가 발생했습니다.");
-		}
-	}
-
-	@PostMapping("/additional_payment")
-	@ResponseBody
-	public ResponseEntity<?> processAdditionalPayment(@RequestBody AdditionalPaymentDto paymentDto) {
-		log.info("Processing additional payment: {}", paymentDto);
-
-		boolean paymentSuccess = reservationSvc.processAdditionalPayment(paymentDto);
-
-		if (paymentSuccess) {
-			return ResponseEntity.ok().body("추가 결제가 성공적으로 처리되었습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("추가 결제 처리 중 오류가 발생했습니다.");
-		}
-	}
-
-	@PostMapping("/refund_request")
-	@ResponseBody
-	public ResponseEntity<?> processRefundRequest(@RequestBody RefundRequestDto refundDto) {
-		log.info("Processing refund request: {}", refundDto);
-
-		boolean refundRequestSuccess = reservationSvc.processRefundRequest(refundDto);
-
-		if (refundRequestSuccess) {
-			return ResponseEntity.ok().body("환불 요청이 성공적으로 처리되었습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("환불 요청 처리 중 오류가 발생했습니다.");
-		}
-	}
+        return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
+    }
 
 }

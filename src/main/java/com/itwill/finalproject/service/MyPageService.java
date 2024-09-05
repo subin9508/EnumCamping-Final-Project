@@ -78,6 +78,13 @@ public class MyPageService {
         return resDetails;
     }
     
+    public ReservationMaster readReservationMaster(Integer resId) {
+        log.info("Finding reservation details for resvationMaster: {}", resId);
+        ReservationMaster resMaster = reservationMasterRepo.findByResId(resId);
+        log.info("Found ReservationDetails: {}", resMaster);
+        return resMaster;
+    }
+    
     
     public ReservationMasterDto getReservationMasterDto(Integer resId) {
         ReservationMaster master = reservationMasterRepo.findById(resId)

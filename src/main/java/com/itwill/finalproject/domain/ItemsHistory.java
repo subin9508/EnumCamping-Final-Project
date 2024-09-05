@@ -1,6 +1,7 @@
 package com.itwill.finalproject.domain;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,10 +25,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name="ITEMSHISTORY")
+@Table(name="itemshistory")
 public class ItemsHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
+    (name = "id")
     private Integer id;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +38,7 @@ public class ItemsHistory {
     private Items items;
     
     @Basic(optional = false)
+    @Column(name = "item_price")
     private Integer itemPrice;
 
     private LocalDateTime startDate;

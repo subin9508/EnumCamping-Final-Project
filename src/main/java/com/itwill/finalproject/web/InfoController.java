@@ -13,37 +13,37 @@ public class InfoController {
 	
 		@GetMapping("/")
 		public String showinfo() {
-			return "/info/infoTime";
+			return "info/infoTime";
 		}
 		
 		@GetMapping("/infoTime")
 		public String showinfoTime() {
-			return "/info/infoTime"; // info/infoTime.jsp 뷰 이름
+			return "info/infoTime"; // info/infoTime.jsp 뷰 이름
 		}
 		
 		@GetMapping("/infoRefound")
 		public String showinfoRefound() {
-			return "/info/infoRefound"; // info/infoRefund.jsp 뷰 이름
+			return "info/infoRefound"; // info/infoRefund.jsp 뷰 이름
 
 		}
 		
 	    @GetMapping("/infoBooking")
 	    public String showBooking() {
-	        return "/info/infoBooking"; // info/infoBooking.jsp 뷰 이름
+	        return "info/infoBooking"; // info/infoBooking.jsp 뷰 이름
 	    }
 
 	    @GetMapping("/infoRules")
 	    public String showRules() {
-	        return "/info/infoRules"; // info/infoRules.jsp 뷰 이름
+	        return "info/infoRules"; // info/infoRules.jsp 뷰 이름
 	    }
 
 	    @GetMapping("/infoSale")
 	    public String showSale() {
-	        return "/info/infoSale"; // info/infoSale.jsp 뷰 이름
+	        return "info/infoSale"; // info/infoSale.jsp 뷰 이름
 	    }
 
 	    @GetMapping("/infoRental")
 	    public String showRental() {
-	        return "/info/infoRental"; // info/infoRental.jsp 뷰 이름
+	        return "info/infoRental"; // info/infoRental.jsp 뷰 이름
 	    }
 	}
