@@ -711,7 +711,7 @@ function checkSpecialPeriod() {
     axios.get(`../reservation/checkSpecialPeriod`)
         .then(response => {
             if (response.data) {  // 특가 기간이면
-                alert('예약 전 안내드립니다. 현재 "달" 구역 평일 100원 특가 기간이오니 예약시 참고바랍니다 ^^');
+                alert('예약 전 안내드립니다. 현재 구역 및 아이템 모두 " 20% " 할인 특가 진행 중입니다. 예약시 참고바랍니다 ^^♡');
             }
         })
         .catch(error => {
