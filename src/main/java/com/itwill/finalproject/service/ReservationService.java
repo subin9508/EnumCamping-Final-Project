@@ -3,6 +3,7 @@ package com.itwill.finalproject.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,9 +41,14 @@ public class ReservationService {
 	private final UserRepository userRepo;
 
 	//특가 예매 여부 체크
+//	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
+//		return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime);
+//	}
 	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
-		return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime);
+	    return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime)
+	                                .orElseThrow(() -> new NoSuchElementException("특가 예매가 존재하지 않습니다."));
 	}
+	
 	
     // 가장 최근의 start_date를 조회하는 메소드
     public LocalDateTime getLatestStartDate(int itemId) {
