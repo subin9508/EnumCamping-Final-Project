@@ -539,9 +539,30 @@ public class MyPageController {
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
+		
+		// itemId가 20 이하인 itemAmount의 총합 계산
+	    int totalAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() <= 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	 // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalItemAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() > 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalAllAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() >= 1)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    
 		model.addAttribute("items", items);
 		model.addAttribute("resMaster", resMaster.get());
 		model.addAttribute("resDetail", resDetail);
+		model.addAttribute("totalAmount", totalAmount); // 계산된 금액을 모델에 추가
+		log.info("Total Amount: {}", totalAmount);
+		model.addAttribute("totalItemAmount", totalItemAmount);
+		model.addAttribute("totalAllAmount", totalAllAmount);
 	}
 
 	@GetMapping("/reservation_update/{date}")

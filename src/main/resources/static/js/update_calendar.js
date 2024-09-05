@@ -269,8 +269,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         }
         
         // 가격 정보 지움
-        const priceValue = document.getElementById('price-value');
-        priceValue.innerText = '';
+//        const priceValue = document.getElementById('price-value');
+//        priceValue.innerText = '';
         
     }
     
@@ -376,8 +376,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                     });
                     
                     // 가격 정보 지움
-                    const priceValue = document.getElementById('price-value');
-                    priceValue.innerText = '';
+//                    const priceValue = document.getElementById('price-value');
+//                    priceValue.innerText = '';
                     
                     // 두 가지 조건이 모두 만족되었는지 확인하여 함수 호출
                     if (selectedDate && selectedArea) {
