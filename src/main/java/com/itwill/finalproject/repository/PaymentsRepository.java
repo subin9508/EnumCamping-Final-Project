@@ -39,6 +39,13 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     @Query("SELECT p.payStatus FROM Payments p WHERE p.payId = :payId")
     String getPayStatus(@Param("payId") Integer payId);
     
+    // resID와 payState paid 조건 기반으로 가장 최신의 payID 조회
+//    @Query("SELECT p FROM Payments p WHERE p.resId = :resId AND p.payStatus = 'paid' ORDER BY p.payId DESC")
+//    Optional<Payments> findMostRecentPaidPaymentByResId(@Param("resId") Integer resId);
+    
+    // 가장 최신의 결제 정보를 조회하는 메서드
+    Optional<Payments> findTopByResIdAndPayStatusOrderByPayIdDesc(Integer resId, String payStatus);
+    
     // imp_uid로 결제 정보 조회하여 결제에 연결된 예약 ID 반환 (웹훅시 사용)
     // @Query("SELECT p.resId FROM Payment p WHERE p.impUid = :impUid")
     // Integer findResIdByImpUid(@Param("impUid") String impUid);
