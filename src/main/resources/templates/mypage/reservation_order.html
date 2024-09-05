@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div class="wrapper">
-		<!-- 상단 메뉴바 -->
+		<!-- 상단 메뉴바 a-->
 		<th:block th:replace="~{/layout/fragments :: header}"></th:block>
 
 		<div class="footer-main-content">
@@ -68,7 +68,12 @@
 						<tbody id="areaOrder">
 							<tr th:each="item : ${resDetails}" th:if="${item.itemId <= 20}">
 								<td style="font-size: 18px;"
-									th:text="${'캠핑존 ' + (item.itemId >= 1 && item.itemId <= 4 ? 'A-1' : item.itemId >= 5 && item.itemId <= 8 ? 'A-2' : item.itemId >= 9 && item.itemId <= 12 ? 'B-1' : item.itemId >= 13 && item.itemId <= 16 ? 'B-2' : item.itemId >= 17 && item.itemId <= 20 ? 'C' : '')}">
+									th:text="${
+                            (item.itemId >= 1 && item.itemId <= 4 ? '달' :
+                            item.itemId >= 5 && item.itemId <= 8 ? '별' :
+                            item.itemId >= 9 && item.itemId <= 12 ? '노을':
+                            item.itemId >= 13 && item.itemId <= 16 ? '바람' :
+                            item.itemId >= 17 && item.itemId <= 20 ? '하늘' : '')	}">
 								</td>
 								<td style="font-size: 18px;"
 									th:text="${resMaster.resCheckIn} + ' ~ ' + ${resMaster.resCheckOut}"></td>
