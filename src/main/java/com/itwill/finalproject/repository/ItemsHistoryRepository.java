@@ -26,6 +26,10 @@ public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Inte
     // 특정 itemId에 대한 모든 ItemsHistory 항목을 조회
     List<ItemsHistory> findByItems_ItemId(Integer itemId);
     
+    // 특가 기간 확인하기 
+    @Query("SELECT i.startDate FROM ItemsHistory i WHERE i.special = 1 AND i.startDate <= :now ORDER BY i.startDate DESC LIMIT 1")
+    LocalDateTime findLatestSpecialStartDate(@Param("now") LocalDateTime now);
+    
     // 특정 itemId에 대해 시작 날짜가 가장 최신인 항목을 Optional로 조회
     Optional<ItemsHistory> findTopByItems_ItemIdOrderByStartDateDesc(Integer itemId);
     
