@@ -1,7 +1,8 @@
 package com.itwill.finalproject.web;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,6 @@ import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
-import com.itwill.finalproject.dto.AdditionalPaymentDto;
 import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
@@ -51,8 +51,6 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
-import com.itwill.finalproject.exception.ControllerException;
-import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.repository.ProfileRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ClaimService;
@@ -64,9 +62,6 @@ import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
-import com.siot.IamportRestClient.exception.IamportResponseException;
-import com.siot.IamportRestClient.response.Payment;
-import com.itwill.finalproject.exception.ServiceException;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -527,15 +522,48 @@ public class MyPageController {
 	}
 
 	// 마이페이지 - 예약 변경
+	// 처음에 가져오는 페이지 
 	@GetMapping("/reservation_update")
 	public void reservationUpdateCalendar(@RequestParam(name = "resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
-		List<Items> items = reservationSvc.getAllItems();
+		
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
 		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 		log.info("resMaster={}", resMaster);
 		log.info("resDetail={}", resDetail);
+		
+		
+	    //현재 시간 체크
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String dateNow = now.format(formatter);
+		log.debug("dateNow = {}",dateNow);
+		
+		
+		
+		int special = resMaster.orElseThrow().getResSpecial();
+		if (special == 1) {
+			//reservation controller 참고
+			//구역 찾고, 특가 end 날짜 찾아서 특가 기간 내인지 아닌지 체크
+			int itemId = 0;
+			for (ReservationDetailDto rd : resDetail) {
+				if (rd.getItemId()<=20) {
+					itemId=rd.getItemId();
+				}
+			}
+			//특가기간인지 체크
+			
+			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 enddate>오늘 이면 아직 특가 기간인것!
+			
+		} else { //special = 0
+			//걍 정상가보여주면 됨
+			//history 이용 등, res controller 이용
+		}
+		
 
+		// 이걸 바꿔야함
+		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
+		List<Items> items = reservationSvc.getAllItems();
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}

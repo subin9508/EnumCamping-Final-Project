@@ -27,4 +27,7 @@ public interface SpecialRepository extends JpaRepository<Special, Integer> {
     int updateEndDateByItemId(@Param("itemId") Integer itemId, 
                                @Param("endDate") LocalDateTime endDate, 
                                @Param("defaultEndDate") LocalDateTime defaultEndDate);
+    
+    
+    //itemId랑 res_date로 구역 특가 여부 체크하기
 }

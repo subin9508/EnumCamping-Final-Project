@@ -38,6 +38,9 @@
 											id="resCheckOut" class="form-control" type="text"
 											th:value="${resMaster.resCheckOut}" readonly>
 									</div>
+									<div class="hidden">
+										<input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
+									</div>
 								</div>
 							</div>
 
@@ -47,27 +50,32 @@
 									<th:block th:if="${1 <= item.itemId && item.itemId <= 4}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'"
+											th:data-item-id="${item.itemId}">
 									</th:block>
 									<th:block th:if="${5 <= item.itemId && item.itemId <= 8}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'"
+											th:data-item-id="${item.itemId}">
 									</th:block>
 									<th:block th:if="${9 <= item.itemId && item.itemId <= 12}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'"
+											th:data-item-id="${item.itemId}">
 									</th:block>
 									<th:block th:if="${13 <= item.itemId && item.itemId <= 16}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'"
+											th:data-item-id="${item.itemId}">
 									</th:block>
 									<th:block th:if="${17 <= item.itemId && item.itemId <= 20}">
 										<input readonly class="form-control" type="text"
 											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'"
+											th:data-item-id="${item.itemId}">
 									</th:block>
 								</th:block>
 							</div>
@@ -127,10 +135,10 @@
 
 					<div class="card-footer"
 						style="background-color: white; display: flex;">
-						<button id="btnPayCancel" class="btn btn-danger">예약취소</button>
+						<button id="btnPayCancel" class="btn btn-danger" th:if="${resMaster.resState == 1}">예약취소</button>
 						<a class="btn btn-success" th:if="${resMaster.resState == 1 and canModify}"
 							th:href="@{/mypage/reservation_update(resId=${resMaster.resId})}"
-							style="margin-left: auto;">예약변경</a>
+							style="margin-left: auto;"id="changeBtn">예약변경</a>
 					</div>
 				</div>
 			</main>
@@ -146,8 +154,20 @@
 	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-
 	<script th:src="@{/js/payment.js}"></script>
 	<script th:src="@{/js/paymentCancel.js}"></script>
+	
+	<script type="text/javascript">
+	const changeBtn = document.querySelector('a#changeBtn');
+	const resSpecial = document.querySelector('input#resSpecial');
+	changeBtn.addEventListener('click', ()=>{
+		if (resSpecial == 1){
+			confirm('특가 예약 건입니다.');
+		}else {
+			confirm('일반가 예약 건입니다.');			
+		}
+	});
+	</script>
+	
 </body>
 </html>
