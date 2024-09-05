@@ -311,6 +311,9 @@ public class PaymentsController {
                 String result = this.paymentsService.saveAdditionalPayment(payment, resId);
                 log.info("Additional payment saved successfully: {}", result);
                 
+                // 추가 결제가 성공했으므로 예약 상태를 3으로 업데이트 (부분취소)
+                this.paymentsService.updateReservationState(resId, 3); // 3은 부분취소 상태
+                
                 // 예약 상태는 이미 1이므로 추가 업데이트는 생략할 수 있음
                 return ResponseEntity.ok(Map.of(
                         "status", payment.getStatus(),
