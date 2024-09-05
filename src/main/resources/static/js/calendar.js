@@ -329,8 +329,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
     
         // 성수기 기간 설정
-        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
-        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+        const startPeakSeason = new Date(year, 9, 1); // 10월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
+        const endPeakSeason = new Date(year, 9, 31); // 10월 31일
     
         // 성수기 여부 결정
         const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
