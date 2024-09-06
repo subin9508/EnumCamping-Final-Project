@@ -69,5 +69,7 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 			+ "SET rm.resModifiedTime = CURRENT_TIMESTAMP "
 			+ "where rm.resId = :resId")
 	int updateResModifiedTime(@Param("resId") Integer resId);
+	
+	
 
 }

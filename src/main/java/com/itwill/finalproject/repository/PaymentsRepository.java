@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.dto.PaymentsDto;
+
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,6 +40,14 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     // 결제 ID를 통해 payStatus 조회하는 메서드
     @Query("SELECT p.payStatus FROM Payments p WHERE p.payId = :payId")
     String getPayStatus(@Param("payId") Integer payId);
+    
+    // 예약 ID로 결제 내역을 조회하고 가장 최신의 결제를 반환
+    @Query("SELECT p FROM Payments p WHERE p.resId = :resId ORDER BY p.payDate DESC")
+    Optional<Payments> findLatestPaymentByResId(@Param("resId") Integer resId);
+    
+    // 특정 예약(resId)에 대한 결제 내역을 결제 날짜(PayDate) 기준으로 내림차순으로 정렬하여 가져오는 메서드
+    List<Payments> findByResIdOrderByPayDateDesc(Integer resId);
+    
     
     // imp_uid로 결제 정보 조회하여 결제에 연결된 예약 ID 반환 (웹훅시 사용)
     // @Query("SELECT p.resId FROM Payment p WHERE p.impUid = :impUid")
