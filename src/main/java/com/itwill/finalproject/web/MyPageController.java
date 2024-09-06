@@ -831,6 +831,7 @@ public class MyPageController {
 	}
 
 
+
 	@GetMapping("/reservation_update_successed/{resId}")
 	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
 	    
@@ -866,23 +867,6 @@ public class MyPageController {
         ReservationMaster reservationMaster = reservationSvc.getReservationMasterByResId(resId);
         LocalDateTime modifiedTime = reservationMaster.getResModifiedTime();
         log.debug("modifiedTime={}", modifiedTime);
-        
-//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
-        model.addAttribute("res_id", resId); // 모델에 resId 추가
-        model.addAttribute("resMaster", resMaster);
-        model.addAttribute("resDetail", resDetail);
-        model.addAttribute("userId", userId); // 모델에 userId 추가
-        model.addAttribute("resModifiedTime", modifiedTime);
-	    
-	    try {
-	        // 서비스 호출을 통한 예약 정보 저장 및 업데이트
-	        claimService.saveClaim(resMaster, resDetail, resId);
-	        reservationSvc.updateResModifiedTime(resId);
-	    } catch (Exception e) {
-	        log.error("예약 수정 중 오류 발생", e);
-	        model.addAttribute("error", "예약 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-	        return "redirect:/mypage/myInfo?userId=" + userId;
-	    }
 
 //      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
