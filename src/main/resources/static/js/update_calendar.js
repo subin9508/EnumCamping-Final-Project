@@ -489,13 +489,15 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         const baseItemId = (selectedArea - 1) * 4;
         const itemId = baseItemId + seasonFactor + weekendFactor + 1;
         
-        const uri = `../reservation/itemPrice/${itemId}`;
+        const rs = document.querySelector('input#resSpecial');
+        const resSpecial = parseInt(rs.value);
+        const uri = `../mypage/itemPrice/${itemId}/${resSpecial}`;
 
         console.log('updatePrice()', uri);
 
         axios.get(uri)
             .then(response => {
-                const price = (response.data.price) * selectedNight;
+                const price = (response.data) * selectedNight;
                 document.getElementById('price-value').innerText = price;
                 updateTotalAllItems();
                 
