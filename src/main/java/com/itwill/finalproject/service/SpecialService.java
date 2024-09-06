@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,82 +41,6 @@ public class SpecialService {
     public Items findById(Integer itemId) {
         return itemsRepository.findById(itemId).orElse(null);  // Optional을 사용하여 null 처리
     }   
-    
-//    // Zones 업데이트 전용 메서드
-//    @Transactional
-//    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
-//        log.info("updateZoneDetails");
-//        Items item = findById(itemId);
-//        if (item != null) {
-//            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-//
-//            if (priceChanged) {
-//                updateItemHistory(item, newPrice.intValue(),newCheck);
-//                item.setItemPrice(newPrice.intValue());
-//                if ("on".equals(newCheck)) {
-//                    item.setSpecial(1);
-//                } else {
-//                    item.setSpecial(0);
-//                }
-//                
-//                itemsRepository.save(item);
-//            }
-//        }
-//    }
-//
-//    // Items 업데이트 메서드 (기존에 있던 메서드)
-//    @Transactional
-//    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String newCheck) {
-//        log.info("updateItemDetails");
-//        Items item = findById(itemId);
-//        if (item != null) {
-//            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-//            boolean descChanged = (newDesc != null && !newDesc.equals(item.getItemDesc()));
-//
-//            if (priceChanged) {
-//                log.info("history insert");
-//                updateItemHistory(item, newPrice.intValue(),newCheck); // itemshistory에 기록 추가
-//                
-//                item.setItemPrice(newPrice.intValue());
-//                if ("on".equals(newCheck)) {
-//                    item.setSpecial(1);
-//                } else {
-//                    item.setSpecial(0);
-//                }
-//                log.info("item에 price update");
-//                itemsRepository.save(item);
-//            }
-//            
-//            if (descChanged) { //설명만 변경시
-//                log.info("item에 desc update");
-//                item.setItemDesc(newDesc);
-//                itemsRepository.save(item);
-//            }
-//        }
-//    }
-//
-//    // History 업데이트 메서드 (공통 사용)
-//    @Transactional
-//    private void updateItemHistory(Items item, int newPrice, String newCheck) {
-//        log.info("updateItemHistory");
-//        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-//        if (currentHistory != null) {
-//            currentHistory.setEndDate(LocalDateTime.now());
-//            currentHistory.setSpecial(0); // 기존 기록의 특가 상태 해제
-//            itemsHistoryRepository.save(currentHistory);
-//        }
-//
-//        ItemsHistory newHistory = new ItemsHistory();
-//        newHistory.setItems(item);
-//        newHistory.setItemPrice(newPrice);
-//        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
-//        newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-//        
-//        if("on".equals(newCheck)) {
-//            newHistory.setSpecial(1);
-//        }
-//        itemsHistoryRepository.save(newHistory);
-//    }
     
     // Zones 업데이트 전용 메서드
     @Transactional
@@ -344,6 +269,14 @@ public class SpecialService {
             latestPricesWithSpecialZero.put(i + 1, latestPricesWithSpecialZeroList.get(i));
         }
         return latestPricesWithSpecialZero;
+    }
+    
+    public int findSpecial(int itemId, LocalDateTime now) {
+    	if (specialRepository.findEndDate(itemId, now) == null) {
+    		return 0;
+    	} else {
+    		return 1;
+    	}
     }
 
 }
