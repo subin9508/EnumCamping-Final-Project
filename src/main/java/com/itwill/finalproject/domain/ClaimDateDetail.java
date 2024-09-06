@@ -6,6 +6,8 @@ import lombok.Data;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,8 +21,8 @@ public class ClaimDateDetail {
 
     private int clmId;
 
-    private LocalDateTime canCheckIn;  // timestamp 대응
-    private LocalDateTime canCheckOut; // timestamp 대응
+    private LocalDate canCheckIn;  // timestamp 대응
+    private LocalDate canCheckOut; // timestamp 대응
 
     private int price;
 
@@ -28,7 +30,7 @@ public class ClaimDateDetail {
     public ClaimDateDetail() {}
 
     // 모든 필드를 포함한 생성자
-    public ClaimDateDetail(int cddId, int clmId, LocalDateTime canCheckIn, LocalDateTime canCheckOut, int price) {
+    public ClaimDateDetail(int cddId, int clmId, LocalDate canCheckIn, LocalDate canCheckOut, int price) {
         this.cddId = cddId;
         this.clmId = clmId;
         this.canCheckIn = canCheckIn;

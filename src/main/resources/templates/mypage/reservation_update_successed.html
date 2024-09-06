@@ -2,144 +2,105 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
-
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/footer.css}">
+<link th:href="@{/css/header.css}" rel="stylesheet" />
+<link th:href="@{/css/footer.css}" rel="stylesheet" />
+<link th:href="@{/css/sidebar.css}" rel="stylesheet" />
+<link th:href="@{/css/notice_list.css}" rel="stylesheet" />
 </head>
-
-<body>
 <body>
 	<div class="wrapper">
-		<!-- 상단 메뉴바 -->
-		<th:block th:replace="~{layout/fragments :: header}"></th:block>
-
+		<!-- 헤더 포함 -->
+		 <th:block th:replace="~{layout/fragments :: header}"></th:block>
 		<div class="footer-main-content">
-
-			<main style="width: 70%; margin: 5% auto;">
-				<div class="mt-2 card">
-					<div class="card-body">
-						<div>
-							<h1>예약내역</h1>
-						</div>
-						<br />
-						<form>
-							<div class="d-flex">
-								<div class="mt-2 flex-fill me-2" th:if="${resMaster != null}">
-									<label class="form-label"
-										style="font-size: 21px; font-weight: bold;" for="resCheckIn">체크인
-										날짜</label> <input class="form-control" type="text" id="resCheckIn"
-										th:value="${resMaster.resCheckIn}" readonly />
-								</div>
-								<br /> <br />
-								<div></div>
-								<div class="mt-2 flex-fill ms-2">
-									<label for="resCheckOut" class="form-label"
-										style="font-size: 21px; font-weight: bold;">체크아웃 날짜</label> <input
-										id="resCheckOut" class="form-control" type="text"
-										th:value="${resMaster != null} ? ${resMaster.resCheckOut} : 'No Check-out Date'"
-										readonly />
-								</div>
-							</div>
-							<br />
-
-							<div class="mt-2">
-								<label for="resArea" class="form-label"
-									style="font-size: 21px; font-weight: bold;">예약 구역</label>
-								<div th:each="item : ${resDetail}">
-									<div th:if="${item.itemId >= 1 && item.itemId <= 20}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemId >= 1 && item.itemId <= 4 ? '달' : 
-                           item.itemId >= 5 && item.itemId <= 8 ? '별' :
-                           item.itemId >= 9 && item.itemId <= 12 ? '노을' :
-                           item.itemId >= 13 && item.itemId <= 16 ? '바람' :
-                           item.itemId >= 17 && item.itemId <= 20 ? '하늘' : ''}" />
-									</div>
-								</div>
-							</div>
-							<br />
-
-							<div class="mt-2">
-								<table class="table">
-									<thead>
-										<tr>
-											<th scope="col"
-												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
-												이름</th>
-											<th scope="col"
-												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
-												수량</th>
-											<th scope="col"
-												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
-												가격</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td colspan="4" style="text-align: center;"
-												th:if="${resDetail.?[itemId > 20].size() == 0}">선택하신
-												구매/대여물품이 없습니다.</td>
-										</tr>
-										<tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}">
-											<td th:text="${rs.itemName}"></td>
-											<td th:text="${rs.itemQuantity}	"></td>
-											<td th:text="${rs.itemAmount + '원'}"></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<br />
-
-							<div class="mt-2">
-								<label for="resTotalPrice" class="form-label"
-									style="font-size: 21px; font-weight: bold;">총 가격</label> <input
-									id="resTotalPrice" class="form-control" type="text"
-									th:value="${resMaster != null} ? ${resMaster.resTotalPrice + '원'} : 0"
-									readonly />
-							</div>
-							<br />
-
-							<div class="mt-2">
-								<label for="resCreatedTime" class="form-label"
-									style="font-size: 21px; font-weight: bold;">예약 일시</label> <input
-									id="resCreatedTime" class="form-control" type="text"
-									th:value="${resMaster != null && resMaster.resCreatedTime != null ? resMaster.resCreatedTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')) : 'Not Available'}"
-									readonly />
-							</div>
-						</form>
+			<!-- 사이드바 포함 -->
+			<th:block th:replace="~{layout/fragments :: mypage-sidebar}"></th:block>
+			<main>
+				<div class="card">
+					<div class="card-header" style="background-color: white;">
+						<h2 class="text-center">예약 내역 리스트</h2>
 					</div>
-				</div>
+					<div class="card-body">
+						<table class="table table-hover">
+							<colgroup>
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+								<col style="width: 25%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th>예약 번호</th>
+									<th>숙박 구역</th>
+									<th>숙박 일자</th>
+									<th>예약 상태</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 예약 내역이 없을 경우 -->
+								<tr th:if="${#lists.isEmpty(reservations)}">
+									<td colspan="4" style="text-align: center;">예약 내역이 없습니다.</td>
+								</tr>
+								<!-- 예약 내역이 있는 경우 -->
+								<tr th:each="r : ${reservations}" th:if="${r.resState != 0 }"
+									th:onclick="|location.href='@{/mypage/reservation_details(resId=${r.resId})}'|"
+									style="cursor: pointer;">
+									<td th:text="${r.resId}"></td>
 
-				<div class="container-fluid d-flex justify-content-center">
-					<!-- 결제 완료 메시지 -->
-					<div class="text-center mt-5">
-						<h2>예약 변경이 완료되었습니다</h2>
-						<p>이용해 주셔서 감사합니다.</p>
-						<a href="/enumcamping" class="btn btn-outline-success mt-3">홈으로
-							가기</a>
+									<!-- clmMaster가 존재할 때 -->
+									<th:block th:if="${clmMaster[r.resId] != null}">
+										<td><span th:each="details : ${clmDetail[r.resId]}">
+												<span th:if="${1 <= details.itemId && details.itemId <= 4}"
+												th:text="${details.itemName}"></span> <span
+												th:if="${5 <= details.itemId && details.itemId <= 8}"
+												th:text="${details.itemName}"></span> <span
+												th:if="${9 <= details.itemId && details.itemId <= 12}"
+												th:text="${details.itemName}"></span> <span
+												th:if="${13 <= details.itemId && details.itemId <= 16}"
+												th:text="${details.itemName}"></span> <span
+												th:if="${17 <= details.itemId && details.itemId <= 20}"
+												th:text="${details.itemName}"></span>
+										</span></td>
+									</th:block>
+
+									<!-- clmMaster가 존재하지 않을 때 (reservationDetails 사용) -->
+									<th:block th:if="${clmMaster[r.resId] == null}">
+										<td><span th:each="details : ${r.reservationDetails}">
+												<span
+												th:if="${1 <= details.item.itemId && details.item.itemId <= 4}"
+												th:text="${details.item.itemName}"></span> <span
+												th:if="${5 <= details.item.itemId && details.item.itemId <= 8}"
+												th:text="${details.item.itemName}"></span> <span
+												th:if="${9 <= details.item.itemId && details.item.itemId <= 12}"
+												th:text="${details.item.itemName}"></span> <span
+												th:if="${13 <= details.item.itemId && details.item.itemId <= 16}"
+												th:text="${details.item.itemName}"></span> <span
+												th:if="${17 <= details.item.itemId && details.item.itemId <= 20}"
+												th:text="${details.item.itemName}"></span>
+										</span></td>
+									</th:block>
+
+									<td th:text="${clmDateDetail.get(r.resId) != null && clmDateDetail.get(r.resId).canCheckIn != null ? clmDateDetail.get(r.resId).canCheckIn : r.resCheckIn}"></td>
+									<td><span th:if="${r.resState == 0}" style="color: green;">예약대기</span>
+										<span th:if="${r.resState == 1}" style="color: blue;">예약완료</span>
+										<span th:if="${r.resState == 2}" style="color: red;">예약취소</span>
+										<span th:if="${r.resState == 3}" style="color: #FF1493">예약변경완료</span>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</main>
 		</div>
-		<!-- 푸터 -->
+		<!-- 푸터 포함 -->
 		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
 	</div>
 
 	<!-- 부트 스트랩 JS -->
-	<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
-
-	<!-- Weather JS -->
-	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
-
-
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-	<script>
-		window.addEventListener('popstate', function(event) {
-			// 뒤로가기를 누르면 메인 페이지로 리디렉트
-			window.location.href = '/enumcamping';
-		});
-	</script>
+        <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
+        
+        <!-- Weather JS -->
+        <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 </body>
 </html>
