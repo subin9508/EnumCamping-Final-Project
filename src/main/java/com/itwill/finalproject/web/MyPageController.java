@@ -68,6 +68,7 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.Payment;
 import com.itwill.finalproject.exception.ServiceException;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -769,42 +770,56 @@ public class MyPageController {
 
 
 	@GetMapping("/reservation_update_successed/{resId}")
-    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
-    	
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String userId = authentication.getName();
-    	
-//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
-        ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
-        
-        if (resMaster == null) {
-            // resMaster가 없을 경우에 대한 처리 로직 추가
-            model.addAttribute("error", "Reservation data not found in session");
-            return "errorPage"; // 에러 페이지로 리다이렉트하거나 에러 메시지를 표시하는 페이지로 이동
-        }
-        
-        // resMaster에 resId가 null로 설정되어 있으면, PathVariable에서 받은 resId를 설정
-        if (resMaster.getResId() == null) {
-            resMaster.setResId(resId);
-        }
-        
-        List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");        
-        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
-        log.debug("session.resDetail={}", session.getAttribute("resDetails"));        
+	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
+	    
+	    // 캐시 비활성화 설정
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+	    response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+	    response.setDateHeader("Expires", 0); // Proxies
+	    
+	    // Spring Security를 통해 사용자 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName(); // 현재 로그인한 사용자의 ID를 가져옴
+	    
+	    // 세션에서 예약 정보 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    
+	    if (resMaster == null) {
+	        model.addAttribute("error", "세션에 예약 정보가 없습니다. 다시 시도해주세요.");
+	        return "redirect:/mypage/myInfo?userId=" + userId;
+	    }
+	    
+	    // resMaster의 resId가 null이면 PathVariable의 resId 설정
+	    if (resMaster.getResId() == null) {
+	        resMaster.setResId(resId);
+	    }
 
-        
-     // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
-        claimService.saveClaim(resMaster, resDetail, resId);
-        // reservationMaster modifiedTime 업데이트
-        reservationSvc.updateResModifiedTime(resId);
-        
-//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
-        model.addAttribute("res_id", resId); // 모델에 resId 추가
-        model.addAttribute("resMaster", resMaster);
-        model.addAttribute("resDetail", resDetail);
-        model.addAttribute("userId", userId); // 모델에 userId 추가
+	    List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");
+	    
+	    try {
+	        // 서비스 호출을 통한 예약 정보 저장 및 업데이트
+	        claimService.saveClaim(resMaster, resDetail, resId);
+	        reservationSvc.updateResModifiedTime(resId);
+	    } catch (Exception e) {
+	        log.error("예약 수정 중 오류 발생", e);
+	        model.addAttribute("error", "예약 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+	        return "redirect:/mypage/myInfo?userId=" + userId;
+	    }
 
-        return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
-    }
+	    // 모델에 필요한 정보 추가
+	    model.addAttribute("res_id", resId);
+	    model.addAttribute("resMaster", resMaster);
+	    model.addAttribute("resDetail", resDetail);
+	    model.addAttribute("userId", userId); // Spring Security로부터 가져온 userId 추가
+
+	    // 예약 완료 후 세션에서 관련 정보 제거 (뒤로가기로 페이지가 다시 로드되지 않도록)
+	    session.removeAttribute("resMaster");
+	    session.removeAttribute("resDetails");
+
+	    return "mypage/reservation_update_successed";
+	}
+
+	
+	
 
 }

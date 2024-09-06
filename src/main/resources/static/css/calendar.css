@@ -1,24 +1,27 @@
 @charset "UTF-8";
 
-.cal-container{
-  margin-left:220px;
+.cal-container {
+	margin-left: 220px;
 }
 
-
+.selectedNight {
+	background-color: #A4C392 !important;
+	color: white !important;
+}
 
 .scriptCalendar {
-    text-align: center;
-    width: 80%;
-    margin: 30px auto;
+	text-align: center;
+	width: 80%;
+	margin: 30px auto;
 }
 
 .scriptCalendar>thead>tr>td {
-    width: 50px;
-    height: 50px;
+	width: 50px;
+	height: 50px;
 }
 
 .scriptCalendar>thead>tr:first-child>td {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 /*
@@ -26,169 +29,165 @@
     background-color: #90EE90;
 }
 */
-
 .scriptCalendar>tbody>tr>td {
-    width: 50px;
-    height: 60px;
+	width: 50px;
+	height: 60px;
 }
 
 .calendarBtn {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 #trHead {
-    font-size: 25px;
-    background-color: #7C9C63;
-    color: white;
+	font-size: 25px;
+	background-color: #7C9C63;
+	color: white;
 }
 
 #weekDays {
-    color: gray;
-    font-weight: bold;
+	color: gray;
+	font-weight: bold;
 }
 
 .card, .table, #requirement {
-    text-align: center;
-    width: 80%;
-    margin: 2px auto;
+	text-align: center;
+	width: 80%;
+	margin: 2px auto;
 }
-
-
 
 /* 요청사항 섹션 스타일링 */
 #requirement {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #requirement h3 {
-    margin-bottom: 0;
-    font-weight: bold;
-    color: #333;
+	margin-bottom: 0;
+	font-weight: bold;
+	color: #333;
 }
 
 #special-requests {
-    border: 1px solid #ced4da;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #495057;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	border: 1px solid #ced4da;
+	border-radius: 10px;
+	font-size: 16px;
+	color: #495057;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #special-requests:focus {
-    border-color: #80bdff;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+	border-color: #80bdff;
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 #special-requests::placeholder {
-    color: #adb5bd;
+	color: #adb5bd;
 }
-
 
 /* night-card 스타일링 */
 #night-card {
-    border: none;
-    padding: 20px;
-    width: 80%;
-    margin: 2px auto;
+	border: none;
+	padding: 20px;
+	width: 80%;
+	margin: 2px auto;
 }
 
 .night-radio_label {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+	width: 100%;
 }
 
 .night-radio_label h6 {
-    margin-bottom: 10px;
-    font-weight: bold;
+	margin-bottom: 10px;
+	font-weight: bold;
 }
 
 .radio-options {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 20px;
 }
 
 .night-radio {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
 }
 
 .night-radio_text {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    color: #333;
-    transition: all 0.3s ease;
-    user-select: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	background-color: #f0f0f0;
+	color: #333;
+	transition: all 0.3s ease;
+	user-select: none;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.night-radio:checked + .night-radio_text {
-    background-color: #7C9C63;
-    color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+.night-radio:checked+.night-radio_text {
+	background-color: #7C9C63;
+	color: #fff;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .night-radio_text:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+	background-color: #e0e0e0;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
-.night-radio:checked + .night-radio_text:hover {
-    background-color: #7C9C63;
+.night-radio:checked+.night-radio_text:hover {
+	background-color: #7C9C63;
 }
 
 .night-radio_text:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transform: translateY(1px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btnNextPage {
-    display: inline-block;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    border-radius: 25px;
-    color: #fff;
-    background-color: #7C9C63; /* 밝은 녹색 */
-    transition: all 0.3s ease;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	padding: 12px 24px;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	border: none;
+	border-radius: 25px;
+	color: #fff;
+	background-color: #7C9C63; /* 밝은 녹색 */
+	transition: all 0.3s ease;
+	margin-top: 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btnNextPage:hover {
-    background-color: #7C9C63; /* 조금 더 어두운 녹색 */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+	background-color: #7C9C63; /* 조금 더 어두운 녹색 */
+	transform: translateY(-2px);
+	box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btnNextPage:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transform: translateY(1px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btnNextPage:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px #7C9C63;
+	outline: none;
+	box-shadow: 0 0 0 3px #7C9C63;
 }
