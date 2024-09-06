@@ -51,7 +51,9 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ProfileRepository;
+import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ClaimService;
 import com.itwill.finalproject.service.MyPageService;
@@ -60,6 +62,7 @@ import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
+import com.itwill.finalproject.service.SpecialService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
 
@@ -86,6 +89,8 @@ public class MyPageController {
 	private final UserRepository userRepo;
 	private final PaymentsService paymentsService;
 	private final ClaimService claimService;
+	private final SpecialService specialService;
+	private final ItemsHistoryRepository ihRepo;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -531,39 +536,73 @@ public class MyPageController {
 		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 		log.info("resMaster={}", resMaster);
 		log.info("resDetail={}", resDetail);
-		
-		
-	    //현재 시간 체크
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String dateNow = now.format(formatter);
-		log.debug("dateNow = {}",dateNow);
-		
-		
-		
-		int special = resMaster.orElseThrow().getResSpecial();
-		if (special == 1) {
-			//reservation controller 참고
-			//구역 찾고, 특가 end 날짜 찾아서 특가 기간 내인지 아닌지 체크
-			int itemId = 0;
-			for (ReservationDetailDto rd : resDetail) {
-				if (rd.getItemId()<=20) {
-					itemId=rd.getItemId();
-				}
-			}
-			//특가기간인지 체크
-			
-			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 enddate>오늘 이면 아직 특가 기간인것!
-			
-		} else { //special = 0
-			//걍 정상가보여주면 됨
-			//history 이용 등, res controller 이용
-		}
-		
 
+		int special = resMaster.orElseThrow().getResSpecial(); //특가 예약인지 아닌지
+		
 		// 이걸 바꿔야함
 		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
 		List<Items> items = reservationSvc.getAllItems();
+		//일단 가져오고,, 가격만,, 바꿔야할,,듯?
+			
+		if (special == 1) { //특가 예약
+			//reservation controller 참고
+			//구역 찾고, 특가 end 날짜 찾아서 특가 기간 내인지 아닌지 체크
+			int zoneId = 0;
+			for (ReservationDetailDto rd : resDetail) {
+				if (rd.getItemId()<=20) {
+					zoneId=rd.getItemId(); //구역 itemId 받아옴
+				}
+			}
+			log.info("zoneId = {}",zoneId);
+			//특가기간인지 체크
+			//먼저 현재 시간 체크
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			String dateNow = now.format(formatter);
+			log.debug("dateNow = {}",dateNow);
+			
+			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 endDate>오늘 이면 아직 특가 기간인것!
+			int spc = specialService.findSpecial(zoneId, now); //0이면 특가 종료 1이면 특가 기간
+			
+			if (spc == 1) {
+				
+				
+				//특가 가격 보여주기
+				log.info("특가 기간 중");
+				List<Integer> list = ihRepo.findLatestSpecialPrices();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			} else {
+				log.info("특가 기간 끝남");
+				//정상 가격 보여주기
+				List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			}
+			
+		} else { //special = 0
+			//TODO 걍 정상가보여주면 됨
+			//history 이용 등, res controller 이용
+			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+			log.info("list size = {}",list.size());
+			
+			List<Integer> itemList = list.subList(21, 32);
+			for (int i = 0; i < itemList.size(); i++) {
+				Items item = items.get(i);
+				Integer price = itemList.get(i);
+				item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+			}
+		}
+		
+
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}

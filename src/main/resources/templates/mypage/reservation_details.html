@@ -23,7 +23,7 @@
 							<input id="resId" name="resId" type="hidden"
 								th:value="${resMaster.resId}"> <input id="userId"
 								name="userId" type="hidden" th:value="${resMaster.user.userId}">
-
+                            <input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
@@ -37,9 +37,6 @@
 										<label for="resCheckOut" class="form-label">체크아웃 날짜</label> <input
 											id="resCheckOut" class="form-control" type="text"
 											th:value="${resMaster.resCheckOut}" readonly>
-									</div>
-									<div class="hidden">
-										<input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 									</div>
 								</div>
 							</div>
@@ -161,10 +158,10 @@
 	const changeBtn = document.querySelector('a#changeBtn');
 	const resSpecial = document.querySelector('input#resSpecial');
 	changeBtn.addEventListener('click', ()=>{
-		if (resSpecial == 1){
-			confirm('특가 예약 건입니다.');
-		}else {
-			confirm('일반가 예약 건입니다.');			
+		if (parseInt(resSpecial.value) === 1){
+			alert('특가 예약 건입니다.');
+		} else {
+			alert('일반가 예약 건입니다.');			
 		}
 	});
 	</script>

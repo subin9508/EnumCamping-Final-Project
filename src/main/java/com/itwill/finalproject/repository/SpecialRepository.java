@@ -29,5 +29,10 @@ public interface SpecialRepository extends JpaRepository<Special, Integer> {
                                @Param("defaultEndDate") LocalDateTime defaultEndDate);
     
     
-    //itemId랑 res_date로 구역 특가 여부 체크하기
+    //오늘날짜와 특가 종료 날짜 비교해서 특가 종료 여부 체크(값이 나오면 특가기간이 오늘보다 미래, 즉 (9999/12/31), 안끝난 상태!)
+    @Query("SELECT s.endDate FROM Special s WHERE s.endDate >= :now AND s.items.id = :itemId")
+    LocalDateTime findEndDate(@Param("itemId") int itemId, @Param("now") LocalDateTime now);
+    
+    
+    //itemId랑 res_date로 구역 특가 여부 체크하기 
 }
