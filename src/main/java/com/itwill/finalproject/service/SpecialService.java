@@ -248,37 +248,66 @@ public class SpecialService {
 //        // itemsHistory 테이블의 특가 레코드의 end_date 업데이트 (special=1인 레코드만 수정)
 //        itemsHistoryRepository.updateItemsHistoryEndDateByItemId(itemId, endDate);
         
+        
         // 새로운 레코드 (special = 0) 삽입
         Items item = itemsRepository.findById(itemId)
         		.orElseThrow(() -> new IllegalArgumentException("Invalid item ID: " + itemId));
 
-        if (item != null) {        	
-            // 새로운 특가 종료 레코드를 추가
-            ItemsHistory newHistory = new ItemsHistory();
-            newHistory.setItems(item);
-            newHistory.setItemPrice(item.getItemPrice());
-            newHistory.setSpecial(0); // 특가 해제
-            newHistory.setStartDate(LocalDateTime.now());
-            newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+        if (item != null) {
+        	
+            // 일관된 startDate 값을 설정
+            LocalDateTime consistentStartDate = LocalDateTime.now();
+            log.info("Using consistent start date: {}", consistentStartDate);
+            LocalDateTime consistentEndDate = consistentStartDate.minusSeconds(1);  // 설정한 특정 endDate 사용
+        	
+            // 여러 레코드를 삽입하는 경우 일관된 startDate 사용
+            List<ItemsHistory> historiesToInsert = new ArrayList<>();
+
+            // 예를 들어, 5개의 레코드를 삽입한다고 가정
+            for (int i = 0; i < 32; i++) {
+                ItemsHistory newHistory = new ItemsHistory();
+                newHistory.setItems(item);
+                newHistory.setItemPrice(item.getItemPrice());
+                newHistory.setSpecial(0); // 특가 해제
+                newHistory.setStartDate(consistentStartDate);  // 일관된 startDate 사용
+                newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+                
+                historiesToInsert.add(newHistory);
+            }
+
+            itemsHistoryRepository.saveAll(historiesToInsert); // 한번에 모든 레코드 저장
             
-            itemsHistoryRepository.save(newHistory);
             
-            // 방금 삽입된 special = 0 레코드의 start_date 가져오기
-            LocalDateTime latestStartDate = newHistory.getStartDate();
-            log.info("방금 삽입 latestStartDate={}", latestStartDate);
+//            // 새로운 특가 종료 레코드를 추가
+//            ItemsHistory newHistory = new ItemsHistory();
+//            newHistory.setItems(item);
+//            newHistory.setItemPrice(item.getItemPrice());
+//            newHistory.setSpecial(0); // 특가 해제
+//            newHistory.setStartDate(consistentStartDate);
+//            newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
+//            
+//            itemsHistoryRepository.save(newHistory);
             
-            // special 테이블의 end_date를 최신 start_date의 1초 전으로 설정
-            LocalDateTime endDate = latestStartDate.minusSeconds(1);
-            log.info("endDate to set for special table = {}", endDate);
+//            // 방금 삽입된 special = 0 레코드의 start_date 가져오기
+//            LocalDateTime latestStartDate = newHistory.getStartDate();
+//            log.info("방금 삽입 latestStartDate={}", latestStartDate);
+//            
+//            // special 테이블의 end_date를 최신 start_date의 1초 전으로 설정
+//            LocalDateTime endDate = latestStartDate.minusSeconds(1);
+//            log.info("endDate to set for special table = {}", endDate);
+            
+            // 일관된 startDate를 사용하여 endDate를 계산
+            //LocalDateTime endDate = consistentStartDate.minusSeconds(1);
+            //log.info("endDate to set for special table = {}", endDate);
             
             // 기본 end date 값
-            LocalDateTime defaultEndDate = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+            // LocalDateTime defaultEndDate = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
 
 //            // special 테이블의 end_date 업데이트
 //            specialRepository.updateEndDateByItemId(itemId, endDate, defaultEndDate);
         
             // special 테이블의 end_date 업데이트
-            int updatedCount = specialRepository.updateEndDateByItemId(itemId, endDate, defaultEndDate);
+            int updatedCount = specialRepository.updateEndDateByItemId(itemId,consistentEndDate);
             log.info("Special table updated rows count: {}", updatedCount);
 
             if (updatedCount == 0) {

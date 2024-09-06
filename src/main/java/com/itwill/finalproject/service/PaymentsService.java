@@ -20,6 +20,7 @@ import com.itwill.finalproject.dto.PaymentsDto;
 import com.itwill.finalproject.exception.ServiceException;
 import com.itwill.finalproject.repository.PaymentsRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
+import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.domain.ReservationMaster;
@@ -47,8 +48,13 @@ public class PaymentsService {
     private UserRepository userRepo;
     
     @Autowired
+    private SpecialRepository specialRepo;
+    
+    @Autowired
     private ReservationService reservationService;
-       
+    
+    private ReservationMaster reservationMaster;
+    
     private IamportClient iamportClient;
     
     public PaymentsService() {
@@ -185,6 +191,30 @@ public class PaymentsService {
 	       LocalDate currentDate = LocalDate.now();
 	       LocalDate checkinDate = reservationService.getCheckinDateByResId(payment.getResId());
 	       long daysBeforeCheckin = ChronoUnit.DAYS.between(currentDate, checkinDate);
+	       
+	       
+	       // 예약 정보 조회
+	       ReservationMaster reservation = reservationMasterRepo.findById(payment.getResId())
+	               .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + payment.getResId()));
+
+	       // 특가 예약 여부 확인
+	       if (reservation.getResSpecial() == 1) {
+	           // ReservationDetail에서 첫 번째 아이템의 itemId를 가져옴
+	           Integer itemId = reservation.getReservationDetails().get(0).getItem().getItemId();
+
+	           // 특가 종료일 확인
+	           LocalDateTime specialEndDateTime = specialRepo.findEndDateByItemId(itemId)
+	                   .orElseThrow(() -> new ServiceException("Special end date not found for itemId: " + itemId));
+
+	           // LocalDateTime을 LocalDate로 변환
+	           LocalDate specialEndDate = specialEndDateTime.toLocalDate();
+
+	           // 특가 종료일이 현재 날짜 이전인 경우 (특가 기간 이후)
+	           if (specialEndDate.isBefore(currentDate)) {
+	               log.info("특가 기간 이후 취소: 100% 수수료 부과");
+	               return "환불이 불가능한 상태입니다. (특가 기간 이후 취소)";
+	           }
+	       }
 	       
 	       
 	       // 환불 비율 결정
