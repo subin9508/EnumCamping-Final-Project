@@ -48,6 +48,14 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     // 특정 예약(resId)에 대한 결제 내역을 결제 날짜(PayDate) 기준으로 내림차순으로 정렬하여 가져오는 메서드
     List<Payments> findByResIdOrderByPayDateDesc(Integer resId);
     
+
+    // resID와 payState paid 조건 기반으로 가장 최신의 payID 조회
+//    @Query("SELECT p FROM Payments p WHERE p.resId = :resId AND p.payStatus = 'paid' ORDER BY p.payId DESC")
+//    Optional<Payments> findMostRecentPaidPaymentByResId(@Param("resId") Integer resId);
+    
+    // 가장 최신의 결제 정보를 조회하는 메서드
+    Optional<Payments> findTopByResIdAndPayStatusOrderByPayIdDesc(Integer resId, String payStatus);
+
     
     // imp_uid로 결제 정보 조회하여 결제에 연결된 예약 ID 반환 (웹훅시 사용)
     // @Query("SELECT p.resId FROM Payment p WHERE p.impUid = :impUid")

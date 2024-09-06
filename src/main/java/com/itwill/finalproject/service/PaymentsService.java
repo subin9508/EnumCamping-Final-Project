@@ -136,7 +136,7 @@ public class PaymentsService {
     @Transactional(readOnly = true)
     public Integer getPayIdByResId(Integer resId) throws ServiceException {
         try {
-            Payments payment = paymentsRepo.findByResId(resId)
+            Payments payment = paymentsRepo.findTopByResIdAndPayStatusOrderByPayIdDesc(resId, "paid")
                 .orElseThrow(() -> new ServiceException("Payment not found for resId: " + resId));
             return payment.getPayId();
         } catch (Exception e) {
