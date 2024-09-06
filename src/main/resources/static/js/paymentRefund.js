@@ -128,17 +128,24 @@ document.addEventListener('DOMContentLoaded', function() {
             throw error;
         }
     }
-    
-    function cancelFullPayment(payId, resId) {
-        return axios.post(`/enumcamping/mypage/reservation_details/cancel/${payId}`)
-            .then(response => {
-                console.log("전체 취소 성공: ", response.data);
-                alert('이전 결제 금액이 성공적으로 취소되었습니다.');
-                window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`;
-            })
-            .catch(error => {
-                console.error("전체 취소 실패: ", error);
-                throw error;
-            });
+
+	function cancelFullPayment(payId, resId) {
+		return axios.post(`/enumcamping/mypage/reservation_details/cancel/${payId}`)
+			.then(response => {
+				console.log("전체 취소 성공: ", response.data);
+				alert('이전 결제 금액이 성공적으로 취소되었습니다.');
+				window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.error("서버 응답 오류: ", error.response.data);
+				} else if (error.request) {
+					console.error("요청이 전송되지 않음: ", error.request);
+				} else {
+					console.error("요청 설정 중 오류 발생: ", error.message);
+				}
+				console.error("전체 취소 실패: ", error);
+				throw error;
+			});
     }
 });

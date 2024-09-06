@@ -283,8 +283,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         axios.get(uri)
             .then(response => {
                 console.log(response.data);
-                const reservedAreas = response.data || [];
-                updateRadioButtons(year, month, day,reservedAreas);
+                const reservedAreas = response.data || []; // 예약된 구역 리스트 받아오기
+                updateRadioButtons(year, month, day,reservedAreas); // 예약된 구역 처리
             })
             .catch(error => {
                 console.error("There was an error fetching the reservations!", error);
@@ -315,10 +315,10 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 
                 if (isReserved) {
                     console.log(`Area ${areaIndex} is reserved`);
-                    card.style.display = "none";
+                    card.style.display = "none"; // 구역 숨기기
                 } else {
-                    card.style.display = "block";
-                    findPrice(year, month, day, areaIndex);
+                    card.style.display = "block"; // 구역 보이기
+                    findPrice(year, month, day, areaIndex); // 구역 가격 업데이트 
                 }
             }
         }

@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -231,14 +232,16 @@ public class PaymentsService {
 	               newPayment.setPayDate(LocalDateTime.now());
 	               paymentsRepo.save(newPayment);             
 	               	
-	               // 예약 상태를 취소로 업데이트
-	               Integer resId = payment.getResId();
-	               updateReservationState(resId, 2);  // 2는 취소 상태
-	               
+	               // 포인트 결제인 경우에도, 예약 상태를 '예약 변경 완료'로 설정
+	               if ("point".equalsIgnoreCase(payment.getPayMethod())) {
+	                   updateReservationState(payment.getResId(), 3); // 3: 예약 변경 완료
+	               } else {
+	                   updateReservationState(payment.getResId(), 2); // 2: 예약 취소
+	               }
+
 	               log.info("Payment cancellation successful for payId: {}", payId);
 	               return "Payment cancellation successful";
-	           } else {
-	        	// 실패 이유를 명확히 로그에 기록
+	            } else {
 	               if (response != null && response.getResponse() != null) {
 	                   log.error("Cancellation failed: Status = {}, Message = {}",
 	                       response.getResponse().getStatus(), response.getResponse().getFailReason());
@@ -254,17 +257,34 @@ public class PaymentsService {
 	           log.error("Error during cancellation", e);
 	           throw new ServiceException("Error during cancellation: " + e.getMessage(), e);
 	       }
-	   }
+	    }
+	   
+	   // 최신 결제 정보를 가져오는 메서드 추가
+	    public Payments getLatestPaymentByResId(Integer resId) throws ServiceException {
+	    	 List<Payments> payments = paymentsRepo.findByResIdOrderByPayDateDesc(resId); // 최신 결제 내역을 가져오는 쿼리
+	    	    if (payments.isEmpty()) {
+	    	        throw new ServiceException("No payments found for resId: " + resId);
+	    	    }
+	    	    return payments.get(0);  // 최신 결제 내역 반환 (가장 첫 번째 값)
+	    }
 	   
 	   
 	   @Transactional
 	   public void updateReservationState(Integer resId, int resState) throws ServiceException {
-	       try {
-	           ReservationMaster reservation = reservationMasterRepo.findById(resId)
-	                   .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
-	           reservation.setResState(resState);
-	           reservationMasterRepo.save(reservation);
-	       } catch (Exception e) {
+		   try {
+		        // 동일한 resId에 대해 가장 최신 결제 내역을 가져옴
+		        Payments latestPayment = getLatestPaymentByResId(resId);
+
+		        // 결제 수단이 'point'이고 추가 결제가 있었던 경우 예약 상태를 '예약 변경 완료'로 업데이트
+		        if ("point".equalsIgnoreCase(latestPayment.getPayMethod()) && "cancel".equalsIgnoreCase(latestPayment.getPayStatus())) {
+		            resState = 3;  // 예약 변경 완료 상태로 설정
+		        }
+
+		        ReservationMaster reservation = reservationMasterRepo.findById(resId)
+		                .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
+		        reservation.setResState(resState);
+		        reservationMasterRepo.save(reservation);
+		    } catch (Exception e) {
 	           log.error("Failed to update reservation state for resId: {}", resId, e);
 	           throw new ServiceException("Failed to update reservation state: " + e.getMessage(), e);
 	       }

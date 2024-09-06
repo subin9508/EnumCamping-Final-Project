@@ -272,19 +272,23 @@ public class PaymentsController {
         	
             // 환불 처리
             String result = paymentsService.cancelPartialPayment(payId, cancelAmount, checkinDate);
+            
+            
             if ("Partial payment cancellation successful".equals(result)) {
-                // 예약 상태를 업데이트
-                if (resId != null) {
-                    paymentsService.updateReservationState(resId, 3); // 3은 부분 취소
-                    log.info("Reservation state updated to cancelled for resId: {}", resId);
-                    return ResponseEntity.ok("부분 취소가 성공적으로 처리되었습니다. 예약 상태도 업데이트되었습니다.");
+                // 결제 수단이 포인트인 경우에도 예약 상태가 변경 완료로 유지되도록 함
+                Payments latestPayment = paymentsService.getLatestPaymentByResId(resId);
+                if ("point".equalsIgnoreCase(latestPayment.getPayMethod())) {
+                    paymentsService.updateReservationState(resId, 3); // 3: 예약 변경 완료 상태
                 } else {
-                    log.warn("부분 취소는 성공했으나 예약 상태 업데이트에 실패했습니다. payId: {}", payId);
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 성공, 예약 상태 업데이트 실패");
+                    paymentsService.updateReservationState(resId, 3); // 부분 취소 상태
                 }
+
+                log.info("Reservation state updated to partially cancelled or modified for resId: {}", resId);
+                return ResponseEntity.ok("부분 취소가 성공적으로 처리되었습니다. 예약 상태도 업데이트되었습니다.");
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }
+
         } catch (ServiceException e) {
             log.error("부분 취소 중 에러 발생: payId: {}", payId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 처리 실패: " + e.getMessage());
