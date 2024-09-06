@@ -283,8 +283,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         axios.get(uri)
             .then(response => {
                 console.log(response.data);
-                const reservedAreas = response.data || [];
-                updateRadioButtons(year, month, day,reservedAreas);
+                const reservedAreas = response.data || []; // 예약된 구역 리스트 받아오기
+                updateRadioButtons(year, month, day,reservedAreas); // 예약된 구역 처리
             })
             .catch(error => {
                 console.error("There was an error fetching the reservations!", error);
@@ -315,10 +315,10 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 
                 if (isReserved) {
                     console.log(`Area ${areaIndex} is reserved`);
-                    card.style.display = "none";
+                    card.style.display = "none"; // 구역 숨기기
                 } else {
-                    card.style.display = "block";
-                    findPrice(year, month, day, areaIndex);
+                    card.style.display = "block"; // 구역 보이기
+                    findPrice(year, month, day, areaIndex); // 구역 가격 업데이트 
                 }
             }
         }
@@ -352,13 +352,27 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 const price = (response.data.price) 
                 //특가 여부 기록
                 const special = response.data.special
-                document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
-                document.getElementById(`special_${areaIndex}`).value =special;
-    
-            })
-            .catch(error => {
-                console.error("There was an error fetching the price!", error);
-            });
+				console.log('price={}, special={}', price, special);
+				
+				    // 정상가 여부 확인 및 가격 업데이트
+				    if (!special) {  // `special`이 false이거나 정상가를 나타내는 값일 때
+				        console.log("정상가입니다.");
+				        document.getElementById(`price_${areaIndex}`).innerText = `${price}원 (정상가)`;
+				    } else if (special) {  // `special`이 true일 때, 즉 특가일 때
+				        console.log("특가입니다.");
+				        document.getElementById(`price_${areaIndex}`).innerText = `${price}원 (특가)`;
+				    } else {
+				        console.log("가격 정보를 찾을 수 없습니다.");
+				        document.getElementById(`price_${areaIndex}`).innerText = `가격 정보를 가져올 수 없음`;
+				    }
+
+				    // 특가 여부를 요소에 기록
+				    document.getElementById(`special_${areaIndex}`).value = special;
+				})
+				.catch(error => {
+				    console.error("There was an error fetching the price!", error);
+				    document.getElementById(`price_${areaIndex}`).innerText = `가격을 가져오는 중 오류 발생`;
+				});
     }
 
     
@@ -697,7 +711,7 @@ function checkSpecialPeriod() {
     axios.get(`../reservation/checkSpecialPeriod`)
         .then(response => {
             if (response.data) {  // 특가 기간이면
-                alert('예약 전 안내드립니다. 현재 "달" 구역 평일 100원 특가 기간이오니 예약시 참고바랍니다 ^^');
+                alert('예약 전 안내드립니다. 현재 구역 및 아이템 모두 " 20% " 할인 특가 진행 중입니다. 예약시 참고바랍니다 ^^♡');
             }
         })
         .catch(error => {

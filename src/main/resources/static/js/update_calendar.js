@@ -90,7 +90,7 @@ function highlightRangeDates(checkInDate, checkOutDate) {
         var cellDate = new Date(currentYear, currentMonth - 1, parseInt(cell.innerText));
 
         if (cellDate >= checkInDate && cellDate <= checkOutDate) {
-            cell.style.backgroundColor = "#FFFFE6"; // 이 구간의 날짜를 하이라이트
+            cell.style.backgroundColor = "#FFFFFF"; // 이 구간의 날짜를 하이라이트
         }
 
         if (cellDate.getTime() === checkInDate.getTime()) {
@@ -174,7 +174,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
 
             // 오늘 날짜인 경우
             if (currentDay.toDateString() === nowDate.toDateString()) {
-                column.style.backgroundColor = "#FFFFE6";
+                column.style.backgroundColor = "#FFFFFF";
                 column.style.cursor = "pointer";
                 column.onclick = function() { calendarChoiceDay(this); }
             }
@@ -218,7 +218,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
             // @see 금일인 경우
             if(document.getElementById("calMonth").innerText == autoLeftPad((nowDate.getMonth() + 1), 2) 
                 && document.getElementsByClassName("choiceDay")[0].innerText == autoLeftPad(toDay.getDate(), 2)) {
-                document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFE6";  //오늘날짜
+                document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFFF";  //오늘날짜
             }
             
             // @see 금일이 아닌 경우
