@@ -884,45 +884,6 @@ public class MyPageController {
 	}
 
 	
-	@GetMapping("/reservation_update_successed/{resId}")
-    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
-    	
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String userId = authentication.getName();
-    	
-//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
-        ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
-        
-        if (resMaster == null) {
-            // resMaster가 없을 경우에 대한 처리 로직 추가
-            model.addAttribute("error", "Reservation data not found in session");
-            return "errorPage"; // 에러 페이지로 리다이렉트하거나 에러 메시지를 표시하는 페이지로 이동
-        }
-        
-        // resMaster에 resId가 null로 설정되어 있으면, PathVariable에서 받은 resId를 설정
-        if (resMaster.getResId() == null) {
-            resMaster.setResId(resId);
-        }
-        
-        List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");        
-        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
-        log.debug("session.resDetail={}", session.getAttribute("resDetails"));        
-
-        
-     // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
-        claimService.saveClaim(resMaster, resDetail, resId);
-        // reservationMaster modifiedTime 업데이트
-        reservationSvc.updateResModifiedTime(resId);
-        
-//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
-        model.addAttribute("res_id", resId); // 모델에 resId 추가
-        model.addAttribute("resMaster", resMaster);
-        model.addAttribute("resDetail", resDetail);
-        model.addAttribute("userId", userId); // 모델에 userId 추가
-
-        return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
-    }
-	
 	
 	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
 	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
