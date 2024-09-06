@@ -1,7 +1,8 @@
 package com.itwill.finalproject.web;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,6 @@ import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
-import com.itwill.finalproject.dto.AdditionalPaymentDto;
 import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
@@ -51,9 +51,9 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
-import com.itwill.finalproject.exception.ControllerException;
-import com.itwill.finalproject.exception.ServiceException;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ProfileRepository;
+import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ClaimService;
 import com.itwill.finalproject.service.MyPageService;
@@ -62,11 +62,9 @@ import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
+import com.itwill.finalproject.service.SpecialService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
-import com.siot.IamportRestClient.exception.IamportResponseException;
-import com.siot.IamportRestClient.response.Payment;
-import com.itwill.finalproject.exception.ServiceException;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -92,6 +90,8 @@ public class MyPageController {
 	private final UserRepository userRepo;
 	private final PaymentsService paymentsService;
 	private final ClaimService claimService;
+	private final SpecialService specialService;
+	private final ItemsHistoryRepository ihRepo;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -528,14 +528,78 @@ public class MyPageController {
 	}
 
 	// 마이페이지 - 예약 변경
+	// 처음에 가져오는 페이지 
 	@GetMapping("/reservation_update")
 	public void reservationUpdateCalendar(@RequestParam(name = "resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
-		List<Items> items = reservationSvc.getAllItems();
+		
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
 		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 		log.info("resMaster={}", resMaster);
 		log.info("resDetail={}", resDetail);
+
+		int special = resMaster.orElseThrow().getResSpecial(); //특가 예약인지 아닌지
+		
+		// 이걸 바꿔야함
+		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
+		List<Items> items = reservationSvc.getAllItems();
+		//일단 가져오고,, 가격만,, 바꿔야할,,듯?
+			
+		if (special == 1) { //특가 예약
+			//reservation controller 참고
+			//구역 찾고, 특가 end 날짜 찾아서 특가 기간 내인지 아닌지 체크
+			int zoneId = 0;
+			for (ReservationDetailDto rd : resDetail) {
+				if (rd.getItemId()<=20) {
+					zoneId=rd.getItemId(); //구역 itemId 받아옴
+				}
+			}
+			log.info("zoneId = {}",zoneId);
+			//특가기간인지 체크
+			//먼저 현재 시간 체크
+			LocalDateTime now = LocalDateTime.now();
+			
+			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 endDate>오늘 이면 아직 특가 기간인것!
+			int spc = specialService.findSpecial(zoneId, now); //0이면 특가 종료 1이면 특가 기간
+			
+			if (spc == 1) {
+				
+				
+				//특가 가격 보여주기
+				log.info("특가 기간 중");
+				List<Integer> list = ihRepo.findLatestSpecialPrices();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			} else {
+				log.info("특가 기간 끝남");
+				//정상 가격 보여주기
+				List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			}
+			
+		} else { //special = 0
+			//TODO 걍 정상가보여주면 됨
+			//history 이용 등, res controller 이용
+			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+			log.info("정상가 예약");
+			
+			List<Integer> itemList = list.subList(21, 32);
+			for (int i = 0; i < itemList.size(); i++) {
+				Items item = items.get(i);
+				Integer price = itemList.get(i);
+				item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+			}
+		}
+		
 
 		for (Items item : items) {
 			log.info("Item: {}", item);
@@ -820,6 +884,85 @@ public class MyPageController {
 	}
 
 	
+	@GetMapping("/reservation_update_successed/{resId}")
+    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
+    	
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName();
+    	
+//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
+        ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+        
+        if (resMaster == null) {
+            // resMaster가 없을 경우에 대한 처리 로직 추가
+            model.addAttribute("error", "Reservation data not found in session");
+            return "errorPage"; // 에러 페이지로 리다이렉트하거나 에러 메시지를 표시하는 페이지로 이동
+        }
+        
+        // resMaster에 resId가 null로 설정되어 있으면, PathVariable에서 받은 resId를 설정
+        if (resMaster.getResId() == null) {
+            resMaster.setResId(resId);
+        }
+        
+        List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");        
+        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
+        log.debug("session.resDetail={}", session.getAttribute("resDetails"));        
+
+        
+     // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
+        claimService.saveClaim(resMaster, resDetail, resId);
+        // reservationMaster modifiedTime 업데이트
+        reservationSvc.updateResModifiedTime(resId);
+        
+//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
+        model.addAttribute("res_id", resId); // 모델에 resId 추가
+        model.addAttribute("resMaster", resMaster);
+        model.addAttribute("resDetail", resDetail);
+        model.addAttribute("userId", userId); // 모델에 userId 추가
+
+        return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
+    }
+	
+	
+	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
+	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
+		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
+		
+		
+		//예약 변경 시 할 일
+		//특가 예약인지 먼저 체크,
+		//그다음에 특가 기간인지 체크
+		// 특가예약&특가기간 -> 특가
+		// 특가예약&특가기간 지남 -> 정상가
+		// 정상가 예약 -> 정상가
+		
+	    //현재 시간 체크
+		LocalDateTime now = LocalDateTime.now();
+		
+		if (resSpecial == 1) {
+			int spc = specialService.findSpecial(itemId, now); //0이면 특가 종료 1이면 특가 기간
+			if (spc == 1) {
+				//특가 가격 보여주기
+				//여기서는 itemId마다 개별가격 보여주는것임~
+				Integer itemPrice =ihRepo.findSpecialPrice(itemId);
+				log.info("특가 기간 중 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			} else {
+				//정상 가격 보여주기
+				Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+				log.info("특가 기간 끝남 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			}
+			
+		} else { //special = 0
+			// 정상가보여주면 됨
+			log.info("정상가");
+			Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+		}
+		
+	}
+
 	
 
 }
