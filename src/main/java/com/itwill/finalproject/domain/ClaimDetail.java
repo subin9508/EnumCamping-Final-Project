@@ -1,8 +1,12 @@
 package com.itwill.finalproject.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.ToString;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
@@ -25,8 +29,12 @@ public class ClaimDetail {
     // 세 번째 PK: res_id
     @Column(nullable = false)
     private int resId;
-
-    private int itemId;
+    
+    @ToString.Exclude
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ITEM_ID")
+    private Items item;
+    
     private int itemQuantity;
     private int itemAmount;
 
@@ -37,11 +45,11 @@ public class ClaimDetail {
     public ClaimDetail() {}
 
     // 모든 필드를 포함한 생성자
-    public ClaimDetail(int cdId, int clmId, int resId, int itemId, int itemQuantity, int itemAmount, String itemChange) {
+    public ClaimDetail(int cdId, int clmId, int resId, Items item, int itemQuantity, int itemAmount, String itemChange) {
         this.cdId = cdId;
         this.clmId = clmId;
         this.resId = resId;
-        this.itemId = itemId;
+        this.item = item;
         this.itemQuantity = itemQuantity;
         this.itemAmount = itemAmount;
         this.itemChange = itemChange;

@@ -100,11 +100,10 @@
 							<br />
 
 							<div class="mt-2">
-								<label for="resCreatedTime" class="form-label"
-									style="font-size: 21px; font-weight: bold;">예약 일시</label> <input
-									id="resCreatedTime" class="form-control" type="text"
-									th:value="${resMaster != null && resMaster.resCreatedTime != null ? resMaster.resCreatedTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')) : 'Not Available'}"
-									readonly />
+								<label for="resModifiedTime" class="form-label"
+									style="font-size: 21px; font-weight: bold;">예약 일시</label> 
+								<input id="resModifiedTime" class="form-control" type="text"  th:value="${resMaster != null && resModifiedTime != null ? #temporals.format(resModifiedTime, 'yyyy-MM-dd HH:mm:ss') : 'Not Available'}" readonly />
+
 							</div>
 						</form>
 					</div>

@@ -354,6 +354,10 @@ public class ReservationService {
                 .orElseThrow(() -> new ServiceException("예약 정보를 찾을 수 없습니다. resId: " + resId));
     }
     
+    @Transactional
+    public ReservationMaster getReservationMasterByResId(Integer resId) {
+    	return reservationMasterRepo.findByResId(resId);
+    }
     
 //    // 체크인, 체크아웃 기간에 예약된 구역을 조회
 //    public List<Integer> readReservedAreasBetween(LocalDate checkIn, LocalDate checkOut) {
