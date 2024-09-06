@@ -2,10 +2,13 @@ package com.itwill.finalproject.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -133,7 +136,9 @@ public class PaymentsService {
     @Transactional(readOnly = true)
     public Integer getPayIdByResId(Integer resId) throws ServiceException {
         try {
-            Payments payment = paymentsRepo.findByResId(resId)
+
+            Payments payment = paymentsRepo.findTopByResIdAndPayStatusOrderByPayIdDesc(resId, "paid")
+
                 .orElseThrow(() -> new ServiceException("Payment not found for resId: " + resId));
             return payment.getPayId();
         } catch (Exception e) {
@@ -166,24 +171,50 @@ public class PaymentsService {
 	   @Transactional
 	   public String cancelPayment(Integer payId) throws ServiceException {
 	       log.debug("Attempting to cancel payment with payId: {}", payId);
-
+	       
+	       // 결제 정보 조회
 	       Payments payment = paymentsRepo.findById(payId)
 	               .orElseThrow(() -> new ServiceException("Payment not found for payId: " + payId));
 
 	       log.debug("Retrieved payment: {}", payment);
-
+	       
+	       // 결제 상태가 이미 취소된 경우
 	       if ("cancel".equalsIgnoreCase(payment.getPayStatus())) {
 	           log.info("Payment already cancelled for payId: {}", payId);
 	           return "Payment already cancelled";
 	       }
 	       
+	       // 현재 날짜와 체크인 날짜 계산
+	       LocalDate currentDate = LocalDate.now();
+	       LocalDate checkinDate = reservationService.getCheckinDateByResId(payment.getResId());
+	       long daysBeforeCheckin = ChronoUnit.DAYS.between(currentDate, checkinDate);
+	       
+	       
+	       // 환불 비율 결정
+	       double refundRate = 0.0;
+	       if (daysBeforeCheckin >= 7) {
+	           refundRate = 1.0; // 100% 환불
+	       } else if (daysBeforeCheckin >= 4 && daysBeforeCheckin <= 6) {
+	           refundRate = 0.5; // 50% 환불
+	       } else {
+	           refundRate = 0.0; // 환불 불가
+	       }
 
+	       // 환불 비율에 따른 환불 금액 계산
+	       BigDecimal refundAmount = BigDecimal.valueOf(payment.getResTotalPrice() * refundRate);
+
+	       if (refundRate == 0.0) {
+	           log.info("환불 불가: payId: {}", payId);
+	           return "환불이 불가능한 상태입니다. (체크인 날짜 임박)";
+	       }
+	       
+	       
 	       try {
 	    	   // 결제 취소 요청 
 	           String impUid = payment.getImpUid();
 	           log.debug("impUid={}", impUid);
 
-	           CancelData cancelData = new CancelData(impUid, true);
+	           CancelData cancelData = new CancelData(impUid, true, refundAmount);
 	           IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
 
 	           log.debug("Iamport API response: {}", response);
@@ -197,20 +228,22 @@ public class PaymentsService {
 	               newPayment.setImpUid(impUid);
 	               newPayment.setPgTid(payment.getPgTid());;
 	               newPayment.setPayStatus("cancel");
-	               newPayment.setResTotalPrice(payment.getResTotalPrice());
+	               newPayment.setResTotalPrice(refundAmount.intValue());  // 취소된 금액
 	               newPayment.setPayMethod(payment.getPayMethod());
 	               newPayment.setBuyerEmail(payment.getBuyerEmail());
 	               newPayment.setPayDate(LocalDateTime.now());
 	               paymentsRepo.save(newPayment);             
 	               	
-	               // 예약 상태를 취소로 업데이트
-	               Integer resId = payment.getResId();
-	               updateReservationState(resId, 2);  // 2는 취소 상태
-	               
+	               // 포인트 결제인 경우에도, 예약 상태를 '예약 변경 완료'로 설정
+	               if ("point".equalsIgnoreCase(payment.getPayMethod())) {
+	                   updateReservationState(payment.getResId(), 3); // 3: 예약 변경 완료
+	               } else {
+	                   updateReservationState(payment.getResId(), 2); // 2: 예약 취소
+	               }
+
 	               log.info("Payment cancellation successful for payId: {}", payId);
 	               return "Payment cancellation successful";
-	           } else {
-	        	// 실패 이유를 명확히 로그에 기록
+	            } else {
 	               if (response != null && response.getResponse() != null) {
 	                   log.error("Cancellation failed: Status = {}, Message = {}",
 	                       response.getResponse().getStatus(), response.getResponse().getFailReason());
@@ -226,17 +259,34 @@ public class PaymentsService {
 	           log.error("Error during cancellation", e);
 	           throw new ServiceException("Error during cancellation: " + e.getMessage(), e);
 	       }
-	   }
+	    }
+	   
+	   // 최신 결제 정보를 가져오는 메서드 추가
+	    public Payments getLatestPaymentByResId(Integer resId) throws ServiceException {
+	    	 List<Payments> payments = paymentsRepo.findByResIdOrderByPayDateDesc(resId); // 최신 결제 내역을 가져오는 쿼리
+	    	    if (payments.isEmpty()) {
+	    	        throw new ServiceException("No payments found for resId: " + resId);
+	    	    }
+	    	    return payments.get(0);  // 최신 결제 내역 반환 (가장 첫 번째 값)
+	    }
 	   
 	   
 	   @Transactional
 	   public void updateReservationState(Integer resId, int resState) throws ServiceException {
-	       try {
-	           ReservationMaster reservation = reservationMasterRepo.findById(resId)
-	                   .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
-	           reservation.setResState(resState);
-	           reservationMasterRepo.save(reservation);
-	       } catch (Exception e) {
+		   try {
+		        // 동일한 resId에 대해 가장 최신 결제 내역을 가져옴
+		        Payments latestPayment = getLatestPaymentByResId(resId);
+
+		        // 결제 수단이 'point'이고 추가 결제가 있었던 경우 예약 상태를 '예약 변경 완료'로 업데이트
+		        if ("point".equalsIgnoreCase(latestPayment.getPayMethod()) && "cancel".equalsIgnoreCase(latestPayment.getPayStatus())) {
+		            resState = 3;  // 예약 변경 완료 상태로 설정
+		        }
+
+		        ReservationMaster reservation = reservationMasterRepo.findById(resId)
+		                .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + resId));
+		        reservation.setResState(resState);
+		        reservationMasterRepo.save(reservation);
+		    } catch (Exception e) {
 	           log.error("Failed to update reservation state for resId: {}", resId, e);
 	           throw new ServiceException("Failed to update reservation state: " + e.getMessage(), e);
 	       }
@@ -245,12 +295,32 @@ public class PaymentsService {
 	   
 	   // 부분 취소 메서드
 	    @Transactional
-	    public String cancelPartialPayment(Integer payId, Integer cancelAmount) throws ServiceException {
+	    public String cancelPartialPayment(Integer payId, Integer cancelAmount, LocalDate checkinDate) throws ServiceException {
 	        log.debug("Attempting to partially cancel payment with payId: {} and cancelAmount: {}", payId, cancelAmount);
 
 	        Payments payment = paymentsRepo.findById(payId)
 	                .orElseThrow(() -> new ServiceException("Payment not found for payId: " + payId));
-
+	        
+	        // 현재 날짜를 가져옴
+	        LocalDate currentDate = LocalDate.now();
+	        
+	        // 남은 날짜 계산
+	        long daysBeforeCheckin = ChronoUnit.DAYS.between(currentDate, checkinDate);
+	        double refundRate = 0;
+	        
+	        // 환불 조건 적용
+	        if (daysBeforeCheckin >= 7) {
+	            refundRate = 1.0; // 100% 환불
+	        } else if (daysBeforeCheckin >= 4 && daysBeforeCheckin <= 6) {
+	            refundRate = 0.5; // 50% 환불
+	        } 
+	        if (refundRate == 0.0) {
+	            log.info("환불 불가: payId: {}", payId);
+	            return "환불이 불가능한 상태입니다. (당일 취소)";
+	        }
+	        
+	        
+	        
 	        log.debug("Retrieved payment: {}", payment);
 	        log.debug("impuid={}", payment.getImpUid());
 	        
@@ -272,10 +342,11 @@ public class PaymentsService {
 
 	        try {
 	            String impUid = payment.getImpUid();
+	            BigDecimal partialCancelAmount = BigDecimal.valueOf(cancelAmount * refundRate); // 환불 비율을 반영한 금액 계산
 	            log.debug("impUid={}", impUid);
 
-	            // 부분 취소를 위해 취소 금액을 지정
-	            CancelData cancelData = new CancelData(impUid, true, BigDecimal.valueOf(cancelAmount));
+	            // 부분 취소를 위해 취소 금액을 지정 (부분 취소 데이터 생성)
+	            CancelData cancelData = new CancelData(impUid, true, partialCancelAmount);
 	            IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
 
 	            log.debug("Iamport API response: {}", response);
@@ -291,7 +362,7 @@ public class PaymentsService {
 
 	                // 부분 취소가 성공하면, 결제 상태를 업데이트 (필요에 따라 금액 수정)
 	                payment.setPayStatus("PARTIAL_CANCEL"); // 부분 취소 상태로 업데이트
-	                payment.setResTotalPrice(payment.getResTotalPrice() - cancelAmount);
+	                payment.setResTotalPrice(payment.getResTotalPrice() - partialCancelAmount.intValue()); // 남은 결제 금액 업데이트
 	                paymentsRepo.save(payment);
 
 	                // 예약 상태 업데이트
@@ -312,8 +383,8 @@ public class PaymentsService {
 	                throw new ServiceException("Partial cancellation failed: Payment status is not cancelled on PG site");
 	            }
 	        } catch (IamportResponseException e) {
-	            log.error("API call failed: ", e);
-	            throw new ServiceException("API call failed: " + e.getMessage(), e);
+	            log.error("API 호출 실패: ", e);
+	            throw new ServiceException("API 호출 실패: " + e.getMessage(), e);
 	        } catch (Exception e) {
 	            log.error("Error during partial cancellation", e);
 	            throw new ServiceException("Error during partial cancellation: " + e.getMessage(), e);

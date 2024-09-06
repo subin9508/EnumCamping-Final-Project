@@ -1,6 +1,7 @@
 package com.itwill.finalproject.web;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -226,8 +227,11 @@ public class PaymentsController {
     public ResponseEntity<?> getPartialPaymentInfo(@PathVariable("resId") Integer resId) {
         try {
         	Payments payment = paymentsService.getPaymentByResId(resId); // 결제 정보를 조회
-
+        	
+        	log.debug("payment={}", payment);
+        	
             if (payment == null) {
+            	log.error("Payment not found for resId: {}", resId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("결제 정보를 찾을 수 없습니다.");
             }
 
@@ -242,9 +246,7 @@ public class PaymentsController {
             log.error("Error retrieving payment information for resId: {}", resId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 예외 발생 시 에러 메시지를 반환
         }
-    }
-
-    
+    }   
     
     
     @ResponseBody
@@ -263,25 +265,33 @@ public class PaymentsController {
         
         
         try {
-            String result = paymentsService.cancelPartialPayment(payId, cancelAmount);
+        	
+        	// 예약 ID로부터 체크인 날짜를 가져옴
+            Integer resId = paymentsService.getResIdByPayId(payId);
+            LocalDate checkinDate = reservationService.getCheckinDateByResId(resId); // 체크인 날짜 조회
+        	
+            // 환불 처리
+            String result = paymentsService.cancelPartialPayment(payId, cancelAmount, checkinDate);
+            
+            
             if ("Partial payment cancellation successful".equals(result)) {
-                // 부분 취소가 성공했을 때 예약 상태를 업데이트
-            	Integer resId = paymentsService.getResIdByPayId(payId);
-                if (resId != null) {
-                	paymentsService.updateReservationState(resId, 3); // 3은 부분취소
-                    log.info("Reservation state updated to cancelled for resId: {}", resId);
-                    return ResponseEntity.ok(result);
+                // 결제 수단이 포인트인 경우에도 예약 상태가 변경 완료로 유지되도록 함
+                Payments latestPayment = paymentsService.getLatestPaymentByResId(resId);
+                if ("point".equalsIgnoreCase(latestPayment.getPayMethod())) {
+                    paymentsService.updateReservationState(resId, 3); // 3: 예약 변경 완료 상태
                 } else {
-                    log.warn("Partial payment cancelled but reservation state update failed for payId: {}", payId);
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation successful but reservation update failed");
+                    paymentsService.updateReservationState(resId, 3); // 부분 취소 상태
                 }
+
+                log.info("Reservation state updated to partially cancelled or modified for resId: {}", resId);
+                return ResponseEntity.ok("부분 취소가 성공적으로 처리되었습니다. 예약 상태도 업데이트되었습니다.");
             } else {
-                log.warn("Partial cancellation failed: {}", result);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
             }
+
         } catch (ServiceException e) {
-            log.error("Error during partial payment cancellation for payId: {}", payId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Partial cancellation failed: " + e.getMessage());
+            log.error("부분 취소 중 에러 발생: payId: {}", payId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부분 취소 처리 실패: " + e.getMessage());
         }
     }
 
@@ -304,6 +314,9 @@ public class PaymentsController {
                 // 결제 상태가 1인 경우에도 추가 결제를 허용하도록 수정
                 String result = this.paymentsService.saveAdditionalPayment(payment, resId);
                 log.info("Additional payment saved successfully: {}", result);
+                
+                // 추가 결제가 성공했으므로 예약 상태를 3으로 업데이트 (부분취소)
+                this.paymentsService.updateReservationState(resId, 3); // 3은 부분취소 상태
                 
                 // 예약 상태는 이미 1이므로 추가 업데이트는 생략할 수 있음
                 return ResponseEntity.ok(Map.of(

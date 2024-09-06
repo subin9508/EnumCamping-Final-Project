@@ -90,7 +90,7 @@ function highlightRangeDates(checkInDate, checkOutDate) {
         var cellDate = new Date(currentYear, currentMonth - 1, parseInt(cell.innerText));
 
         if (cellDate >= checkInDate && cellDate <= checkOutDate) {
-            cell.style.backgroundColor = "#FFFFE6"; // 이 구간의 날짜를 하이라이트
+            cell.style.backgroundColor = "#FFFFFF"; // 이 구간의 날짜를 하이라이트
         }
 
         if (cellDate.getTime() === checkInDate.getTime()) {
@@ -174,7 +174,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
 
             // 오늘 날짜인 경우
             if (currentDay.toDateString() === nowDate.toDateString()) {
-                column.style.backgroundColor = "#FFFFE6";
+                column.style.backgroundColor = "#FFFFFF";
                 column.style.cursor = "pointer";
                 column.onclick = function() { calendarChoiceDay(this); }
             }
@@ -218,7 +218,7 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
             // @see 금일인 경우
             if(document.getElementById("calMonth").innerText == autoLeftPad((nowDate.getMonth() + 1), 2) 
                 && document.getElementsByClassName("choiceDay")[0].innerText == autoLeftPad(toDay.getDate(), 2)) {
-                document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFE6";  //오늘날짜
+                document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFFF";  //오늘날짜
             }
             
             // @see 금일이 아닌 경우
@@ -269,8 +269,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         }
         
         // 가격 정보 지움
-        const priceValue = document.getElementById('price-value');
-        priceValue.innerText = '';
+//        const priceValue = document.getElementById('price-value');
+//        priceValue.innerText = '';
         
     }
     
@@ -329,8 +329,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         const isWeekend = (selectedDateObj.getDay() === 0 || selectedDateObj.getDay() === 6 || selectedDateObj.getDay() === 5 || selectedDateObj.getDay() === 5); // 0: Sunday, 6: Saturday, 5: Friday
     
         // 성수기 기간 설정
-        const startPeakSeason = new Date(year, 6, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
-        const endPeakSeason = new Date(year, 7, 31); // 8월 31일
+        const startPeakSeason = new Date(year, 9, 1); // 7월 1일 (월은 0부터 시작하므로 6은 7월을 의미)
+        const endPeakSeason = new Date(year, 9, 31); // 8월 31일
     
         // 성수기 여부 결정
         const isPeakSeason = selectedDateObj >= startPeakSeason && selectedDateObj <= endPeakSeason;
@@ -378,8 +378,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                     });
                     
                     // 가격 정보 지움
-                    const priceValue = document.getElementById('price-value');
-                    priceValue.innerText = '';
+//                    const priceValue = document.getElementById('price-value');
+//                    priceValue.innerText = '';
                     
                     // 두 가지 조건이 모두 만족되었는지 확인하여 함수 호출
                     if (selectedDate && selectedArea) {

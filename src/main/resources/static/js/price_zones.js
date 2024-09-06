@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const specialPriceInputs = document.querySelectorAll('form.modifyForm input[name^="specialPrice_"]');
+	const normalPriceInputs = document.querySelectorAll('form.modifyForm input[name^="price_"]');
     const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="select_"]');
 
 	    // 체크박스 상태를 로컬 스토리지에서 복원하고, 이벤트 핸들러 등록
@@ -156,42 +157,47 @@ document.getElementById('btnApplyAllUnCheck').addEventListener('click', function
     });
 });
 
-// 퍼센트 인상 버튼
-const btnApplyPlus = document.querySelector('button#btnApplyPlus');
-btnApplyPlus.addEventListener('click', () => {
-    let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
-    if (isNaN(percent)) {
-        alert("퍼센트 값을 입력해주세요.");
-    } else if (confirm(percent + '%를 인상할까요?')) {
-        console.log(percent + ' 인상');
-        specialPriceInputs.forEach(input => {
-            let currentValue = parseFloat(input.value);
-            if (!isNaN(currentValue)) {
-                input.value = Math.round(currentValue * (1 + percent * 0.01));
-                input.dispatchEvent(new Event('input')); // 변경된 내용을 보여주기 위해 이벤트 트리거
-            }
-        });
-    }
-});
+    // 퍼센트 인상 버튼
+    const btnApplyPlus = document.querySelector('button#btnApplyPlus');
+    btnApplyPlus.addEventListener('click', () => {
+        let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
+        if (isNaN(percent)) {
+            alert("퍼센트 값을 입력해주세요.");
+        } else if (confirm(percent + '%를 인상할까요?')) {
+            console.log(percent + ' 인상');
+            normalPriceInputs.forEach((input, index) => {
+                let normalPrice = parseFloat(input.value); // 정상 가격 가져오기
+                let specialPriceInput = specialPriceInputs[index]; // 특가 가격 필드와 일치하는 인덱스를 사용합니다.
 
-// 퍼센트 인하 버튼
-const btnApplyMinus = document.querySelector('button#btnApplyMinus');
-btnApplyMinus.addEventListener('click', () => {
-    let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
-    if (isNaN(percent)) {
-        alert("퍼센트 값을 입력해주세요.");
-    } else if (confirm(percent + '%를 인하할까요?')) {
-        console.log(percent + ' 인하');
-        specialPriceInputs.forEach(input => {
-            let currentValue = parseFloat(input.value);
-            if (!isNaN(currentValue)) {
-                input.value = Math.round(currentValue * (1 - percent * 0.01));
-                input.dispatchEvent(new Event('input'));
-            }
-        });
-    }
-});
+                if (!isNaN(normalPrice) && specialPriceInput) { // 값이 유효한 경우만 처리
+                    let newPrice = Math.round(normalPrice * (1 + percent / 100)); // 인상된 가격 계산
+                    specialPriceInput.value = newPrice; // 특가 가격 필드에 새로운 가격 입력
+                    specialPriceInput.dispatchEvent(new Event('input')); // 변경된 내용을 보여주기 위해 이벤트 트리거
+                }
+            });
+        }
+    });
 
+    // 퍼센트 인하 버튼
+    const btnApplyMinus = document.querySelector('button#btnApplyMinus');
+    btnApplyMinus.addEventListener('click', () => {
+        let percent = parseFloat(document.querySelector('input#percent').value.trim()); // 입력된 퍼센트 값 가져오기
+        if (isNaN(percent)) {
+            alert("퍼센트 값을 입력해주세요.");
+        } else if (confirm(percent + '%를 인하할까요?')) {
+            console.log(percent + ' 인하');
+            normalPriceInputs.forEach((input, index) => {
+                let normalPrice = parseFloat(input.value); // 정상 가격 가져오기
+                let specialPriceInput = specialPriceInputs[index]; // 특가 가격 필드와 일치하는 인덱스를 사용합니다.
+
+                if (!isNaN(normalPrice) && specialPriceInput) { // 값이 유효한 경우만 처리
+                    let newPrice = Math.round(normalPrice * (1 - percent / 100)); // 인하된 가격 계산
+                    specialPriceInput.value = newPrice; // 특가 가격 필드에 새로운 가격 입력
+                    specialPriceInput.dispatchEvent(new Event('input')); // 변경된 내용을 보여주기 위해 이벤트 트리거
+                }
+            });
+        }
+    });
 });
   
 /*    

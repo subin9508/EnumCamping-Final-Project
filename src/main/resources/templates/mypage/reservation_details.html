@@ -132,8 +132,9 @@
 
 					<div class="card-footer"
 						style="background-color: white; display: flex;">
-						<button id="btnPayCancel" class="btn btn-danger" th:if="${resMaster.resState == 1}">예약취소</button>
-						<a class="btn btn-success" th:if="${resMaster.resState == 1 and canModify}"
+            
+						<button id="btnPayCancel" class="btn btn-danger" th:if="${resMaster.resState == 1 or resMaster.resState == 3}">예약취소</button>
+						<a class="btn btn-success" th:if="${(resMaster.resState == 1 or resMaster.resState == 3) and canModify}"
 							th:href="@{/mypage/reservation_update(resId=${resMaster.resId})}"
 							style="margin-left: auto;"id="changeBtn">예약변경</a>
 					</div>

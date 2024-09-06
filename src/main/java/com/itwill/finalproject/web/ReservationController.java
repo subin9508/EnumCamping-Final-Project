@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.domain.Items;
@@ -56,7 +57,7 @@ public class ReservationController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
 		User user = userSvc.read(userId);
-		Integer userKey = user.getUserKey();
+		Integer userKey = user.getUserKey(); 
 	    log.debug("userKey={}", userKey);
 		
 	    
@@ -222,7 +223,7 @@ public class ReservationController {
 		        @RequestBody Map<String, Object> requestData, 
 		        HttpSession session, 
 		        Model model) {
-
+			
 		    log.debug("reservationList(requestData={})", requestData);
 		    
 		    // 세션에서 사용자 정보 가져오기
@@ -313,5 +314,23 @@ public class ReservationController {
 		    return "reservation/order";
 		}
 		
+		
+		// 특가 알림 alert 창
+		@GetMapping("/checkSpecialPeriod")
+		@ResponseBody
+		public ResponseEntity<Boolean> checkSpecialPeriod() {
+		    log.debug("Checking if there is a special period...");
 
+		    // 현재 시간 가져오기
+		    LocalDateTime now = LocalDateTime.now();
+
+		    // itemshistory 테이블에서 special이 1인 가장 최신의 start_date를 찾기
+		    LocalDateTime latestSpecialStartDate = itemsHistoryRepo.findLatestSpecialStartDate(now);
+
+		    // 특가 기간인지 여부를 반환
+		    boolean isSpecialPeriod = (latestSpecialStartDate != null);
+
+		    log.debug("Is special period: {}", isSpecialPeriod);
+		    return new ResponseEntity<>(isSpecialPeriod, HttpStatus.OK);
+		}
 }

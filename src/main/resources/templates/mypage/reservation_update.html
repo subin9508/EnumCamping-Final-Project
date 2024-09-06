@@ -17,7 +17,7 @@
 
 			<main style="flex-grow: 1; margin-left: 5%;">
 				<div>
-					<input id="resId" name="resId" type="text"
+					<input id="resId" name="resId" type="hidden"
 						th:value="${resMaster.resId}"> 
                     <input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 					<input id="userId"
@@ -125,11 +125,13 @@
 								</label>
 							</div>
 						</div>
-						<div class="m-3" id="price"
-							style="text-align: right; color: #7C9C63; font-size: 25px;">
-							<span id="price-label">캠핑존 가격: </span> <span id="price-value"></span>원
-						</div>
-					</div>
+                        <div class="m-3" id="price"
+                            style="text-align: right; color: #7C9C63; font-size: 25px;">
+                            <span id="price-label">캠핑존 가격: </span> <span
+                                id="price-value"
+                                th:text="${totalAmount}">0</span>원
+                        </div>
+                    </div>
 
 					<!-- 아이템 테이블 -->
 					<div class="m-3" id="items-table">
@@ -171,7 +173,7 @@
 												</select>
 											</div>
 											<p />
-											<div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
+											<div th:id="'total-' + ${i.itemId}" class="total-price" style="display:none;">0원</div>
 										</td>
 									</tr>
 								</tbody>
@@ -182,7 +184,7 @@
 						<div class="card mt-2 p-2" style="border: none;">
 							<div class="m-3" id="sumOfAllItems"
 								style="text-align: right; color: #7C9C63; font-size: 25px;">
-								<span>아이템 총 가격: </span><span id="totalSum">0</span><span>원</span>
+								<span>아이템 총 가격: </span><span id="totalSum" th:text="${totalItemAmount}">0</span><span>원</span>
 							</div>
 						</div>
 
@@ -197,8 +199,8 @@
 						</div>
 
 						<!-- 전체 총 가격을 표시할 공간 -->
-						<div class="m-3" id="totalAllItems"
-							style="display: none; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; text-align: center;"></div>
+						<div class="m-3" id="totalAllItems" th:text="'총 합계:' + ${totalAllAmount} + ' 원'"
+							style="justify-content: center; align-items: center; font-size: 24px; font-weight: bold; text-align: center;"></div>
 					</div>
 
 				</div>

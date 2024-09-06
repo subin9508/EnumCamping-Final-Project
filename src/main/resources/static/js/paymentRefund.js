@@ -1,90 +1,151 @@
-/**
- * 
- */
-
-let refundAmount;
-
 document.addEventListener('DOMContentLoaded', function() {
-    const btnPayRefund = document.querySelector('button#btnPayRefund'); // 결제 취소버튼 요소 선택
-	
-	// 서버에서 결제 ID를 가져오는 함수, axios를 사용하여 get 요청을 보냄
+    const btnPayRefund = document.querySelector('button#btnPayRefund');
+    
     const getPayIdByResId = (resId) => {
-        return axios.get(`/enumcamping/mypage/reservation_details/getPayId/${resId}`)
-            .then(response => response.data) // 응답 데이터 반환
+        return axios.get(`/enumcamping/mypage/reservation_update/getPaymentInfo/${resId}`)
+            .then(response => response.data)
             .catch(error => {
                 console.error("결제 ID 조회 실패:", error);
-                throw error; // 오류를 다시 던져서 호출자에게 전달
+                throw error;
             });
     };
 
-	
-    // 부분 환불 버튼 이벤트 리스너
-    btnPayRefund?.addEventListener('click', (e) => {
-		e.preventDefault(); // 기본 버튼 동작(폼 제출 등)을 방지
-		
-        const resId = document.querySelector("input[name=resId]").value; // 예약 ID 입력값 가져오기
+    btnPayRefund?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        const resId = document.querySelector("input[name=resId]").value;
+        const userId = document.querySelector("input[name=userId]").value;
+        const refundAmount = document.querySelector("input[name=refundAmount]").value;
+        
         console.log('resId=', resId);
-        const userId = document.querySelector("input[name=userId]").value; // userId 입력값 가져오기
-		refundAmount = document.querySelector("input[name=refundAmount]").value; // 부분 환불 금액 입력값 가져오기
-		
-		console.log(refundAmount); // 이 시점에 refundAmount가 정의되어 있는지 확인
-		if (!refundAmount) {
-			console.error("refundAmount is not defined.");
-			return;
-		}
-
-		// refundAmount가 정의되지 않았을 때의 오류 방지
+        console.log('refundAmount=', refundAmount);
+        
         if (!refundAmount) {
             alert("환불 금액을 입력하세요.");
             return;
         }
-		
+        
         if (!resId) {
-            alert("예약 아이디가 필요합니다."); // 예약 ID 없는 경우 알림
+            alert("예약 아이디가 필요합니다.");
             return;
         }
-	
-		// 예약 ID로 결제 ID를 조회하는 함수 호출
-        getPayIdByResId(resId).then(payId => {
+    
+        try {
+            const paymentInfo = await getPayIdByResId(resId);
+            const payMethod = paymentInfo.payMethod;
+            const payId = paymentInfo.payId;
+            
             console.log("부분 환불 시도: resId=" + resId);
-
             console.log("부분 환불 시도: payId=" + payId);
+            console.log("부분 환불 시도: payMethod=" + payMethod);
 
             if (!payId) {
                 alert("결제 아이디가 필요합니다.");
                 return;
             }
-			
-			// 부분 환불 확인 팝업
-			if (!confirm("정말로 이 금액을 환불하시겠습니까? 금액: " + refundAmount + "원")) {
-				console.log("부분 환불 확인 단계에서 사용자가 취소함");
-				return; // 사용자가 취소를 확인하지 않은 경우, 함수 실행을 중지
-			}
 
-			// 결제 ID로 결제 취소 요청을 POST로 전송
-            axios.post(`/enumcamping/mypage/reservation_update/refund/${payId}`, null, {
-				params: {
-                    cancelAmount: refundAmount // 부분 환불 금액을 파라미터로 전달
+            if (payMethod === 'point') {
+                alert("point로 결제 시 변경금액 전체 결제 후, 이전 금액 전체 취소 됩니다.");
+                try {
+                    await handleAdditionalPayment(resId);  // 응답 처리 및 검증까지 포함된 함수 호출
+                    await cancelFullPayment(payId, resId); // 전체 취소
+                } catch (error) {
+                    console.error("포인트 결제 처리 중 오류 발생:", error);
+                    alert('처리 중 오류가 발생했습니다: ' + error.message);
                 }
-			})
-                .then(response => {
-                    console.log("부분 환불 성공: ", response.data);
-                    alert('부분환불이 성공적으로 처리되었습니다.');
-                    // 결제 취소 후 예약 내역 페이지로 리다이렉트
-                    window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`; // 결제 성공 페이지로 이동
-                    //window.location.reload(); // 페이지를 새로고침하여 최신 상태를 반영.
-                })
-                .catch(error => {
-                    console.error("서버 응답 오류: ", error);
-                    alert('부분 취소 중 오류가 발생했습니다: ' + error.message);
-                });
-              
-        })
-        .catch(error => {
-            console.error("결제 ID 조회 과정에서 오류 발생:", error);
-            alert('결제 ID 조회 중 오류가 발생했습니다: ' + error.message);
-        });
-       
+                return;
+            }
+
+            if (!confirm("정말로 이 금액을 환불하시겠습니까? 금액: " + refundAmount + "원")) {
+                console.log("부분 환불 확인 단계에서 사용자가 취소함");
+                return;
+            }
+
+            await axios.post(`/enumcamping/mypage/reservation_update/refund/${payId}`, null, {
+                params: { cancelAmount: refundAmount }
+            });
+
+            console.log("부분 환불 성공");
+            alert('부분환불이 성공적으로 처리되었습니다.');
+            window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`;
+
+        } catch (error) {
+            console.error("결제 처리 과정에서 오류 발생:", error);
+            alert('결제 처리 중 오류가 발생했습니다: ' + error.message);
+        }
     });
-   
+
+    // 추가 결제 요청 및 응답 검증
+    async function handleAdditionalPayment(resId) {
+        const oldTotalAmount = parseInt(document.getElementById('oldTotalAmount').textContent.trim(), 10);
+        const refundAmount = parseInt(document.getElementById('totalAmount').textContent.trim(), 10);
+        const totalAmount = Math.max(0, oldTotalAmount + refundAmount);
+        
+        console.log('oldTotalAmount:', oldTotalAmount);
+        console.log('refundAmount:', refundAmount);
+        console.log('totalAmount:', totalAmount);
+        
+        const IMP = window.IMP;
+        IMP.init('imp53143455'); // 가맹점 고유 ID
+
+        return new Promise((resolve, reject) => {
+            IMP.request_pay({
+                pg: 'html5_inicis',
+                pay_method: 'card',
+                merchant_uid: 'merchant_' + new Date().getTime(),
+                name: "추가 결제",
+                amount: totalAmount,
+                buyer_email: "user@example.com", // 실제 값으로 교체해야 함
+                buyer_name: "홍길동", // 실제 값으로 교체해야 함
+                buyer_tel: "010-1234-5678" // 실제 값으로 교체해야 함
+            }, async function(rsp) {
+                if (rsp.success) {
+                    console.log('추가 결제 성공:', rsp);
+                    try {
+                        await verifyAndSavePayment(rsp.imp_uid, resId); // 결제 검증 및 저장
+                        alert('추가 결제가 완료되었습니다.');
+                        resolve();
+                    } catch (error) {
+                        console.error("결제 검증 중 오류 발생:", error);
+                        reject(error);
+                    }
+                } else {
+                    console.error('추가 결제 실패:', rsp);
+                    reject(new Error('추가 결제 실패'));
+                }
+            });
+        });
+    }
+    
+    // 결제 검증 및 저장 함수
+    async function verifyAndSavePayment(imp_uid, resId) {
+        try {
+            const response = await axios.post(`/enumcamping/additional_payment/verifyIamport/${imp_uid}?resId=${resId}`);
+            console.log('결제 검증 결과:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error("결제 검증 실패:", error);
+            throw error;
+        }
+    }
+
+	function cancelFullPayment(payId, resId) {
+		return axios.post(`/enumcamping/mypage/reservation_details/cancel/${payId}`)
+			.then(response => {
+				console.log("전체 취소 성공: ", response.data);
+				alert('이전 결제 금액이 성공적으로 취소되었습니다.');
+				window.location.href = `/enumcamping/mypage/reservation_update_successed/${resId}`;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.error("서버 응답 오류: ", error.response.data);
+				} else if (error.request) {
+					console.error("요청이 전송되지 않음: ", error.request);
+				} else {
+					console.error("요청 설정 중 오류 발생: ", error.message);
+				}
+				console.error("전체 취소 실패: ", error);
+				throw error;
+			});
+    }
 });

@@ -3,6 +3,7 @@ package com.itwill.finalproject.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -57,11 +58,18 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 			+ "where rm.user.userId = :userId and rm.resCreatedTime >= :createdTime "
 			+ "and rm.resState in (1, 3)")
 	ReservationMaster selectSpecialPriceReservations(@Param("userId") String userId, @Param("createdTime") LocalDateTime createdTime);
-	
+
+//    @Query("select rm from ReservationMaster rm "
+//    	     + "where rm.user.userId = :userId and rm.resCreatedTime >= :createdTime "
+//    	     + "and rm.resState in (1, 3)")
+//    	Optional<ReservationMaster> selectSpecialPriceReservations(@Param("userId") String userId, @Param("createdTime") LocalDateTime createdTime);
+    
 	@Modifying
 	@Query("UPDATE ReservationMaster rm "
 			+ "SET rm.resModifiedTime = CURRENT_TIMESTAMP "
 			+ "where rm.resId = :resId")
 	int updateResModifiedTime(@Param("resId") Integer resId);
+	
+	
 
 }

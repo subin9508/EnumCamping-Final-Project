@@ -66,6 +66,7 @@ import com.itwill.finalproject.service.SpecialService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -603,9 +604,30 @@ public class MyPageController {
 		for (Items item : items) {
 			log.info("Item: {}", item);
 		}
+		
+		// itemId가 20 이하인 itemAmount의 총합 계산
+	    int totalAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() <= 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	 // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalItemAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() > 20)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    // itemId가 21 이상인 itemAmount의 총합 계산
+	    int totalAllAmount = resDetail.stream()
+	                               .filter(detail -> detail.getItemId() >= 1)
+	                               .mapToInt(ReservationDetailDto::getItemAmount)
+	                               .sum();
+	    
 		model.addAttribute("items", items);
 		model.addAttribute("resMaster", resMaster.get());
 		model.addAttribute("resDetail", resDetail);
+		model.addAttribute("totalAmount", totalAmount); // 계산된 금액을 모델에 추가
+		log.info("Total Amount: {}", totalAmount);
+		model.addAttribute("totalItemAmount", totalItemAmount);
+		model.addAttribute("totalAllAmount", totalAllAmount);
 	}
 
 	@GetMapping("/reservation_update/{date}")
@@ -810,78 +832,57 @@ public class MyPageController {
 	    return "mypage/reservation_order";
 	}
 
-	// 예약 변경 페이지 로드
-	@GetMapping("/reservation_update/{resId}")
-	public String reservationUpdateForm(@PathVariable int resId, Model model) {
-		log.info("reservationUpdateForm for resId: {}", resId);
 
-		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
-		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
-		List<Items> items = reservationSvc.getAllItems();
+	@GetMapping("/reservation_update_successed/{resId}")
+	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
+	    
+	    // 캐시 비활성화 설정
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+	    response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+	    response.setDateHeader("Expires", 0); // Proxies
+	    
+	    // Spring Security를 통해 사용자 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName(); // 현재 로그인한 사용자의 ID를 가져옴
+	    
+	    // 세션에서 예약 정보 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    
+	    if (resMaster == null) {
+	        model.addAttribute("error", "세션에 예약 정보가 없습니다. 다시 시도해주세요.");
+	        return "redirect:/mypage/myInfo?userId=" + userId;
+	    }
+	    
+	    // resMaster의 resId가 null이면 PathVariable의 resId 설정
+	    if (resMaster.getResId() == null) {
+	        resMaster.setResId(resId);
+	    }
 
-		if (!resMaster.isPresent()) {
-			return "error/reservation-not-found";
-		}
+	    List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");
+	    
+	    try {
+	        // 서비스 호출을 통한 예약 정보 저장 및 업데이트
+	        claimService.saveClaim(resMaster, resDetail, resId);
+	        reservationSvc.updateResModifiedTime(resId);
+	    } catch (Exception e) {
+	        log.error("예약 수정 중 오류 발생", e);
+	        model.addAttribute("error", "예약 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+	        return "redirect:/mypage/myInfo?userId=" + userId;
+	    }
 
-		model.addAttribute("resMaster", resMaster.get());
-		model.addAttribute("resDetail", resDetail);
-		model.addAttribute("items", items);
+	    // 모델에 필요한 정보 추가
+	    model.addAttribute("res_id", resId);
+	    model.addAttribute("resMaster", resMaster);
+	    model.addAttribute("resDetail", resDetail);
+	    model.addAttribute("userId", userId); // Spring Security로부터 가져온 userId 추가
 
-		return "mypage/reservation_update_form";
+	    // 예약 완료 후 세션에서 관련 정보 제거 (뒤로가기로 페이지가 다시 로드되지 않도록)
+	    session.removeAttribute("resMaster");
+	    session.removeAttribute("resDetails");
+
+	    return "mypage/reservation_update_successed";
 	}
 
-	@PostMapping("/reservation_update")
-	public String processReservationUpdate(@RequestBody ReservationUpdateDto updateDto, Model model) {
-		log.info("Processing reservation update: {}", updateDto);
-
-		ReservationChangeResultDto changeResult = reservationSvc.updateReservation(updateDto);
-
-		model.addAttribute("changeResult", changeResult);
-
-		return "mypage/reservation_update_confirmation";
-	}
-
-	@GetMapping("/reservation_update_payment/{resId}")
-	public String reservationUpdatePayment(@PathVariable int resId, Model model) {
-		log.info("Reservation update payment for resId: {}", resId);
-
-		ReservationChangeResultDto changeResult = reservationSvc.getReservationChangeResult(resId);
-
-		model.addAttribute("changeResult", changeResult);
-		model.addAttribute("resMaster", changeResult.getUpdatedReservation());
-		model.addAttribute("user", changeResult.getUser());
-		model.addAttribute("reservationDetails", changeResult.getUpdatedReservationDetails());
-
-		return "mypage/reservation_update_payment";
-	}
-
-	@PostMapping("/complete_reservation_update")
-	@ResponseBody
-	public ResponseEntity<?> completeReservationUpdate(@RequestBody ReservationUpdateDto updateDto) {
-		log.info("Completing reservation update: {}", updateDto);
-
-		try {
-			ReservationChangeResultDto result = reservationSvc.finalizeReservationUpdate(updateDto);
-			return ResponseEntity.ok(result);
-		} catch (Exception e) {
-			log.error("Error completing reservation update", e);
-			return ResponseEntity.badRequest().body("예약 변경 처리 중 오류가 발생했습니다.");
-		}
-	}
-
-	@PostMapping("/refund_rquest")
-	@ResponseBody
-	public ResponseEntity<?> processRefundRequest(@RequestBody RefundRequestDto refundDto) {
-		log.info("Processing refund request: {}", refundDto);
-
-		boolean refundRequestSuccess = reservationSvc.processRefundRequest(refundDto);
-
-		if (refundRequestSuccess) {
-			return ResponseEntity.ok().body("환불 요청이 성공적으로 처리되었습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("환불 요청 처리 중 오류가 발생했습니다.");
-		}
-	}
 	
 	@GetMapping("/reservation_update_successed/{resId}")
     public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
@@ -961,6 +962,7 @@ public class MyPageController {
 		}
 		
 	}
+
 	
 
 }
