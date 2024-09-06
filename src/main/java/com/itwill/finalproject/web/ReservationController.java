@@ -51,17 +51,52 @@ public class ReservationController {
 	private final SpecialRepository spclRepo;
 	
 	@GetMapping("/calendar")
-	public void reservationCalendar(HttpSession session,Model model) {
+	public void reservationCalendar(Model model) {
 		log.info("reservationCalendar");
-		List<Items> items = reservationSvc.getAllItems();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
 		User user = userSvc.read(userId);
 		Integer userKey = user.getUserKey();
 	    log.debug("userKey={}", userKey);
 		
+	    
+	    //여기서 item 특가도 .. 확인해야할 듯?
+	    //예약 여부 체크
+	    //1. 특가 기간인지 확인하고, 2. 예약되어있는지 확인하고, 3. 가격 보여주기
+	    //userId로 예약 여부 확인
+	    
+	    List<Items> items = reservationSvc.getAllItems();
 		for (Items item : items) {
 			log.info("Item: {}", item);
+			LocalDateTime now = LocalDateTime.now();
+			int itemId = item.getItemId();
+			LocalDateTime startDate = spclRepo.findStartDate(itemId, now);
+			
+			if(startDate == null) {
+	        	log.info("아이템 {}는 특가 기간이 아닙니다.",itemId);
+	        	Integer itemPrice =itemsHistoryRepo.findNewestNormalPrice(itemId);
+	        	//DESC 정상가 입력	        	
+	        	item.setItemPrice(itemPrice);
+	        } else { //특가기간
+	        	log.info("아이템 {}는 특가 기간입니다.",itemId);
+	        	// 특가 예약 조회
+	        	ReservationMaster rm = reservationSvc.findSpecial(userId, startDate);
+	        	if (rm == null) {
+	        		log.info("특가 예약 안함");
+	        		//item table에서 특가 찾기 
+	        		Integer itemPrice = reservationSvc.readItemPrice(itemId);
+	        		if (itemPrice == -1) { //item 테이블에서 special이 0인 경우
+	        			itemPrice = reservationSvc.readSpecialPrice(itemId); //그 경우는 history에서 특가 찾기
+	        		}
+	        		//DESC 특가 입력
+	        		item.setItemPrice(itemPrice);
+	        	} else {
+	        		log.info("특가 예약 함");
+	        		//DESC 정상가 입력
+	        		Integer itemPrice =itemsHistoryRepo.findNewestNormalPrice(itemId);
+	        		item.setItemPrice(itemPrice);
+	        	}
+	        }
 		}
 		model.addAttribute("items", items);
 	}

@@ -45,14 +45,14 @@ public class ReservationService {
 	
     // 가장 최근의 start_date를 조회하는 메소드
     public LocalDateTime getLatestStartDate(int itemId) {
-    	log.info("itemId = {}",itemId);
-    	log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
+    	//log.info("itemId = {}",itemId);
+    	//log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
         return itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId);
     }
 
     // 특정 조건에 따른 item_price를 조회하는 메소드
     public Integer getItemPriceByAdjustedEndDate(int itemId, LocalDateTime date) {
-    	log.info("id={}, date={}",itemId,date);
+    	//log.info("id={}, date={}",itemId,date);
         return itemsHistoryRepo.findItemPriceByItemIdAndAdjustedEndDate(itemId, date);
     }
 	
