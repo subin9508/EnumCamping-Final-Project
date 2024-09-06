@@ -339,14 +339,16 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         const weekendFactor = isWeekend ? 1 : 0; // 주말이면 1, 평일이면 0
     
         const itemId = (areaIndex - 1) * 4 + seasonFactor + weekendFactor + 1;
-    
-        const uri = `../reservation/itemPrice/${itemId}`;
+        
+        const rs = document.querySelector('input#resSpecial');
+        const resSpecial = parseInt(rs.value);
+        const uri = `../mypage/itemPrice/${itemId}/${resSpecial}`;
     
         console.log('updatePrice()', uri);
     
         axios.get(uri)
             .then(response => {
-                const price = (response.data.price)     
+                const price = (response.data)     
                 document.getElementById(`price_${areaIndex}`).innerText = `${price}원`;
     
             })

@@ -100,10 +100,6 @@ public class ReservationController {
 	    
 	    //현재 시간 체크
 		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String dateNow = now.format(formatter);
-	//	log.debug("dateNow = {}",dateNow);
-		
 		
 		//특가 상품인지 체크 & 시작날짜 찾기
 		LocalDateTime startDate = spclRepo.findStartDate(itemId, now);
@@ -121,11 +117,6 @@ public class ReservationController {
             return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 //        	return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
         } else { //특가
-        	
-        	//오늘이랑 비교를 해야하는데???
-//        	start가 아니라 end를 비교해야할거같음
-        	
-        	
         	log.info("아이템 {}는 특가 기간입니다.",itemId);
         	// 특가 예약 조회
         	ReservationMaster rm = reservationSvc.findSpecial(userId, startDate);

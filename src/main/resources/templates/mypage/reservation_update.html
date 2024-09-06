@@ -19,6 +19,7 @@
 				<div>
 					<input id="resId" name="resId" type="text"
 						th:value="${resMaster.resId}"> 
+                    <input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 					<input id="userId"
 						name="userId" type="hidden" th:value="${resMaster.user.userId}">
 					<table class="scriptCalendar">

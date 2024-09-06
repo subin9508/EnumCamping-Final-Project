@@ -557,9 +557,6 @@ public class MyPageController {
 			//특가기간인지 체크
 			//먼저 현재 시간 체크
 			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			String dateNow = now.format(formatter);
-			log.debug("dateNow = {}",dateNow);
 			
 			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 endDate>오늘 이면 아직 특가 기간인것!
 			int spc = specialService.findSpecial(zoneId, now); //0이면 특가 종료 1이면 특가 기간
@@ -592,7 +589,7 @@ public class MyPageController {
 			//TODO 걍 정상가보여주면 됨
 			//history 이용 등, res controller 이용
 			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
-			log.info("list size = {}",list.size());
+			log.info("정상가 예약");
 			
 			List<Integer> itemList = list.subList(21, 32);
 			for (int i = 0; i < itemList.size(); i++) {
@@ -924,5 +921,46 @@ public class MyPageController {
 
         return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
     }
+	
+	
+	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
+	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
+		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
+		
+		
+		//예약 변경 시 할 일
+		//특가 예약인지 먼저 체크,
+		//그다음에 특가 기간인지 체크
+		// 특가예약&특가기간 -> 특가
+		// 특가예약&특가기간 지남 -> 정상가
+		// 정상가 예약 -> 정상가
+		
+	    //현재 시간 체크
+		LocalDateTime now = LocalDateTime.now();
+		
+		if (resSpecial == 1) {
+			int spc = specialService.findSpecial(itemId, now); //0이면 특가 종료 1이면 특가 기간
+			if (spc == 1) {
+				//특가 가격 보여주기
+				//여기서는 itemId마다 개별가격 보여주는것임~
+				Integer itemPrice =ihRepo.findSpecialPrice(itemId);
+				log.info("특가 기간 중 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			} else {
+				//정상 가격 보여주기
+				Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+				log.info("특가 기간 끝남 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			}
+			
+		} else { //special = 0
+			// 정상가보여주면 됨
+			log.info("정상가");
+			Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+		}
+		
+	}
+	
 
 }
