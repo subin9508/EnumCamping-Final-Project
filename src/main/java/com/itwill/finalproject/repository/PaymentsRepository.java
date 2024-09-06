@@ -16,6 +16,11 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     // 예약 아이디로 결제 정보를 조회
     Optional<Payments> findByResId(Integer resId);
     
+    // 예약 아이디 중 제일 높은 payId찾기
+    @Query("SELECT p FROM Payments p WHERE p.resId = :resId ORDER BY p.payId DESC")
+    Optional<Payments> findTopByResIdOrderByPayIdDesc(@Param("resId") Integer resId);
+
+    
     // 새로운 결제 정보를 삽입 (JpaRepository의 save 메소드 사용)
     
     
