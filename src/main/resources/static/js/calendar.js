@@ -637,15 +637,18 @@ function updateQuantity(itemId, itemPrice) {
     console.log('Button clicked'); // 버튼 클릭 로그
     const date = `${finalYear}-${finalMonth}-${finalDay}`;
     const requirement = document.getElementById("special-requests").value;
+    
+    console.log('finalId = ',finalItemId);
+    const finalAreaId = Math.floor(finalItemId / 4) + 1;
+
     const reservationMaster = {
         resCheckIn: date,
         resCheckOut: calculateCheckOutDate(date, finalSelectedNight),
         resTotalPrice: parseInt(document.getElementById('totalAllItems').innerText.replace(/[^0-9]/g, '')),
         requirement: requirement || '요청없음',
-        resSpecial: parseInt(document.getElementById(`special_${finalItemId}`).value)
-        //TODO
-        //특가면 resSpecial = 1
+        resSpecial: parseInt(document.getElementById(`special_${finalAreaId}`).value)
     };
+    
     console.log('reservationMaster: {}', reservationMaster);
 
     const mainReservationDetail = {
