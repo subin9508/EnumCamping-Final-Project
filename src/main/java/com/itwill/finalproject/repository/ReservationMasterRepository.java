@@ -3,14 +3,12 @@ package com.itwill.finalproject.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.itwill.finalproject.domain.ReservationDetail;
 import com.itwill.finalproject.domain.ReservationMaster;
 
 public interface ReservationMasterRepository extends JpaRepository<ReservationMaster, Integer> {
@@ -56,7 +54,7 @@ public interface ReservationMasterRepository extends JpaRepository<ReservationMa
 	//특가 예약 여부 체크
 	@Query("select rm from ReservationMaster rm "
 			+ "where rm.user.userId = :userId and rm.resCreatedTime >= :createdTime "
-			+ "and rm.resState in (1, 3)")
+			+ "and rm.resState in (1, 3) and rm.resSpecial = 1")
 	ReservationMaster selectSpecialPriceReservations(@Param("userId") String userId, @Param("createdTime") LocalDateTime createdTime);
 
 //    @Query("select rm from ReservationMaster rm "
