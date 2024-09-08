@@ -2,11 +2,9 @@ package com.itwill.finalproject.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +98,7 @@ public class SpecialService {
 
                 item.setItemPrice(newPrice.intValue());
                 item.setSpecial("on".equals(newCheck) ? 1 : 0);
-                itemsRepository.save(item);
+                itemsRepository.save(item); //가격이랑 special을 바꿈
                 
                 // 특가 상태가 'on'인 경우만 특가 로그를 추가
                 if ("on".equals(newCheck)) {
@@ -220,10 +218,11 @@ public class SpecialService {
         ItemsHistory latestHistory = itemsHistoryRepository.findTopByItemsAndSpecialOrderByStartDateDesc(itemId, 1);
         if (latestHistory != null) {
             latestHistory.setEndDate(now.minusSeconds(1));
+            //종료날짜업데이트
             itemsHistoryRepository.save(latestHistory);
             log.info("Updated latest history record endDate: {}", latestHistory);
         }
-        
+        /*
         List<ItemsHistory> existingRecords = itemsHistoryRepository.findByItemsAndSpecialAndStartDate(item, 0, now);
         if (existingRecords.isEmpty()) {
             ItemsHistory newHistory = new ItemsHistory();
@@ -236,7 +235,7 @@ public class SpecialService {
             log.info("ItemsHistory에 새로운 레코드 추가됨: {}", newHistory);
         } else {
             log.info("Already existing special = 0 record for the same start date, not inserting new record.");
-        }
+        }*/
 
 
         // Special 테이블의 end_date 업데이트

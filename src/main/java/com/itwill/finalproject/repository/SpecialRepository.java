@@ -1,6 +1,5 @@
 package com.itwill.finalproject.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -47,14 +46,34 @@ public interface SpecialRepository extends JpaRepository<Special, Integer> {
 //    int updateSpecialEndDateFromHistory(@Param("itemId") Integer itemId);
 
     
+//    @Modifying
+//    @Transactional
+//    @Query("UPDATE Special s SET s.endDate = CURRENT_TIMESTAMP "
+//    		+ "WHERE s.items.itemId = :itemId AND "
+//    		+ "EXISTS (SELECT 1 FROM ItemsHistory h "
+//    		+ "WHERE h.items.itemId = s.items.itemId AND h.special = 0 "
+//    		+ "AND h.endDate >= CURRENT_TIMESTAMP)")
+//    int updateSpecialEndDateWhenSpecialGoesZero(@Param("itemId") Integer itemId);
+    
+//    @Modifying
+//    @Transactional
+//    @Query(value = "UPDATE special s SET s.end_date = CURRENT_TIMESTAMP "
+//                 + "WHERE s.item_id = :itemId AND "
+//                 + "EXISTS (SELECT 1 FROM itemshistory h "
+//                 + "WHERE h.item_id = s.item_id AND h.special = 0 "
+//                 + "AND h.end_date >= CURRENT_TIMESTAMP LIMIT 1)", nativeQuery = true)
+//    int updateSpecialEndDateWhenSpecialGoesZero(@Param("itemId") Integer itemId);
+    
+    
+    
     @Modifying
     @Transactional
-    @Query("UPDATE Special s SET s.endDate = CURRENT_TIMESTAMP "
-    		+ "WHERE s.items.itemId = :itemId AND "
-    		+ "EXISTS (SELECT 1 FROM ItemsHistory h "
-    		+ "WHERE h.items.itemId = s.items.itemId AND h.special = 0 "
-    		+ "AND h.endDate >= CURRENT_TIMESTAMP)")
+    @Query(value = "UPDATE special s SET s.end_date = CURRENT_TIMESTAMP "
+                 + "WHERE s.item_id = :itemId "
+                 + "order by s.start_date desc LIMIT 1", nativeQuery = true)
     int updateSpecialEndDateWhenSpecialGoesZero(@Param("itemId") Integer itemId);
+
+    
     
     // 특정 itemId에 대한 특가 종료일을 조회하는 메서드	
     @Query("SELECT s.endDate FROM Special s WHERE s.items.itemId = :itemId")

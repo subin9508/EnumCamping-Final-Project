@@ -17,8 +17,8 @@ import com.itwill.finalproject.dto.ItemPriceDto;
 public interface ItemsHistoryRepository extends JpaRepository<ItemsHistory, Integer>{
      
 	 // 특정 itemId와 special 상태를 가진 가장 최근의 ItemsHistory 레코드를 필요할 때 사용
-	@Query(value = "SELECT * FROM ItemsHistory WHERE item_id = :itemId "
-			+ "AND special = :special ORDER BY start_date DESC LIMIT 1", nativeQuery = true)
+	@Query("SELECT h FROM ItemsHistory h WHERE h.items.id = :itemId "
+			+ "AND special = :special ORDER BY startDate DESC LIMIT 1")
 	ItemsHistory findTopByItemsAndSpecialOrderByStartDateDesc(@Param("itemId") Integer itemId, @Param("special") Integer special);
 	
 	 // 동일한 시작 시간과 special 상태를 가진 레코드가 이미 존재하는지 확인
