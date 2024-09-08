@@ -34,56 +34,39 @@ public class AdminService {
         return itemsRepository.findById(itemId).orElse(null);  // Optional을 사용하여 null 처리
     }
     
- // Zones 업데이트 전용 메서드
+    // 구역 세부 정보를 업데이트하는 메서드
     @Transactional
     public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String special) {
-    	log.info("updateZoneDetails");
+        log.info("updateZoneDetails for itemId: {}, newPrice: {}, special: {}", itemId, newPrice, special);
         Items item = findById(itemId);
-        if (item != null) {
-            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
+        
+        // 변경 사항과 상관없이 항상 히스토리 업데이트
+        updateItemHistory(item, newPrice.intValue(), special);
 
-            if (priceChanged) {
-            	updateItemHistory(item, newPrice.intValue(),special);
-            	
-            	item.setItemPrice(newPrice.intValue());
-            	if ("1".equals(special)) {
-                	item.setSpecial(1);
-                } else {
-                	item.setSpecial(0);
-                }
-                
-                itemsRepository.save(item);
-            }
-        }
+        // 아이템 세부 정보 업데이트
+        item.setItemPrice(newPrice.intValue());
+        item.setSpecial("1".equals(special) ? 1 : 0);
+        
+        itemsRepository.save(item);
+        log.info("Zone details updated: {}", item);
     }
 
-    // Items 업데이트 메서드 (기존에 있던 메서드)
+    // 아이템 세부 정보를 업데이트하는 메서드
     @Transactional
     public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String special) {
-    	log.info("updateItemDetails");
+        log.info("updateItemDetails for itemId: {}, newPrice: {}, newDesc: {}, special: {}", itemId, newPrice, newDesc, special);
         Items item = findById(itemId);
-        if (item != null) {
-            boolean priceChanged = !item.getItemPrice().equals(newPrice.intValue());
-            boolean descChanged = (newDesc != null && !newDesc.equals(item.getItemDesc()));
+        
+        // 변경 사항과 상관없이 항상 히스토리 업데이트
+        updateItemHistory(item, newPrice.intValue(), special);
 
-            if (priceChanged) {
-            	log.info("history insert");
-                updateItemHistory(item, newPrice.intValue(),special);
-                item.setItemPrice(newPrice.intValue());
-                if ("1".equals(special)) {
-                	item.setSpecial(1);
-                } else {
-                	item.setSpecial(0);
-                }
-                log.info("item에 price update");
-                itemsRepository.save(item);
-            }
-            if (descChanged) { //설명만 변경시
-                log.info("item에 desc update");
-            	item.setItemDesc(newDesc);
-                itemsRepository.save(item);
-            }
-        }
+        // 아이템 세부 정보 업데이트
+        item.setItemPrice(newPrice.intValue());
+        item.setItemDesc(newDesc);
+        item.setSpecial("1".equals(special) ? 1 : 0);
+        
+        itemsRepository.save(item);
+        log.info("Item details updated: {}", item);
     }
 
     // History 업데이트 메서드 (공통 사용)

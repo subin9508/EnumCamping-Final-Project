@@ -1,5 +1,7 @@
 package com.itwill.finalproject.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +17,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-import java.time.LocalDateTime;
-
-
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
