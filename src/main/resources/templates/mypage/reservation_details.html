@@ -23,51 +23,82 @@
 							<input id="resId" name="resId" type="hidden"
 								th:value="${resMaster.resId}"> <input id="userId"
 								name="userId" type="hidden" th:value="${resMaster.user.userId}">
-
+                            <input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="resCheckIn" class="form-label">체크인 날짜</label> <input
 											id="resCheckIn" class="form-control" type="text"
-											th:value="${resMaster.resCheckIn}" readonly>
+											th:value="${clmDateDetail == null ? resMaster.resCheckIn : clmDateDetail.canCheckIn}" readonly>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="resCheckOut" class="form-label">체크아웃 날짜</label> <input
 											id="resCheckOut" class="form-control" type="text"
-											th:value="${resMaster.resCheckOut}" readonly>
+											th:value="${clmDateDetail == null ? resMaster.resCheckOut : clmDateDetail.canCheckOut}" readonly>
 									</div>
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label for="resArea" class="form-label">예약 구역, 금액</label>
-								<th:block th:each="item : ${resDetail}">
-									<th:block th:if="${1 <= item.itemId && item.itemId <= 4}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+								<th:block th:if="${clmDetail != null}">
+									<th:block th:each="item : ${clmDetail}">
+										<th:block th:if="${1 <= item.itemId && item.itemId <= 4}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${5 <= item.itemId && item.itemId <= 8}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${9 <= item.itemId && item.itemId <= 12}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${13 <= item.itemId && item.itemId <= 16}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${17 <= item.itemId && item.itemId <= 20}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
 									</th:block>
-									<th:block th:if="${5 <= item.itemId && item.itemId <= 8}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
-									</th:block>
-									<th:block th:if="${9 <= item.itemId && item.itemId <= 12}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
-									</th:block>
-									<th:block th:if="${13 <= item.itemId && item.itemId <= 16}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
-									</th:block>
-									<th:block th:if="${17 <= item.itemId && item.itemId <= 20}">
-										<input readonly class="form-control" type="text"
-											name="resArea"
-											th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+								</th:block>
+								<th:block th:if="${clmDetail == null}">
+									<th:block th:each="item : ${resDetail}">
+										<th:block th:if="${1 <= item.itemId && item.itemId <= 4}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${5 <= item.itemId && item.itemId <= 8}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${9 <= item.itemId && item.itemId <= 12}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${13 <= item.itemId && item.itemId <= 16}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
+										<th:block th:if="${17 <= item.itemId && item.itemId <= 20}">
+											<input readonly class="form-control" type="text"
+												name="resArea"
+												th:value="${item.itemName} + ', ' + ${item.itemAmount} + '원'">
+										</th:block>
 									</th:block>
 								</th:block>
 							</div>
@@ -82,23 +113,37 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}">
-											<td th:text="${rs.itemName}"></td>
-											<td th:text="${rs.itemQuantity}"></td>
-											<td th:text="${rs.itemAmount} + '원'"></td>
-										</tr>
-										<tr th:if="${#lists.size(resDetail) eq 1}">
-											<td colspan="3" class="text-center">선택하신 구매/대여물품이 없습니다.</td>
-										</tr>
+										<th:block th:if="${clmDetail != null}">
+											<tr th:each="rs : ${clmDetail}" th:if="${rs.itemId > 20}">
+												<td th:text="${rs.itemName}"></td>
+												<td th:text="${rs.itemQuantity}"></td>
+												<td th:text="${rs.itemAmount} + '원'"></td>
+											</tr>
+											<tr th:if="${#lists.size(clmDetail) eq 1}">
+												<td colspan="3" class="text-center">선택하신 구매/대여물품이 없습니다.</td>
+											</tr>
+										</th:block>
+										<th:block th:if="${clmDetail == null}">
+											<tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}">
+												<td th:text="${rs.itemName}"></td>
+												<td th:text="${rs.itemQuantity}"></td>
+												<td th:text="${rs.itemAmount} + '원'"></td>
+											</tr>
+											<tr th:if="${#lists.size(resDetail) eq 1}">
+												<td colspan="3" class="text-center">선택하신 구매/대여물품이 없습니다.</td>
+											</tr>
+										</th:block>
 									</tbody>
 								</table>
 							</div>
 							<div class="mt-2 total-price">
 								<label for="resTotalPrice" class="form-label fs-5"
-									style="color: #0056b3;">총 가격</label> <input id="resTotalPrice"
+									style="color: #0056b3;">총 가격</label> 
+									<input id="resTotalPrice"
 									class="form-control fs-5" type="text"
-									th:value="${resMaster.resTotalPrice} + '원'"
+									th:value="${clmMaster != null ? clmMaster.totalPrice + '원' : resMaster.resTotalPrice + '원'}"
 									style="color: #0056b3;" readonly />
+
 							</div>
 							<div class="mt-2">
 								<label for="requirement" class="form-label">요청사항</label>
@@ -107,9 +152,13 @@
 									th:text="${#strings.isEmpty(resMaster.requirement) ? '요청없음' : resMaster.requirement}"></textarea>
 							</div>
 							<div class="mt-2">
-								<label for="resCreatedTime" class="form-label">예약 일시</label> <input
-									id="resCreatedTime" class="form-control" type="text"
-									th:value="*{#temporals.format(resMaster.resCreatedTime,'yyyy-MM-dd HH:mm:ss')}"
+								<label for="resModifiedTime" class="form-label"> 
+									<span th:if="${clmMaster != null}">변경 일시</span> 
+									<span th:if="${clmMaster == null}">예약 일시</span>
+								</label> 
+								<input id="resCreatedTime" class="form-control"
+									type="text"
+									th:value="${clmMaster != null ? #temporals.format(clmMaster.cancelTime, 'yyyy-MM-dd HH:mm:ss') : #temporals.format(resMaster.resCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"
 									readonly />
 							</div>
 							<div class="mt-2">
@@ -127,10 +176,11 @@
 
 					<div class="card-footer"
 						style="background-color: white; display: flex;">
-						<button id="btnPayCancel" class="btn btn-danger">예약취소</button>
+            
+						<button id="btnPayCancel" class="btn btn-danger" th:if="${resMaster.resState == 1 or resMaster.resState == 3}">예약취소</button>
 						<a class="btn btn-success" th:if="${(resMaster.resState == 1 or resMaster.resState == 3) and canModify}"
 							th:href="@{/mypage/reservation_update(resId=${resMaster.resId})}"
-							style="margin-left: auto;">예약변경</a>
+							style="margin-left: auto;"id="changeBtn">예약변경</a>
 					</div>
 				</div>
 			</main>
@@ -146,8 +196,20 @@
 	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-
 	<script th:src="@{/js/payment.js}"></script>
 	<script th:src="@{/js/paymentCancel.js}"></script>
+	
+	<script type="text/javascript">
+	const changeBtn = document.querySelector('a#changeBtn');
+	const resSpecial = document.querySelector('input#resSpecial');
+	changeBtn.addEventListener('click', ()=>{
+		if (parseInt(resSpecial.value) === 1){
+			alert('특가 예약 건입니다.');
+		} else {
+			alert('일반가 예약 건입니다.');			
+		}
+	});
+	</script>
+	
 </body>
 </html>

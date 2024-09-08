@@ -283,8 +283,8 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
         axios.get(uri)
             .then(response => {
                 console.log(response.data);
-                const reservedAreas = response.data || [];
-                updateRadioButtons(year, month, day,reservedAreas);
+                const reservedAreas = response.data || []; // 예약된 구역 리스트 받아오기
+                updateRadioButtons(year, month, day,reservedAreas); // 예약된 구역 처리
             })
             .catch(error => {
                 console.error("There was an error fetching the reservations!", error);
@@ -315,10 +315,10 @@ var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정�
                 
                 if (isReserved) {
                     console.log(`Area ${areaIndex} is reserved`);
-                    card.style.display = "none";
+                    card.style.display = "none"; // 구역 숨기기
                 } else {
-                    card.style.display = "block";
-                    findPrice(year, month, day, areaIndex);
+                    card.style.display = "block"; // 구역 보이기
+                    findPrice(year, month, day, areaIndex); // 구역 가격 업데이트 
                 }
             }
         }
@@ -637,15 +637,18 @@ function updateQuantity(itemId, itemPrice) {
     console.log('Button clicked'); // 버튼 클릭 로그
     const date = `${finalYear}-${finalMonth}-${finalDay}`;
     const requirement = document.getElementById("special-requests").value;
+    
+    console.log('finalId = ',finalItemId);
+    const finalAreaId = Math.floor(finalItemId / 4) + 1;
+
     const reservationMaster = {
         resCheckIn: date,
         resCheckOut: calculateCheckOutDate(date, finalSelectedNight),
         resTotalPrice: parseInt(document.getElementById('totalAllItems').innerText.replace(/[^0-9]/g, '')),
         requirement: requirement || '요청없음',
-        resSpecial: parseInt(document.getElementById(`special_${finalItemId}`).value)
-        //TODO
-        //특가면 resSpecial = 1
+        resSpecial: parseInt(document.getElementById(`special_${finalAreaId}`).value)
     };
+    
     console.log('reservationMaster: {}', reservationMaster);
 
     const mainReservationDetail = {

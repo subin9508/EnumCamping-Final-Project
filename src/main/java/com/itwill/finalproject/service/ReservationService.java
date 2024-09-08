@@ -52,14 +52,14 @@ public class ReservationService {
 	
     // 가장 최근의 start_date를 조회하는 메소드
     public LocalDateTime getLatestStartDate(int itemId) {
-    	log.info("itemId = {}",itemId);
-    	log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
+    	//log.info("itemId = {}",itemId);
+    	//log.info("date = {}",itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId));
         return itemsHistoryRepo.findLatestStartDateByItemIdAndSpecial(itemId);
     }
 
     // 특정 조건에 따른 item_price를 조회하는 메소드
     public Integer getItemPriceByAdjustedEndDate(int itemId, LocalDateTime date) {
-    	log.info("id={}, date={}",itemId,date);
+    	//log.info("id={}, date={}",itemId,date);
         return itemsHistoryRepo.findItemPriceByItemIdAndAdjustedEndDate(itemId, date);
     }
 	
@@ -354,5 +354,15 @@ public class ReservationService {
                 .orElseThrow(() -> new ServiceException("예약 정보를 찾을 수 없습니다. resId: " + resId));
     }
     
+    @Transactional
+    public ReservationMaster getReservationMasterByResId(Integer resId) {
+    	return reservationMasterRepo.findByResId(resId);
+    }
+    
+//    // 체크인, 체크아웃 기간에 예약된 구역을 조회
+//    public List<Integer> readReservedAreasBetween(LocalDate checkIn, LocalDate checkOut) {
+//        // 해당 기간에 예약된 구역 목록을 가져옴
+//        return reservationMasterRepo.findReservedAreasBetweenDates(checkIn, checkOut);
+//    }
 
 }

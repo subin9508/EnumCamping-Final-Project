@@ -1,9 +1,12 @@
 package com.itwill.finalproject.web;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,13 +39,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itwill.finalproject.domain.ClaimDateDetail;
+import com.itwill.finalproject.domain.ClaimMaster;
 import com.itwill.finalproject.domain.Items;
 import com.itwill.finalproject.domain.Profile;
 import com.itwill.finalproject.domain.QnA;
 import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
+
 import com.itwill.finalproject.dto.AdditionalPaymentDto;
+import com.itwill.finalproject.dto.ClaimDetailDto;
+
 import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
@@ -51,9 +59,9 @@ import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
-import com.itwill.finalproject.exception.ControllerException;
-import com.itwill.finalproject.exception.ServiceException;
+import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ProfileRepository;
+import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ClaimService;
 import com.itwill.finalproject.service.MyPageService;
@@ -62,12 +70,11 @@ import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
+import com.itwill.finalproject.service.SpecialService;
 import com.itwill.finalproject.service.UserService;
 import com.siot.IamportRestClient.IamportClient;
-import com.siot.IamportRestClient.exception.IamportResponseException;
-import com.siot.IamportRestClient.response.Payment;
-import com.itwill.finalproject.exception.ServiceException;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +98,8 @@ public class MyPageController {
 	private final UserRepository userRepo;
 	private final PaymentsService paymentsService;
 	private final ClaimService claimService;
+	private final SpecialService specialService;
+	private final ItemsHistoryRepository ihRepo;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -491,50 +500,171 @@ public class MyPageController {
 	}
 
 	// 마이페이지 - 예약목록
-	@GetMapping("/reservation_list")
-	public String reservationList(@RequestParam(name = "userId") String userId, Model model) {
-		log.debug("reservation_list(userId={})", userId);
+		@GetMapping("/reservation_list")
+		public String reservationList(@RequestParam(name = "userId") String userId, Model model) {
+		    log.debug("reservation_list(userId={})", userId);
 
-		List<ReservationMaster> list = myPageService.readAllReservation(userId);
-		log.debug("list=({})", list);
-		model.addAttribute("reservations", list);
-		return "mypage/reservation_list"; // 반환할 뷰의 이름
-	}
+		    List<ReservationMaster> list = myPageService.readAllReservation(userId);
+		    log.debug("list=({})", list);
 
-	// 마이페이지 - 예약 상세
-	@GetMapping("/reservation_details")
-	public String reservationDetails(@RequestParam(name = "resId") int resId, Model model) {
-		log.debug("reservation_details()");
-		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
-		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
+		    // Map으로 각 예약에 맞는 ClaimMaster와 ClaimDetail을 저장
+		    Map<Integer, ClaimMaster> clmMasterMap = new HashMap<>();
+		    Map<Integer, List<ClaimDetailDto>> clmDetailMap = new HashMap<>();
+		    Map<Integer, ClaimDateDetail> clmDateDetailMap = new HashMap<>();
 
-		if (resMaster.isPresent()) {
-			ReservationMaster reservation = resMaster.get();
-			LocalDate checkInDate = reservation.getResCheckIn();
-			LocalDate today = LocalDate.now();
+		    for (ReservationMaster resMaster : list) {
+		        List<ClaimMaster> clmMasters = claimService.findByResId(resMaster.getResId());
+		        if (!clmMasters.isEmpty()) {
+		            // 가장 높은 clmId를 가진 ClaimMaster 찾기
+		            ClaimMaster highestClmMaster = clmMasters.stream()
+		                .max(Comparator.comparing(ClaimMaster::getClmId))
+		                .orElse(null);
+		            log.debug("highestClmMaster={}", highestClmMaster);
 
-			// 체크인 날짜와 오늘 날짜의 차이를 계산
-			long daysBetween = ChronoUnit.DAYS.between(today, checkInDate);
+		            if (highestClmMaster != null) {
+		                Integer clmId = highestClmMaster.getClmId();
+		                List<ClaimDetailDto> clmDetail = claimService.findByClaimMasterId(clmId);
+		                ClaimDateDetail clmDateDetail = claimService.getClaimDateDetailByClmId(clmId);
 
-			// 3일 이상 남았는지 여부를 모델에 추가
-			model.addAttribute("canModify", daysBetween > 3);
+		                // 각각의 resId를 키로 클레임 정보를 저장
+		                clmMasterMap.put(resMaster.getResId(), highestClmMaster);
+		                clmDetailMap.put(resMaster.getResId(), clmDetail);
+		                clmDateDetailMap.put(resMaster.getResId(), clmDateDetail);
+		            }
+		        }
+		    }
+
+		    // 모델에 데이터 추가
+		    model.addAttribute("reservations", list);
+		    model.addAttribute("clmMaster", clmMasterMap);
+		    model.addAttribute("clmDetail", clmDetailMap);
+		    model.addAttribute("clmDateDetail", clmDateDetailMap);
+
+		    return "mypage/reservation_list"; // 반환할 뷰의 이름
 		}
 
-		model.addAttribute("resMaster", resMaster.orElse(null));
-		model.addAttribute("resDetail", resDetail);
+	// 마이페이지 - 예약 상세
+		@GetMapping("/reservation_details")
+		public String reservationDetails(@RequestParam(name = "resId") int resId, Model model) {
+			log.debug("reservation_details()");
+			
+			ClaimMaster clmMaster = claimService.findByResIdMaxClmId(resId);
+			log.debug("clmMaster={}", clmMaster);
+			
+			List<ClaimDetailDto> clmDetail = new ArrayList<>();
+			
+			if (clmMaster != null) {
+		        Integer clmId = clmMaster.getClmId();
+		        clmDetail = claimService.findByClaimMasterId(clmId);
+		        for (ClaimDetailDto detail : clmDetail) {
+		            log.debug("clmDetail={}", detail);
+		        }
+		        ClaimDateDetail clmDateDetail = claimService.getClaimDateDetailByClmId(clmId);
+		        log.debug("clmDateDetail={}", clmDateDetail);
+		        
+		        model.addAttribute("clmDetail", clmDetail);
+		        model.addAttribute("clmDateDetail", clmDateDetail);
+		    } else {
+		        log.warn("clmMaster is null, skipping claim details processing.");
+		    }
+			
+			
+			Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
+			
+			List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 
-		return "mypage/reservation_details";
-	}
+			if (resMaster.isPresent()) {
+				ReservationMaster reservation = resMaster.get();
+				LocalDate checkInDate = reservation.getResCheckIn();
+				LocalDate today = LocalDate.now();
+
+				// 체크인 날짜와 오늘 날짜의 차이를 계산
+				long daysBetween = ChronoUnit.DAYS.between(today, checkInDate);
+
+				// 3일 이상 남았는지 여부를 모델에 추가
+				model.addAttribute("canModify", daysBetween > 3);
+			}
+			model.addAttribute("resMaster", resMaster.orElse(null));
+			model.addAttribute("resDetail", resDetail);
+			model.addAttribute("clmMaster", clmMaster);
+			
+
+			return "mypage/reservation_details";
+		}
 
 	// 마이페이지 - 예약 변경
+	// 처음에 가져오는 페이지 
 	@GetMapping("/reservation_update")
 	public void reservationUpdateCalendar(@RequestParam(name = "resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
-		List<Items> items = reservationSvc.getAllItems();
+		
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
 		List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 		log.info("resMaster={}", resMaster);
 		log.info("resDetail={}", resDetail);
+
+		int special = resMaster.orElseThrow().getResSpecial(); //특가 예약인지 아닌지
+		
+		// 이걸 바꿔야함
+		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
+		List<Items> items = reservationSvc.getAllItems();
+		//일단 가져오고,, 가격만,, 바꿔야할,,듯?
+			
+		if (special == 1) { //특가 예약
+			//reservation controller 참고
+			//구역 찾고, 특가 end 날짜 찾아서 특가 기간 내인지 아닌지 체크
+			int zoneId = 0;
+			for (ReservationDetailDto rd : resDetail) {
+				if (rd.getItemId()<=20) {
+					zoneId=rd.getItemId(); //구역 itemId 받아옴
+				}
+			}
+			log.info("zoneId = {}",zoneId);
+			//특가기간인지 체크
+			//먼저 현재 시간 체크
+			LocalDateTime now = LocalDateTime.now();
+			
+			//special table에서 itemId, 최신순 서치, 가장 최근 특가의 endDate>오늘 이면 아직 특가 기간인것!
+			int spc = specialService.findSpecial(zoneId, now); //0이면 특가 종료 1이면 특가 기간
+			
+			if (spc == 1) {
+				
+				
+				//특가 가격 보여주기
+				log.info("특가 기간 중");
+				List<Integer> list = ihRepo.findLatestSpecialPrices();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			} else {
+				log.info("특가 기간 끝남");
+				//정상 가격 보여주기
+				List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+				List<Integer> itemList = list.subList(21, 32);
+				for (int i = 0; i < itemList.size(); i++) {
+					Items item = items.get(i);
+					Integer price = itemList.get(i);
+					item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+				}
+			}
+			
+		} else { //special = 0
+			//TODO 걍 정상가보여주면 됨
+			//history 이용 등, res controller 이용
+			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
+			log.info("정상가 예약");
+			
+			List<Integer> itemList = list.subList(21, 32);
+			for (int i = 0; i < itemList.size(); i++) {
+				Items item = items.get(i);
+				Integer price = itemList.get(i);
+				item.setItemPrice(price);  // itemList에서 가져온 price로 setItemPrice() 호출
+			}
+		}
+		
 
 		for (Items item : items) {
 			log.info("Item: {}", item);
@@ -768,43 +898,98 @@ public class MyPageController {
 	}
 
 
-	@GetMapping("/reservation_update_successed/{resId}")
-    public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session) {
-    	
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String userId = authentication.getName();
-    	
-//    	Integer rdId = (Integer) session.getAttribute("rdId"); // 세션에서 rdId 가져오기
-        ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
-        
-        if (resMaster == null) {
-            // resMaster가 없을 경우에 대한 처리 로직 추가
-            model.addAttribute("error", "Reservation data not found in session");
-            return "errorPage"; // 에러 페이지로 리다이렉트하거나 에러 메시지를 표시하는 페이지로 이동
-        }
-        
-        // resMaster에 resId가 null로 설정되어 있으면, PathVariable에서 받은 resId를 설정
-        if (resMaster.getResId() == null) {
-            resMaster.setResId(resId);
-        }
-        
-        List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");        
-        log.debug("session.resMaster={}", session.getAttribute("resMaster"));
-        log.debug("session.resDetail={}", session.getAttribute("resDetails"));        
 
-        
-     // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
+	@GetMapping("/reservation_update_successed/{resId}")
+	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
+	    
+	    // 캐시 비활성화 설정
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+	    response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+	    response.setDateHeader("Expires", 0); // Proxies
+	    
+	    // Spring Security를 통해 사용자 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userId = authentication.getName(); // 현재 로그인한 사용자의 ID를 가져옴
+	    
+	    // 세션에서 예약 정보 가져오기
+	    ReservationMaster resMaster = (ReservationMaster) session.getAttribute("resMaster");
+	    
+	    if (resMaster == null) {
+	        model.addAttribute("error", "세션에 예약 정보가 없습니다. 다시 시도해주세요.");
+	        return "redirect:/mypage/myInfo?userId=" + userId;
+	    }
+	    
+	    // resMaster의 resId가 null이면 PathVariable의 resId 설정
+	    if (resMaster.getResId() == null) {
+	        resMaster.setResId(resId);
+	    }
+
+	    List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");
+	    
+	 // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
         claimService.saveClaim(resMaster, resDetail, resId);
         // reservationMaster modifiedTime 업데이트
         reservationSvc.updateResModifiedTime(resId);
         
+        ReservationMaster reservationMaster = reservationSvc.getReservationMasterByResId(resId);
+        LocalDateTime modifiedTime = reservationMaster.getResModifiedTime();
+        log.debug("modifiedTime={}", modifiedTime);
+
 //      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
         model.addAttribute("resMaster", resMaster);
         model.addAttribute("resDetail", resDetail);
         model.addAttribute("userId", userId); // 모델에 userId 추가
+        model.addAttribute("resModifiedTime", modifiedTime);
 
-        return "mypage/reservation_update_successed"; // succeeded.html 파일을 가리킴
-    }
+	    // 예약 완료 후 세션에서 관련 정보 제거 (뒤로가기로 페이지가 다시 로드되지 않도록)
+	    session.removeAttribute("resMaster");
+	    session.removeAttribute("resDetails");
+
+	    return "mypage/reservation_update_successed";
+	}
+
+	
+	
+	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
+	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
+		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
+		
+		
+		//예약 변경 시 할 일
+		//특가 예약인지 먼저 체크,
+		//그다음에 특가 기간인지 체크
+		// 특가예약&특가기간 -> 특가
+		// 특가예약&특가기간 지남 -> 정상가
+		// 정상가 예약 -> 정상가
+		
+	    //현재 시간 체크
+		LocalDateTime now = LocalDateTime.now();
+		
+		if (resSpecial == 1) {
+			int spc = specialService.findSpecial(itemId, now); //0이면 특가 종료 1이면 특가 기간
+			if (spc == 1) {
+				//특가 가격 보여주기
+				//여기서는 itemId마다 개별가격 보여주는것임~
+				Integer itemPrice =ihRepo.findSpecialPrice(itemId);
+				log.info("특가 기간 중 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			} else {
+				//정상 가격 보여주기
+				Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+				log.info("특가 기간 끝남 itemId = {}, itemPrice = {}",itemId,itemPrice);
+				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+			}
+			
+		} else { //special = 0
+			// 정상가보여주면 됨
+			log.info("정상가");
+			Integer itemPrice =ihRepo.findNewestNormalPrice(itemId);
+			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+		}
+		
+	}
+
+	
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,7 @@ public class SpecialService {
         return itemsRepository.findById(itemId).orElse(null);  // Optional을 사용하여 null 처리
     }   
     
-    
+
     // Zones 업데이트 전용 메서드
     @Transactional
     public void updateSpecialZoneDetails(Integer itemId, BigDecimal newPrice, String newCheck) {
@@ -287,6 +288,14 @@ public class SpecialService {
             latestPricesWithSpecialZero.put(i + 1, latestPricesWithSpecialZeroList.get(i));
         }
         return latestPricesWithSpecialZero;
+    }
+    
+    public int findSpecial(int itemId, LocalDateTime now) {
+    	if (specialRepository.findEndDate(itemId, now) == null) {
+    		return 0;
+    	} else {
+    		return 1;
+    	}
     }
 
 }

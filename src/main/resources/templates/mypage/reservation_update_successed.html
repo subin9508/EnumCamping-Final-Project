@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
-                
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/footer.css}">
+<th:block th:replace="~{layout/fragments :: documentHeader}"></th:block>
+
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 
 <body>
 <body>
-   <div class="wrapper">
-  <!-- 상단 메뉴바 -->
-  <th:block th:replace="~{layout/fragments :: header}"></th:block>
+	<div class="wrapper">
+		<!-- 상단 메뉴바 -->
+		<th:block th:replace="~{layout/fragments :: header}"></th:block>
 
-         <div class="footer-main-content">
+		<div class="footer-main-content">
 
-    		<main style="width: 70%; margin: 5% auto;">
-                <div class="mt-2 card">
-                    <div class="card-body">
-                        <div>
-                            <h1>예약내역</h1>
-                        </div>
-                        <br />
-                        <form>
-                            <div class="d-flex">
-                                <div class="mt-2 flex-fill me-2" th:if="${resMaster != null}">
-                                    <label  class="form-label" style="font-size: 21px; font-weight: bold;" for="resCheckIn">체크인 날짜</label>
-                                    <input class="form-control" type="text"  id="resCheckIn"  th:value="${resMaster.resCheckIn}" readonly />
-                                </div>
-                                <br /> <br />
-                                <div></div>
-                                <div class="mt-2 flex-fill ms-2">
-                                    <label for="resCheckOut" class="form-label" style="font-size: 21px; font-weight: bold;">체크아웃 날짜</label>
-                                    <input id="resCheckOut" class="form-control" type="text"  th:value="${resMaster != null} ? ${resMaster.resCheckOut} : 'No Check-out Date'" readonly />
-                                </div>
-                            </div>
-                            <br />
+			<main style="width: 70%; margin: 5% auto;">
+				<div class="mt-2 card">
+					<div class="card-body">
+						<div>
+							<h1>예약내역</h1>
+						</div>
+						<br />
+						<form>
+							<div class="d-flex">
+								<div class="mt-2 flex-fill me-2" th:if="${resMaster != null}">
+									<label class="form-label"
+										style="font-size: 21px; font-weight: bold;" for="resCheckIn">체크인
+										날짜</label> <input class="form-control" type="text" id="resCheckIn"
+										th:value="${resMaster.resCheckIn}" readonly />
+								</div>
+								<br /> <br />
+								<div></div>
+								<div class="mt-2 flex-fill ms-2">
+									<label for="resCheckOut" class="form-label"
+										style="font-size: 21px; font-weight: bold;">체크아웃 날짜</label> <input
+										id="resCheckOut" class="form-control" type="text"
+										th:value="${resMaster != null} ? ${resMaster.resCheckOut} : 'No Check-out Date'"
+										readonly />
+								</div>
+							</div>
+							<br />
 
 							<div class="mt-2">
 								<label for="resArea" class="form-label"
@@ -54,68 +59,86 @@
 							</div>
 							<br />
 
-                            <div class="mt-2">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품 이름</th>
-                                            <th scope="col" style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품 수량</th>
-                                            <th scope="col" style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품 가격</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="4" style="text-align: center;" th:if="${resDetail.?[itemId > 20].size() == 0}">
-                                                선택하신 구매/대여물품이 없습니다.</td>
-                                        </tr>
-                                        <tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}" >
-                                            <td th:text="${rs.itemName}"></td>
-                                            <td th:text="${rs.itemQuantity}	"></td>
-                                            <td th:text="${rs.itemAmount + '원'}"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <br />
-
-                            <div class="mt-2">
-                                <label for="resTotalPrice" class="form-label" style="font-size: 21px; font-weight: bold;">총 가격</label>
-                                <input id="resTotalPrice" class="form-control" type="text" th:value="${resMaster != null} ? ${resMaster.resTotalPrice + '원'} : 0" readonly />
-                            </div>
-                            <br />
+							<div class="mt-2">
+								<table class="table">
+									<thead>
+										<tr>
+											<th scope="col"
+												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
+												이름</th>
+											<th scope="col"
+												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
+												수량</th>
+											<th scope="col"
+												style="font-size: 21px; font-weight: bold; background-color: #7C9C63; color: white;">물품
+												가격</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td colspan="4" style="text-align: center;"
+												th:if="${resDetail.?[itemId > 20].size() == 0}">선택하신
+												구매/대여물품이 없습니다.</td>
+										</tr>
+										<tr th:each="rs : ${resDetail}" th:if="${rs.itemId > 20}">
+											<td th:text="${rs.itemName}"></td>
+											<td th:text="${rs.itemQuantity}	"></td>
+											<td th:text="${rs.itemAmount + '원'}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<br />
 
 							<div class="mt-2">
-								<label for="resCreatedTime" class="form-label"
+								<label for="resTotalPrice" class="form-label"
+									style="font-size: 21px; font-weight: bold;">총 가격</label> <input
+									id="resTotalPrice" class="form-control" type="text"
+									th:value="${resMaster != null} ? ${resMaster.resTotalPrice + '원'} : 0"
+									readonly />
+							</div>
+							<br />
+
+							<div class="mt-2">
+								<label for="resModifiedTime" class="form-label"
 									style="font-size: 21px; font-weight: bold;">예약 일시</label> 
-								<input id="resCreatedTime" class="form-control" type="text"  th:value="${resMaster != null && resMaster.resCreatedTime != null ? resMaster.resCreatedTime.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss')) : 'Not Available'}" readonly />
+								<input id="resModifiedTime" class="form-control" type="text"  th:value="${resMaster != null && resModifiedTime != null ? #temporals.format(resModifiedTime, 'yyyy-MM-dd HH:mm:ss') : 'Not Available'}" readonly />
+
 							</div>
 						</form>
-                    </div>
-                </div>
+					</div>
+				</div>
 
-                <div class="container-fluid d-flex justify-content-center">
-                    <!-- 결제 완료 메시지 -->
-                    <div class="text-center mt-5">
-                        <h2>예약 변경이 완료되었습니다</h2>
-                        <p>이용해 주셔서 감사합니다.</p>
-                        <a href="/enumcamping" class="btn btn-outline-success mt-3">홈으로 가기</a>
-                    </div>
-                </div>
-            </main>
-            </div>
-            <!-- 푸터 -->
-    	<th:block th:replace="~{layout/fragments :: footer}"></th:block>
-        </div>
+				<div class="container-fluid d-flex justify-content-center">
+					<!-- 결제 완료 메시지 -->
+					<div class="text-center mt-5">
+						<h2>예약 변경이 완료되었습니다</h2>
+						<p>이용해 주셔서 감사합니다.</p>
+						<a href="/enumcamping" class="btn btn-outline-success mt-3">홈으로
+							가기</a>
+					</div>
+				</div>
+			</main>
+		</div>
+		<!-- 푸터 -->
+		<th:block th:replace="~{layout/fragments :: footer}"></th:block>
+	</div>
 
-       <!-- 부트 스트랩 JS -->
-  <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
+	<!-- 부트 스트랩 JS -->
+	<th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
 
-  <!-- Weather JS -->
-  <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
-  
+	<!-- Weather JS -->
+	<th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        
-     
+
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+	<script>
+		window.addEventListener('popstate', function(event) {
+			// 뒤로가기를 누르면 메인 페이지로 리디렉트
+			window.location.href = '/enumcamping';
+		});
+	</script>
 </body>
 </html>

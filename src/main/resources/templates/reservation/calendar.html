@@ -64,7 +64,7 @@
                         <label class="radio_label" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                             <input class="area-radio" type="radio" id="area1_radio" name="area" value="1">
                             <span class="radio_icon"></span>
-                            <img alt="campingzone1" th:src="@{/images/calendar/calendar_campingzone1.gif}"
+                            <img alt="campingzone1" th:src="@{/images/calendar/calendar_campingzone.jpg}"
                             height="150px" width="200px" style="margin: 0 10px;"/>
                             <span class="radio_text" style="font-size: 18px; margin-right: auto;"><strong>달</strong></span>
                             <span style="text-align: right;" id="price_1">가격</span>
@@ -75,7 +75,7 @@
                         <label class="radio_label" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                             <input class="area-radio" type="radio" id="area2_radio" name="area" value="2"/>
                             <span class="radio_icon"></span>
-                            <img alt="campingzone2" th:src="@{/images/calendar/calendar_campingzone1.gif}"
+                            <img alt="campingzone2" th:src="@{/images/calendar/calendar_campingzone.jpg}"
                             height="150px" width="200px" style="margin: 0 10px;">
                             <span class="radio_text" style="font-size: 18px; margin-right: auto;"><strong>별</strong></span>
                             <span style="text-align: right;" id="price_2">가격</span>
@@ -89,7 +89,7 @@
                             id="area3_radio" name="area" value="3">
                             <span class="radio_icon"></span> <img
                             alt="campingzone3"
-                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+                            th:src="@{/images/calendar/calendar_campingzone.jpg}"
                             height="150px" width="200px"
                             style="margin: 0 10px;"> <span
                             class="radio_text"
@@ -105,7 +105,7 @@
                             id="area4_radio" name="area" value="4">
                             <span class="radio_icon"></span> <img
                             alt="campingzone4"
-                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+                            th:src="@{/images/calendar/calendar_campingzone.jpg}"
                             height="150px" width="200px"
                             style="margin: 0 10px;"> <span
                             class="radio_text"
@@ -121,7 +121,7 @@
                             id="area5_radio" name="area" value="5">
                             <span class="radio_icon"></span> <img
                             alt="campingzone5"
-                            th:src="@{/images/calendar/calendar_campingzone1.gif}"
+                            th:src="@{/images/calendar/calendar_campingzone.jpg}"
                             height="150px" width="200px"
                             style="margin: 0 10px;"> <span
                             class="radio_text"
@@ -192,7 +192,7 @@
                                             </select>
                                         </div>
                                         <p />
-                                        <div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
+                                        <div th:id="'total-' + ${i.itemId}" class="total-price" style="display:none;">0원</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -240,13 +240,13 @@
         <script th:src="@{/js/calendar.js}"></script>
         
     <script>
-        // JavaScript를 사용하여 날짜 입력 형식 제어
+        /* JavaScript를 사용하여 날짜 입력 형식 제어
         document.getElementById('reservationForm').addEventListener('submit', function(event) {
             // Prevent form submission if validation fails
             if (!validateDateInput('resCheckIn') || !validateDateInput('resCheckOut')) {
                 event.preventDefault();
             }
-        });
+        });*/
 
         function validateDateInput(inputId) {
             var input = document.getElementById(inputId);

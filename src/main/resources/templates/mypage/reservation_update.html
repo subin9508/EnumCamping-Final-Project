@@ -17,8 +17,9 @@
 
 			<main style="flex-grow: 1; margin-left: 5%;">
 				<div>
-					<input id="resId" name="resId" type="text"
+					<input id="resId" name="resId" type="hidden"
 						th:value="${resMaster.resId}"> 
+                    <input type="hidden" id="resSpecial" th:value="${resMaster.resSpecial}" />
 					<input id="userId"
 						name="userId" type="hidden" th:value="${resMaster.user.userId}">
 					<table class="scriptCalendar">
@@ -172,7 +173,7 @@
 												</select>
 											</div>
 											<p />
-											<div th:id="'total-' + ${i.itemId}" class="total-price">0원</div>
+											<div th:id="'total-' + ${i.itemId}" class="total-price" style="display:none;">0원</div>
 										</td>
 									</tr>
 								</tbody>
@@ -225,12 +226,12 @@
     
     <script>
         // JavaScript를 사용하여 날짜 입력 형식 제어
-        document.getElementById('reservationForm').addEventListener('submit', function(event) {
+/*         document.getElementById('reservationForm').addEventListener('submit', function(event) {
             // Prevent form submission if validation fails
             if (!validateDateInput('resCheckIn') || !validateDateInput('resCheckOut')) {
                 event.preventDefault();
             }
-        });
+        }); */
 
         function validateDateInput(inputId) {
             var input = document.getElementById(inputId);
@@ -259,7 +260,7 @@
             });
 
             // 전체 총 가격도 초기화
-            document.getElementById('totalSum').textContent = '0원';
+            document.getElementById('totalSum').textContent = '0';
             
             // 요청사항 텍스트 영역 초기화
             document.getElementById('special-requests').value = '';
