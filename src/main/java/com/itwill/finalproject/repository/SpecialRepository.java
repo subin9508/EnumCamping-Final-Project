@@ -30,15 +30,33 @@ public interface SpecialRepository extends JpaRepository<Special, Integer> {
 //                               @Param("endDate") LocalDateTime endDate, 
 //                               @Param("defaultEndDate") LocalDateTime defaultEndDate);
     
+//    @Modifying
+//    @Query("UPDATE Special s SET s.endDate = :endDate WHERE s.items.id = :itemId")
+//    int updateEndDateByItemId(@Param("itemId") Integer itemId, 
+//                               @Param("endDate") LocalDateTime endDate);
+    
+//    @Modifying
+//    @Query("update Special s set s.endDate = :endDate where s.items.itemId = :itemId and s.endDate > CURRENT_TIMESTAMP")
+//    int updateEndDateByItemId(@Param("itemId") Integer itemId, @Param("endDate") LocalDateTime endDate);
+    
+//    @Modifying
+//    @Transactional
+//    @Query("UPDATE Special s SET s.endDate = (SELECT max(h.endDate) "
+//    		+ "FROM ItemsHistory h WHERE h.items.itemId = :itemId AND h.special = 1) "
+//    		+ "WHERE s.items.itemId = :itemId")
+//    int updateSpecialEndDateFromHistory(@Param("itemId") Integer itemId);
+
+    
     @Modifying
     @Transactional
-    @Query("UPDATE Special s SET s.endDate = :endDate WHERE s.items.id = :itemId")
-    int updateEndDateByItemId(@Param("itemId") Integer itemId, 
-                               @Param("endDate") LocalDateTime endDate);
+    @Query("UPDATE Special s SET s.endDate = CURRENT_TIMESTAMP "
+    		+ "WHERE s.items.itemId = :itemId AND "
+    		+ "EXISTS (SELECT 1 FROM ItemsHistory h "
+    		+ "WHERE h.items.itemId = s.items.itemId AND h.special = 0 "
+    		+ "AND h.endDate >= CURRENT_TIMESTAMP)")
+    int updateSpecialEndDateWhenSpecialGoesZero(@Param("itemId") Integer itemId);
     
-    
-    
-    // 특정 productId에 대한 특가 종료일을 조회하는 메서드	
+    // 특정 itemId에 대한 특가 종료일을 조회하는 메서드	
     @Query("SELECT s.endDate FROM Special s WHERE s.items.itemId = :itemId")
     Optional<LocalDateTime> findEndDateByItemId(@Param("itemId") Integer itemId);
 }

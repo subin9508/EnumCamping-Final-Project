@@ -37,21 +37,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.getElementById('btnApplyZones').addEventListener('click', () => {
-        const modifyForm = document.querySelector('form#modifyFormZones');
-        checkboxes.forEach(checkbox => {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = checkbox.name;
-            hiddenInput.value = checkbox.checked ? '1' : '0';
-            modifyForm.appendChild(hiddenInput);
-        });
+	// 적용하기 버튼 클릭 시 모든 변경 사항을 서버로 전송
+		document.getElementById('btnApplyZones').addEventListener('click', () => {
+		    console.log('Apply Zones button clicked'); // 버튼 클릭 이벤트 확인
 
-        if (confirm('변경 내용을 저장할까요?')) {
-            modifyForm.submit();
-        }
-    });
+		    const modifyForm = document.querySelector('form#modifyFormZones');
 
+			// 모든 체크박스를 순회하면서 hidden input 설정
+			    checkboxes.forEach(checkbox => {
+			        const hiddenInput = document.createElement('input');
+			        hiddenInput.type = 'hidden';
+			        hiddenInput.name = checkbox.name;
+			        hiddenInput.value = checkbox.checked ? '1' : '0';  // 체크 상태에 따라 값 설정
+			        modifyForm.appendChild(hiddenInput);
+
+			        // 체크박스가 해제된 경우 서버에 업데이트 요청을 보냄
+			        if (!checkbox.checked) {
+			            const itemId = checkbox.name.split('_')[1]; // itemId 추출
+			            updateSpecialEndDateAndInsertRecord(itemId); // 서버 요청 함수 호출
+			        }
+			    });
+				
+				    if (confirm('변경 내용을 저장할까요?')) {
+				        modifyForm.submit();
+				    }
+				});
+		
+		// 서버에 end_date를 업데이트하고 새로운 레코드를 삽입하는 요청 함수
+		function updateSpecialEndDateAndInsertRecord(itemId) {
+		    fetch('/enumcamping/admin/updateSpecialAndInsertRecord', {
+		        method: 'POST',
+		        headers: {
+		            'Content-Type': 'application/json',
+		        },
+		        body: JSON.stringify({ itemId: itemId }) // itemId만 전송
+		    })
+		    .then(response => {
+		        if (!response.ok) {
+		            throw new Error('Network response was not ok');
+		        }
+		        return response.json(); // JSON 형식으로 응답을 파싱
+		    })
+		    .then(data => {
+		        console.log('End date updated and new record inserted:', data);
+		    })
+		    .catch(error => {
+		        console.error('Error updating end date and inserting new record:', error);
+		    });
+		}
+	
+
+		
+		
     document.getElementById('btnApplyAllCheck').addEventListener('click', () => {
         checkboxes.forEach(checkbox => {
             checkbox.checked = true;
@@ -106,3 +143,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
