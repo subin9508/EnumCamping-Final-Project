@@ -78,8 +78,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 추가 결제 요청 및 응답 검증
     async function handleAdditionalPayment(resId) {
         const oldTotalAmount = parseInt(document.getElementById('oldTotalAmount').textContent.trim(), 10);
-        const refundAmount = parseInt(document.getElementById('totalAmount').textContent.trim(), 10);
-        const totalAmount = Math.max(0, oldTotalAmount + refundAmount);
+		const refundAmount = parseInt(document.getElementById('totalAmount').textContent.trim(), 10);
+		const totalAmount = Math.max(0, oldTotalAmount + refundAmount);
+
+		const userName = document.getElementById('userName').textContent;
+		const userEmail = document.getElementById('userEmail').textContent;
+		const userPhone = document.getElementById('userPhone').textContent;
         
         console.log('oldTotalAmount:', oldTotalAmount);
         console.log('refundAmount:', refundAmount);
@@ -95,9 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 merchant_uid: 'merchant_' + new Date().getTime(),
                 name: "추가 결제",
                 amount: totalAmount,
-                buyer_email: "user@example.com", // 실제 값으로 교체해야 함
-                buyer_name: "홍길동", // 실제 값으로 교체해야 함
-                buyer_tel: "010-1234-5678" // 실제 값으로 교체해야 함
+                buyer_email: userEmail, // 실제 값으로 교체해야 함
+                buyer_name: userName, // 실제 값으로 교체해야 함
+                buyer_tel: userPhone // 실제 값으로 교체해야 함
             }, async function(rsp) {
                 if (rsp.success) {
                     console.log('추가 결제 성공:', rsp);

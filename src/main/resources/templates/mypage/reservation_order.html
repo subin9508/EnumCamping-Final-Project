@@ -31,20 +31,22 @@
 								<tr>
 									<td colspan="2" style="text-align: center;"><label
 										for="userName" style="font-size: 18px;">이름</label></td>
-									<td colspan="5" style="font-size: 18px;" th:text="${user.name}"></td>
+									<td colspan="5" style="font-size: 18px;"><span
+										id="userName" th:text="${user.name}"></span></td>
 								</tr>
 								<tr>
 									<td colspan="2" style="text-align: center;"><label
 										for="userEmail" style="font-size: 18px;">이메일</label></td>
-									<td colspan="5" style="font-size: 18px;"
-										th:text="${user.userEmail}"></td>
+									<td colspan="5" style="font-size: 18px;"><span
+										id="userEmail" th:text="${user.userEmail}"></span></td>
 								</tr>
 								<tr>
 									<td colspan="2" style="text-align: center;"><label
 										for="userPhone" style="font-size: 18px;">휴대폰 번호</label></td>
-									<td colspan="5" style="font-size: 18px;"
-										th:text="${user.userPhone}"></td>
+									<td colspan="5" style="font-size: 18px;"><span
+										id="userPhone" th:text="${user.userPhone}"></span></td>
 								</tr>
+
 							</table>
 						</form>
 					</div>
