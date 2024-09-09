@@ -19,18 +19,16 @@
                     <div class="container-fluid d-flex justify-content-center" >
                         <h3><strong>구역 목록 (정상 가격)</strong></h3>
                     </div>
-                    <br>
-                    <div style="display: flex; gap: 15px; justify-content: flex-end;">
-                    	<h6>*가격 수정 가능</h6>
-                    </div>
                     
                     <!-- 퍼센트 적용 -->
-<!--                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                     <div style="display: flex; gap: 15px; justify-content: flex-end;">
                         <input style="width: 10%;" id="percent" class="form-control" type="number" /><span>%</span>
                         <button class="btn btn-outline-primary" id="btnApplyPlus">인상</button>
                         <button class="btn btn-outline-danger" id="btnApplyMinus">인하</button>
-                    </div> -->
-                    
+                    </div> <br>
+                    <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                    	<h6>*가격 수정 가능</h6>
+                    </div>
                     
                     <div class=" justify-content-center">
                     <form id="modifyFormZones" class="modifyForm" action="/enumcamping/admin/price/zones/update" method="post">
@@ -83,7 +81,7 @@
             <th:block th:replace="~{layout/fragments :: footer}"></th:block>
         </div>
         
-      <script th:src="@{/js/price_zones.js}"></script>
+      <script th:src="@{/js/fixedPrice_zones.js}"></script>
       <th:block th:replace="~{layout/fragments :: bootstrapJS}"></th:block>
       <th:block th:replace="~{layout/fragments :: weatherJS}"></th:block>
     </body>

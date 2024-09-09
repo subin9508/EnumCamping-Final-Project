@@ -155,9 +155,9 @@ public class SpecialController {
                         log.info("itemId = {}, newPrice = {}, specialPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, specialPrice, newDesc, newCheck);
                         
                         if ("on".equals(newCheck)) {
-                        	specialSvc.updateSpecialZoneDetails(itemId, specialPrice, "on"); // 특가 가격을 사용
+                        	specialSvc.updateSpecialItemDetails(itemId, specialPrice, newDesc, "on"); // 특가 가격을 사용
                         } else {
-                        	specialSvc.updateSpecialZoneDetails(itemId, newPrice, "off"); // 정상 가격을 사용
+                        	specialSvc.updateSpecialItemDetails(itemId, newPrice, newDesc, "off"); // 정상 가격을 사용
                         }
                     } else {
                         log.warn("Invalid price value for itemId: {}", itemId);
@@ -205,18 +205,22 @@ public class SpecialController {
         try {
             // itemId를 String으로 받고, Integer로 변환
             String itemIdStr = (String) payload.get("itemId");
+            if (itemIdStr == null) {
+                log.error("itemId is null");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"itemId is missing or null.\"}");
+            }
             Integer itemId = Integer.parseInt(itemIdStr);
             log.info("업데이트 itemId={}", itemId);
-            
+
             // 서비스 클래스 메서드 호출
             specialSvc.updateSpecialEndDateAndInsertRecord(itemId);
 
             return ResponseEntity.ok().body("{\"message\": \"End date updated and new record inserted successfully.\"}");
+        } catch (NumberFormatException e) {
+            log.error("Error parsing itemId, received invalid number format or null", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"Invalid itemId format.\"}");
         } catch (Exception e) {
-            // 예외 발생 시 로그 기록
             log.error("Error updating end date and inserting new record: ", e);
-
-            // 에러 응답을 JSON 형식으로 반환
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("{\"error\": \"Error updating end date and inserting new record.\"}");
         }
