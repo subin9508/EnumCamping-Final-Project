@@ -608,6 +608,9 @@ public class MyPageController {
 		// 이걸 바꿔야함
 		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
 		List<Items> items = reservationSvc.getAllItems();
+		for(Items item : items ) {
+			log.debug("item={}", item);
+		}
 		//일단 가져오고,, 가격만,, 바꿔야할,,듯?
 			
 		if (special == 1) { //특가 예약
@@ -633,7 +636,7 @@ public class MyPageController {
 				//특가 가격 보여주기
 				log.info("특가 기간 중");
 				List<Integer> list = ihRepo.findLatestSpecialPrices();
-				List<Integer> itemList = list.subList(21, 32);
+				List<Integer> itemList = list.subList(20, 31);
 				for (int i = 0; i < itemList.size(); i++) {
 					Items item = items.get(i);
 					Integer price = itemList.get(i);
@@ -643,7 +646,7 @@ public class MyPageController {
 				log.info("특가 기간 끝남");
 				//정상 가격 보여주기
 				List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
-				List<Integer> itemList = list.subList(21, 32);
+				List<Integer> itemList = list.subList(20, 31);
 				for (int i = 0; i < itemList.size(); i++) {
 					Items item = items.get(i);
 					Integer price = itemList.get(i);
@@ -657,7 +660,7 @@ public class MyPageController {
 			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
 			log.info("정상가 예약");
 			
-			List<Integer> itemList = list.subList(21, 32);
+			List<Integer> itemList = list.subList(20, 31);
 			for (int i = 0; i < itemList.size(); i++) {
 				Items item = items.get(i);
 				Integer price = itemList.get(i);

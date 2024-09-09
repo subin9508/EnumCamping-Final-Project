@@ -236,10 +236,14 @@ public class PaymentsService {
 	       }
 	       
 	       ClaimMaster clmMaster = clmMasterRepo.findByPayIdMaxClmId(payId);
+	       BigDecimal refundAmount = null;
 	       
+	       if (clmMaster == null) {
 	       // 환불 비율에 따른 환불 금액 계산
-	       BigDecimal refundAmount = BigDecimal.valueOf(clmMaster.getTotalPrice() * refundRate);
-
+	    	   refundAmount = BigDecimal.valueOf(payment.getResTotalPrice() * refundRate);
+	       } else if (clmMaster != null) {
+	    	   refundAmount = BigDecimal.valueOf(clmMaster.getTotalPrice() * refundRate);
+	       }
 	       if (refundRate == 0.0) {
 	           log.info("환불 불가: payId: {}", payId);
 	           return "환불이 불가능한 상태입니다. (체크인 날짜 임박)";
