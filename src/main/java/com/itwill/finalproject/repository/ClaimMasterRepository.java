@@ -17,4 +17,14 @@ public interface ClaimMasterRepository extends JpaRepository<ClaimMaster, Intege
 	
 	List<ClaimMaster> findByResId(Integer resId);
 	
+	@Query("SELECT clm "
+			+ "FROM ClaimMaster clm "
+			+ "WHERE clm.resId = ( "
+			+ "    SELECT p.resId "
+			+ "    FROM Payments p "
+			+ "    WHERE p.payId = :payId "
+			+ ") "
+			+ "ORDER BY clm.clmId DESC "
+			+ "LIMIT 1 ")
+	ClaimMaster findByPayIdMaxClmId(@Param("payId") Integer payId);
 }

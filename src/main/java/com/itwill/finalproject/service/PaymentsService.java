@@ -19,10 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itwill.finalproject.dto.ReservationMasterDto;
 import com.itwill.finalproject.dto.PaymentsDto;
 import com.itwill.finalproject.exception.ServiceException;
+import com.itwill.finalproject.repository.ClaimMasterRepository;
 import com.itwill.finalproject.repository.PaymentsRepository;
 import com.itwill.finalproject.repository.ReservationMasterRepository;
 import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
+import com.itwill.finalproject.domain.ClaimMaster;
 import com.itwill.finalproject.domain.Payments;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
@@ -55,6 +57,9 @@ public class PaymentsService {
     private ReservationService reservationService;
     
     private ReservationMaster reservationMaster;
+    
+    @Autowired
+    private ClaimMasterRepository clmMasterRepo;
     
     private IamportClient iamportClient;
     
@@ -201,23 +206,23 @@ public class PaymentsService {
 	               .orElseThrow(() -> new ServiceException("Reservation not found for resId: " + payment.getResId()));
 
 	       // 특가 예약 여부 확인
-	       if (reservation.getResSpecial() == 1) {
-	           // ReservationDetail에서 첫 번째 아이템의 itemId를 가져옴
-	           Integer itemId = reservation.getReservationDetails().get(0).getItem().getItemId();
-
-	           // 특가 종료일 확인
-	           LocalDateTime specialEndDateTime = specialRepo.findEndDateByItemId(itemId)
-	                   .orElseThrow(() -> new ServiceException("Special end date not found for itemId: " + itemId));
-
-	           // LocalDateTime을 LocalDate로 변환
-	           LocalDate specialEndDate = specialEndDateTime.toLocalDate();
-
-	           // 특가 종료일이 현재 날짜 이전인 경우 (특가 기간 이후)
-	           if (specialEndDate.isBefore(currentDate)) {
-	               log.info("특가 기간 이후 취소: 100% 수수료 부과");
-	               return "환불이 불가능한 상태입니다. (특가 기간 이후 취소)";
-	           }
-	       }
+//	       if (reservation.getResSpecial() == 1) {
+//	           // ReservationDetail에서 첫 번째 아이템의 itemId를 가져옴
+//	           Integer itemId = reservation.getReservationDetails().get(0).getItem().getItemId();
+//
+//	           // 특가 종료일 확인
+//	           LocalDateTime specialEndDateTime = specialRepo.findEndDateByItemId(itemId)
+//	                   .orElseThrow(() -> new ServiceException("Special end date not found for itemId: " + itemId));
+//
+//	           // LocalDateTime을 LocalDate로 변환
+//	           LocalDate specialEndDate = specialEndDateTime.toLocalDate();
+//
+//	           // 특가 종료일이 현재 날짜 이전인 경우 (특가 기간 이후)
+//	           if (specialEndDate.isBefore(currentDate)) {
+//	               log.info("특가 기간 이후 취소: 100% 수수료 부과");
+//	               return "환불이 불가능한 상태입니다. (특가 기간 이후 취소)";
+//	           }
+//	       }
 	       
 	       
 	       // 환불 비율 결정
@@ -229,9 +234,11 @@ public class PaymentsService {
 	       } else {
 	           refundRate = 0.0; // 환불 불가
 	       }
-
+	       
+	       ClaimMaster clmMaster = clmMasterRepo.findByPayIdMaxClmId(payId);
+	       
 	       // 환불 비율에 따른 환불 금액 계산
-	       BigDecimal refundAmount = BigDecimal.valueOf(payment.getResTotalPrice() * refundRate);
+	       BigDecimal refundAmount = BigDecimal.valueOf(clmMaster.getTotalPrice() * refundRate);
 
 	       if (refundRate == 0.0) {
 	           log.info("환불 불가: payId: {}", payId);
@@ -390,10 +397,18 @@ public class PaymentsService {
 	            if (response != null && response.getResponse() != null
 	                    && "cancelled".equalsIgnoreCase(response.getResponse().getStatus())) {
 
-	                // 부분 취소가 성공하면, 결제 상태를 업데이트 (필요에 따라 금액 수정)
-	                payment.setPayStatus("PARTIAL_CANCEL"); // 부분 취소 상태로 업데이트
-	                payment.setResTotalPrice(payment.getResTotalPrice() - partialCancelAmount.intValue()); // 남은 결제 금액 업데이트
-	                paymentsRepo.save(payment);
+	                // 부분 취소가 성공하면, 결제 상태를 인서트 (필요에 따라 금액 수정)
+	            	 // 새로운 결제 정보 생성 및 저장
+		               Payments newPayment = new Payments();
+		               newPayment.setResId(payment.getResId());
+		               newPayment.setImpUid(impUid);
+		               newPayment.setPgTid(payment.getPgTid());;
+		               newPayment.setPayStatus("PARTIAL_CANCEL");
+		               newPayment.setResTotalPrice(cancelAmount);  // 취소된 금액
+		               newPayment.setPayMethod(payment.getPayMethod());
+		               newPayment.setBuyerEmail(payment.getBuyerEmail());
+		               newPayment.setPayDate(LocalDateTime.now());
+		               paymentsRepo.save(newPayment);
 
 	                // 예약 상태 업데이트
 	                boolean updateSuccess = reservationService.updateReservationState(payment.getResId(), 3);
