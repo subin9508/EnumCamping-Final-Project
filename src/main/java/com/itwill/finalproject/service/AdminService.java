@@ -36,16 +36,15 @@ public class AdminService {
     
     // 구역 세부 정보를 업데이트하는 메서드
     @Transactional
-    public void updateZoneDetails(Integer itemId, BigDecimal newPrice, String special) {
-        log.info("updateZoneDetails for itemId: {}, newPrice: {}, special: {}", itemId, newPrice, special);
+    public void updateZoneDetails(Integer itemId, BigDecimal newPrice) {
+        log.info("updateZoneDetails for itemId: {}, newPrice: {}", itemId, newPrice);
         Items item = findById(itemId);
         
         // 변경 사항과 상관없이 항상 히스토리 업데이트
-        updateItemHistory(item, newPrice.intValue(), special);
+        updateItemHistory(item, newPrice.intValue());
 
         // 아이템 세부 정보 업데이트
         item.setItemPrice(newPrice.intValue());
-        item.setSpecial("1".equals(special) ? 1 : 0);
         
         itemsRepository.save(item);
         log.info("Zone details updated: {}", item);
@@ -53,48 +52,26 @@ public class AdminService {
 
     // 아이템 세부 정보를 업데이트하는 메서드
     @Transactional
-    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc, String special) {
-        log.info("updateItemDetails for itemId: {}, newPrice: {}, newDesc: {}, special: {}", itemId, newPrice, newDesc, special);
+    public void updateItemDetails(Integer itemId, BigDecimal newPrice, String newDesc) {
+        log.info("updateItemDetails for itemId: {}, newPrice: {}, newDesc: {}", itemId, newPrice, newDesc);
         Items item = findById(itemId);
         
         // 변경 사항과 상관없이 항상 히스토리 업데이트
-        updateItemHistory(item, newPrice.intValue(), special);
+        updateItemHistory(item, newPrice.intValue());
 
         // 아이템 세부 정보 업데이트
         item.setItemPrice(newPrice.intValue());
         item.setItemDesc(newDesc);
-        item.setSpecial("1".equals(special) ? 1 : 0);
+       
         
         itemsRepository.save(item);
         log.info("Item details updated: {}", item);
     }
 
-    // History 업데이트 메서드 (공통 사용)
-//    @Transactional
-//    private void updateItemHistory(Items item, int newPrice, String special) {
-//    	log.info("updateItemHistory");
-//        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-//        if (currentHistory != null) {
-//            currentHistory.setEndDate(LocalDateTime.now());
-//            currentHistory.setSpecial(0);
-//            itemsHistoryRepository.save(currentHistory);
-//        }
-//
-//        ItemsHistory newHistory = new ItemsHistory();
-//        newHistory.setItems(item);
-//        newHistory.setItemPrice(newPrice);
-//        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
-//        newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-//        
-//        if("1".equals(special)) {
-//        	newHistory.setSpecial(1);
-//        }
-//        itemsHistoryRepository.save(newHistory);
-//    }
 
     @Transactional
-    private void updateItemHistory(Items item, int newPrice, String special) {
-        log.info("updateItemHistory for itemId: {}, newPrice: {}, special: {}", item.getItemId(), newPrice, special);
+    private void updateItemHistory(Items item, int newPrice) {
+        log.info("updateItemHistory for itemId: {}, newPrice: {}", item.getItemId(), newPrice);
         
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
@@ -110,11 +87,7 @@ public class AdminService {
         newHistory.setStartDate(LocalDateTime.now().plusSeconds(1)); // 새로운 시작 시간 설정
         newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59)); // 무기한 종료 시간 설정
 
-        if("1".equals(special)) {
-            newHistory.setSpecial(1); // 특가 여부 설정
-        } else {
-            newHistory.setSpecial(0); // 기본값 설정
-        }
+       
         
         itemsHistoryRepository.save(newHistory);
         log.info("New history inserted: {}", newHistory);
@@ -126,28 +99,6 @@ public class AdminService {
         return itemsHistoryRepository.findLatestPricesWithSpecialZero();
     }
     
-//    // 아이템 원 가격 불러옴
-//    public List<Items> getAllItemsWithLatestPrice() {
-//        List<Items> items = reservationService.getAllItems(); // 모든 아이템을 가져옴
-//
-//        // 특가가 없는 상태에서 최신 가격을 가져옴
-//        List<Integer> latestPricesWithSpecialZero = itemsHistoryRepository.findLatestPricesWithSpecialZero();
-//        
-//        log.info("Latest prices with special zero: {}", latestPricesWithSpecialZero);
-//
-//        return items;
-//    }
-//    
-//    public List<Items> getAllZonesWithLatestPrice() {
-//        List<Items> items = reservationService.getAllZones(); // 모든 아이템을 가져옴
-//
-//        // 특가가 없는 상태에서 최신 가격을 가져옴
-//        List<Integer> latestPricesWithSpecialZero = itemsHistoryRepository.findLatestPricesWithSpecialZero();
-//        
-//        log.info("Latest prices with special zero: {}", latestPricesWithSpecialZero);
-//
-//        return items;
-//    }
     
     // 모든 아이템에 대해 최신 가격을 가져오는 메서드
     public List<Items> getAllItemsWithLatestPrice() {

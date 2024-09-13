@@ -69,65 +69,15 @@ public class AdminController {
                 Integer itemId = Integer.parseInt(key.substring(6));
                 BigDecimal newPrice = new BigDecimal(value);
                 
-                // 체크박스 상태를 가져오고, 체크되지 않았으면 기본값을 "off"로 설정
-                String newCheck = allParams.get("select_" + itemId);
-                String special = "0"; // 기본값으로 '체크 안됨' 상태로 설정
-                if (newCheck != null && newCheck.equals("on")) {
-                    special = "1"; // 체크된 상태
-                }
+                log.info("itemId = {}, newPrice = {}",itemId,newPrice);
                 
-                log.info("itemId = {}, newPrice = {}, newCheck={}, special={}",itemId,newPrice,special);
-                
-                adminSvc.updateZoneDetails(itemId, newPrice, special); // 가격 + 특가 여부 업데이트
+                adminSvc.updateZoneDetails(itemId, newPrice); // 가격 + 특가 여부 업데이트
             }
         });
         return "redirect:/admin/price/zones"; // 해당 페이지로 리다이렉트
     }
 
-//    @PostMapping("/price/items/update")
-//    public String updateItems(@RequestParam Map<String, String> allParams) {
-//    	log.info("updateItems : {}",allParams);
-//        allParams.forEach((key, value) -> {
-//            if (key.startsWith("price_")) {
-//                Integer itemId = Integer.parseInt(key.substring(6));
-//                BigDecimal newPrice = new BigDecimal(value);
-//                
-//                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-//                String newCheck = allParams.getOrDefault("select_" + itemId, "off");
-//                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}",itemId,newPrice, newDesc,newCheck);
-//                
-//                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
-//            }
-//        });
-//        return "redirect:/admin/price/items"; // 해당 페이지로 리다이렉트
-//    }
-    
-//    @PostMapping("/price/items/update")
-//    public String updateItems(@RequestParam Map<String, String> allParams, Model model) {
-//        log.info("updateItems : {}", allParams);
-//        allParams.forEach((key, value) -> {
-//            if (key.startsWith("price_")) {
-//                Integer itemId = Integer.parseInt(key.substring(6));
-//                BigDecimal newPrice = new BigDecimal(value);
-//
-//                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-//                String newCheck = allParams.getOrDefault("select_" + itemId, "off");
-//                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
-//
-//                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
-//            }
-//        });
-//
-//        // 업데이트 후 최신 데이터를 다시 가져와서 모델에 추가
-//        List<Items> updatedItems = reservationSvc.getAllItems();
-//        model.addAttribute("items", updatedItems);
-//
-//        List<Integer> latestPricesWithSpecialZero = adminSvc.getLatestPricesWithSpecialZero();
-//        model.addAttribute("latestPricesWithSpecialZero", latestPricesWithSpecialZero);
-//
-//        return "admin/price/items"; // 해당 페이지로 리다이렉트
-//    }
-    
+
     @PostMapping("/price/items/update")
     public String updateItems(@RequestParam Map<String, String> allParams, Model model) {
         log.info("updateItems : {}", allParams);
@@ -137,10 +87,9 @@ public class AdminController {
                 BigDecimal newPrice = new BigDecimal(value);
 
                 String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-                String newCheck = allParams.getOrDefault("select_" + itemId, "off");
-                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
+                log.info("itemId = {}, newPrice = {}, newDesc = {}", itemId, newPrice, newDesc);
 
-                adminSvc.updateItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
+                adminSvc.updateItemDetails(itemId, newPrice, newDesc); // 가격과 설명 업데이트
             }
         });
 
@@ -161,10 +110,6 @@ public class AdminController {
     	
     }
     
-//    @GetMapping("/getLatestPriceWithSpecialZero")
-//    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
-//        return adminSvc.getLatestPricesWithSpecialZero();
-//    }
-        
+ 
 	
 }

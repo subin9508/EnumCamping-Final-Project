@@ -3,7 +3,6 @@ package com.itwill.finalproject.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,31 +47,24 @@ import com.itwill.finalproject.domain.QnAAnswers;
 import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 
-import com.itwill.finalproject.dto.AdditionalPaymentDto;
 import com.itwill.finalproject.dto.ClaimDetailDto;
 
 import com.itwill.finalproject.dto.ProfileDto;
 import com.itwill.finalproject.dto.QnAListItemDto;
 import com.itwill.finalproject.dto.QnAUpdateDto;
-import com.itwill.finalproject.dto.RefundRequestDto;
-import com.itwill.finalproject.dto.ReservationChangeResultDto;
 import com.itwill.finalproject.dto.ReservationDetailDto;
-import com.itwill.finalproject.dto.ReservationUpdateDto;
 import com.itwill.finalproject.dto.UserUpdateDto;
 import com.itwill.finalproject.repository.ItemsHistoryRepository;
 import com.itwill.finalproject.repository.ProfileRepository;
-import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ClaimService;
 import com.itwill.finalproject.service.MyPageService;
-import com.itwill.finalproject.service.PaymentsService;
 import com.itwill.finalproject.service.ProfileService;
 import com.itwill.finalproject.service.QnAAnswerService;
 import com.itwill.finalproject.service.QnAService;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.SpecialService;
 import com.itwill.finalproject.service.UserService;
-import com.siot.IamportRestClient.IamportClient;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -85,8 +77,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/mypage")
 public class MyPageController {
 	
-	// 아임포트 API와 상호작용하기 위한 클라이언트 객체를 정의
-    private IamportClient api;
 
 	private final MyPageService myPageService;
 	private final UserService userService;
@@ -96,7 +86,6 @@ public class MyPageController {
 	private final ReservationService reservationSvc;
 	private final ProfileRepository profileRepo;
 	private final UserRepository userRepo;
-	private final PaymentsService paymentsService;
 	private final ClaimService claimService;
 	private final SpecialService specialService;
 	private final ItemsHistoryRepository ihRepo;
@@ -135,7 +124,7 @@ public class MyPageController {
 	}
 
 	@PostMapping("/password_check")
-	public String passwordCheck(@RequestParam("password") String password, Model model) {
+	public String passwordCheck(@RequestParam String password, Model model) {
 		String userId = getUserId();
 		if (userId == null) {
 			return "redirect:/user/signin";
@@ -157,7 +146,7 @@ public class MyPageController {
 
 	@GetMapping("/user_update")
 
-	public String userUpdate(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	public String userUpdate(Model model, @AuthenticationPrincipal UserDetails userDetails) { // 로그인한 사용자 정보를 직접 가져올 수 있음.
 		String userId = userDetails.getUsername();
 		if (userId == null) {
 			return "redirect:/user/signin";
@@ -175,8 +164,8 @@ public class MyPageController {
 
 	@PostMapping("/user_update")
 	@ResponseBody
-	public ResponseEntity<?> userUpdate(@RequestParam(value = "file", required = false) MultipartFile file,
-			@RequestParam(value = "deleteProfileImage", required = false) String deleteProfileImage,
+	public ResponseEntity<?> userUpdate(@RequestParam(required = false) MultipartFile file,
+			@RequestParam(required = false) String deleteProfileImage,
 			@ModelAttribute UserUpdateDto dto, @AuthenticationPrincipal UserDetails userDetails)
 			throws JsonProcessingException {
 
@@ -226,7 +215,7 @@ public class MyPageController {
 
 			if (!isValidPhone(dto.getUserPhone())) {
 				result.put("success", false);
-				result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 010-1234-5678");
+				result.put("message", "전화번호는 형식에 맞게 입력하세요. 예: 01012345678");
 				return ResponseEntity.badRequest().body(result);
 			}
 
@@ -287,7 +276,7 @@ public class MyPageController {
 	}
 
 	private boolean isValidPhone(String phone) {
-		return phone != null && phone.matches("^01[0-9]-\\d{3,4}-\\d{4}$");
+		return phone != null && phone.matches("^01[0-9]\\d{3,4}\\d{4}$");
 	}
 
 	// 특정 사용자의 QnA 목록 조회
@@ -318,7 +307,7 @@ public class MyPageController {
 
 	// QnA 게시글 수정 폼 조회
 	@GetMapping("/qna_modify")
-	public String modifyForm(@RequestParam(name = "id") Long id, @AuthenticationPrincipal UserDetails userDetails,
+	public String modifyForm(@RequestParam Long id, @AuthenticationPrincipal UserDetails userDetails,
 			Model model, RedirectAttributes redirectAttributes) {
 		log.debug("modifyForm(Id={})", id);
 
@@ -332,11 +321,6 @@ public class MyPageController {
 		log.debug("isAdmin: {}", isAdmin);
 		log.debug("qnaUserId: {}", qna.getQnaUserId());
 
-//        // 비밀글 여부 확인
-//        if (qna.getQnaLock() == 1 && !qna.getQnaUserId().equals(signedInUser) && !isAdmin) {
-//            redirectAttributes.addFlashAttribute("message", "비밀글은 작성자와 관리자만 볼 수 있습니다.");
-//            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
-//        }
 
 		model.addAttribute("qna", qna);
 		model.addAttribute("signedInUser", signedInUser);
@@ -347,7 +331,7 @@ public class MyPageController {
 
 	// QnA 게시글 상세 조회
 	@GetMapping("/qna_details")
-	public String details(@RequestParam(name = "id") Long id, @RequestParam(name = "p", defaultValue = "0") int pageNo,
+	public String details(@RequestParam Long id, @RequestParam(name = "p", defaultValue = "0") int pageNo,
 			@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) {
 		log.debug("details(Id={}, pageNo={})", id, pageNo);
 
@@ -372,50 +356,15 @@ public class MyPageController {
 			throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
 		}
 
-//        // 현재 인증된 사용자 정보를 가져옴
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserDetails authenticatedUserDetails = (UserDetails) authentication.getPrincipal();
-
-//        // UserService를 통해 User 객체를 가져옴
-//        User user = userService.findByUserId(authenticatedUserDetails.getUsername());
-//        
-//        // 유저가 null인 경우 예외 처리
-//        if (user == null) {
-//            throw new NullPointerException("User object is null");
-//        }
-//        
-//        model.addAttribute("user", user);
 
 		// QnA 게시글 조회
 		QnA qna = qnaService.readById(id);
 
-		// 로그인을 하지 않은 경우, userDetails는 null
-//        String signedInUser = (user1 != null) ? user1.getUsername() : null;
-//        Integer userRole = null;
-//        
-//        if (user1!= null) {
-//            userRole = ((User) user1).getUserRole(); // userRole 값을 가져옴
-//        }
-
-		// 로그인을 하지 않은 경우, userDetails는 null
-//        String signedInUser = user.getUsername();
-//        Integer userRole = user.getUserRole();
 
 		log.debug("signedInUser: {}", signedInUser);
 		log.debug("userRole: {}", userRole);
 		log.debug("qnaUserId: {}", qna.getQnaUserId());
 		log.debug("qnaLock: {}", qna.getQnaLock());
-
-		// 비밀글 여부 확인
-//        if (qna.getQnaLock() == 1 && !qna.getQnaUserId().equals(signedInUser) && !isAdmin) {
-//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-//            return "redirect:/community/qna/list"; // 접근 거부 시 리스트 페이지로 리다이렉트
-//        }
-
-//        if (!canAccessQnA(qna, userDetails)) {
-//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-//            return "redirect:/community/qna/list?p=" + pageNo;
-//        }
 
 		// 비밀글 여부 확인
 		if (qna.isSecret()) {
@@ -426,25 +375,6 @@ public class MyPageController {
 			}
 		}
 
-		// 조회수 증가 조건: 비밀글이 아닌 경우엔 모든 회원 및 비회원 및 관리자 증가 / 비밀글인 경우 작성자와 관리자만 증가
-//        if (!qna.isSecret() || qna.getQnaUserId().equals(signedInUser)) {
-//        	log.debug("Incrementing view count");
-//        	qna.incrementViewCount(); // 조회수 증가 메서드 호출
-//        }
-
-//        if (!qna.isSecret()) {
-//            // 비밀글이 아니면 모든 사용자에게 조회수 증가
-//            log.debug("Incrementing view count for non-secret QnA");
-//            qna.incrementViewCount();
-//        } else if (signedInUser != null && (qna.getQnaUserId().equals(signedInUser) || userRole == 0)) {
-//            // 비밀글인데 작성자이거나 관리자일 경우에만 조회수 증가
-//            log.debug("Incrementing view count for secret QnA (authorized user)");
-//            qna.incrementViewCount();
-//        } else {
-//            // 비밀글인데 작성자나 관리자가 아닌 경우 접근 불가
-//            redirectAttributes.addFlashAttribute("message", "작성자와 관리자만 접근 가능합니다.");
-//            return "redirect:/community/qna/list";
-//        }
 
 		// 비밀글 여부 확인 및 조회수 증가
 		qna = qnaService.incrementViewCount(id, signedInUser, userRole);
@@ -475,16 +405,14 @@ public class MyPageController {
 
 //    @PreAuthorize("hasRole('USER')")
 	@GetMapping("/delete")
-	public String delete(@RequestParam("id") Long id, Model model, HttpSession session,
+	public String delete(@RequestParam Long id, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("delete(id={})", id);
 
 		// 사용자 정보를 조회하여 세선에 저장
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName(); // 인증된 사용자의 이름(ID)
-		User user = userService.read(userId);
-		session.setAttribute("user", user);
-
+		
 		qnaService.delete(id, userDetails.getUsername());
 
 		return "redirect:/mypage/qna_list?userId=" + userId;
@@ -501,7 +429,7 @@ public class MyPageController {
 
 	// 마이페이지 - 예약목록
 		@GetMapping("/reservation_list")
-		public String reservationList(@RequestParam(name = "userId") String userId, Model model) {
+		public String reservationList(@RequestParam String userId, Model model) {
 		    log.debug("reservation_list(userId={})", userId);
 
 		    List<ReservationMaster> list = myPageService.readAllReservation(userId);
@@ -545,7 +473,7 @@ public class MyPageController {
 
 	// 마이페이지 - 예약 상세
 		@GetMapping("/reservation_details")
-		public String reservationDetails(@RequestParam(name = "resId") int resId, Model model) {
+		public String reservationDetails(@RequestParam int resId, Model model) {
 			log.debug("reservation_details()");
 			
 			ClaimMaster clmMaster = claimService.findByResIdMaxClmId(resId);
@@ -595,7 +523,7 @@ public class MyPageController {
 	// 마이페이지 - 예약 변경
 	// 처음에 가져오는 페이지 
 	@GetMapping("/reservation_update")
-	public void reservationUpdateCalendar(@RequestParam(name = "resId") int resId, Model model) {
+	public void reservationUpdateCalendar(@RequestParam int resId, Model model) {
 		log.info("reservationUpdateCalendar");
 		
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
@@ -605,13 +533,12 @@ public class MyPageController {
 
 		int special = resMaster.orElseThrow().getResSpecial(); //특가 예약인지 아닌지
 		
-		// 이걸 바꿔야함
-		//근데 이건 ㄹㅇ 아이템,,들이고 구역은,,, cal관련 html,,
+		
 		List<Items> items = reservationSvc.getAllItems();
 		for(Items item : items ) {
 			log.debug("item={}", item);
 		}
-		//일단 가져오고,, 가격만,, 바꿔야할,,듯?
+		
 			
 		if (special == 1) { //특가 예약
 			//reservation controller 참고
@@ -655,8 +582,8 @@ public class MyPageController {
 			}
 			
 		} else { //special = 0
-			//TODO 걍 정상가보여주면 됨
-			//history 이용 등, res controller 이용
+			// 정상가 보여주기
+			// history 이용 등, res controller 이용
 			List<Integer> list = ihRepo.findLatestPricesWithSpecialZero();
 			log.info("정상가 예약");
 			
@@ -678,12 +605,12 @@ public class MyPageController {
 	                               .filter(detail -> detail.getItemId() <= 20)
 	                               .mapToInt(ReservationDetailDto::getItemAmount)
 	                               .sum();
-	 // itemId가 21 이상인 itemAmount의 총합 계산
+	    // itemId가 21 이상인 itemAmount의 총합 계산
 	    int totalItemAmount = resDetail.stream()
 	                               .filter(detail -> detail.getItemId() > 20)
 	                               .mapToInt(ReservationDetailDto::getItemAmount)
 	                               .sum();
-	    // itemId가 21 이상인 itemAmount의 총합 계산
+	    // itemId가 21 이상인 itemAmount의 총합 계산 (전체를 보여주기 위해서 1로 설정)
 	    int totalAllAmount = resDetail.stream()
 	                               .filter(detail -> detail.getItemId() >= 1)
 	                               .mapToInt(ReservationDetailDto::getItemAmount)
@@ -701,7 +628,7 @@ public class MyPageController {
 	@GetMapping("/reservation_update/{date}")
 	@ResponseBody
 	public List<Integer> reservationUpdateCalendar(
-			@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 		log.debug("GET: calendar with date {}", date);
 
 		// 해당 날짜에 예약된 구역 ID 목록을 가져옵니다.
@@ -710,8 +637,8 @@ public class MyPageController {
 	}
 
 	@GetMapping("/reservation_update/{date}/{area}")
-	public ResponseEntity<List<ReservationMaster>> reservationUpdateCalendar(@PathVariable("date") String date,
-			@PathVariable("area") int area) {
+	public ResponseEntity<List<ReservationMaster>> reservationUpdateCalendar(@PathVariable String date,
+			@PathVariable int area) {
 		LocalDate checkInDate = LocalDate.parse(date);
 		log.debug("GET: calendar with date and area {}, {}", date, area);
 		List<ReservationMaster> reservations = reservationSvc.readReservationMaster(checkInDate, area);
@@ -721,12 +648,10 @@ public class MyPageController {
 
 	// 예약변경 결제 페이지
 	@GetMapping("/reservation_order")
-	public String showOrderPage(@RequestParam(name = "resId") int resId, HttpSession session, Model model) {
+	public String showOrderPage(@RequestParam int resId, HttpSession session, Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName();
-// 			    String userId = (String) session.getAttribute("signedInUser");
 		User user = userService.read(userId);
-		Integer userKey = user.getUserKey();
 		log.info("user={}", user);
 
 		// 세션에서 데이터 가져오기
@@ -762,7 +687,7 @@ public class MyPageController {
 	}
 
 	@PostMapping("/reservation_order")
-	public String getReservationList(@RequestParam(name = "resId") int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+	public String getReservationList(@RequestParam int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
 
 		log.debug("reservationList(requestData={})", requestData);
 
@@ -770,9 +695,6 @@ public class MyPageController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
-		// 인증된 사용자에 대한 처리
-//	    String userId = (String) session.getAttribute("signedInUser");
-	    
 	    log.debug("userId={}", userId);
 	    User user = userService.read(userId);
 	    model.addAttribute("user", user);
@@ -782,15 +704,6 @@ public class MyPageController {
 	    log.debug("userKey={}", userKey);
 	    model.addAttribute("userKey", userKey);
 	    
-	    // 기존 예약 상세 정보와 마스터 정보 삭제
-	    try {
-	        log.debug("Attempting to delete reservation master for userId: {}", userId);
-	        reservationSvc.deleteReservationMaster(userKey);
-	        log.info("Successfully deleted reservation master for userId: {}", userId);
-	    } catch (Exception e) {
-	        log.error("Failed to delete reservation master for userId: {}", userId, e);
-	        return "reservation/order";
-	    }	    
 	   
 	    // requestData에서 reservationMaster와 reservationDetail 추출
 	    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
@@ -903,9 +816,9 @@ public class MyPageController {
 
 
 	@GetMapping("/reservation_update_successed/{resId}")
-	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
+	public String paymentSucceessed(@PathVariable Integer resId , Model model, HttpSession session, HttpServletResponse response) {
 	    
-	    // 캐시 비활성화 설정
+	    // 캐시 비활성화 설정 (이전 페이지 눌렀을 때 중복 인서트 안되게 하려는 코드)
 	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
 	    response.setHeader("Pragma", "no-cache"); // HTTP 1.0
 	    response.setDateHeader("Expires", 0); // Proxies
@@ -929,7 +842,7 @@ public class MyPageController {
 
 	    List<ReservationDetailDto> resDetail = (List<ReservationDetailDto>) session.getAttribute("resDetails");
 	    
-	 // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
+	    // 클레임 마스터와 디테일 데이터를 저장하는 서비스 호출
         claimService.saveClaim(resMaster, resDetail, resId);
         // reservationMaster modifiedTime 업데이트
         reservationSvc.updateResModifiedTime(resId);
@@ -938,7 +851,6 @@ public class MyPageController {
         LocalDateTime modifiedTime = reservationMaster.getResModifiedTime();
         log.debug("modifiedTime={}", modifiedTime);
 
-//      String userId = (String) session.getAttribute("userId"); // 세션에서 userId 가져오기
         model.addAttribute("res_id", resId); // 모델에 resId 추가
         model.addAttribute("resMaster", resMaster);
         model.addAttribute("resDetail", resDetail);
@@ -955,13 +867,13 @@ public class MyPageController {
 	
 	
 	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
-	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
+	public ResponseEntity<Integer> getItemPrice(@PathVariable int itemId,@PathVariable int resSpecial) {
 		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
 		
 		
-		//예약 변경 시 할 일
-		//특가 예약인지 먼저 체크,
-		//그다음에 특가 기간인지 체크
+		// 예약 변경 시 할 일
+		// 예약인지 먼저 체크,
+		// 그다음에 특가 기간인지 체크
 		// 특가예약&특가기간 -> 특가
 		// 특가예약&특가기간 지남 -> 정상가
 		// 정상가 예약 -> 정상가
@@ -973,7 +885,7 @@ public class MyPageController {
 			int spc = specialService.findSpecial(itemId, now); //0이면 특가 종료 1이면 특가 기간
 			if (spc == 1) {
 				//특가 가격 보여주기
-				//여기서는 itemId마다 개별가격 보여주는것임~
+				//여기서는 itemId마다 개별 가격 보여주는것임~
 				Integer itemPrice =ihRepo.findSpecialPrice(itemId);
 				log.info("특가 기간 중 itemId = {}, itemPrice = {}",itemId,itemPrice);
 				return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);

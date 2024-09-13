@@ -61,7 +61,7 @@ public class ReservationController {
 	    log.debug("userKey={}", userKey);
 		
 	    
-	    //여기서 item 특가도 .. 확인해야할 듯?
+	    
 	    //예약 여부 체크
 	    //1. 특가 기간인지 확인하고, 2. 예약되어있는지 확인하고, 3. 가격 보여주기
 	    //userId로 예약 여부 확인
@@ -127,36 +127,32 @@ public class ReservationController {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String userId = authentication.getName();
-	  //  log.debug("Authenticated userId: {}", userId);
+	  
 	    Map<String, Object> responseMap = new HashMap<>();
-	    
-		//특가기간인지 먼저 체크
-		//아이템에 적힌 특가 기간이랑 현재 날짜를 비교하면되려나?
-		//특가테이블에서 id가 같고 now가 기간내인 거 찾기
-	    
+	   
 	    //현재 시간 체크
 		LocalDateTime now = LocalDateTime.now();
 		
 		//특가 상품인지 체크 & 시작날짜 찾기
 		LocalDateTime startDate = spclRepo.findStartDate(itemId, now);
 		//null이면 정상가, 날짜 반환되면 특가
-       // log.debug("시작날짜 =  {}", startDate);
+      
         
         
         // 정상가- history에서 최신 0 가져오기
         if(startDate == null) {
         	log.info("아이템 {}는 특가 기간이 아닙니다.",itemId);
         	Integer itemPrice =itemsHistoryRepo.findNewestNormalPrice(itemId);
-        	//log.info("정상 price = {}",itemPrice);
+        	
         	responseMap.put("price", itemPrice);
             responseMap.put("special", 0); // 정상가이므로 특가 아님
             return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
-//        	return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
+
         } else { //특가
         	log.info("아이템 {}는 특가 기간입니다.",itemId);
         	// 특가 예약 조회
         	ReservationMaster rm = reservationSvc.findSpecial(userId, startDate);
-        //	log.info("rm = {}",rm);
+        
         	
         	if (rm == null) {
         		log.info("특가 예약 안함");
@@ -165,14 +161,12 @@ public class ReservationController {
         		if (itemPrice == -1) { //item 테이블에서 special이 0인 경우
         			itemPrice = reservationSvc.readSpecialPrice(itemId); //그 경우는 history에서 특가 찾기
         		}
-        	//	log.debug("item price 특가: {}", itemPrice);
         		
         		//에러잡는용도
         		if (itemPrice != null) {
         			responseMap.put("price", itemPrice);
                     responseMap.put("special", 1); // 특가 적용
                     return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
-//        			return new ResponseEntity<Integer>(itemPrice, HttpStatus.OK);
         		} else {
         			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         		}
@@ -180,31 +174,25 @@ public class ReservationController {
         		log.info("특가 예약 함");
         		//history에서 
         		LocalDateTime latestStartDate = reservationSvc.getLatestStartDate(itemId);
-        	//	log.info("latestStartDate={}", latestStartDate);
         		if (latestStartDate == null) {
-        	//		log.warn("No item history found for itemId: {}", itemId);
         			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         		}
         		
         		LocalDateTime targetDateTime = latestStartDate.minusSeconds(1);
-        	///	log.debug("Computed targetDateTime by subtracting one second: {}", targetDateTime);
         		
         		Integer itemPrice = reservationSvc.getItemPriceByAdjustedEndDate(itemId, targetDateTime);
-        	//	log.info("정상 price = {}",itemPrice);
             	responseMap.put("price", itemPrice);
                 responseMap.put("special", 0); // 정상가이므로 특가 아님
                 return itemPrice != null ? new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        		return itemPrice != null ? new ResponseEntity<>(itemPrice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         	}
         }
 	}
 	
 	// 예약확인 페이지
 			@GetMapping("/order")
-			public String showOrderPage(HttpSession session, Model model) {
+			public String showOrderPage(Model model) {
 				 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			     String userId = authentication.getName();
-//			    String userId = (String) session.getAttribute("signedInUser");
 			    User user = userSvc.read(userId);
 			    Integer userKey = user.getUserKey();
 			    log.info("user={}",user);
@@ -221,7 +209,6 @@ public class ReservationController {
 		@PostMapping("/order")
 		public String getReservationList(
 		        @RequestBody Map<String, Object> requestData, 
-		        HttpSession session, 
 		        Model model) {
 			
 		    log.debug("reservationList(requestData={})", requestData);
@@ -232,7 +219,6 @@ public class ReservationController {
 		  
 		       String userId = authentication.getName(); // 사용자 ID 또는 사용자 이름
 		        // 인증된 사용자에 대한 처리
-//		    String userId = (String) session.getAttribute("signedInUser");
 		    
 		    log.debug("userId={}", userId);
 		    User user = userSvc.read(userId);
@@ -254,7 +240,6 @@ public class ReservationController {
 		    }
 		    
 		    // requestData에서 reservationMaster와 reservationDetail 추출
-		 // requestData에서 reservationMaster와 reservationDetail 추출
 		    Map<String, Object> reservationMasterMap = (Map<String, Object>) requestData.get("reservationMaster");
 		    List<Map<String, Object>> reservationDetailList = (List<Map<String, Object>>) requestData.get("reservationDetail");
 

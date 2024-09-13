@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SpecialController {
 
     private final ReservationService reservationSvc;
-    private final AdminService adminSvc;
     private final SpecialService specialSvc;
 
     @GetMapping("/price/zonesSpecial")
@@ -171,22 +170,7 @@ public class SpecialController {
     }
     
 
-//    @PostMapping("/price/itemsSpecial/update")
-//    public String updateItems(@RequestParam Map<String, String> allParams) {
-//        log.info("updateItems : {}", allParams);
-//        allParams.forEach((key, value) -> {
-//            if (key.startsWith("price_")) {
-//                Integer itemId = Integer.parseInt(key.substring(6));
-//                BigDecimal newPrice = new BigDecimal(value);
-//                String newDesc = allParams.get("desc_" + itemId); // 설명 업데이트를 위한 추가 파라미터
-//                String newCheck = allParams.getOrDefault("select_" + itemId, "off"); // 기본값 'off' 설정
-//                log.info("itemId = {}, newPrice = {}, newDesc = {}, newCheck={}", itemId, newPrice, newDesc, newCheck);
-//                
-//                specialSvc.updateSpecialItemDetails(itemId, newPrice, newDesc, newCheck); // 가격과 설명 업데이트
-//            }
-//        });
-//        return "redirect:/admin/price/itemsSpecial"; // 해당 페이지로 리다이렉트
-//    }
+
 
     private boolean isNumeric(String strNum) {
         if (strNum == null) {
@@ -227,16 +211,4 @@ public class SpecialController {
     }
     
     
-//    @GetMapping("/price/zones/percentupdate")
-//    public void updateZonePercent(@RequestParam("percent") String percent) {
-//    	log.info("update percent = {}",percent);
-//    	
-//    }
-    
-//    @GetMapping("/getLatestPriceWithSpecialZero")
-//    public List<ItemsHistory> getLatestPriceWithSpecialZero() {
-//        return adminSvc.getLatestPricesWithSpecialZero();
-//    }
-    
-	
 }

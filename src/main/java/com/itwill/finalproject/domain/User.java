@@ -84,41 +84,6 @@ public class User implements UserDetails {
 		 }
 	 }
 
-	// 편의 메서드
-//	// 유저의 권한을 부여하는 메서드.
-//	public User addRole(UserRole role) {
-//		Role.add(role);
-//		return this;
-//	}
-//
-//	// 유저의 권한을 한 개 삭제하는 메서드
-//	public User removeRole(UserRole role) {
-//		Role.remove(role);
-//		return this;
-//	}
-//
-//	// 유저의 권한을 삭제하는 메서드
-//	public User clearRoles() {
-//		Role.clear(); // Set<>이 가지고 있는 모든 원소를 지움.
-//		return this;
-//	}
-
-//	// 사용자 권한을 문자열로 변환
-//	public String getRoleString(Integer role) {
-//		switch (role) {
-//		case 0:
-//			return "ADMIN";
-//		case 1:
-//			return "USER";
-//		default:
-//			return "ROLE_UNKNOWN";
-//		}
-//	}
-
-
-
-	
-	
 	 // UserRole enum을 Integer로 설정하는 메서드
 	    public void setUserRole(UserRole role) {
 	        this.userRole = role.getValue();
@@ -136,30 +101,8 @@ public class User implements UserDetails {
 	        UserRole role = getUserRoleEnum();
 	        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
 	    }
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//	    // userRole 값에 따라 권한 문자열을 생성
-//	    String roleString = getRoleString(this.userRole);
-//	    return List.of(new SimpleGrantedAuthority(roleString));
-//	}
-	
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		// 권한 숫자를 문자열로 변환 후 권한 객체 생성
-//		return List.of(new SimpleGrantedAuthority(getRoleString(this.userRole)));
-//	}
 
-//	 @Override
-//	    public Collection<? extends GrantedAuthority> getAuthorities() {
-//	        List<String> roleAuthorities = UserRole.getAllAuthorities();
-//
-//	        List<SimpleGrantedAuthority> authorities = roleAuthorities.stream()
-//	                .map((r) -> new SimpleGrantedAuthority(r))
-//	                .toList();
-//	        
-//	        return authorities;
-//	    }
-	
+
 
 	@Override
 	public String getPassword() {

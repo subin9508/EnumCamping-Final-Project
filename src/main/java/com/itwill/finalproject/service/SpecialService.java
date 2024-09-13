@@ -55,7 +55,7 @@ public class SpecialService {
             boolean specialChanged = item.getSpecial() != ("on".equals(newCheck) ? 1 : 0);
             log.info("Price changed: {}, Special changed: {}", priceChanged, specialChanged);
             
-         // 가격이 변경되었거나, 특가 상태가 변경된 경우에만 업데이트 진행
+            // 가격이 변경되었거나, 특가 상태가 변경된 경우에만 업데이트 진행
             if (priceChanged || specialChanged) {
                 log.info("Updating item history and item details...");
 
@@ -66,6 +66,7 @@ public class SpecialService {
                 // 특가 상태가 'on'인 경우만 특가 로그를 추가
                 if ("on".equals(newCheck)) {
                     updateSpecialItemHistory(item, newPrice.intValue(), 1);  // '1'은 특가 상태를 나타냄
+                    specialRepository.updateSpecialEndDateWhenSpecialGoesZero(item.getItemId());
                     insertIntoSpecialTable(item, newPrice.intValue());
                 } else {
                     updateSpecialItemHistory(item, newPrice.intValue(), 0);
@@ -104,6 +105,7 @@ public class SpecialService {
                 // 특가 상태가 'on'인 경우만 특가 로그를 추가
                 if ("on".equals(newCheck)) {
                     updateSpecialItemHistory(item, newPrice.intValue(), 1);  // '1'은 특가 상태를 나타냄
+                    specialRepository.updateSpecialEndDateWhenSpecialGoesZero(item.getItemId());
                     insertIntoSpecialTable(item, newPrice.intValue());
                 } else {
                     updateSpecialItemHistory(item, newPrice.intValue(), 0);
@@ -120,40 +122,12 @@ public class SpecialService {
     }
 
     
-    // itemshistory 테이블에 기록 추가
-//    @Transactional
-//    private void updateSpecialItemHistory(Items item, int newPrice, int specialStatus) {
-//    	log.info("updateItemHistory");
-//    	log.info("Updating Item History for itemId={}, newPrice={}, specialStatus={}", item.getItemId(), newPrice, specialStatus);
-//    	
-//        ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
-//        if (currentHistory != null) {
-//            // 기존의 special = 1 레코드의 end_date만 업데이트하고, special 값을 변경하지 않습니다.
-//            currentHistory.setEndDate(LocalDateTime.now());
-//            itemsHistoryRepository.save(currentHistory);
-//            log.debug("Current history updated: {}", currentHistory);
-//        }
-//    	
-//        ItemsHistory newHistory = new ItemsHistory();
-//        newHistory.setItems(item);
-//        newHistory.setItemPrice(newPrice);
-//        newHistory.setSpecial(specialStatus); // 특가 여부를 반영
-//        newHistory.setStartDate(LocalDateTime.now().plusSeconds(1));
-//        newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-//        
-//        if("1".equals(specialStatus)) {
-//        	newHistory.setSpecial(1);
-//        }
-//        
-//        itemsHistoryRepository.save(newHistory);
-//        log.debug("New history record added: {}", newHistory);
-//    }
-    
     
     @Transactional
     private void updateSpecialItemHistory(Items item, int newPrice, int specialStatus) {
         log.info("Updating Item History for itemId={}, newPrice={}, specialStatus={}", item.getItemId(), newPrice, specialStatus);
 
+        
         // 가장 최근의 ItemsHistory 레코드를 조회합니다.
         ItemsHistory currentHistory = itemsHistoryRepository.findTopByItemsOrderByStartDateDesc(item);
         if (currentHistory != null) {
@@ -223,21 +197,6 @@ public class SpecialService {
             itemsHistoryRepository.save(latestHistory);
             log.info("Updated latest history record endDate: {}", latestHistory);
         }
-        /*
-        List<ItemsHistory> existingRecords = itemsHistoryRepository.findByItemsAndSpecialAndStartDate(item, 0, now);
-        if (existingRecords.isEmpty()) {
-            ItemsHistory newHistory = new ItemsHistory();
-            newHistory.setItems(item);
-            newHistory.setItemPrice(item.getItemPrice());
-            newHistory.setSpecial(0);
-            newHistory.setStartDate(now);
-            newHistory.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59, 59));
-            itemsHistoryRepository.save(newHistory);
-            log.info("ItemsHistory에 새로운 레코드 추가됨: {}", newHistory);
-        } else {
-            log.info("Already existing special = 0 record for the same start date, not inserting new record.");
-        }*/
-
 
         // Special 테이블의 end_date 업데이트
         int updatedCount = specialRepository.updateSpecialEndDateWhenSpecialGoesZero(itemId);
