@@ -2,7 +2,6 @@ package com.itwill.finalproject.web;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwill.finalproject.domain.Items;
@@ -28,13 +26,10 @@ import com.itwill.finalproject.domain.ReservationMaster;
 import com.itwill.finalproject.domain.User;
 import com.itwill.finalproject.dto.ReservationDetailDto;
 import com.itwill.finalproject.repository.ItemsHistoryRepository;
-import com.itwill.finalproject.repository.ItemsRepository;
 import com.itwill.finalproject.repository.SpecialRepository;
 import com.itwill.finalproject.repository.UserRepository;
 import com.itwill.finalproject.service.ReservationService;
 import com.itwill.finalproject.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +42,6 @@ public class ReservationController {
 	private final ReservationService reservationSvc;
 	private final UserService userSvc;
 	private final UserRepository userRepo;
-	private final ItemsRepository itemsRepo;
 	private final ItemsHistoryRepository itemsHistoryRepo;
 	private final SpecialRepository spclRepo;
 	
@@ -60,12 +54,9 @@ public class ReservationController {
 		Integer userKey = user.getUserKey(); 
 	    log.debug("userKey={}", userKey);
 		
-	    
-	    
 	    //예약 여부 체크
 	    //1. 특가 기간인지 확인하고, 2. 예약되어있는지 확인하고, 3. 가격 보여주기
 	    //userId로 예약 여부 확인
-	    
 	    List<Items> items = reservationSvc.getAllItems();
 		for (Items item : items) {
 			log.info("Item: {}", item);
@@ -137,8 +128,6 @@ public class ReservationController {
 		LocalDateTime startDate = spclRepo.findStartDate(itemId, now);
 		//null이면 정상가, 날짜 반환되면 특가
       
-        
-        
         // 정상가- history에서 최신 0 가져오기
         if(startDate == null) {
         	log.info("아이템 {}는 특가 기간이 아닙니다.",itemId);

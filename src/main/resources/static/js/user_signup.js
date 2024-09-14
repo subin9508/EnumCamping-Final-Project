@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 비밀번호 입력 필드의 change 이벤트 리스너
     // input#password 비어 있는 지를 체크
-    // TODO: 비밀번호 정규표현식도 추가 해야된다.
     function checkPassword(event) {
         const password = event.target.value;
 

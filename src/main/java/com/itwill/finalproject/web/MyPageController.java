@@ -77,7 +77,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/mypage")
 public class MyPageController {
 	
-
 	private final MyPageService myPageService;
 	private final UserService userService;
 	private final QnAService qnaService;
@@ -498,7 +497,6 @@ public class MyPageController {
 			
 			
 			Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
-			
 			List<ReservationDetailDto> resDetail = myPageService.readReservationDetails(resId);
 
 			if (resMaster.isPresent()) {
@@ -516,7 +514,6 @@ public class MyPageController {
 			model.addAttribute("resDetail", resDetail);
 			model.addAttribute("clmMaster", clmMaster);
 			
-
 			return "mypage/reservation_details";
 		}
 
@@ -538,7 +535,6 @@ public class MyPageController {
 		for(Items item : items ) {
 			log.debug("item={}", item);
 		}
-		
 			
 		if (special == 1) { //특가 예약
 			//reservation controller 참고
@@ -558,8 +554,6 @@ public class MyPageController {
 			int spc = specialService.findSpecial(zoneId, now); //0이면 특가 종료 1이면 특가 기간
 			
 			if (spc == 1) {
-				
-				
 				//특가 가격 보여주기
 				log.info("특가 기간 중");
 				List<Integer> list = ihRepo.findLatestSpecialPrices();
@@ -763,8 +757,6 @@ public class MyPageController {
 	        Integer itemId = (detailMap.get("itemId") != null) ? Integer.parseInt(detailMap.get("itemId").toString()) : null;
 	        Integer itemQuantity = (detailMap.get("itemQuantity") != null) ? Integer.parseInt(detailMap.get("itemQuantity").toString()) : null;
 	        Integer itemAmount = (detailMap.get("itemAmount") != null) ? Integer.parseInt(detailMap.get("itemAmount").toString()) : null;
-//	        List<Items> items = reservationSvc.getAllItems();
-	        
 	        log.debug("itemId={}, itemAmount={}, itemQuantity={}", itemId, itemAmount, itemQuantity);
 
 	        if (itemId == null || itemAmount == null || itemQuantity == null) {
@@ -865,11 +857,9 @@ public class MyPageController {
 	}
 
 	
-	
 	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
 	public ResponseEntity<Integer> getItemPrice(@PathVariable int itemId,@PathVariable int resSpecial) {
 		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
-		
 		
 		// 예약 변경 시 할 일
 		// 예약인지 먼저 체크,
@@ -906,5 +896,4 @@ public class MyPageController {
 	}
 
 	
-
 }

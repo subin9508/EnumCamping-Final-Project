@@ -44,12 +44,7 @@ public class ReservationService {
 	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
 		return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime);
 	}
-//	public ReservationMaster findSpecial(String userId, LocalDateTime createdTime) {
-//	    return reservationMasterRepo.selectSpecialPriceReservations(userId, createdTime)
-//	                                .orElseThrow(() -> new NoSuchElementException("특가 예매가 존재하지 않습니다."));
-//	}
-	
-	
+		
     // 가장 최근의 start_date를 조회하는 메소드
     public LocalDateTime getLatestStartDate(int itemId) {
     	//log.info("itemId = {}",itemId);
@@ -171,8 +166,7 @@ public class ReservationService {
     	return result;
     }
     
-    // res_state 업데이트
-    
+    // res_state 업데이트   
     @Transactional
     public boolean updateReservationState(Integer resId, int newState) {
         log.debug("Updating reservation state for resId: {} to newState: {}", resId, newState);
@@ -190,6 +184,7 @@ public class ReservationService {
             return false;
         }
     }
+    
     // updateReservation 메서드 수정
     @Transactional
     public ReservationChangeResultDto updateReservation(ReservationUpdateDto updateDto) {
@@ -359,10 +354,4 @@ public class ReservationService {
     	return reservationMasterRepo.findByResId(resId);
     }
     
-//    // 체크인, 체크아웃 기간에 예약된 구역을 조회
-//    public List<Integer> readReservedAreasBetween(LocalDate checkIn, LocalDate checkOut) {
-//        // 해당 기간에 예약된 구역 목록을 가져옴
-//        return reservationMasterRepo.findReservedAreasBetweenDates(checkIn, checkOut);
-//    }
-
 }
