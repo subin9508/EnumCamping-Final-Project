@@ -123,7 +123,7 @@ public class MyPageController {
 	}
 
 	@PostMapping("/password_check")
-	public String passwordCheck(@RequestParam String password, Model model) {
+	public String passwordCheck(@RequestParam("password") String password, Model model) {
 		String userId = getUserId();
 		if (userId == null) {
 			return "redirect:/user/signin";
@@ -163,8 +163,8 @@ public class MyPageController {
 
 	@PostMapping("/user_update")
 	@ResponseBody
-	public ResponseEntity<?> userUpdate(@RequestParam(required = false) MultipartFile file,
-			@RequestParam(required = false) String deleteProfileImage,
+	public ResponseEntity<?> userUpdate(@RequestParam(value = "file", required = false) MultipartFile file,
+			@RequestParam(value = "deleteProfileImage", required = false) String deleteProfileImage,
 			@ModelAttribute UserUpdateDto dto, @AuthenticationPrincipal UserDetails userDetails)
 			throws JsonProcessingException {
 
@@ -306,7 +306,7 @@ public class MyPageController {
 
 	// QnA 게시글 수정 폼 조회
 	@GetMapping("/qna_modify")
-	public String modifyForm(@RequestParam Long id, @AuthenticationPrincipal UserDetails userDetails,
+	public String modifyForm(@RequestParam(name = "id") Long id, @AuthenticationPrincipal UserDetails userDetails,
 			Model model, RedirectAttributes redirectAttributes) {
 		log.debug("modifyForm(Id={})", id);
 
@@ -330,7 +330,7 @@ public class MyPageController {
 
 	// QnA 게시글 상세 조회
 	@GetMapping("/qna_details")
-	public String details(@RequestParam Long id, @RequestParam(name = "p", defaultValue = "0") int pageNo,
+	public String details(@RequestParam(name = "id") Long id, @RequestParam(name = "p", defaultValue = "0") int pageNo,
 			@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) {
 		log.debug("details(Id={}, pageNo={})", id, pageNo);
 
@@ -404,7 +404,7 @@ public class MyPageController {
 
 //    @PreAuthorize("hasRole('USER')")
 	@GetMapping("/delete")
-	public String delete(@RequestParam Long id, Model model,
+	public String delete(@RequestParam("id") Long id, Model model, HttpSession session,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("delete(id={})", id);
 
@@ -428,7 +428,7 @@ public class MyPageController {
 
 	// 마이페이지 - 예약목록
 		@GetMapping("/reservation_list")
-		public String reservationList(@RequestParam String userId, Model model) {
+		public String reservationList(@RequestParam(name = "userId") String userId, Model model) {
 		    log.debug("reservation_list(userId={})", userId);
 
 		    List<ReservationMaster> list = myPageService.readAllReservation(userId);
@@ -472,7 +472,7 @@ public class MyPageController {
 
 	// 마이페이지 - 예약 상세
 		@GetMapping("/reservation_details")
-		public String reservationDetails(@RequestParam int resId, Model model) {
+		public String reservationDetails(@RequestParam(name = "resId") int resId, Model model) {
 			log.debug("reservation_details()");
 			
 			ClaimMaster clmMaster = claimService.findByResIdMaxClmId(resId);
@@ -520,7 +520,7 @@ public class MyPageController {
 	// 마이페이지 - 예약 변경
 	// 처음에 가져오는 페이지 
 	@GetMapping("/reservation_update")
-	public void reservationUpdateCalendar(@RequestParam int resId, Model model) {
+	public void reservationUpdateCalendar(@RequestParam(name = "resId") int resId, Model model) {
 		log.info("reservationUpdateCalendar");
 		
 		Optional<ReservationMaster> resMaster = myPageService.readReservationMasterDetails(resId);
@@ -622,7 +622,7 @@ public class MyPageController {
 	@GetMapping("/reservation_update/{date}")
 	@ResponseBody
 	public List<Integer> reservationUpdateCalendar(
-			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+			@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 		log.debug("GET: calendar with date {}", date);
 
 		// 해당 날짜에 예약된 구역 ID 목록을 가져옵니다.
@@ -631,7 +631,7 @@ public class MyPageController {
 	}
 
 	@GetMapping("/reservation_update/{date}/{area}")
-	public ResponseEntity<List<ReservationMaster>> reservationUpdateCalendar(@PathVariable String date,
+	public ResponseEntity<List<ReservationMaster>> reservationUpdateCalendar(@PathVariable("date") String date,
 			@PathVariable int area) {
 		LocalDate checkInDate = LocalDate.parse(date);
 		log.debug("GET: calendar with date and area {}, {}", date, area);
@@ -642,7 +642,7 @@ public class MyPageController {
 
 	// 예약변경 결제 페이지
 	@GetMapping("/reservation_order")
-	public String showOrderPage(@RequestParam int resId, HttpSession session, Model model) {
+	public String showOrderPage(@RequestParam(name = "resId") int resId, HttpSession session, Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = authentication.getName();
 		User user = userService.read(userId);
@@ -681,7 +681,7 @@ public class MyPageController {
 	}
 
 	@PostMapping("/reservation_order")
-	public String getReservationList(@RequestParam int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
+	public String getReservationList(@RequestParam(name = "resId") int resId, @RequestBody Map<String, Object> requestData, HttpSession session, Model model) {
 
 		log.debug("reservationList(requestData={})", requestData);
 
@@ -808,7 +808,7 @@ public class MyPageController {
 
 
 	@GetMapping("/reservation_update_successed/{resId}")
-	public String paymentSucceessed(@PathVariable Integer resId , Model model, HttpSession session, HttpServletResponse response) {
+	public String paymentSucceessed(@PathVariable("resId") Integer resId , Model model, HttpSession session, HttpServletResponse response) {
 	    
 	    // 캐시 비활성화 설정 (이전 페이지 눌렀을 때 중복 인서트 안되게 하려는 코드)
 	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
@@ -858,7 +858,7 @@ public class MyPageController {
 
 	
 	@GetMapping("/itemPrice/{itemId}/{resSpecial}") 
-	public ResponseEntity<Integer> getItemPrice(@PathVariable int itemId,@PathVariable int resSpecial) {
+	public ResponseEntity<Integer> getItemPrice(@PathVariable("itemId") int itemId,@PathVariable("resSpecial") int resSpecial) {
 		log.debug("GET: 예약 변경 시 구역 가격 찾기. itemId = {}, 특가 여부 = {}", itemId,resSpecial);
 		
 		// 예약 변경 시 할 일
