@@ -64,8 +64,8 @@ public class PaymentsController {
 
         // 가맹점 식별키와 비밀키 전달하여 api 인증
         // public에 올릴 시에는 블라인드 처리 필요
-        this.api = new IamportClient("3360178750462177",
-            "xzEAGVLFM1F39ck4e1ntRa5506p0RUqQceCLHIkHhLV2Ej4LehiDyotZjjLqfhd117dRVOEux5fsNMgT");
+        this.api = new IamportClient("*****************",
+            "*********************************************************************");
     }
 
     // resId 파라미터 받아서 결제 서비스를 통해 해당하는 결제 정보 조회하고 JSON 형식으로 반환. 예외처리 통해 내부 오류 처리하고

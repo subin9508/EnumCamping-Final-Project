@@ -64,7 +64,7 @@ public class PaymentsService {
     private IamportClient iamportClient;
     
     public PaymentsService() {
-        this.iamportClient = new IamportClient("3360178750462177", "xzEAGVLFM1F39ck4e1ntRa5506p0RUqQceCLHIkHhLV2Ej4LehiDyotZjjLqfhd117dRVOEux5fsNMgT");
+        this.iamportClient = new IamportClient("*****************", "*********************************************************************");
     }
 
     public Map<String, Object> getPaymentInfoByResId(Integer resId) throws ServiceException {
