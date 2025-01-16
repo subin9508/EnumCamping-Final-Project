@@ -64,7 +64,7 @@ public class PaymentsController {
 
         // 가맹점 식별키와 비밀키 전달하여 api 인증
         // public에 올릴 시에는 블라인드 처리 필요
-        this.api = new IamportClient("*****************",
+        this.api = new IamportClient("******************",
             "*********************************************************************");
     }
 
